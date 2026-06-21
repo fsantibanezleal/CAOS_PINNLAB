@@ -31,8 +31,33 @@ engineering closures, but no open plant/field dataset exists for them (documente
 
 ## Per-case write-ups
 
-- [env-soil-heat-real](env-soil-heat-real.md) — the real-data inverse (USCRN).
+Every case has a full page (governing equations, the SOTA method, the measured result, the honesty rationale,
+the reproduce command).
+
+**Canonical benchmark**
+- [bench-poisson2d](bench-poisson2d.md) — 2D Poisson, hard-constraint BC.
+- [bench-heat1d](bench-heat1d.md) — 1D heat, time-dependent hard constraints.
+- [bench-wave1d](bench-wave1d.md) — 1D wave, SIREN + hard constraints.
+- [bench-burgers1d](bench-burgers1d.md) — viscous Burgers shock, RAR adaptive sampling.
+- [bench-allencahn](bench-allencahn.md) — Allen–Cahn interface, hard constraints + RAR.
+- [bench-navier-cavity](bench-navier-cavity.md) — Navier–Stokes lid-driven cavity (u,v,p), multi-output + loss weighting.
+
+**Industrial fluids / heat**
+- [ind-helmholtz](ind-helmholtz.md) — Helmholtz, Fourier-feature inputs.
+- [ind-heat2d-inverse](ind-heat2d-inverse.md) — inverse conductivity field from sparse sensors.
+
+**Mining / mineral-processing**
+- [mine-heap-leach-rt](mine-heap-leach-rt.md) — 2-species reactive transport.
+- [mine-thickener-settling](mine-thickener-settling.md) — Bürger–Concha nonlinear settling.
+- [mine-flotation-kinetics](mine-flotation-kinetics.md) — parametric first-order kinetics C(k,t).
+- [mine-comminution-pbe](mine-comminution-pbe.md) — comminution population balance (size transport).
+
+**Pollution / environmental**
+- [poll-ocean-transport](poll-ocean-transport.md) — advection–diffusion.
+- [poll-soil-barrier](poll-soil-barrier.md) — FBPINN domain decomposition across a low-permeability barrier.
+- [poll-tailings-seepage](poll-tailings-seepage.md) — Richards/Gardner unsaturated seepage.
+- [env-soil-heat-real](env-soil-heat-real.md) — **REAL-data** inverse (USCRN soil temperatures).
 - [poll-source-uq-bpinn](poll-source-uq-bpinn.md) — Bayesian PINN (deep ensemble) with epistemic uncertainty.
 
-(Remaining per-case pages are added as the catalogue is documented; every case's full spec — equation, method,
-anchor, metrics — is always available live in its manifest and on the App/Benchmark pages.)
+**Control**
+- [ctrl-zero-source](ctrl-zero-source.md) — degenerate zero-source sanity anchor.
