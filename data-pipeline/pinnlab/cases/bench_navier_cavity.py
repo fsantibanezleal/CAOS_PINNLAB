@@ -15,7 +15,7 @@ from __future__ import annotations
 
 import numpy as np
 
-from .base import CaseSpec
+from .base import CaseSpec, Variant
 
 RHO = 1.0
 NU = 0.01  # Re = U L / nu = 1/0.01 = 100
@@ -46,7 +46,7 @@ CASE = CaseSpec(
     outputs=("u", "v", "p"),
     domain={"x": (0.0, 1.0), "y": (0.0, 1.0)},
     grid={"x": 101, "y": 101},
-    expected_band="primary vortex + corner eddies; rel-L2 vs Ghia u-centerline a few % (CPU lane)",
+    expected_band="primary vortex + corner eddies; rel-L2 vs Ghia centerlines ~12-22% on the CPU primitive-variable lane (the v-centerline is the hardest; a GPU PhysicsNeMo lane tightens it)",
     validation_anchor="benchmark-ghia",
     train={
         "lr": 1e-3,
@@ -59,6 +59,17 @@ CASE = CaseSpec(
     },
     notes="Primitive (u,v,p); regularized lid; pressure gauge pinned; BC+gauge up-weighted. Ghia 1982 centerline anchor.",
 )
+
+
+def variants() -> list[Variant]:
+    # Single honest benchmark: the cavity has no closed form for any Re; only Re=100 is reliably reproducible on the
+    # CPU primitive-variable lane (validated vs the Ghia 1982 centerlines). A Re sweep would fabricate un-anchorable
+    # regimes (ADR-0016 §9.A), so this case ships one rigorous variant.
+    return [Variant(
+        "re100", "Re = 100 (Ghia benchmark)", "Re = 100 (benchmark de Ghia)", {},
+        "Primary vortex + corner eddies; u,v on the centerlines validated vs Ghia 1982.",
+        "Vórtice primario + remolinos de esquina; u,v en las líneas centrales validados vs Ghia 1982.",
+    )]
 
 
 def build(seed: int) -> dict:
