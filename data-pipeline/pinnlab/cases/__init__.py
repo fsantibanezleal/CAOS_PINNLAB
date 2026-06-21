@@ -8,12 +8,14 @@ from __future__ import annotations
 
 from types import ModuleType
 
-from . import bench_poisson2d
+from . import bench_heat1d, bench_poisson2d, bench_wave1d
 from .base import CaseSpec
 
 # Order here = display order. One module per case (dossier §7).
 _MODULES: list[ModuleType] = [
     bench_poisson2d,
+    bench_heat1d,
+    bench_wave1d,
 ]
 
 CASES: list[CaseSpec] = [m.CASE for m in _MODULES]
