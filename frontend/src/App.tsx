@@ -1,6 +1,8 @@
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { NavLink, Outlet } from "react-router-dom";
 
+import { ArchitectureModal } from "./components/ArchitectureModal";
 import i18n from "./i18n";
 import { useUI, type Lang } from "./store";
 
@@ -16,6 +18,7 @@ const NAV: Array<[string, string]> = [
 export function App() {
   const { t } = useTranslation();
   const { theme, toggleTheme, lang, setLang } = useUI();
+  const [archOpen, setArchOpen] = useState(false);
 
   const switchLang = (l: Lang) => {
     setLang(l);
@@ -38,6 +41,9 @@ export function App() {
           ))}
         </nav>
         <div className="spacer" />
+        <button className="iconbtn" onClick={() => setArchOpen(true)} title={t("arch.open")} aria-label={t("arch.open")}>
+          ⓘ
+        </button>
         <button className="iconbtn" onClick={() => switchLang(lang === "en" ? "es" : "en")} title="Language">
           {lang.toUpperCase()}
         </button>
@@ -51,6 +57,7 @@ export function App() {
       <main className="content">
         <Outlet />
       </main>
+      {archOpen && <ArchitectureModal onClose={() => setArchOpen(false)} />}
     </div>
   );
 }

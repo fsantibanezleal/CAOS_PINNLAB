@@ -3,6 +3,23 @@
 All notable changes to **PINN-Lab**. Format: `X.XX.XXX` (display) — see `pinnlab.__version__`. Keep `0.x` while on
 synthetic/benchmark data. Tag every release.
 
+## [0.06.000] — 2026-06-21
+
+### Added — ⓘ "How it was built" architecture panel (implements ADR-0058)
+- A header **ⓘ button** opens a tabbed modal that proves the app is real, at COMPLETE depth — **6 hand-authored
+  theme-aware SVG diagrams** (every colour a CSS variable; fetched + inlined so they repaint with light/dark) paired
+  with **bilingual EN/ES** explanations:
+  - **Overview** — system map + the design/build lifecycle (what runs offline / precompute / web).
+  - **Web app** — the static SPA + the App-page live-inference flow.
+  - **Offline pipeline** — the 6 deterministic stages + the 2 data contracts.
+  - **Train → ONNX → web** — the bridge + the parity guarantee.
+  - **Live vs precompute** — the measured lane gate.
+  - **Methods & honesty** — the 18 cases × SOTA methods + the honesty taxonomy.
+- `ArchitectureModal.tsx` + `architecture-tabs.ts` + `arch.*` i18n + `public/svg/tech/*.svg`. Verified dark+light with
+  `tools/visual-verify/render-svg.mjs` (per-SVG) and the in-app modal harness (all 6 tabs, both themes, zero JS errors).
+- This is the binding **ADR-0058** standard (Veta/Circuita pattern) applied to this non-shell app — a product is not
+  "done" without it.
+
 ## [0.05.000] — 2026-06-21
 
 Uncertainty quantification — the last unexercised SOTA method family — plus the generic engine path that enables it.

@@ -1,0 +1,153 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 540" width="960" class="arch-svg" role="img" aria-label="PINN-Lab end-to-end system: design, offline pipeline, committed artifacts, static web app, deploy">
+  <style>
+    .arch-svg text { font-family: Inter, "Segoe UI", system-ui, sans-serif; }
+    .arch-svg .mono { font-family: ui-monospace, Consolas, monospace; }
+    .arch-svg .bx { fill: var(--panel-2); stroke: var(--border); stroke-width: 1.2; }
+    .arch-svg .bx-hi { stroke: var(--accent); stroke-width: 1.6; }
+    .arch-svg .bx-net { stroke: var(--accent-2); stroke-width: 1.6; }
+    .arch-svg .bx-store { stroke: var(--good); stroke-width: 1.6; }
+    .arch-svg .bx-warn { stroke: var(--warn); stroke-width: 1.6; }
+    .arch-svg .grp { fill: none; stroke: var(--border); stroke-dasharray: 5 4; }
+    .arch-svg .ttl { fill: var(--text); font-size: 13px; font-weight: 600; }
+    .arch-svg .sub { fill: var(--muted); font-size: 10px; }
+    .arch-svg .it { fill: var(--text); font-size: 10.5px; }
+    .arch-svg .cd { fill: var(--accent); font-size: 9.5px; }
+    .arch-svg .mu { fill: var(--muted); font-size: 10px; }
+    .arch-svg .flow { fill: none; stroke: var(--muted); stroke-width: 1.5; }
+    .arch-svg .flow-net { fill: none; stroke: var(--accent-2); stroke-width: 1.5; }
+    .arch-svg .flow-store { fill: none; stroke: var(--good); stroke-width: 1.5; }
+    .arch-svg .lbl { fill: var(--muted); font-size: 9.5px; }
+  </style>
+  <defs>
+    <marker id="system-overview-arrow" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L8,4 L0,8 z" fill="var(--muted)"/>
+    </marker>
+  </defs>
+
+  <!-- ===== Title row ===== -->
+  <text x="24" y="34" class="ttl" style="font-size:16px">PINN-Lab — offline pipeline + static deterministic-replay web app</text>
+  <text x="24" y="52" class="sub">ADR-0057 archetype · pure function of (case, seed) · live ONNX lane + baked-trace replay</text>
+
+  <!-- ===== Zone backdrops ===== -->
+  <!-- OFFLINE (Python): columns 1 + 2 -->
+  <rect x="20" y="70" width="452" height="312" rx="12" class="grp"/>
+  <text x="34" y="88" class="sub" style="fill:var(--accent)">OFFLINE · Python .venv</text>
+  <!-- PRECOMPUTE (baked): column 3 -->
+  <rect x="484" y="70" width="210" height="312" rx="12" class="grp"/>
+  <text x="498" y="88" class="sub" style="fill:var(--good)">PRECOMPUTE · baked</text>
+  <!-- WEB (browser): column 4 -->
+  <rect x="706" y="70" width="234" height="312" rx="12" class="grp"/>
+  <text x="720" y="88" class="sub" style="fill:var(--accent-2)">WEB · browser</text>
+
+  <!-- ===== (1) DESIGN / RESEARCH ===== -->
+  <rect x="34" y="104" width="180" height="262" rx="10" class="bx"/>
+  <text x="48" y="128" class="ttl">1 · Design / Research</text>
+  <text x="48" y="146" class="sub">ADR-0057 archetype</text>
+  <line x1="48" y1="156" x2="200" y2="156" class="grp" stroke-dasharray="0"/>
+  <text x="48" y="180" class="it">dossier + caseplans</text>
+  <text x="48" y="195" class="mu" style="font-size:9.5px">deep-research fiches</text>
+  <text x="48" y="222" class="it">real-datasets vetting</text>
+  <text x="48" y="237" class="mu" style="font-size:9.5px">synthetic vs real</text>
+  <text x="48" y="346" class="cd mono">wip/pinn-lab/</text>
+
+  <!-- ===== (2) OFFLINE PIPELINE ===== -->
+  <rect x="260" y="104" width="198" height="262" rx="10" class="bx bx-hi"/>
+  <text x="272" y="128" class="ttl">2 · Offline pipeline</text>
+  <text x="272" y="146" class="sub">pinnlab engine · pure fn(case, seed)</text>
+  <line x1="272" y1="156" x2="444" y2="156" class="grp" stroke-dasharray="0"/>
+  <text x="272" y="180" class="it">6 deterministic stages</text>
+  <text x="272" y="208" class="it">DeepXDE PINNs → ONNX</text>
+  <text x="272" y="223" class="mu" style="font-size:9.5px">train collocation residual</text>
+  <text x="272" y="251" class="it">validate vs anchor</text>
+  <text x="272" y="266" class="mu" style="font-size:9.5px">live-lane gate (tolerance)</text>
+  <text x="272" y="346" class="cd mono">data-pipeline/pinnlab/</text>
+
+  <!-- ===== (3) COMMITTED ARTIFACTS ===== -->
+  <rect x="498" y="104" width="182" height="262" rx="10" class="bx bx-store"/>
+  <text x="512" y="128" class="ttl">3 · Committed artifacts</text>
+  <text x="512" y="146" class="sub">versioned in git</text>
+  <line x1="512" y1="156" x2="666" y2="156" class="grp" stroke-dasharray="0"/>
+  <text x="512" y="180" class="it">manifests + traces</text>
+  <text x="512" y="194" class="cd mono">data/derived/</text>
+  <text x="512" y="222" class="it">live-lane models</text>
+  <text x="512" y="236" class="cd mono">models/*.onnx</text>
+  <text x="512" y="264" class="it">illustrated wiki</text>
+  <text x="512" y="278" class="cd mono">docs/</text>
+
+  <!-- ===== (4) STATIC WEB APP ===== -->
+  <rect x="720" y="104" width="206" height="262" rx="10" class="bx bx-net"/>
+  <text x="734" y="128" class="ttl">4 · Static web app</text>
+  <text x="734" y="146" class="sub">Vite + React SPA · GitHub Pages</text>
+  <line x1="734" y1="156" x2="912" y2="156" class="grp" stroke-dasharray="0"/>
+  <text x="734" y="180" class="it">onnxruntime-web</text>
+  <text x="734" y="194" class="mu" style="font-size:9.5px">live in-browser inference</text>
+  <text x="734" y="222" class="it">replay baked traces</text>
+  <text x="734" y="236" class="mu" style="font-size:9.5px">deterministic, no server</text>
+  <text x="734" y="264" class="it">6 pages · EN/ES</text>
+  <text x="734" y="278" class="mu" style="font-size:9.5px">dark / light themes</text>
+
+  <!-- ===== Inter-column flows ===== -->
+  <!-- (1) -> (2) implement -->
+  <path class="flow" d="M214,242 L258,242" marker-end="url(#system-overview-arrow)"/>
+  <text x="237" y="232" class="lbl" text-anchor="middle" style="font-size:8.5px">implement</text>
+  <!-- (2) -> (3) bake artifacts -->
+  <path class="flow-store" d="M458,236 L496,236" marker-end="url(#system-overview-arrow)"/>
+  <text x="477" y="226" class="lbl" text-anchor="middle" style="fill:var(--good)">bake</text>
+  <!-- (3) -> (4) fetch static -->
+  <path class="flow-net" d="M680,236 L718,236" marker-end="url(#system-overview-arrow)"/>
+  <text x="699" y="226" class="lbl" text-anchor="middle" style="fill:var(--accent-2)">fetch</text>
+
+  <!-- ===== Bottom lifecycle band ===== -->
+  <rect x="20" y="408" width="920" height="112" rx="12" class="grp"/>
+  <text x="34" y="430" class="sub">Lifecycle</text>
+
+  <!-- pills -->
+  <g>
+    <rect x="34" y="446" width="108" height="54" rx="9" class="bx"/>
+    <text x="88" y="470" class="it" text-anchor="middle">research</text>
+    <text x="88" y="486" class="mu" style="font-size:9px" text-anchor="middle">caseplans</text>
+
+    <rect x="160" y="446" width="108" height="54" rx="9" class="bx"/>
+    <text x="214" y="470" class="it" text-anchor="middle">implement</text>
+    <text x="214" y="486" class="mu" style="font-size:9px" text-anchor="middle">engine stages</text>
+
+    <rect x="286" y="446" width="120" height="54" rx="9" class="bx bx-hi"/>
+    <text x="346" y="470" class="it" text-anchor="middle">train + validate</text>
+    <text x="346" y="486" class="mu" style="font-size:9px" text-anchor="middle">DeepXDE PINNs</text>
+
+    <rect x="424" y="446" width="132" height="54" rx="9" class="bx bx-warn"/>
+    <text x="490" y="468" class="it" text-anchor="middle">export ONNX</text>
+    <text x="490" y="484" class="mu" style="font-size:9px" text-anchor="middle">+ lane gate</text>
+
+    <rect x="574" y="446" width="118" height="54" rx="9" class="bx bx-store"/>
+    <text x="633" y="470" class="it" text-anchor="middle">bake artifacts</text>
+    <text x="633" y="486" class="mu" style="font-size:9px" text-anchor="middle">commit to git</text>
+
+    <rect x="710" y="446" width="104" height="54" rx="9" class="bx bx-net"/>
+    <text x="762" y="470" class="it" text-anchor="middle">build SPA</text>
+    <text x="762" y="486" class="mu" style="font-size:9px" text-anchor="middle">Vite bundle</text>
+
+    <rect x="832" y="446" width="96" height="54" rx="9" class="bx bx-net"/>
+    <text x="880" y="470" class="it" text-anchor="middle">deploy</text>
+    <text x="880" y="486" class="mu" style="font-size:9px" text-anchor="middle">GH Pages</text>
+  </g>
+
+  <!-- lifecycle arrows -->
+  <path class="flow" d="M142,473 L158,473" marker-end="url(#system-overview-arrow)"/>
+  <path class="flow" d="M268,473 L284,473" marker-end="url(#system-overview-arrow)"/>
+  <path class="flow" d="M406,473 L422,473" marker-end="url(#system-overview-arrow)"/>
+  <path class="flow" d="M556,473 L572,473" marker-end="url(#system-overview-arrow)"/>
+  <path class="flow" d="M692,473 L708,473" marker-end="url(#system-overview-arrow)"/>
+  <path class="flow" d="M814,473 L830,473" marker-end="url(#system-overview-arrow)"/>
+
+  <!-- ===== Corner legend ===== -->
+  <g>
+    <rect x="762" y="20" width="174" height="50" rx="8" class="bx"/>
+    <rect x="772" y="28" width="11" height="9" rx="2" class="bx bx-hi"/>
+    <text x="789" y="36" class="lbl">OFFLINE (Python)</text>
+    <rect x="772" y="41" width="11" height="9" rx="2" class="bx bx-store"/>
+    <text x="789" y="49" class="lbl">PRECOMPUTE (baked)</text>
+    <rect x="772" y="54" width="11" height="9" rx="2" class="bx bx-net"/>
+    <text x="789" y="62" class="lbl">WEB (browser)</text>
+  </g>
+</svg>

@@ -1,0 +1,139 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 500" width="960" class="arch-svg" role="img" aria-label="The train to ONNX to browser bridge with the parity guarantee">
+  <style>
+    .arch-svg text { font-family: Inter, "Segoe UI", system-ui, sans-serif; }
+    .arch-svg .mono { font-family: ui-monospace, Consolas, monospace; }
+    .arch-svg .bx { fill: var(--panel-2); stroke: var(--border); stroke-width: 1.2; }
+    .arch-svg .bx-hi { stroke: var(--accent); stroke-width: 1.6; }
+    .arch-svg .bx-net { stroke: var(--accent-2); stroke-width: 1.6; }
+    .arch-svg .bx-store { stroke: var(--good); stroke-width: 1.6; }
+    .arch-svg .bx-warn { stroke: var(--warn); stroke-width: 1.6; }
+    .arch-svg .grp { fill: none; stroke: var(--border); stroke-dasharray: 5 4; }
+    .arch-svg .ttl { fill: var(--text); font-size: 13px; font-weight: 600; }
+    .arch-svg .sub { fill: var(--muted); font-size: 10px; }
+    .arch-svg .it { fill: var(--text); font-size: 10.5px; }
+    .arch-svg .cd { fill: var(--accent); font-size: 9.5px; }
+    .arch-svg .mu { fill: var(--muted); font-size: 10px; }
+    .arch-svg .flow { fill: none; stroke: var(--muted); stroke-width: 1.5; }
+    .arch-svg .flow-net { fill: none; stroke: var(--accent-2); stroke-width: 1.5; }
+    .arch-svg .flow-store { fill: none; stroke: var(--good); stroke-width: 1.5; }
+    .arch-svg .lbl { fill: var(--muted); font-size: 9.5px; }
+  </style>
+  <defs>
+    <marker id="train-onnx-web-arrow" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L8,4 L0,8 z" fill="var(--muted)"/>
+    </marker>
+  </defs>
+
+  <!-- ===== TITLE ===== -->
+  <text class="ttl" x="20" y="34" style="font-size:15px;">Train &#8594; ONNX &#8594; web &#8212; heavy to make, tiny to evaluate</text>
+
+  <!-- ============================================================ -->
+  <!-- COLUMN A  —  TRAIN (offline)                                  -->
+  <!-- ============================================================ -->
+  <rect class="bx bx-hi" x="20" y="60" width="278" height="356" rx="10"/>
+  <text class="ttl" x="36" y="86">A &#183; TRAIN &#8212; offline</text>
+  <text class="sub" x="36" y="103">DeepXDE / PyTorch (CPU/GPU)</text>
+
+  <!-- item: FNN + output transform -->
+  <rect class="bx" x="36" y="118" width="246" height="62" rx="8"/>
+  <text class="it" x="48" y="139">FNN + output transform</text>
+  <text class="mu" x="48" y="155">hard BC/IC baked into the</text>
+  <text class="mu" x="48" y="169">network output (no penalty term)</text>
+
+  <!-- item: Fourier / SIREN -->
+  <rect class="bx" x="36" y="195" width="246" height="62" rx="8"/>
+  <text class="it" x="48" y="216">Fourier features / SIREN</text>
+  <text class="mu" x="48" y="232">input transform &#8212; spectral</text>
+  <text class="mu" x="48" y="246">bias control for sharp fields</text>
+
+  <!-- item: Adam -> L-BFGS -> RAR -->
+  <rect class="bx" x="36" y="272" width="246" height="62" rx="8"/>
+  <text class="it" x="48" y="293">Adam &#8594; L-BFGS &#8594; RAR refine</text>
+  <text class="mu" x="48" y="309">first-order warmup, quasi-Newton</text>
+  <text class="mu" x="48" y="323">polish, residual-adaptive resample</text>
+
+  <!-- sub note -->
+  <rect class="bx" x="36" y="349" width="246" height="52" rx="8"/>
+  <text class="sub" x="48" y="370" style="font-size:11px;">minutes, full training stack</text>
+  <text class="mu" x="48" y="388">autograd, optimisers, collocation grid</text>
+
+  <!-- ============================================================ -->
+  <!-- COLUMN B  —  EXPORT                                           -->
+  <!-- ============================================================ -->
+  <rect class="bx bx-net" x="358" y="60" width="278" height="356" rx="10"/>
+  <text class="ttl" x="374" y="86">B &#183; EXPORT</text>
+  <text class="sub" x="374" y="103">transforms captured in the graph</text>
+
+  <!-- code: torch.onnx.export -->
+  <rect class="bx" x="374" y="118" width="246" height="74" rx="8"/>
+  <text class="cd mono" x="386" y="138">torch.onnx.export(</text>
+  <text class="cd mono" x="386" y="153">&#160;&#160;dynamo=True, opset 18,</text>
+  <text class="cd mono" x="386" y="168">&#160;&#160;external_data=False)</text>
+  <text class="mu" x="386" y="185">tracer captures every transform</text>
+
+  <!-- item: self-contained onnx -->
+  <rect class="bx" x="374" y="207" width="246" height="60" rx="8"/>
+  <text class="it" x="386" y="228">self-contained .onnx</text>
+  <text class="mu" x="386" y="244">weights inline &#8212; tens of KB,</text>
+  <text class="mu" x="386" y="258">one file, no sidecar tensors</text>
+
+  <!-- HIGHLIGHT: parity check -->
+  <rect class="bx bx-warn" x="374" y="282" width="246" height="74" rx="8"/>
+  <text class="it" x="386" y="303" style="font-weight:600;">parity check</text>
+  <text class="cd mono" x="386" y="320" style="fill:var(--warn);">max|torch &#8722; onnx| &#60; 1e-4</text>
+  <text class="mu" x="386" y="337">gate: export fails the build</text>
+  <text class="mu" x="386" y="351">unless the graph matches torch</text>
+
+  <!-- sub note -->
+  <rect class="bx" x="374" y="371" width="246" height="34" rx="8"/>
+  <text class="mu" x="386" y="392">opset 18 &#183; portable, runtime-agnostic</text>
+
+  <!-- ============================================================ -->
+  <!-- COLUMN C  —  BROWSER                                          -->
+  <!-- ============================================================ -->
+  <rect class="bx bx-store" x="696" y="60" width="248" height="356" rx="10"/>
+  <text class="ttl" x="712" y="86">C &#183; BROWSER</text>
+  <text class="sub" x="712" y="103">onnxruntime-web (WASM)</text>
+
+  <!-- code: session.run -->
+  <rect class="bx" x="712" y="118" width="216" height="60" rx="8"/>
+  <text class="cd mono" x="724" y="139">session.run(coords)</text>
+  <text class="cd mono" x="724" y="156">&#160;&#160;&#8594; u</text>
+  <text class="mu" x="724" y="172">forward pass in the page</text>
+
+  <!-- item: live field -->
+  <rect class="bx" x="712" y="193" width="216" height="74" rx="8"/>
+  <text class="it" x="724" y="214">live field, any resolution</text>
+  <text class="mu" x="724" y="230">re-evaluate the net on a fresh</text>
+  <text class="mu" x="724" y="244">grid per zoom; cursor probe</text>
+  <text class="mu" x="724" y="258">reads u(x, t) at the pointer</text>
+
+  <!-- item: no server -->
+  <rect class="bx" x="712" y="282" width="216" height="74" rx="8"/>
+  <text class="it" x="724" y="303">&#60; 1 ms, client-side</text>
+  <text class="mu" x="724" y="319">a few dense layers &#8212; no</text>
+  <text class="mu" x="724" y="333">GPU, no backend, no network</text>
+  <text class="mu" x="724" y="347">round-trip after first load</text>
+
+  <!-- sub note -->
+  <rect class="bx" x="712" y="371" width="216" height="34" rx="8"/>
+  <text class="mu" x="724" y="392">static asset &#183; cacheable, offline-ready</text>
+
+  <!-- ============================================================ -->
+  <!-- BIG FLOW ARROWS                                              -->
+  <!-- ============================================================ -->
+  <!-- A -> B : trained net -->
+  <path class="flow" d="M300,238 L356,238" marker-end="url(#train-onnx-web-arrow)"/>
+  <text class="lbl" x="304" y="230">trained net</text>
+
+  <!-- B -> C : <case>.onnx (net flow) -->
+  <path class="flow-net" d="M638,238 L694,238" marker-end="url(#train-onnx-web-arrow)"/>
+  <text class="lbl" x="640" y="230" style="fill:var(--accent-2);">&#60;case&#62;.onnx</text>
+
+  <!-- ============================================================ -->
+  <!-- BOTTOM NOTE (full width)                                     -->
+  <!-- ============================================================ -->
+  <line class="grp" x1="20" y1="432" x2="944" y2="432"/>
+  <text class="mu" x="20" y="454">Training cost lives entirely offline; the artifact is a few dense layers &#8212; so the interactive page keeps every SOTA technique while shipping none of</text>
+  <text class="mu" x="20" y="470">the training stack. The parity check proves the browser runs exactly the validated network.</text>
+</svg>

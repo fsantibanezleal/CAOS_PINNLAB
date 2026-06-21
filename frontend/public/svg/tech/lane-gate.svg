@@ -1,0 +1,96 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 500" width="960" class="arch-svg" role="img" aria-label="The measured lane gate deciding live versus precompute from measurements">
+  <style>
+    .arch-svg text { font-family: Inter, "Segoe UI", system-ui, sans-serif; }
+    .arch-svg .mono { font-family: ui-monospace, Consolas, monospace; }
+    .arch-svg .bx { fill: var(--panel-2); stroke: var(--border); stroke-width: 1.2; }
+    .arch-svg .bx-hi { stroke: var(--accent); stroke-width: 1.6; }
+    .arch-svg .bx-net { stroke: var(--accent-2); stroke-width: 1.6; }
+    .arch-svg .bx-store { stroke: var(--good); stroke-width: 1.6; }
+    .arch-svg .bx-warn { stroke: var(--warn); stroke-width: 1.6; }
+    .arch-svg .grp { fill: none; stroke: var(--border); stroke-dasharray: 5 4; }
+    .arch-svg .ttl { fill: var(--text); font-size: 13px; font-weight: 600; }
+    .arch-svg .sub { fill: var(--muted); font-size: 10px; }
+    .arch-svg .it { fill: var(--text); font-size: 10.5px; }
+    .arch-svg .cd { fill: var(--accent); font-size: 9.5px; }
+    .arch-svg .mu { fill: var(--muted); font-size: 10px; }
+    .arch-svg .flow { fill: none; stroke: var(--muted); stroke-width: 1.5; }
+    .arch-svg .flow-net { fill: none; stroke: var(--accent-2); stroke-width: 1.5; }
+    .arch-svg .flow-store { fill: none; stroke: var(--good); stroke-width: 1.5; }
+    .arch-svg .lbl { fill: var(--muted); font-size: 9.5px; }
+  </style>
+  <defs>
+    <marker id="lane-gate-arrow" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L8,4 L0,8 z" fill="var(--muted)"/>
+    </marker>
+  </defs>
+
+  <!-- ===== Title ===== -->
+  <text class="ttl" x="24" y="32" style="font-size:15px">Lane gate — LIVE vs PRECOMPUTE, decided from MEASUREMENTS</text>
+  <text class="cd mono" x="24" y="50">core/gate.py · classify_lane(onnx_bytes, infer_ms, trace_bytes)</text>
+
+  <!-- ===== LEFT: measured inputs group ===== -->
+  <rect class="grp" x="24" y="74" width="246" height="296" rx="10"/>
+  <text class="sub" x="38" y="94">MEASURED INPUTS (per case)</text>
+
+  <!-- onnx_bytes -->
+  <rect class="bx" x="40" y="106" width="214" height="74" rx="9"/>
+  <text class="ttl mono" x="52" y="128">onnx_bytes</text>
+  <text class="sub" x="52" y="144">exported .onnx size</text>
+  <rect class="bx bx-hi" x="172" y="153" width="70" height="18" rx="9"/>
+  <text class="it mono" x="182" y="166">&#8804; 4 MB</text>
+
+  <!-- infer_ms -->
+  <rect class="bx" x="40" y="194" width="214" height="74" rx="9"/>
+  <text class="ttl mono" x="52" y="216">infer_ms</text>
+  <text class="sub" x="52" y="232">one full-grid forward (ort-web proxy)</text>
+  <rect class="bx bx-hi" x="166" y="241" width="76" height="18" rx="9"/>
+  <text class="it mono" x="176" y="254">&#8804; 120 ms</text>
+
+  <!-- trace_bytes -->
+  <rect class="bx" x="40" y="282" width="214" height="74" rx="9"/>
+  <text class="ttl mono" x="52" y="304">trace_bytes</text>
+  <text class="sub" x="52" y="320">baked field.json size</text>
+  <rect class="bx bx-hi" x="172" y="329" width="70" height="18" rx="9"/>
+  <text class="it mono" x="182" y="342">&#8804; 1 MB</text>
+
+  <!-- ===== CENTER: AND gate ===== -->
+  <rect class="bx bx-hi" x="372" y="178" width="172" height="118" rx="10"/>
+  <text class="sub" x="388" y="204">AND</text>
+  <text class="ttl" x="388" y="228" style="font-size:14px">ALL three</text>
+  <text class="ttl" x="388" y="246" style="font-size:14px">pass?</text>
+  <text class="mu mono" x="388" y="272">live = a &amp; b &amp; c</text>
+
+  <!-- input flows into gate -->
+  <path class="flow" d="M254 143 H 320 Q 332 143 332 168 V 210 H 372" marker-end="url(#lane-gate-arrow)"/>
+  <path class="flow" d="M254 231 H 372" marker-end="url(#lane-gate-arrow)"/>
+  <path class="flow" d="M254 319 H 320 Q 332 319 332 296 V 264 H 372" marker-end="url(#lane-gate-arrow)"/>
+
+  <!-- ===== RIGHT: outcomes ===== -->
+  <!-- LIVE -->
+  <rect class="bx bx-store" x="652" y="100" width="284" height="98" rx="10"/>
+  <text class="ttl" x="668" y="124" style="fill:var(--good)">LIVE</text>
+  <text class="sub" x="708" y="124">lane = "live"</text>
+  <text class="it" x="668" y="148">&#8226; ship .onnx + trace</text>
+  <text class="it" x="668" y="168">&#8226; onnxruntime-web interactive</text>
+  <text class="mu mono" x="668" y="187">probe / re-grid the field in the browser</text>
+
+  <!-- PRECOMPUTE -->
+  <rect class="bx bx-warn" x="652" y="276" width="284" height="98" rx="10"/>
+  <text class="ttl" x="668" y="300" style="fill:var(--warn)">PRECOMPUTE</text>
+  <text class="sub" x="760" y="300">lane = "precompute"</text>
+  <text class="it" x="668" y="324">&#8226; ship replay trace only</text>
+  <text class="it" x="668" y="344">&#8226; no in-browser inference</text>
+  <text class="mu mono" x="668" y="363">SPA replays the baked artifact</text>
+
+  <!-- gate -> outcomes -->
+  <path class="flow-store" d="M544 210 H 600 Q 614 210 614 184 V 149 H 652" marker-end="url(#lane-gate-arrow)"/>
+  <text class="lbl" x="606" y="166" style="fill:var(--good)">yes</text>
+
+  <path class="flow" d="M544 264 H 600 Q 614 264 614 290 V 325 H 652" marker-end="url(#lane-gate-arrow)"/>
+  <text class="lbl" x="606" y="312" style="fill:var(--warn)">no</text>
+
+  <!-- ===== BOTTOM band ===== -->
+  <rect class="bx" x="24" y="398" width="912" height="78" rx="10"/>
+  <text class="it" x="40" y="424">verdict + the 3 measured numbers &#8594; <tspan class="cd mono">manifest</tspan>; CI re-derives the lane so a mislabel cannot ship.</text>
+  <text class="mu" x="40" y="452">all 18 cases classify LIVE (ONNX 20&#8211;101 KB, infer &lt; 4 ms, parity ~1e-7).</text>
+</svg>

@@ -1,0 +1,164 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 980 560" width="980" class="arch-svg" role="img" aria-label="The 18 PINN-Lab cases across categories and SOTA methods with honesty labels">
+  <style>
+    .arch-svg text { font-family: Inter, "Segoe UI", system-ui, sans-serif; }
+    .arch-svg .mono { font-family: ui-monospace, Consolas, monospace; }
+    .arch-svg .bx { fill: var(--panel-2); stroke: var(--border); stroke-width: 1.2; }
+    .arch-svg .bx-hi { stroke: var(--accent); stroke-width: 1.6; }
+    .arch-svg .bx-net { stroke: var(--accent-2); stroke-width: 1.6; }
+    .arch-svg .bx-store { stroke: var(--good); stroke-width: 1.6; }
+    .arch-svg .bx-warn { stroke: var(--warn); stroke-width: 1.6; }
+    .arch-svg .grp { fill: none; stroke: var(--border); stroke-dasharray: 5 4; }
+    .arch-svg .ttl { fill: var(--text); font-size: 13px; font-weight: 600; }
+    .arch-svg .sub { fill: var(--muted); font-size: 10px; }
+    .arch-svg .it { fill: var(--text); font-size: 10.5px; }
+    .arch-svg .cd { fill: var(--accent); font-size: 9.5px; }
+    .arch-svg .mu { fill: var(--muted); font-size: 10px; }
+    .arch-svg .flow { fill: none; stroke: var(--muted); stroke-width: 1.5; }
+    .arch-svg .flow-net { fill: none; stroke: var(--accent-2); stroke-width: 1.5; }
+    .arch-svg .flow-store { fill: none; stroke: var(--good); stroke-width: 1.5; }
+    .arch-svg .lbl { fill: var(--muted); font-size: 9.5px; }
+    .arch-svg .pid { fill: var(--text); font-size: 9.5px; font-weight: 600; }
+    .arch-svg .ptag { fill: var(--muted); font-size: 8.6px; }
+  </style>
+  <defs>
+    <marker id="method-matrix-arrow" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L8,4 L0,8 z" fill="var(--muted)"/>
+    </marker>
+  </defs>
+
+  <!-- ===== Title ===== -->
+  <text class="ttl" x="14" y="28" style="font-size:15px;">18 cases &#215; SOTA methods &#8212; every technique exercised, every label honest</text>
+
+  <!-- =================================================================== -->
+  <!-- FIVE CATEGORY COLUMNS                                                -->
+  <!-- column x: 14 / 207 / 400 / 593 / 786 ; pill width 165 ; pill h 40   -->
+  <!-- =================================================================== -->
+
+  <!-- ===== COL 1: canonical-benchmark (6 cases) ===== -->
+  <rect class="grp" x="14" y="44" width="181" height="406" rx="10"/>
+  <text class="sub" x="26" y="64" style="font-weight:600;fill:var(--accent);">canonical-benchmark</text>
+  <text class="lbl" x="26" y="78">closed-form / MMS anchors</text>
+
+  <rect class="bx bx-hi" x="22" y="88" width="165" height="40" rx="8"/>
+  <text class="pid mono" x="32" y="104">bench-poisson2d</text>
+  <text class="ptag mono" x="32" y="119">hard-BC</text>
+
+  <rect class="bx bx-hi" x="22" y="144" width="165" height="40" rx="8"/>
+  <text class="pid mono" x="32" y="160">bench-heat1d</text>
+  <text class="ptag mono" x="32" y="175">MMS</text>
+
+  <rect class="bx bx-hi" x="22" y="200" width="165" height="40" rx="8"/>
+  <text class="pid mono" x="32" y="216">bench-wave1d</text>
+  <text class="ptag mono" x="32" y="231">Fourier</text>
+
+  <rect class="bx bx-hi" x="22" y="256" width="165" height="40" rx="8"/>
+  <text class="pid mono" x="32" y="272">bench-burgers1d</text>
+  <text class="ptag mono" x="32" y="287">RAR</text>
+
+  <rect class="bx bx-hi" x="22" y="312" width="165" height="40" rx="8"/>
+  <text class="pid mono" x="32" y="328">bench-allencahn</text>
+  <text class="ptag mono" x="32" y="343">FBPINN</text>
+
+  <rect class="bx bx-hi" x="22" y="368" width="165" height="40" rx="8"/>
+  <text class="pid mono" x="32" y="384">bench-navier-cavity</text>
+  <text class="ptag mono" x="32" y="399">Ghia anchor</text>
+
+  <!-- ===== COL 2: mining / mineral-processing (4 cases) ===== -->
+  <rect class="grp" x="207" y="44" width="181" height="406" rx="10"/>
+  <text class="sub" x="219" y="64" style="font-weight:600;fill:var(--accent);">mining / mineral-proc.</text>
+  <text class="lbl" x="219" y="78">reduced process models</text>
+
+  <rect class="bx bx-hi" x="215" y="88" width="165" height="40" rx="8"/>
+  <text class="pid mono" x="225" y="104">mine-heap-leach-rt</text>
+  <text class="ptag mono" x="225" y="119">reaction-transport</text>
+
+  <rect class="bx bx-hi" x="215" y="144" width="165" height="40" rx="8"/>
+  <text class="pid mono" x="225" y="160">mine-thickener-settling</text>
+  <text class="ptag mono" x="225" y="175">Burger-Concha</text>
+
+  <rect class="bx bx-hi" x="215" y="200" width="165" height="40" rx="8"/>
+  <text class="pid mono" x="225" y="216">mine-flotation-kinetics</text>
+  <text class="ptag mono" x="225" y="231">first-order kinetics</text>
+
+  <rect class="bx bx-hi" x="215" y="256" width="165" height="40" rx="8"/>
+  <text class="pid mono" x="225" y="272">mine-comminution-pbe</text>
+  <text class="ptag mono" x="225" y="287">population balance</text>
+
+  <!-- ===== COL 3: pollution / environmental (5 cases) ===== -->
+  <rect class="grp" x="400" y="44" width="181" height="406" rx="10"/>
+  <text class="sub" x="412" y="64" style="font-weight:600;fill:var(--accent);">pollution / environment</text>
+  <text class="lbl" x="412" y="78">mixed: reduced + 1 real</text>
+
+  <rect class="bx bx-hi" x="408" y="88" width="165" height="40" rx="8"/>
+  <text class="pid mono" x="418" y="104">poll-ocean-transport</text>
+  <text class="ptag mono" x="418" y="119">advection-diffusion</text>
+
+  <rect class="bx bx-hi" x="408" y="144" width="165" height="40" rx="8"/>
+  <text class="pid mono" x="418" y="160">poll-soil-barrier</text>
+  <text class="ptag mono" x="418" y="175">Richards</text>
+
+  <rect class="bx bx-hi" x="408" y="200" width="165" height="40" rx="8"/>
+  <text class="pid mono" x="418" y="216">poll-tailings-seepage</text>
+  <text class="ptag mono" x="418" y="231">Darcy seepage</text>
+
+  <rect class="bx bx-store" x="408" y="256" width="165" height="40" rx="8"/>
+  <text class="pid mono" x="418" y="272">env-soil-heat-real</text>
+  <text class="ptag mono" x="418" y="287" style="fill:var(--good);">real-data &#183; inverse</text>
+
+  <rect class="bx bx-warn" x="408" y="312" width="165" height="40" rx="8"/>
+  <text class="pid mono" x="418" y="328">poll-source-uq-bpinn</text>
+  <text class="ptag mono" x="418" y="343" style="fill:var(--warn);">B-PINN UQ</text>
+
+  <!-- ===== COL 4: industrial fluids / heat (2 cases) ===== -->
+  <rect class="grp" x="593" y="44" width="181" height="406" rx="10"/>
+  <text class="sub" x="605" y="64" style="font-weight:600;fill:var(--accent);">industrial fluids / heat</text>
+  <text class="lbl" x="605" y="78">forward + inverse</text>
+
+  <rect class="bx bx-hi" x="601" y="88" width="165" height="40" rx="8"/>
+  <text class="pid mono" x="611" y="104">ind-helmholtz</text>
+  <text class="ptag mono" x="611" y="119">Fourier features</text>
+
+  <rect class="bx bx-hi" x="601" y="144" width="165" height="40" rx="8"/>
+  <text class="pid mono" x="611" y="160">ind-heat2d-inverse</text>
+  <text class="ptag mono" x="611" y="175">inverse &#183; param-ID</text>
+
+  <!-- ===== COL 5: control (1 case) ===== -->
+  <rect class="grp" x="786" y="44" width="180" height="406" rx="10"/>
+  <text class="sub" x="798" y="64" style="font-weight:600;fill:var(--accent);">control</text>
+  <text class="lbl" x="798" y="78">degenerate sanity lane</text>
+
+  <rect class="bx" x="794" y="88" width="164" height="40" rx="8"/>
+  <text class="pid mono" x="804" y="104">ctrl-zero-source</text>
+  <text class="ptag mono" x="804" y="119">trivial / null check</text>
+
+  <!-- count note in the empty control space -->
+  <text class="mu" x="804" y="160" style="font-weight:600;">18 total</text>
+  <text class="mu" x="804" y="180">6 + 4 + 5 + 2 + 1</text>
+  <text class="lbl" x="804" y="200">each &#8594; ONNX trace</text>
+  <text class="lbl" x="804" y="214">+ versioned manifest</text>
+
+  <!-- honesty mapping note (control column lower space) -->
+  <text class="lbl" x="804" y="248" style="font-weight:600;">pill stroke = honesty</text>
+  <path class="flow" d="M804,262 L832,262" marker-end="url(#method-matrix-arrow)"/>
+  <text class="lbl" x="804" y="284">accent: illustrative</text>
+  <text class="lbl" x="804" y="300" style="fill:var(--good);">green: validated-real</text>
+  <text class="lbl" x="804" y="316" style="fill:var(--warn);">amber: UQ / B-PINN</text>
+  <text class="lbl" x="804" y="332">grey: closed-form</text>
+
+  <!-- =================================================================== -->
+  <!-- BOTTOM: HONESTY LEGEND ROW                                           -->
+  <!-- =================================================================== -->
+  <text class="sub" x="14" y="478" style="font-weight:600;">honesty label &#8212; the stroke colour of every case pill is its data-provenance verdict</text>
+
+  <rect class="bx" x="14" y="490" width="300" height="56" rx="9"/>
+  <text class="it" x="28" y="512">synthetic</text>
+  <text class="mu" x="28" y="530">closed-form / MMS &#183; grey stroke</text>
+
+  <rect class="bx bx-hi" x="328" y="490" width="320" height="56" rx="9"/>
+  <text class="it" x="342" y="512" style="fill:var(--accent);">synthetic-illustrative</text>
+  <text class="mu" x="342" y="530">reduced model &#183; accent stroke</text>
+
+  <rect class="bx bx-store" x="662" y="490" width="304" height="56" rx="9"/>
+  <text class="it" x="676" y="512" style="fill:var(--good);">validated-real</text>
+  <text class="mu" x="676" y="530">measured dataset &#183; green stroke</text>
+</svg>

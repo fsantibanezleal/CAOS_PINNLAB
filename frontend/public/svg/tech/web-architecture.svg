@@ -1,0 +1,149 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 540" width="960" class="arch-svg" role="img" aria-label="PINN-Lab static web app architecture and the App-page user flow">
+  <style>
+    .arch-svg text { font-family: Inter, "Segoe UI", system-ui, sans-serif; }
+    .arch-svg .mono { font-family: ui-monospace, Consolas, monospace; }
+    .arch-svg .bx { fill: var(--panel-2); stroke: var(--border); stroke-width: 1.2; }
+    .arch-svg .bx-hi { stroke: var(--accent); stroke-width: 1.6; }
+    .arch-svg .bx-net { stroke: var(--accent-2); stroke-width: 1.6; }
+    .arch-svg .bx-store { stroke: var(--good); stroke-width: 1.6; }
+    .arch-svg .bx-warn { stroke: var(--warn); stroke-width: 1.6; }
+    .arch-svg .grp { fill: none; stroke: var(--border); stroke-dasharray: 5 4; }
+    .arch-svg .ttl { fill: var(--text); font-size: 13px; font-weight: 600; }
+    .arch-svg .sub { fill: var(--muted); font-size: 10px; }
+    .arch-svg .it { fill: var(--text); font-size: 10.5px; }
+    .arch-svg .cd { fill: var(--accent); font-size: 9.5px; }
+    .arch-svg .mu { fill: var(--muted); font-size: 10px; }
+    .arch-svg .flow { fill: none; stroke: var(--muted); stroke-width: 1.5; }
+    .arch-svg .flow-net { fill: none; stroke: var(--accent-2); stroke-width: 1.5; }
+    .arch-svg .flow-store { fill: none; stroke: var(--good); stroke-width: 1.5; }
+    .arch-svg .lbl { fill: var(--muted); font-size: 9.5px; }
+  </style>
+  <defs>
+    <marker id="web-architecture-arrow" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L8,4 L0,8 z" fill="var(--muted)"/>
+    </marker>
+  </defs>
+
+  <!-- ===== Title ===== -->
+  <text x="20" y="30" class="ttl" style="font-size:15px">Web app — static SPA, live ONNX inference + baked-trace replay (no server)</text>
+
+  <!-- ============================================================ -->
+  <!-- LEFT GROUP: BROWSER / React SPA                              -->
+  <!-- ============================================================ -->
+  <rect x="20" y="48" width="296" height="338" rx="10" class="grp"/>
+  <text x="36" y="70" class="sub" style="font-weight:600;fill:var(--accent)">BROWSER · React SPA</text>
+  <text x="36" y="85" class="cd mono">frontend/ · Vite + React 19 + TS</text>
+
+  <!-- Router box -->
+  <rect x="34" y="94" width="268" height="62" rx="8" class="bx bx-hi"/>
+  <text x="46" y="114" class="it" style="font-weight:600">Router (HashRouter) — 6 pages</text>
+  <text x="46" y="131" class="cd mono">App · Introduction · Methodology</text>
+  <text x="46" y="146" class="cd mono">Implementation · Experiments · Benchmark</text>
+
+  <!-- State box -->
+  <rect x="34" y="170" width="268" height="46" rx="8" class="bx bx-hi"/>
+  <text x="46" y="190" class="it" style="font-weight:600">State (zustand)</text>
+  <text x="46" y="207" class="it">i18next EN / ES + KaTeX</text>
+
+  <!-- Heatmap box -->
+  <rect x="34" y="230" width="268" height="62" rx="8" class="bx bx-hi"/>
+  <text x="46" y="250" class="it" style="font-weight:600">FieldHeatmap (canvas, viridis)</text>
+  <text x="46" y="267" class="it">output selector · time slider</text>
+  <text x="46" y="283" class="mu">cursor probe re-evaluates the field</text>
+
+  <!-- contract note -->
+  <rect x="34" y="306" width="268" height="70" rx="8" class="bx bx-warn"/>
+  <text x="46" y="326" class="it" style="font-weight:600;fill:var(--warn)">Schema mirror</text>
+  <text x="46" y="343" class="cd mono">lib/contract.ts</text>
+  <text x="46" y="359" class="mu">mirrors the artifact schema —</text>
+  <text x="46" y="373" class="mu">drift fails the build (ADR-0057)</text>
+
+  <!-- ============================================================ -->
+  <!-- CENTER GROUP: APP-PAGE FLOW                                  -->
+  <!-- ============================================================ -->
+  <rect x="340" y="48" width="288" height="338" rx="10" class="grp"/>
+  <text x="356" y="70" class="sub" style="font-weight:600">APP-PAGE FLOW (user → field)</text>
+
+  <!-- step 1 -->
+  <rect x="356" y="80" width="256" height="40" rx="8" class="bx"/>
+  <text x="368" y="100" class="it" style="font-weight:600">select case (chip)</text>
+  <text x="368" y="114" class="mu">App page reacts to the selector</text>
+
+  <!-- step 2 -->
+  <rect x="356" y="136" width="256" height="48" rx="8" class="bx"/>
+  <text x="368" y="156" class="it" style="font-weight:600">loadIndex / loadManifest / loadTrace</text>
+  <text x="368" y="176" class="cd mono">lib/data.ts — fetch derived/ JSON</text>
+
+  <!-- step 3 -->
+  <rect x="356" y="200" width="256" height="40" rx="8" class="bx"/>
+  <text x="368" y="220" class="it" style="font-weight:600">render heatmap from baked trace</text>
+  <text x="368" y="234" class="mu">replay lane — committed field.json</text>
+
+  <!-- step 4 (LIVE) -->
+  <rect x="356" y="256" width="256" height="56" rx="8" class="bx bx-net"/>
+  <text x="368" y="276" class="it" style="font-weight:600;fill:var(--accent-2)">LIVE? onnxruntime-web session.run</text>
+  <text x="368" y="294" class="cd mono">lib/onnx.ts — getSession · evalNet</text>
+  <text x="368" y="307" class="mu">[n, d] coord batch → field outputs</text>
+
+  <!-- step 5 -->
+  <rect x="356" y="328" width="256" height="48" rx="8" class="bx bx-net"/>
+  <text x="368" y="348" class="it" style="font-weight:600">live field at any resolution</text>
+  <text x="368" y="368" class="it">cursor probe — re-evaluable in real time</text>
+
+  <!-- vertical flow arrows -->
+  <path class="flow" d="M484,120 L484,134" marker-end="url(#web-architecture-arrow)"/>
+  <path class="flow" d="M484,184 L484,198" marker-end="url(#web-architecture-arrow)"/>
+  <path class="flow" d="M484,240 L484,254" marker-end="url(#web-architecture-arrow)"/>
+  <path class="flow-net" d="M484,312 L484,326" marker-end="url(#web-architecture-arrow)"/>
+
+  <!-- ============================================================ -->
+  <!-- RIGHT GROUP: STATIC ASSETS                                   -->
+  <!-- ============================================================ -->
+  <rect x="652" y="48" width="288" height="338" rx="10" class="grp"/>
+  <text x="668" y="70" class="sub" style="font-weight:600;fill:var(--good)">STATIC ASSETS (committed)</text>
+  <text x="668" y="85" class="sub">fetched at runtime</text>
+
+  <!-- derived -->
+  <rect x="666" y="96" width="260" height="62" rx="8" class="bx bx-store"/>
+  <text x="678" y="116" class="it" style="font-weight:600">data/derived/</text>
+  <text x="678" y="133" class="cd mono">manifests/index.json + EX0*.json</text>
+  <text x="678" y="148" class="cd mono">&lt;case&gt;/field.json (baked trace)</text>
+
+  <!-- models -->
+  <rect x="666" y="178" width="260" height="48" rx="8" class="bx bx-store"/>
+  <text x="678" y="198" class="it" style="font-weight:600">models/</text>
+  <text x="678" y="216" class="cd mono">&lt;case&gt;.onnx — exported PINN</text>
+
+  <!-- svg -->
+  <rect x="666" y="246" width="260" height="48" rx="8" class="bx bx-store"/>
+  <text x="678" y="266" class="it" style="font-weight:600">svg/tech/*.svg</text>
+  <text x="678" y="284" class="mu">theme-aware panels (this one)</text>
+
+  <!-- ort wasm CDN -->
+  <rect x="666" y="314" width="260" height="62" rx="8" class="bx bx-net"/>
+  <text x="678" y="334" class="it" style="font-weight:600;fill:var(--accent-2)">ort-web wasm runtime</text>
+  <text x="678" y="351" class="cd mono">cdn.jsdelivr.net@1.22.0</text>
+  <text x="678" y="367" class="mu">single-thread — no COOP/COEP</text>
+
+  <!-- ============================================================ -->
+  <!-- BOTTOM: GitHub Pages                                         -->
+  <!-- ============================================================ -->
+  <rect x="20" y="402" width="920" height="48" rx="10" class="bx bx-warn"/>
+  <text x="36" y="423" class="it" style="font-weight:600;fill:var(--warn)">GitHub Pages (Actions build)</text>
+  <text x="36" y="440" class="it">static files only — no Node / Python at serve time; all compute runs in the visitor's browser</text>
+
+  <!-- ============================================================ -->
+  <!-- CROSS-GROUP FLOWS                                            -->
+  <!-- ============================================================ -->
+  <!-- SPA -> STATIC ASSETS : fetch -->
+  <path class="flow-store" d="M612,160 C636,160 642,127 664,127" marker-end="url(#web-architecture-arrow)"/>
+  <text x="624" y="138" class="lbl" style="fill:var(--good)">fetch</text>
+
+  <!-- LIVE step -> ort-web wasm -->
+  <path class="flow-net" d="M612,290 C636,290 642,345 664,345" marker-end="url(#web-architecture-arrow)"/>
+  <text x="622" y="282" class="lbl" style="fill:var(--accent-2)">ort-web wasm</text>
+
+  <!-- SPA group -> APP-PAGE FLOW (mounts) -->
+  <path class="flow" d="M316,100 L354,100" marker-end="url(#web-architecture-arrow)"/>
+  <text x="320" y="93" class="lbl">mounts</text>
+</svg>
