@@ -57,15 +57,16 @@ def main() -> None:
     ap = argparse.ArgumentParser(prog="pinnlab.pipeline")
     ap.add_argument("case", nargs="?", default="all", help="a case id, or 'all'")
     ap.add_argument("--seed", type=int, default=42)
+    ap.add_argument("--quick", action="store_true", help="few iters, no L-BFGS/refine — CI smoke only, NOT for real artifacts")
     args = ap.parse_args()
     if args.case == "all":
-        entries = run_all(args.seed)
+        entries = run_all(args.seed, quick=args.quick)
         print(f"precomputed {len(entries)} cases -> {DERIVED}")
         for e in entries:
             print(f"  {e['case_id']:24s} [{e['category']}]")
         print(f"index -> {MANIFESTS / 'index.json'}")
     else:
-        m = precompute(args.case, args.seed)
+        m = precompute(args.case, args.seed, quick=args.quick)
         print(
             f"precomputed {args.case}: lane={m['lane']} "
             f"l2={m['metrics'].get('l2_relative')} parity={m['metrics'].get('onnx_parity_max_abs')} "
