@@ -1,8 +1,10 @@
-"""The offline pipeline orchestrator + CLI (ADR-0057). Runs the named stages per case, applies CONTRACT 1, writes
-the compact artifact + manifest (CONTRACT 2) and a flat index.json.
+"""The offline pipeline orchestrator + CLI (ADR-0057, PINN-specialized). For each case it runs the six named stages
+— preprocess (validate/ingest) -> feature_extraction (sampling plan) -> train (DeepXDE -> ONNX, parity) ->
+infer (grid field) -> evaluate (relative-L2 vs analytic) -> export (CONTRACT 2 artifact + manifest) — and writes a
+flat index.json. Deterministic given (case, seed).
 
-    python -m pinnlab.pipeline            # all cases
-    python -m pinnlab.pipeline EX02_epidemic --seed 7
+    python -m pinnlab.pipeline                      # all cases
+    python -m pinnlab.pipeline bench-poisson2d --seed 7
 """
 from __future__ import annotations
 
@@ -12,11 +14,8 @@ from pathlib import Path
 
 from . import registry
 from .core.manifest import build_index
-from .core.rng import make_rng
-from .io.contract import validate_rows
 from .io.formats import write_json
-from .io.schema import SIRParams
-from .stages import evaluate, export, infer, train
+from .stages import evaluate, export, feature_extraction, infer, preprocess, train
 
 # data-pipeline/pinnlab/pipeline.py -> parents[2] = repo root (works under `pip install -e .` too)
 REPO_ROOT = Path(__file__).resolve().parents[2]
@@ -27,43 +26,29 @@ MODELS = REPO_ROOT / "models"
 STAGES = ("preprocess", "feature_extraction", "train", "infer", "evaluate", "export")
 
 
-def _train_model() -> dict:
-    # didactic surrogate: train on the non-degenerate case params; held-out eval uses a disjoint synthetic draw
-    params = [c.params for c in registry.list_cases() if c.params.I0 > 0]
-    return train.run(params, str(MODELS))
-
-
-def _holdout_params(seed: int) -> list[SIRParams]:
-    rng = make_rng(seed + 999)  # disjoint from training => leakage-safe
-    out: list[SIRParams] = []
-    for i in range(20):
-        out.append(SIRParams(f"_holdout{i}", beta=float(rng.uniform(0.15, 1.2)),
-                             gamma=float(rng.uniform(0.15, 0.40)), N=100_000.0, I0=50.0))
-    return out
-
-
-def precompute(case_id: str, seed: int = 42, model: dict | None = None) -> dict:
+def precompute(case_id: str, seed: int = 42, *, quick: bool = False) -> dict:
     case = registry.get_case(case_id)
-    if model is None:
-        model = _train_model()
     t0 = time.perf_counter()
-    # run CONTRACT 1 on the case params (proves the gate + carries flags); a real product reads raw data here
-    rep = validate_rows([{"case_id": case.params.case_id, "beta": case.params.beta, "gamma": case.params.gamma,
-                          "N": case.params.N, "I0": case.params.I0, "days": case.params.days}])
-    params = rep.accepted[0] if rep.accepted else case.params
-    result = infer.run(params)
-    metrics = evaluate.run(model, _holdout_params(seed))
+    pre = preprocess.run(case_id)
+    if not pre["well_posed"]:
+        raise ValueError(f"{case_id} not well-posed: {pre['flags']}")
+    plan = feature_extraction.run(case_id)
+    built = train.run(case_id, seed=seed, models_dir=str(MODELS), sampling=plan, quick=quick)
+    sf = infer.run(case_id, built["model"])
+    metrics = evaluate.run(case_id, sf, built)
     run_ms = (time.perf_counter() - t0) * 1000.0
-    return export.run(case=case, params=params, result=result, seed=seed, run_ms=run_ms,
-                      flags=rep.flagged, metrics=metrics, derived_dir=str(DERIVED), manifests_dir=str(MANIFESTS))
+    return export.run(
+        case=case, sf=sf, onnx_info=built, metrics=metrics, seed=seed, run_ms=run_ms,
+        derived_dir=str(DERIVED), manifests_dir=str(MANIFESTS), flags=pre.get("flags"),
+    )
 
 
-def run_all(seed: int = 42) -> list[dict]:
-    model = _train_model()
+def run_all(seed: int = 42, *, quick: bool = False) -> list[dict]:
     entries = []
     for c in registry.list_cases():
-        precompute(c.id, seed=seed, model=model)
-        entries.append({"case_id": c.id, "category": c.category, "manifest_path": f"manifests/{c.id}.json"})
+        precompute(c.id, seed=seed, quick=quick)
+        entries.append({"case_id": c.id, "category": c.category, "title": c.title,
+                        "manifest_path": f"manifests/{c.id}.json"})
     write_json(MANIFESTS / "index.json", build_index(entries))
     return entries
 
@@ -77,12 +62,15 @@ def main() -> None:
         entries = run_all(args.seed)
         print(f"precomputed {len(entries)} cases -> {DERIVED}")
         for e in entries:
-            print(f"  {e['case_id']:20s} [{e['category']}]")
+            print(f"  {e['case_id']:24s} [{e['category']}]")
         print(f"index -> {MANIFESTS / 'index.json'}")
     else:
         m = precompute(args.case, args.seed)
-        print(f"precomputed {args.case}: lane={m['lane']} bytes={m['artifact']['bytes']} "
-              f"metrics={m['metrics']} -> {DERIVED / m['artifact']['path']}")
+        print(
+            f"precomputed {args.case}: lane={m['lane']} "
+            f"l2={m['metrics'].get('l2_relative')} parity={m['metrics'].get('onnx_parity_max_abs')} "
+            f"onnx={m['onnx']['bytes']}B infer={m['gate']['infer_ms']}ms -> {DERIVED / m['artifact']['path']}"
+        )
 
 
 if __name__ == "__main__":

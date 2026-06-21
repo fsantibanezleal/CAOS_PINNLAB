@@ -1,21 +1,16 @@
-"""Stage 2 — feature_extraction: validated params -> feature rows for the surrogate (deterministic)."""
+"""Stage 2 — feature_extraction: derive the collocation/sampling plan for a case (deterministic, recorded for
+provenance). DeepXDE draws the actual collocation points inside build(); this stage fixes + documents the plan
+(domain/boundary/test counts, sampler) so the manifest records HOW the field was sampled."""
 from __future__ import annotations
 
-import math
-
-from ..io.schema import FeatureRow, SIRParams
+from ..registry import get_case
 
 
-def run(params_list: list[SIRParams]) -> list[FeatureRow]:
-    rows: list[FeatureRow] = []
-    for p in params_list:
-        r0 = (p.beta / p.gamma) if p.gamma > 0 else math.inf
-        rows.append(FeatureRow(
-            case_id=p.case_id,
-            r0=r0,
-            beta=p.beta,
-            gamma=p.gamma,
-            n_scaled=math.log10(max(1.0, p.N)),
-            i0_frac=(p.I0 / p.N) if p.N > 0 else 0.0,
-        ))
-    return rows
+def run(case_id: str) -> dict:
+    t = get_case(case_id).train
+    return {
+        "num_domain": int(t.get("num_domain", 2000)),
+        "num_boundary": int(t.get("num_boundary", 0)),
+        "num_test": int(t.get("num_test", 2000)),
+        "sampler": t.get("sampler", "pseudo (uniform)"),
+    }

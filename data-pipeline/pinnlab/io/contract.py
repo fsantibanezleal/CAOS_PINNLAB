@@ -1,12 +1,12 @@
-"""CONTRACT 1 — ingestion (raw -> pipeline). The *bring-your-own-data* gate.
+"""CONTRACT 1 — ingestion (raw -> pipeline): the *bring-your-own-data* gate for INVERSE PINN cases.
 
-Declares the required schema (columns, units, ranges) of an input parameter table and an EXPLICIT outlier policy.
-A dataset is ACCEPTED iff it passes; bad rows are REJECTED with a reason (never silently coerced); plausible-but-
-suspicious rows are FLAGGED (accepted, but the manifest records the flag). This is what lets the product be applied
-to NEW data instead of only replaying baked cases. Documented in data/README.md.
+Forward cases need no external data (the PDE + BC/IC fully determine the solution). Inverse cases assimilate sparse,
+possibly noisy MEASUREMENTS of the field to recover unknown PDE coefficients; this contract declares the required
+schema of an observation table and an EXPLICIT outlier policy. A row is ACCEPTED iff it parses and lies in range;
+bad rows are REJECTED with a reason (never silently coerced); finite-but-extreme values are FLAGGED (accepted, but
+the manifest records the flag). Documented in data/README.md.
 
-EXAMPLE schema = an SIR parameterization. Replace the columns/ranges/policy with your product's real data contract
-(e.g. a vibration record: fs, channel, load, window length, dropouts; or a PSD CSV: sieve apertures, %-passing).
+Required columns: case_id, x0..x{d-1} (the d input coordinates, in the case's input order), value [, weight].
 """
 from __future__ import annotations
 
@@ -14,24 +14,12 @@ import math
 from dataclasses import dataclass
 from typing import Any
 
-from .schema import SIRParams
-
-REQUIRED_COLUMNS: tuple[str, ...] = ("case_id", "beta", "gamma", "N", "I0")
-
-# name -> (min, max, unit). Physically/operationally plausible ranges; outside => REJECT.
-RANGES: dict[str, tuple[float, float, str]] = {
-    "beta": (1e-6, 5.0, "1/day (effective contact rate)"),
-    "gamma": (1e-6, 2.0, "1/day (recovery rate)"),
-    "N": (1.0, 1e9, "individuals (population)"),
-    "I0": (0.0, 1e9, "individuals (initial infected)"),
-}
-R0_FLAG_MAX = 20.0  # R0 above this is implausible for the example domain => FLAG (not reject)
-DEFAULT_DAYS = 160
+from .schema import ObservationRow
 
 
 @dataclass
 class ContractReport:
-    accepted: list[SIRParams]
+    accepted: list[ObservationRow]
     rejected: list[dict[str, Any]]
     flagged: list[dict[str, Any]]
 
@@ -43,42 +31,45 @@ class ContractReport:
         return f"{len(self.accepted)} accepted, {len(self.rejected)} rejected, {len(self.flagged)} flagged"
 
 
-def validate_rows(raw_rows: list[dict[str, Any]]) -> ContractReport:
-    """Apply CONTRACT 1 to raw rows (e.g. from a CSV). Pure; deterministic; no I/O."""
-    accepted: list[SIRParams] = []
+def validate_observations(
+    rows: list[dict[str, Any]],
+    n_coords: int,
+    *,
+    value_range: tuple[float, float] = (-1e6, 1e6),
+    coord_range: tuple[float, float] = (-1e6, 1e6),
+) -> ContractReport:
+    """Apply CONTRACT 1 to raw observation rows. Pure; deterministic; no I/O."""
+    accepted: list[ObservationRow] = []
     rejected: list[dict[str, Any]] = []
     flagged: list[dict[str, Any]] = []
+    coord_cols = [f"x{i}" for i in range(n_coords)]
+    required = ["case_id", *coord_cols, "value"]
 
-    for i, row in enumerate(raw_rows):
+    for i, row in enumerate(rows):
         cid = str(row.get("case_id", f"row{i}"))
-        missing = [c for c in REQUIRED_COLUMNS if c not in row or row[c] in (None, "")]
+        missing = [c for c in required if c not in row or row[c] in (None, "")]
         if missing:
             rejected.append({"row": i, "case_id": cid, "reason": f"missing/empty columns: {missing}"})
             continue
         try:
-            vals = {k: float(row[k]) for k in ("beta", "gamma", "N", "I0")}
+            coords = tuple(float(row[c]) for c in coord_cols)
+            value = float(row["value"])
+            weight = float(row.get("weight") or 1.0)
         except (TypeError, ValueError):
-            rejected.append({"row": i, "case_id": cid, "reason": "non-numeric value in beta/gamma/N/I0"})
+            rejected.append({"row": i, "case_id": cid, "reason": "non-numeric coordinate/value"})
             continue
-        if any(math.isnan(v) or math.isinf(v) for v in vals.values()):
+        if any(math.isnan(v) or math.isinf(v) for v in (*coords, value, weight)):
             rejected.append({"row": i, "case_id": cid, "reason": "NaN/Inf value"})
             continue
-        bad: list[str] = []
-        for name, (lo, hi, _unit) in RANGES.items():
-            if not (lo <= vals[name] <= hi):
-                bad.append(f"{name}={vals[name]:g} out of [{lo:g},{hi:g}]")
-        if vals["I0"] > vals["N"]:
-            bad.append(f"I0={vals['I0']:g} > N={vals['N']:g}")
+        bad = [
+            f"x{j}={c:g} out of [{coord_range[0]:g},{coord_range[1]:g}]"
+            for j, c in enumerate(coords)
+            if not (coord_range[0] <= c <= coord_range[1])
+        ]
         if bad:
             rejected.append({"row": i, "case_id": cid, "reason": "; ".join(bad)})
             continue
-        r0 = vals["beta"] / vals["gamma"] if vals["gamma"] > 0 else math.inf
-        if r0 > R0_FLAG_MAX:
-            flagged.append({"case_id": cid, "flag": f"R0={r0:.1f} > {R0_FLAG_MAX:g} (implausibly high)"})
-        try:
-            days = int(float(row.get("days") or DEFAULT_DAYS))
-        except (TypeError, ValueError):
-            days = DEFAULT_DAYS
-        accepted.append(SIRParams(case_id=cid, beta=vals["beta"], gamma=vals["gamma"],
-                                  N=vals["N"], I0=vals["I0"], days=max(1, days)))
+        if not (value_range[0] <= value <= value_range[1]):
+            flagged.append({"case_id": cid, "flag": f"value={value:g} outside typical [{value_range[0]:g},{value_range[1]:g}]"})
+        accepted.append(ObservationRow(case_id=cid, coords=coords, value=value, weight=max(0.0, weight)))
     return ContractReport(accepted=accepted, rejected=rejected, flagged=flagged)

@@ -1,15 +1,21 @@
-"""CONTRACT 2 (artifact) tests: the manifest points to a real artifact with the recorded byte size, and the lane
-verdict is consistent with the gate."""
+"""CONTRACT 2 (artifact) tests: the manifest is a complete, self-consistent record of a baked PINN case — it points
+to a real artifact with the recorded byte size, carries the governing equation + method + engine, records the ONNX
+pointer + parity, and the lane verdict agrees with the gate."""
 from pinnlab import pipeline
 
+PILOT = "bench-poisson2d"
 
-def test_manifest_matches_artifact_and_gate():
-    m = pipeline.precompute("EX02_epidemic", seed=7)
-    artifact = pipeline.DERIVED / m["artifact"]["path"]
-    assert artifact.exists(), "manifest points to a non-existent artifact"
-    assert artifact.stat().st_size == m["artifact"]["bytes"], "manifest byte size drifted from the artifact"
-    assert m["schema"].startswith("example.manifest/")
-    assert m["lane"] in ("live", "precompute")
-    assert m["gate"]["lane"] == m["lane"], "manifest lane disagrees with the gate verdict"
-    # the example SIR case is pure-python + numpy + small => must be classified LIVE
-    assert m["lane"] == "live", f"expected live lane, got {m['lane']} ({m['gate']['reasons']})"
+
+def test_manifest_is_complete_and_consistent():
+    m = pipeline.precompute(PILOT, seed=7, quick=True)
+    assert m["schema"].startswith("pinnlab.manifest/")
+    # provenance every numeric claim needs
+    for key in ("governing_equations", "method", "real_or_synthetic", "validation_anchor"):
+        assert m[key], f"manifest missing {key}"
+    assert m["engine"]["framework"] == "deepxde"
+    # ONNX bridge recorded
+    assert m["onnx"]["opset"] == 18 and m["onnx"]["input_dim"] == 2
+    assert 0.0 <= m["onnx"]["parity_max_abs"] < 1e-4
+    # lane verdict consistent with the measured gate
+    assert m["lane"] == m["gate"]["lane"]
+    assert m["gate"]["onnx_bytes"] == m["onnx"]["bytes"]

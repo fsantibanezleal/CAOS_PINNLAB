@@ -2,19 +2,25 @@
 cross-case summaries by category."""
 from __future__ import annotations
 
-from .cases.example_case import CASES, Case
+from .cases import CASES, get_module
+from .cases.base import CaseSpec
 
-_BY_ID: dict[str, Case] = {c.id: c for c in CASES}
+_BY_ID: dict[str, CaseSpec] = {c.id: c for c in CASES}
 
 
-def list_cases() -> list[Case]:
+def list_cases() -> list[CaseSpec]:
     return list(CASES)
 
 
-def get_case(case_id: str) -> Case:
+def get_case(case_id: str) -> CaseSpec:
     if case_id not in _BY_ID:
         raise KeyError(f"unknown case: {case_id!r}. known: {sorted(_BY_ID)}")
     return _BY_ID[case_id]
+
+
+def case_module(case_id: str):
+    """The case's heavy module (exposes build()/analytic()). Import-light: pulls deepxde only when build() runs."""
+    return get_module(case_id)
 
 
 def list_categories() -> dict[str, list[str]]:

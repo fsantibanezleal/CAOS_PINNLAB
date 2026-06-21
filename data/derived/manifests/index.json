@@ -1,0 +1,1 @@
+{"schema":"pinnlab.index/v1","engine_version":"0.02.000","n_cases":1,"categories":["canonical-benchmark"],"cases":[{"case_id":"bench-poisson2d","category":"canonical-benchmark","title":"2D Poisson (Dirichlet) — hard-constraint PINN","manifest_path":"manifests/bench-poisson2d.json"}]}

@@ -1,23 +1,32 @@
-"""LIVE lane entrypoint (Pyodide-safe): compute a trace in the BROWSER using ONLY the pure-Python model (no heavy
-offline engine). The web worker calls run_trace_json(case_id=..., seed=...) or with explicit params for the
-bring-your-own-data interaction. Same trace schema as the offline export -> the SPA renders both identically."""
+"""LIVE-lane note (PINN-Lab): the interactive live lane is **onnxruntime-web evaluating the exported `.onnx` in the
+BROWSER** (see frontend/src/engine/) — NOT Pyodide running DeepXDE. This module provides only a Pyodide-safe ANALYTIC
+fallback: for cases with a closed-form reference it renders the exact field without any engine — used as a teaching
+overlay ("show the exact solution") and an offline sanity check. It imports ONLY the numpy core (no torch/deepxde)."""
 from __future__ import annotations
 
-from . import registry
 from .core.trace import build_trace
-from .io.schema import SIRParams
-from .model.sir import simulate
+from .io.schema import SolutionField
+from .model.analytic import linspace_grid
+from .registry import case_module, get_case
 
 
-def run_trace_json(case_id: str | None = None, params: dict | None = None, seed: int = 42) -> dict:
-    if params is not None:
-        p = SIRParams(
-            case_id=str(params.get("case_id", "live")),
-            beta=float(params["beta"]), gamma=float(params["gamma"]),
-            N=float(params["N"]), I0=float(params["I0"]), days=int(params.get("days", 160)),
-        )
-    elif case_id is not None:
-        p = registry.get_case(case_id).params
-    else:
-        raise ValueError("run_trace_json requires either case_id or params")
-    return build_trace(simulate(p))
+def analytic_trace(case_id: str) -> dict:
+    """Render a case's closed-form reference field as a trace (Pyodide-safe). Raises if the case has no closed form."""
+    case = get_case(case_id)
+    mod = case_module(case_id)
+    analytic = getattr(mod, "analytic", None)
+    if analytic is None:
+        raise ValueError(f"{case_id} has no closed-form analytic solution")
+    coords, XY, shape = linspace_grid(case.domain, case.grid)
+    truth = analytic(XY)
+    if truth is None:
+        raise ValueError(f"{case_id} analytic() returned None")
+    primary = case.outputs[0]
+    sf = SolutionField(
+        case_id=case_id,
+        dims=tuple(case.inputs),
+        axes={a: [float(v) for v in coords[a]] for a in case.inputs},
+        fields={primary: truth.reshape(shape)},
+        scalars={"source": "analytic"},
+    )
+    return build_trace(sf)

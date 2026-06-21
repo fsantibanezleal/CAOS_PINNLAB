@@ -1,6 +1,18 @@
-# PRECOMPUTE lane — the heavy, research-chosen SOTA engines, in the .venv-pipeline (local-only, never deployed).
-# THIS is where the deep research becomes binding: every engine pinned here is documented in docs/frameworks/<tool>/
-# and actually used by data-pipeline/pinnlab/stages/. The EXAMPLE engine (SIR) is numpy-only on purpose so the
-# template installs instantly with no native build; a real product adds e.g. yade / pychrono / ortools / mintpy /
-# torch here, each PINNED to the version it installs+verifies.
-numpy==2.4.6
+# PRECOMPUTE lane — the heavy, research-chosen SOTA PINN engines, in the .venv-pipeline (local-only, never deployed).
+# THIS is where the deep research becomes binding: every package pinned here has a role below and is mapped to its
+# docs page; the pipeline actually uses it. The web NEVER installs any of this — it ships the exported ONNX and runs
+# it with onnxruntime-web (the JS twin of onnxruntime, declared in frontend/package.json).
+#
+# Pins are the exact, install-verified versions (CPU build). The GPU/cu12 variant lives in requirements-gpu.txt.
+# Provenance: each engine is documented in docs/frameworks/<tool>/ (DeepXDE) or docs/architecture/ (ONNX toolchain).
+
+numpy==2.4.6          # numeric core; the Pyodide-safe layer (io/, core/, model/analytic.py). docs/architecture/02_determinism.md
+deepxde==1.15.0       # PRIMARY PINN engine (PyTorch backend); residuals/BC/geometry/RAR/inverse. docs/frameworks/deepxde/
+torch==2.12.1         # DeepXDE backend: trains the net + provides torch.onnx.export. docs/frameworks/deepxde/ (backend note)
+onnx==1.22.0          # the portable graph format the trained net is exported to. docs/architecture/06_train-export-onnx.md
+onnxruntime==1.27.0   # CPU inference for the ONNX-vs-model parity check + ort-web-proxy timing in stages/train.py
+onnxscript==0.7.0     # required by torch's modern (dynamo) ONNX exporter — torch.onnx.export(dynamo=True). Same doc page
+
+# Secondary engines are added here as each case group exercises them (kept pinned + mapped, never ad-hoc):
+#   neuraloperator            -> Group A `bench-darcy-operator` (FNO/PINO operator lane). docs/frameworks/neuraloperator/
+#   nvidia-physicsnemo[sym]   -> GPU/3D heavy cases (cavity NS, heap-leach 3D). requirements-gpu.txt + docs/frameworks/physicsnemo/

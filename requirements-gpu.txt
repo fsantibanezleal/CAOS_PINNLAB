@@ -1,0 +1,19 @@
+# GPU lane (ACTIVE per the agreed decisions — Felipe has a local NVIDIA GPU). Layered ON TOP of the precompute lane:
+#   .venv-pipeline\Scripts\python.exe -m pip install -r data-pipeline\requirements.txt
+#   .venv-pipeline\Scripts\python.exe -m pip install -r requirements-gpu.txt --index-url https://download.pytorch.org/whl/cu128
+#
+# What it powers: the geometry-heavy / 3D cases that exceed CPU at usable fidelity — lid-driven cavity (steady
+# Navier-Stokes) and heap-leach 3D reactive transport — plus the PhysicsNeMo ONNX-deploy path. DeepXDE/CPU still
+# runs every Group-A case; this lane raises fidelity, it is not required to build.
+#
+# Mapped docs: docs/frameworks/physicsnemo/ + docs/guides/03_gpu-lane.md.
+#
+# NOT pinned yet ON PURPOSE: PhysicsNeMo's cu12/cu13 install matrix (ONNX deploy needs cu12) must be resolved and
+# install-VERIFIED against this machine's actual CUDA before pinning — "apply decisions, never invent": no guessed
+# version strings. When the GPU lane is provisioned, replace the lines below with the exact verified pins.
+
+# torch (CUDA build) — install from the PyTorch CUDA index (see the --index-url above); pin the exact cuXX wheel here.
+# torch==2.12.1+cu128
+
+# nvidia-physicsnemo[sym]   # SOTA scale/deploy engine + symbolic SymPy PDE authoring + first-class ONNX export (cu12)
+# nvidia-physicsnemo-sym

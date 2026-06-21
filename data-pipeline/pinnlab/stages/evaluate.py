@@ -1,28 +1,27 @@
-"""Stage 5 — evaluate (the TEST stage): held-out surrogate-vs-engine error. Leakage-safe — the holdout params are
-a disjoint synthetic draw, never the training params. Returns R2 + RMSE on the peak-infected fraction (RMSE, not
-MAPE: MAPE blows up on the near-zero peak fractions of sub-critical cases and would be misleading)."""
+"""Stage 5 — evaluate (the TEST stage): relative-L2 of the PINN field vs the analytic/FEM reference on the eval
+grid, plus the ONNX-vs-model parity (the train->web contract check). Leakage-safe: the reference is the closed-form
+solution (or an external FEM result), never PINN output."""
 from __future__ import annotations
 
-import numpy as np
-
-from ..io.schema import SIRParams
-from ..model.sir import simulate
-from .train import predict
+from ..model.analytic import l2_relative, linspace_grid, max_abs_error
+from ..registry import case_module, get_case
 
 
-def run(model: dict, holdout_params: list[SIRParams]) -> dict:
-    preds, truths = [], []
-    for p in holdout_params:
-        r0 = (p.beta / p.gamma) if p.gamma > 0 else 1e-6
-        preds.append(predict(model, r0))
-        truths.append((simulate(p).peak_I / p.N) if p.N > 0 else 0.0)
-    preds, truths = np.array(preds), np.array(truths)
-    ss_res = float(np.sum((preds - truths) ** 2))
-    ss_tot = float(np.sum((truths - truths.mean()) ** 2))
-    r2 = 1.0 - ss_res / ss_tot if ss_tot > 0 else 0.0
-    rmse = float(np.sqrt(np.mean((preds - truths) ** 2)))
-    return {
-        "surrogate_peakfrac_r2": round(r2, 4),
-        "surrogate_peakfrac_rmse": round(rmse, 5),
-        "n_holdout": len(holdout_params),
+def run(case_id: str, sf, onnx_info: dict) -> dict:
+    case = get_case(case_id)
+    mod = case_module(case_id)
+    metrics: dict = {
+        "onnx_parity_max_abs": round(float(onnx_info.get("parity_max_abs", 0.0)), 9),
+        "validation_anchor": case.validation_anchor,
     }
+    analytic = getattr(mod, "analytic", None)
+    if case.validation_anchor == "analytic" and analytic is not None:
+        _coords, XY, _shape = linspace_grid(case.domain, case.grid)
+        truth = analytic(XY)
+        if truth is not None:
+            primary = case.outputs[0]
+            pred = sf.fields[primary].reshape(-1, 1)
+            metrics["l2_relative"] = round(l2_relative(pred, truth), 6)
+            metrics["max_abs_error"] = round(max_abs_error(pred, truth), 6)
+    sf.scalars.update({k: v for k, v in metrics.items() if isinstance(v, (int, float))})
+    return metrics
