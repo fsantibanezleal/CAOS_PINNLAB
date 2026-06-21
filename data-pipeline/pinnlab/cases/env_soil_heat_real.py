@@ -86,9 +86,11 @@ def extra_metrics(sf) -> dict:
         col = np.array([np.interp(_ZETA[d], z_axis, field[:, j]) for j in range(field.shape[1])])
         pred_c = col * _SCALE + _MEAN
         real_c = np.asarray(_D["temp_c"][str(d)], dtype=np.float64)
-        preds.append(pred_c); reals.append(real_c)
+        preds.append(pred_c)
+        reals.append(real_c)
         per_depth[f"holdout_rmse_c_{d}cm"] = round(float(np.sqrt(np.mean((pred_c - real_c) ** 2))), 4)
-    pred_all = np.concatenate(preds); real_all = np.concatenate(reals)
+    pred_all = np.concatenate(preds)
+    real_all = np.concatenate(reals)
     rmse = float(np.sqrt(np.mean((pred_all - real_all) ** 2)))
     out = {
         "l2_relative": round(l2_relative(pred_all, real_all), 6),   # held-out relative-L2 vs REAL interior temps

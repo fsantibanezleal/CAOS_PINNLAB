@@ -13,17 +13,20 @@ def test_pilot_runs_and_exports_faithful_onnx():
     m = pipeline.precompute(PILOT, seed=7, quick=True)
     # the exported ONNX must match the trained net (the train->web bridge is faithful regardless of convergence)
     assert m["onnx"]["parity_max_abs"] < 1e-4, f"ONNX parity too large: {m['onnx']['parity_max_abs']}"
-    assert m["onnx"]["bytes"] > 0 and m["onnx"]["input_dim"] == 2
+    assert m["onnx"]["bytes"] > 0 and m["onnx"]["input_dim"] >= 2  # poisson2d is parametric (x,y,k) -> 3
     # a tiny MLP -> the gate must measure a LIVE lane
     assert m["lane"] in ("live", "precompute") and m["gate"]["lane"] == m["lane"]
-    assert "l2_relative" in m["metrics"]  # evaluated vs the analytic reference
+    # manifest/v2: each variant carries its own metrics (relative-L2 vs the analytic reference)
+    assert m["variants"] and all("l2_relative" in v["metrics"] for v in m["variants"])
 
 
 def test_artifact_matches_manifest():
     m = pipeline.precompute(PILOT, seed=7, quick=True)
-    artifact = pipeline.DERIVED / m["artifact"]["path"]
+    # manifest/v2: one field trace per variant (parameter regime); check the first variant's trace.
+    v0 = m["variants"][0]
+    artifact = pipeline.DERIVED / v0["trace"]["path"]
     assert artifact.exists(), "manifest points to a non-existent artifact"
-    assert artifact.stat().st_size == m["artifact"]["bytes"], "manifest byte size drifted from the artifact"
+    assert artifact.stat().st_size == v0["trace"]["bytes"], "manifest byte size drifted from the artifact"
     trace = json.loads(artifact.read_text(encoding="utf-8"))
     assert trace["schema"].startswith("pinnlab.field/")
     assert set(trace["fields"]) == {"u"} and trace["dims"] == ["x", "y"]

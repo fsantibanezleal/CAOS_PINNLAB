@@ -28,15 +28,20 @@ def main() -> int:
             errs.append(f"missing manifest: {mp}")
             continue
         m = json.loads(mp.read_text(encoding="utf-8"))
-        art = DERIVED / m["artifact"]["path"]
-        if not art.exists():
-            errs.append(f"missing artifact: {art}")
-            continue
-        size = art.stat().st_size
-        if size != m["artifact"]["bytes"]:
-            errs.append(f"byte drift {art}: manifest={m['artifact']['bytes']} disk={size}")
-        if size == 0:
-            errs.append(f"empty artifact: {art}")
+        # manifest/v2: one compact field trace PER VARIANT (parameter regime); validate each.
+        variants = m.get("variants", [])
+        if not variants:
+            errs.append(f"no variants in manifest: {entry['case_id']}")
+        for v in variants:
+            art = DERIVED / v["trace"]["path"]
+            if not art.exists():
+                errs.append(f"missing artifact: {art}")
+                continue
+            size = art.stat().st_size
+            if size != v["trace"]["bytes"]:
+                errs.append(f"byte drift {art}: manifest={v['trace']['bytes']} disk={size}")
+            if size == 0:
+                errs.append(f"empty artifact: {art}")
         if m.get("gate", {}).get("lane") != m.get("lane"):
             errs.append(f"lane/gate mismatch: {entry['case_id']}")
     if errs:

@@ -10,6 +10,7 @@ from pathlib import Path
 
 import numpy as np
 
+from ..io.formats import strip_onnx_metadata
 from ..model.analytic import param_grid
 from ..registry import case_module, get_case
 
@@ -77,6 +78,7 @@ def run(case_id: str, *, seed: int, models_dir: str, sampling: dict | None = Non
         opset_version=18, dynamo=True, verbose=False,
         external_data=False,  # embed weights -> a single self-contained .onnx for onnxruntime-web
     )
+    strip_onnx_metadata(onnx_path)  # the dynamo exporter embeds the local build path in metadata — strip it (clean public artifact)
 
     # parity: ONNX must match model.predict on a random in-domain sample (proves the train->web bridge is faithful)
     rng = np.random.default_rng(seed + 1)

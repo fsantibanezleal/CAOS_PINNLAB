@@ -101,7 +101,6 @@ class _Ensemble:
 
 def build(seed: int, quick: bool = False) -> dict:
     import deepxde as dde
-    import torch
 
     geom = dde.geometry.Interval(0.0, 1.0)
     timedomain = dde.geometry.TimeDomain(0.0, 1.0)

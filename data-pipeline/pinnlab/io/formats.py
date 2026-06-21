@@ -38,3 +38,23 @@ def write_npz(path: str | Path, **arrays: np.ndarray) -> int:
     p.parent.mkdir(parents=True, exist_ok=True)
     np.savez_compressed(p, **arrays)
     return p.stat().st_size
+
+
+def strip_onnx_metadata(path: str | Path) -> None:
+    """Clear doc_strings + metadata_props from an exported ONNX. The dynamo exporter embeds the absolute local build
+    path in the graph metadata; this keeps the committed public artifact free of local-machine paths (CI guard) without
+    touching the weights or graph (inference + parity are unaffected)."""
+    import onnx
+
+    p = Path(path)
+    m = onnx.load(str(p))
+    m.doc_string = ""
+    del m.metadata_props[:]
+    g = m.graph
+    g.doc_string = ""
+    for node in g.node:
+        node.doc_string = ""
+        del node.metadata_props[:]
+    for vi in list(g.value_info) + list(g.input) + list(g.output):
+        vi.doc_string = ""
+    onnx.save(m, str(p))

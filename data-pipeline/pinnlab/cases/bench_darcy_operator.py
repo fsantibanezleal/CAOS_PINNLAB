@@ -167,6 +167,8 @@ def build(seed: int, quick: bool = False) -> dict:
         dynamic_axes={"a_grid": {0: "n"}, "u": {0: "n"}},
         opset_version=18, dynamo=True, verbose=False, external_data=False,
     )
+    from ..io.formats import strip_onnx_metadata
+    strip_onnx_metadata(onnx_path)  # the dynamo exporter embeds the local build path — strip it (clean public artifact)
     sess = ort.InferenceSession(str(onnx_path), providers=["CPUExecutionProvider"])
     k = min(8, n_test)
     with torch.no_grad():
