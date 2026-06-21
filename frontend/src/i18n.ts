@@ -27,7 +27,7 @@ const en = {
     field: "Solution field",
     dataLabel: "Data",
   },
-  honesty: { synthetic: "synthetic", "synthetic-illustrative": "synthetic (illustrative)", validated: "real-data validated" },
+  honesty: { synthetic: "synthetic", "synthetic-illustrative": "synthetic (illustrative)", validated: "real-data validated", "validated-real": "real data (validated)" },
 };
 
 const es: typeof en = {
@@ -55,7 +55,7 @@ const es: typeof en = {
     field: "Campo solución",
     dataLabel: "Datos",
   },
-  honesty: { synthetic: "sintético", "synthetic-illustrative": "sintético (ilustrativo)", validated: "datos reales validados" },
+  honesty: { synthetic: "sintético", "synthetic-illustrative": "sintético (ilustrativo)", validated: "datos reales validados", "validated-real": "datos reales (validado)" },
 };
 
 i18n.use(initReactI18next).init({

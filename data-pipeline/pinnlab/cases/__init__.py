@@ -16,6 +16,7 @@ from . import (
     bench_poisson2d,
     bench_wave1d,
     ctrl_zero_source,
+    env_soil_heat_real,
     ind_heat2d_inverse,
     ind_helmholtz,
     mine_comminution_pbe,
@@ -46,6 +47,7 @@ _MODULES: list[ModuleType] = [
     poll_tailings_seepage,
     mine_flotation_kinetics,
     mine_comminution_pbe,
+    env_soil_heat_real,
 ]
 
 CASES: list[CaseSpec] = [m.CASE for m in _MODULES]

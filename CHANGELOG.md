@@ -3,6 +3,35 @@
 All notable changes to **PINN-Lab**. Format: `X.XX.XXX` (display) — see `pinnlab.__version__`. Keep `0.x` while on
 synthetic/benchmark data. Tag every release.
 
+## [0.04.000] — 2026-06-21
+
+The first REAL-data case. Everything prior validates against closed-form / reduced-model truth; this milestone adds a
+case trained on, and validated against, real measured observations — plus the engine plumbing for it.
+
+### Added — `env-soil-heat-real` (case #17, the flagship real-data inverse)
+- Recovers **soil thermal diffusivity** from **NOAA USCRN** daily soil temperatures (station IL_Champaign_9_SW,
+  2019–2021, depths 5/10/20/50/100 cm). The 1D heat equation $T_t=\alpha T_{zz}$ with the **5 cm + 100 cm sensors as
+  real time-varying Dirichlet boundaries** and the diffusivity a **trainable scalar** (`dde.Variable`,
+  `external_trainable_variables`; Adam-only so the generic L-BFGS recompile never drops it).
+- **Out-of-sample validation**: the **10/20/50 cm sensors are held out** and scored in `evaluate` against the real
+  interior temperatures. Measured (seed 42): recovered **α = 0.30 mm²/s** (textbook moist-mineral-soil range),
+  held-out **RMSE = 1.05 °C** (10 cm 1.26 · 20 cm 1.06 · 50 cm 0.75), **relative-L2 = 6.9 %**, lane **live** (40 KB,
+  0.7 ms, parity 1.4e-6). Honesty flag **`validated-real`** (new green "real data" tag, EN/ES).
+
+### Added — engine + ingestion
+- `datasets/uscrn_soil.py` — documented fetcher that vendors the real USCRN data offline
+  (`data/reference/uscrn/soil_temp_il_champaign.json`, schema `pinnlab.dataset.uscrn/v1`), so training is reproducible
+  and CI needs no network.
+- **Data-fit validation mode** in `evaluate`: a case with `validation_anchor="real-data-holdout"` and no analytic
+  anchor scores via `extra_metrics` (held-out interpolation of the baked field vs real observations) and reports the
+  recovered physical parameter.
+- `docs/cases/` (landing + `env-soil-heat-real.md`); management dossier `real-datasets.md` updated to record the
+  shipped real-data case (and why USGS nested-piezometer heads were rejected as non-diffusive, USCRN soil heat chosen).
+
+### Notes
+- The USGS groundwater path was explored and dropped: the nested-piezometer head profile is decoupled by aquifer
+  layering (not a homogeneous-diffusion fit). OpenAQ air-source inversion remains a documented future real-data case.
+
 ## [0.03.000] — 2026-06-21
 
 The full case catalogue (16 cases), the interactive web app, the architecture wiki, and the live GitHub Pages
