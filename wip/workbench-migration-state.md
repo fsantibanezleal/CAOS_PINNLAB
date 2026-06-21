@@ -27,6 +27,13 @@ traces + one shared ONNX). The web shell, components and pipeline are done; this
 - **Do not run two heavy bakes in parallel** — torch oversubscribes the cores and *both* crawl. One at a time, or
   pair one heavy + one tiny (flotation).
 - Always `--quick` smoke-test first (~30 s) to catch a structural bug before the real bake.
+- **RAR can DE-stabilise stiff operators.** On `mine-thickener-settling` (degenerate Bürger-Concha diffusion) RAR
+  chased pathological residual spikes and the L2 *climbed* (0.11 → 0.32). Fix: drop RAR, widen the sharp front
+  (`W` 0.06 → 0.10) and lean on Adam(24k) → L-BFGS → L2 0.4%. RAR is for clean sharp fronts (burgers), not stiff
+  degenerate diffusion.
+- **`dde.icbc.IC` needs a `GeometryXTime`.** On a parametric `Hypercube([z,t,param])` it throws
+  (`'Hypercube' has no attribute 'on_initial'`). Use a single `DirichletBC(geom, u*, on_boundary)` over the whole
+  cube boundary — the `t=0` face is a boundary face, so it enforces the IC too (u* is exact there).
 
 ## Status — 10 committed + verified, 1 baking, 8 designed
 
@@ -44,9 +51,13 @@ traces + one shared ONNX). The web shell, components and pipeline are done; this
 | ctrl-zero-source | parametric `a`∈[0,1] | 6 | a≥0.2:<0.15% | MMS two-mode family containing the degenerate a=0 control |
 | poll-tailings-seepage | parametric `α`∈[1,2.5] | 6 | 0.26% | Kirchhoff exact family (sympy-verified, ψ<0 strict); Richards/Gardner |
 | poll-soil-barrier | single | 1 | 0.19% | FBPINN kink — honestly high (~2e-1), CPU 2-channel lane, labeled |
+| ind-heat2d-inverse | single (inverse) | 1 | k:4.0% | recover k(x,y) from 100 sparse noisy sensors; multi-output PFNN |
+| mine-thickener-settling | parametric `R`∈[0.3,0.9] | 6 | 0.41% | Bürger-Concha settling; exact descending tanh; no RAR, W widened to 0.10 |
 
-**Baking:** `ind-heat2d-inverse` — single honest inverse benchmark (recover k(x,y) from sparse sensors). v2 path
-verified by --quick (multi-output PFNN bakes clean).
+**12 committed.** Remaining to bake (7): mine-comminution-pbe (parametric g), mine-heap-leach-rt (time-scrubber t),
+bench-darcy-operator (discrete FNO samples), ind-helmholtz (single), bench-navier-cavity (single),
+env-soil-heat-real (single REAL), poll-source-uq-bpinn (single UQ). All have committed Contexts + design notes in
+wip/case-designs/.
 
 **Designed (Contexts committed + design notes in wip/case-designs/, ready to bake):** the workflow
 `wip/migrate-remaining-cases.workflow.mjs` (12 parallel agents) produced honest, adversarially-anchor-checked designs.
