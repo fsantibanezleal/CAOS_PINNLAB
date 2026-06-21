@@ -22,6 +22,7 @@ from . import (
     mine_thickener_settling,
     poll_ocean_transport,
     poll_soil_barrier,
+    poll_tailings_seepage,
 )
 from .base import CaseSpec
 
@@ -40,6 +41,7 @@ _MODULES: list[ModuleType] = [
     ctrl_zero_source,
     ind_heat2d_inverse,
     mine_thickener_settling,
+    poll_tailings_seepage,
 ]
 
 CASES: list[CaseSpec] = [m.CASE for m in _MODULES]
