@@ -28,23 +28,40 @@ traces + one shared ONNX). The web shell, components and pipeline are done; this
   pair one heavy + one tiny (flotation).
 - Always `--quick` smoke-test first (~30 s) to catch a structural bug before the real bake.
 
-## Status
+## Status — 10 committed + verified, 1 baking, 8 designed
 
 **DONE + committed + screenshot-verified (0 console errors, KaTeX renders, heatmaps correct):**
 
-| Case | Param | Variants | L2 (max) | Notes |
-|------|-------|----------|----------|-------|
-| bench-poisson2d | source mode `k` | 6 | <0.2% | MMS, hard BC |
-| bench-heat1d | diffusivity `α` | 6 | <0.15% | hard IC+BC |
-| bench-wave1d | speed `c`∈[0.5,2] | 6 | <0.32% | SIREN, hard IC×2+BC; needed the bigger net |
-| bench-burgers1d | viscosity `ν`∈[0.02,0.08] | 6 | 1.2% | traveling-shock tanh family, hard-constraint + RAR |
-| bench-allencahn | — (single) | 1 | 0.41% | stiff, stationary front → single honest benchmark; RAR (4 rounds) |
-| mine-flotation-kinetics | `k` is a field axis | 1 | 0.08% | full-family map C(k,t); hard IC |
+| Case | Kind | Variants | L2 (max) | Notes |
+|------|------|----------|----------|-------|
+| bench-poisson2d | parametric `k` | 6 | <0.2% | MMS, hard BC |
+| bench-heat1d | parametric `α` | 6 | <0.15% | hard IC+BC |
+| bench-wave1d | parametric `c`∈[0.5,2] | 6 | <0.32% | SIREN, hard IC×2+BC; needed the bigger net |
+| bench-burgers1d | parametric `ν`∈[0.02,0.08] | 6 | 1.2% | traveling-shock tanh family, hard-constraint + RAR |
+| bench-allencahn | single | 1 | 0.41% | stiff, stationary front → single honest benchmark; RAR (4 rounds) |
+| mine-flotation-kinetics | single (k is field axis) | 1 | 0.08% | full-family map C(k,t); hard IC |
+| poll-ocean-transport | time-scrubber `t` | 6 | 0.19% | advected-diffused Gaussian (exact, moves+spreads); Live = time scrubber |
+| ctrl-zero-source | parametric `a`∈[0,1] | 6 | a≥0.2:<0.15% | MMS two-mode family containing the degenerate a=0 control |
+| poll-tailings-seepage | parametric `α`∈[1,2.5] | 6 | 0.26% | Kirchhoff exact family (sympy-verified, ψ<0 strict); Richards/Gardner |
+| poll-soil-barrier | single | 1 | 0.19% | FBPINN kink — honestly high (~2e-1), CPU 2-channel lane, labeled |
 
-**In flight:** `poll-ocean-transport` — rewritten as the advected-diffused Gaussian (time-scrubber, 6 t-snapshots),
-baking. The old gyre-MMS (decaying sin) was visually dead; replaced with a genuinely moving/spreading exact solution.
+**Baking:** `ind-heat2d-inverse` — single honest inverse benchmark (recover k(x,y) from sparse sensors). v2 path
+verified by --quick (multi-output PFNN bakes clean).
 
-## Remaining (12) — parametrization notes
+**Designed (Contexts committed + design notes in wip/case-designs/, ready to bake):** the workflow
+`wip/migrate-remaining-cases.workflow.mjs` (12 parallel agents) produced honest, adversarially-anchor-checked designs.
+Remaining to bake (8): mine-thickener-settling (parametric R), mine-comminution-pbe (parametric g),
+mine-heap-leach-rt (time-scrubber t), bench-darcy-operator (discrete FNO samples), ind-helmholtz (single),
+bench-navier-cavity (single), env-soil-heat-real (single REAL), poll-source-uq-bpinn (single UQ). Each design note
+has the exact .py edits + the analytic anchor + the bake recipe — baking is mechanical (apply → --quick → bake →
+register in registry.tsx + index → build → screenshot-verify → commit).
+
+### Bake-order tip for continuation
+Single-variant cases are the fastest to APPLY (just add `variants()` + `field_axes`); their bake cost = their existing
+recipe. The parametric ones (thickener, comminution, heap-leach) need the .py rewrites in their design notes. Bake one
+at a time (CPU contention) — pair a heavy one with nothing, or smoke-test (`--quick`) others meanwhile.
+
+## Remaining design notes — parametrization summary (superseded by wip/case-designs/)
 
 - **ind-helmholtz** — parametric wavenumber `n` is HARD (spectral bias across a frequency range for one net). Either
   keep narrow `n∈[2,4]` (accept ~1e-1, honestly labeled) or ship the fixed-`n` Fourier-feature showcase single-variant.
