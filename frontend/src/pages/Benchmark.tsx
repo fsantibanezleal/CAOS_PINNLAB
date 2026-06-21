@@ -43,7 +43,7 @@ export function Benchmark() {
                 <td className="mono">{m.case_id}</td>
                 <td>{m.validation_anchor}</td>
                 <td className="mono">
-                  {m.metrics.l2_relative !== undefined ? Number(m.metrics.l2_relative).toExponential(2) : "—"}
+                  {m.variants[0]?.metrics?.l2_relative !== undefined ? Number(m.variants[0].metrics.l2_relative).toExponential(2) : "—"}
                 </td>
                 <td className="mono">{Number(m.onnx.parity_max_abs).toExponential(2)}</td>
                 <td>

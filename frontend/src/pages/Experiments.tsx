@@ -48,7 +48,7 @@ export function Experiments() {
                     <span className={`tag ${m.lane}`}>{m.lane}</span>
                   </td>
                   <td className="mono">
-                    {m.metrics.l2_relative !== undefined ? Number(m.metrics.l2_relative).toExponential(2) : "—"}
+                    {m.variants[0]?.metrics?.l2_relative !== undefined ? Number(m.variants[0].metrics.l2_relative).toExponential(2) : "—"}
                   </td>
                 </tr>
               ))}
