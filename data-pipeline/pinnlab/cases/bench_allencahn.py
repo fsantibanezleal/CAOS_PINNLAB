@@ -45,9 +45,9 @@ CASE = CaseSpec(
         "num_domain": 8000,
         "num_boundary": 400,
         "num_initial": 800,
-        "rar_rounds": 6,
-        "rar_addk": 500,
-        "rar_adam": 6000,
+        "rar_rounds": 4,
+        "rar_addk": 600,
+        "rar_adam": 5000,
         "rar_pool": 100000,
     },
     notes="Plain soft PINN fails; hard-constraint IC ansatz + RAR is the working DeepXDE recipe. PirateNets is the SOTA ceiling, not claimed.",
@@ -117,12 +117,13 @@ def refine(model, case, seed: int) -> None:
     pde = _make_pde()
     geomtime = model.data.geom
     t = case.train
-    for _ in range(int(t.get("rar_rounds", 6))):
+    for _ in range(int(t.get("rar_rounds", 4))):
         X = geomtime.random_points(int(t.get("rar_pool", 100000)))
         err = np.abs(np.asarray(model.predict(X, operator=pde)))[:, 0]
-        idx = np.argsort(err)[-int(t.get("rar_addk", 500)):]
+        idx = np.argsort(err)[-int(t.get("rar_addk", 600)):]
         model.data.add_anchors(X[idx])
         model.compile("adam", lr=t["lr"])
-        model.train(iterations=int(t.get("rar_adam", 6000)), disregard_previous_best=True)
-        model.compile("L-BFGS")
-        model.train()
+        model.train(iterations=int(t.get("rar_adam", 5000)), disregard_previous_best=True)
+    # one final L-BFGS polish after all anchors are added (was per-round — far cheaper, same accuracy on this case)
+    model.compile("L-BFGS")
+    model.train()

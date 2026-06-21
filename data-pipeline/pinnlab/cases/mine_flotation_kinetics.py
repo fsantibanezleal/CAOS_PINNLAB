@@ -15,7 +15,7 @@ from __future__ import annotations
 
 import numpy as np
 
-from .base import CaseSpec
+from .base import CaseSpec, Variant
 
 K_MIN, K_MAX = 0.5, 5.0
 
@@ -33,6 +33,7 @@ CASE = CaseSpec(
     outputs=("C",),
     domain={"k": (K_MIN, K_MAX), "t": (0.0, 1.0)},
     grid={"k": 81, "t": 81},
+    field_axes=("k", "t"),
     expected_band="exponential decay of floatable concentration; faster for larger k; relative-L2 vs analytic < 5e-3",
     validation_anchor="analytic",
     train={"lr": 1e-3, "adam": 10000, "lbfgs": True, "num_domain": 2000, "num_boundary": 0, "num_initial": 200, "num_test": 4000},
@@ -45,6 +46,15 @@ def analytic(kt: np.ndarray) -> np.ndarray:
     k = kt[:, 0:1]
     t = kt[:, 1:2]
     return np.exp(-k * t)
+
+
+def variants() -> list[Variant]:
+    # The rate constant k is a FIELD AXIS, so one heatmap shows the whole family at once — a single, honest variant.
+    return [Variant(
+        "family", "Full k-family", "Familia completa de k", {},
+        "The whole rate-constant family C(k,t) in one map: recovery R=1−C fills in faster for larger k.",
+        "Toda la familia de constantes de tasa C(k,t) en un mapa: la recuperación R=1−C sube más rápido a mayor k.",
+    )]
 
 
 def build(seed: int) -> dict:

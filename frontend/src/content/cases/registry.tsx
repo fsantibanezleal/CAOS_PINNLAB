@@ -2,6 +2,7 @@ import type { ReactNode } from "react";
 
 import { AllenCahnContext } from "./AllenCahnContext";
 import { Burgers1dContext } from "./Burgers1dContext";
+import { FlotationContext } from "./FlotationContext";
 import { Heat1dContext } from "./Heat1dContext";
 import { OceanTransportContext } from "./OceanTransportContext";
 import { PoissonContext } from "./PoissonContext";
@@ -16,6 +17,7 @@ const CASE_CONTEXT: Record<string, (p: { lang: "en" | "es" }) => ReactNode> = {
   "bench-burgers1d": Burgers1dContext,
   "bench-allencahn": AllenCahnContext,
   "poll-ocean-transport": OceanTransportContext,
+  "mine-flotation-kinetics": FlotationContext,
 };
 
 export function ContextFor(caseId: string, lang: "en" | "es"): ReactNode {
