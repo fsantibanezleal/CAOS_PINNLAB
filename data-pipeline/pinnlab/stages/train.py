@@ -32,6 +32,20 @@ def run(case_id: str, *, seed: int, models_dir: str, sampling: dict | None = Non
     d = int(built["input_dim"])
     t = case.train
 
+    if built.get("prebuilt") and "onnx_bytes" in built:
+        # custom-engine FIELD-IO case (e.g. the FNO operator): it trained AND exported its OWN ONNX in build()
+        # (field-in, not coordinate-in), so the generic coordinate export/parity does not apply — pass it through.
+        return {
+            "model": model,
+            "onnx_path": built["onnx_path"],
+            "onnx_bytes": int(built["onnx_bytes"]),
+            "parity_max_abs": float(built["parity_max_abs"]),
+            "input_dim": d,
+            "infer_ms": float(built.get("infer_ms", 0.0)),
+            "opset": int(built.get("opset", 18)),
+            "web_drivable": bool(built.get("web_drivable", True)),
+        }
+
     if built.get("prebuilt"):
         # the case already trained its own net (e.g. a deep ensemble exported as one [mean,std] graph); the generic
         # Adam->L-BFGS->refine loop does not apply. It must expose `.net` (torch module) + `.predict(X)` for export+parity.

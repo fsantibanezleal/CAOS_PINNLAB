@@ -3,6 +3,29 @@
 All notable changes to **PINN-Lab**. Format: `X.XX.XXX` (display) — see `pinnlab.__version__`. Keep `0.x` while on
 synthetic/benchmark data. Tag every release.
 
+## [0.07.000] — 2026-06-21
+
+### Added — `bench-darcy-operator` (case #19, the operator-learning method family)
+- A compact, self-contained **2D Fourier Neural Operator** (`model/fno.py`) learns the Darcy solution operator
+  $\mathcal{G}: a(x)\mapsto u(x)$ for $-\nabla\!\cdot(a\nabla u)=1$, $u|_{\partial\Omega}=0$, over a family of two-value
+  thresholded-GRF coefficient fields (the Li-et-al. benchmark). Dataset generated in-build via a seeded SciPy
+  finite-difference solver (`datasets/darcy.py`, 256 train / 64 test). Spectral convolution in **real arithmetic** so
+  the operator exports cleanly to ONNX (parity 1.7e-6).
+- Measured (seed 42): **held-out test relative-L2 = 5.6 %** (genuine operator generalization over 64 unseen $a$),
+  sample relative-L2 2.4 %. **lane = precompute** (a field-IO operator is not browser-coordinate-drivable; the App
+  replays a representative baked result — 3 switchable fields: input $a$, FNO $u_{\text{pred}}$, FD $u_{\text{true}}$).
+  `synthetic` (analytic-coefficient benchmark, FD numerical anchor). This closes the last unexercised SOTA family.
+- **Engine: generic FIELD-IO hooks** (ADR-0057-compatible, like the prebuilt path) — a custom-engine case may train +
+  export its OWN field-shaped ONNX in `build()` (train.py passes it through), and the lane gate gains a `web_drivable`
+  term so a field-IO operator is honestly classified precompute regardless of ONNX size/speed.
+- `scipy` pinned in `data-pipeline/requirements.txt`; `docs/cases/bench-darcy-operator.md`.
+
+### Fixed (0.06.001) — web shell now complies with ADR-0016 + ADR-0011
+- **English is the default language** for the app (ADR-0011) — removed the navigator-language auto-detect.
+- Header carries the mandatory external icon-links (ADR-0016): **GitHub + personal site + portfolio**
+  (`lib/links.ts`, lucide-react icons, separator before the Info/language/theme actions); added the **footer**
+  (attribution + a CAOS research investigation + the 3 links + license + version). Mirrors the CAOS_SEISMIC shell.
+
 ## [0.06.000] — 2026-06-21
 
 ### Added — ⓘ "How it was built" architecture panel (implements ADR-0058)

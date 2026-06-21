@@ -19,9 +19,14 @@ INFER_MS_GATE = 120.0               # a full-grid ort-web evaluation must fit an
 TRACE_BYTES_GATE = 1024 * 1024      # the committed replay artifact must stay small
 
 
-def classify_lane(*, onnx_bytes: int, infer_ms: float, trace_bytes: int) -> dict:
+def classify_lane(*, onnx_bytes: int, infer_ms: float, trace_bytes: int, web_drivable: bool = True) -> dict:
     reasons: list[str] = []
     live = True
+    if not web_drivable:
+        # a field-IO operator (e.g. FNO a(x)->u(x)) is not driveable from the SPA's coordinate queries, so it
+        # replays a baked representative result regardless of how small/fast its ONNX is.
+        live = False
+        reasons.append("field-IO operator — not browser-coordinate-drivable")
     if onnx_bytes > ONNX_BYTES_GATE:
         live = False
         reasons.append(f"onnx_bytes {onnx_bytes} > {ONNX_BYTES_GATE}")

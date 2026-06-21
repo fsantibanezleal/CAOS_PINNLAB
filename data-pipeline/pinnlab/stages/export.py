@@ -31,6 +31,7 @@ def run(
         onnx_bytes=int(onnx_info["onnx_bytes"]),
         infer_ms=float(onnx_info.get("infer_ms", 0.0)),
         trace_bytes=trace_bytes,
+        web_drivable=bool(onnx_info.get("web_drivable", True)),
     )
     onnx_meta = {
         "path": Path(onnx_info["onnx_path"]).name,

@@ -5,11 +5,11 @@ artifact the web app replays. Cases carry a **category** (the registry groups by
 (`synthetic` · `synthetic-illustrative` · `validated-real`). Every number below is the committed manifest's measured
 value; lanes are derived from measurements (see [the gate](../architecture/the-gate.md)).
 
-## The catalogue (18 cases)
+## The catalogue (19 cases)
 
 | Category | Cases |
 |----------|-------|
-| **canonical-benchmark** | poisson2d · heat1d · wave1d · burgers1d · allencahn · navier-cavity |
+| **canonical-benchmark** | poisson2d · heat1d · wave1d · burgers1d · allencahn · navier-cavity · darcy-operator (FNO) |
 | **industrial-fluids-heat** | helmholtz · heat2d-inverse |
 | **mining / mineral-processing** | heap-leach-rt · thickener-settling · flotation-kinetics · comminution-pbe |
 | **pollution / environmental** | ocean-transport · soil-barrier · tailings-seepage · **soil-heat-real (REAL DATA)** · source-uq-bpinn (UQ) |
@@ -41,6 +41,7 @@ the reproduce command).
 - [bench-burgers1d](bench-burgers1d.md) — viscous Burgers shock, RAR adaptive sampling.
 - [bench-allencahn](bench-allencahn.md) — Allen–Cahn interface, hard constraints + RAR.
 - [bench-navier-cavity](bench-navier-cavity.md) — Navier–Stokes lid-driven cavity (u,v,p), multi-output + loss weighting.
+- [bench-darcy-operator](bench-darcy-operator.md) — Darcy-flow **operator learning** (Fourier Neural Operator; lane=precompute).
 
 **Industrial fluids / heat**
 - [ind-helmholtz](ind-helmholtz.md) — Helmholtz, Fourier-feature inputs.

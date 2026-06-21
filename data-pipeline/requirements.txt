@@ -7,12 +7,15 @@
 # Provenance: each engine is documented in docs/frameworks/<tool>/ (DeepXDE) or docs/architecture/ (ONNX toolchain).
 
 numpy==2.4.6          # numeric core; the Pyodide-safe layer (io/, core/, model/analytic.py). docs/architecture/02_determinism.md
+scipy==1.18.0         # the Darcy reference solver (sparse FD solve) + GRF coefficient fields for the FNO operator case. datasets/darcy.py
 deepxde==1.15.0       # PRIMARY PINN engine (PyTorch backend); residuals/BC/geometry/RAR/inverse. docs/frameworks/deepxde/
-torch==2.12.1         # DeepXDE backend: trains the net + provides torch.onnx.export. docs/frameworks/deepxde/ (backend note)
+torch==2.12.1         # DeepXDE backend + the FNO operator (model/fno.py); trains the net + torch.onnx.export. docs/frameworks/deepxde/
 onnx==1.22.0          # the portable graph format the trained net is exported to. docs/architecture/06_train-export-onnx.md
 onnxruntime==1.27.0   # CPU inference for the ONNX-vs-model parity check + ort-web-proxy timing in stages/train.py
 onnxscript==0.7.0     # required by torch's modern (dynamo) ONNX exporter — torch.onnx.export(dynamo=True). Same doc page
 
-# Secondary engines are added here as each case group exercises them (kept pinned + mapped, never ad-hoc):
-#   neuraloperator            -> Group A `bench-darcy-operator` (FNO/PINO operator lane). docs/frameworks/neuraloperator/
+# `bench-darcy-operator` (operator learning, FNO) uses a COMPACT, self-contained 2D FNO (model/fno.py: real-arithmetic
+# spectral conv so it exports cleanly to ONNX), trained on a SciPy-generated Darcy dataset — NOT the neuraloperator
+# package (a heavy dep whose layers' ONNX export is unverified). neuraloperator is the documented REFERENCE library.
+# Secondary GPU engine (kept pinned + mapped, never ad-hoc):
 #   nvidia-physicsnemo[sym]   -> GPU/3D heavy cases (cavity NS, heap-leach 3D). requirements-gpu.txt + docs/frameworks/physicsnemo/

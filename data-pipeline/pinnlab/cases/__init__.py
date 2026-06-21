@@ -11,6 +11,7 @@ from types import ModuleType
 from . import (
     bench_allencahn,
     bench_burgers1d,
+    bench_darcy_operator,
     bench_heat1d,
     bench_navier_cavity,
     bench_poisson2d,
@@ -50,6 +51,7 @@ _MODULES: list[ModuleType] = [
     mine_comminution_pbe,
     env_soil_heat_real,
     poll_source_uq_bpinn,
+    bench_darcy_operator,
 ]
 
 CASES: list[CaseSpec] = [m.CASE for m in _MODULES]
