@@ -14,7 +14,7 @@ from __future__ import annotations
 
 import numpy as np
 
-from .base import CaseSpec
+from .base import CaseSpec, Variant
 
 N_WAVES = 3
 K0 = 2.0 * np.pi * N_WAVES
@@ -46,6 +46,16 @@ CASE = CaseSpec(
 def analytic(xy: np.ndarray) -> np.ndarray:
     xy = np.asarray(xy, dtype=np.float64)
     return np.sin(K0 * xy[:, 0:1]) * np.sin(K0 * xy[:, 1:2])
+
+
+def variants() -> list[Variant]:
+    # Single honest benchmark at a fixed high wavenumber: parametric-in-n is rejected (one frozen Fourier map can't
+    # span a wavenumber band on the CPU lane without fabricating regimes). n=3 is the showcase of the method itself.
+    return [Variant(
+        "n3", "n=3 (k0=6π)", "n=3 (k0=6π)", {},
+        "Fixed high-wavenumber standing wave; Fourier features defeat the spectral-bias plateau.",
+        "Onda estacionaria de número de onda alto fijo; las características de Fourier vencen la meseta de sesgo espectral.",
+    )]
 
 
 def build(seed: int) -> dict:

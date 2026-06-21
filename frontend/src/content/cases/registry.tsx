@@ -7,9 +7,13 @@ import { FlotationContext } from "./FlotationContext";
 import { HeapLeachContext } from "./HeapLeachContext";
 import { Heat1dContext } from "./Heat1dContext";
 import { Heat2dInverseContext } from "./Heat2dInverseContext";
+import { HelmholtzContext } from "./HelmholtzContext";
+import { NavierCavityContext } from "./NavierCavityContext";
 import { OceanTransportContext } from "./OceanTransportContext";
 import { PoissonContext } from "./PoissonContext";
 import { SoilBarrierContext } from "./SoilBarrierContext";
+import { SoilHeatRealContext } from "./SoilHeatRealContext";
+import { SourceUqBpinnContext } from "./SourceUqBpinnContext";
 import { TailingsSeepageContext } from "./TailingsSeepageContext";
 import { ThickenerContext } from "./ThickenerContext";
 import { Wave1dContext } from "./Wave1dContext";
@@ -32,6 +36,10 @@ const CASE_CONTEXT: Record<string, (p: { lang: "en" | "es" }) => ReactNode> = {
   "mine-thickener-settling": ThickenerContext,
   "mine-heap-leach-rt": HeapLeachContext,
   "mine-comminution-pbe": ComminutionContext,
+  "ind-helmholtz": HelmholtzContext,
+  "bench-navier-cavity": NavierCavityContext,
+  "env-soil-heat-real": SoilHeatRealContext,
+  "poll-source-uq-bpinn": SourceUqBpinnContext,
 };
 
 export function ContextFor(caseId: string, lang: "en" | "es"): ReactNode {
