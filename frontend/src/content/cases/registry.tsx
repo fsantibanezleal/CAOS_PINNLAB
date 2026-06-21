@@ -4,8 +4,10 @@ import { AllenCahnContext } from "./AllenCahnContext";
 import { Burgers1dContext } from "./Burgers1dContext";
 import { FlotationContext } from "./FlotationContext";
 import { Heat1dContext } from "./Heat1dContext";
+import { Heat2dInverseContext } from "./Heat2dInverseContext";
 import { OceanTransportContext } from "./OceanTransportContext";
 import { PoissonContext } from "./PoissonContext";
+import { SoilBarrierContext } from "./SoilBarrierContext";
 import { TailingsSeepageContext } from "./TailingsSeepageContext";
 import { Wave1dContext } from "./Wave1dContext";
 import { ZeroSourceContext } from "./ZeroSourceContext";
@@ -22,6 +24,8 @@ const CASE_CONTEXT: Record<string, (p: { lang: "en" | "es" }) => ReactNode> = {
   "mine-flotation-kinetics": FlotationContext,
   "ctrl-zero-source": ZeroSourceContext,
   "poll-tailings-seepage": TailingsSeepageContext,
+  "poll-soil-barrier": SoilBarrierContext,
+  "ind-heat2d-inverse": Heat2dInverseContext,
 };
 
 export function ContextFor(caseId: string, lang: "en" | "es"): ReactNode {
