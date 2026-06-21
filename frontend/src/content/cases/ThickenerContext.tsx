@@ -37,7 +37,7 @@ export function ThickenerContext({ lang }: { lang: "en" | "es" }) {
       <Equation tex={String.raw`\phi^*(z,t;R)=\phi_{lo}+(\phi_{hi}-\phi_{lo})\,\tfrac12\Big(1-\tanh\frac{z-s(t)}{W}\Big),\qquad s(t)=z_0-R\,t.`} />
       <p>
         La interfase está en <InlineMath tex={String.raw`z=s(t)=z_0-R\,t`} /> y baja a velocidad
-        <InlineMath tex={String.raw`R`} />; su <em>grosor</em> lo fija <InlineMath tex={String.raw`W=0.06`} />. La fuente
+        <InlineMath tex={String.raw`R`} />; su <em>grosor</em> lo fija <InlineMath tex={String.raw`W=0.10`} />. La fuente
         manufacturada <InlineMath tex={String.raw`f=\mathcal{L}[\phi^*]`} /> se deriva analíticamente, de modo que
         <InlineMath tex={String.raw`\phi^*`} /> resuelve la EDP modificada de forma <strong>exacta para cualquier</strong>
         <InlineMath tex={String.raw`R`} /> — esa es la <strong>ancla de validación</strong>. Sus derivadas son
@@ -56,7 +56,7 @@ export function ThickenerContext({ lang }: { lang: "en" | "es" }) {
 
       <h3>El método: el frente afilado + RAR</h3>
       <p>
-        El reto es el <em>frente delgado</em> (<InlineMath tex={String.raw`W=0.06`} />) que además <em>se mueve</em>: una
+        El reto es el <em>frente delgado</em> (<InlineMath tex={String.raw`W=0.10`} />) que además <em>se mueve</em>: una
         grilla uniforme lo resuelve mal y, al añadir <InlineMath tex={String.raw`R`} /> como input, el problema crece una
         dimensión. Sobre el ajuste base aplicamos <strong>RAR</strong> (<em>residual-based adaptive refinement</em>, Wu
         et al., CMAME 2023): se evalúa el residual en un gran pozo de puntos y se <strong>añaden</strong> los de mayor
@@ -134,7 +134,7 @@ export function ThickenerContext({ lang }: { lang: "en" | "es" }) {
       <Equation tex={String.raw`\phi^*(z,t;R)=\phi_{lo}+(\phi_{hi}-\phi_{lo})\,\tfrac12\Big(1-\tanh\frac{z-s(t)}{W}\Big),\qquad s(t)=z_0-R\,t.`} />
       <p>
         The interface sits at <InlineMath tex={String.raw`z=s(t)=z_0-R\,t`} /> and descends at speed
-        <InlineMath tex={String.raw`R`} />; its <em>thickness</em> is set by <InlineMath tex={String.raw`W=0.06`} />. The
+        <InlineMath tex={String.raw`R`} />; its <em>thickness</em> is set by <InlineMath tex={String.raw`W=0.10`} />. The
         manufactured source <InlineMath tex={String.raw`f=\mathcal{L}[\phi^*]`} /> is derived analytically, so
         <InlineMath tex={String.raw`\phi^*`} /> solves the modified PDE <strong>exactly for any</strong>
         <InlineMath tex={String.raw`R`} /> — that is the <strong>validation anchor</strong>. Its derivatives are
@@ -153,7 +153,7 @@ export function ThickenerContext({ lang }: { lang: "en" | "es" }) {
 
       <h3>The method: the sharp front + RAR</h3>
       <p>
-        The challenge is the <em>thin front</em> (<InlineMath tex={String.raw`W=0.06`} />) that also <em>moves</em>: a
+        The challenge is the <em>thin front</em> (<InlineMath tex={String.raw`W=0.10`} />) that also <em>moves</em>: a
         uniform grid resolves it poorly, and adding <InlineMath tex={String.raw`R`} /> as an input grows the problem by a
         dimension. On top of the base fit we apply <strong>RAR</strong> (<em>residual-based adaptive refinement</em>, Wu
         et al., CMAME 2023): the residual is evaluated over a large pool of points and the highest-error ones — which land
