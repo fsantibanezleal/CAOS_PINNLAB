@@ -6,7 +6,9 @@ import { FlotationContext } from "./FlotationContext";
 import { Heat1dContext } from "./Heat1dContext";
 import { OceanTransportContext } from "./OceanTransportContext";
 import { PoissonContext } from "./PoissonContext";
+import { TailingsSeepageContext } from "./TailingsSeepageContext";
 import { Wave1dContext } from "./Wave1dContext";
+import { ZeroSourceContext } from "./ZeroSourceContext";
 
 /** case_id -> deep bilingual Context component. Cases are added here as they are migrated to the workbench
  *  structure (ADR-0016 §9). A missing entry renders a clear "in preparation" note (never a blank panel). */
@@ -18,6 +20,8 @@ const CASE_CONTEXT: Record<string, (p: { lang: "en" | "es" }) => ReactNode> = {
   "bench-allencahn": AllenCahnContext,
   "poll-ocean-transport": OceanTransportContext,
   "mine-flotation-kinetics": FlotationContext,
+  "ctrl-zero-source": ZeroSourceContext,
+  "poll-tailings-seepage": TailingsSeepageContext,
 };
 
 export function ContextFor(caseId: string, lang: "en" | "es"): ReactNode {
