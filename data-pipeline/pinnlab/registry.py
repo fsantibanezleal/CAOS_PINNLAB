@@ -3,9 +3,21 @@ cross-case summaries by category."""
 from __future__ import annotations
 
 from .cases import CASES, get_module
-from .cases.base import CaseSpec
+from .cases.base import CaseSpec, Variant
 
 _BY_ID: dict[str, CaseSpec] = {c.id: c for c in CASES}
+
+
+def case_variants(case_id: str) -> list[Variant]:
+    """The case's parameter-regime family (SimLab-style). A case module may expose `variants() -> list[Variant]`;
+    otherwise the case ships a single 'default' variant (non-parametric: empty params)."""
+    mod = get_module(case_id)
+    fn = getattr(mod, "variants", None)
+    if fn is not None:
+        vs = list(fn())
+        if vs:
+            return vs
+    return [Variant("default", "Default", "Por defecto", {})]
 
 
 def list_cases() -> list[CaseSpec]:

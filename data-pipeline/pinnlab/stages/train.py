@@ -10,7 +10,7 @@ from pathlib import Path
 
 import numpy as np
 
-from ..model.analytic import linspace_grid
+from ..model.analytic import param_grid
 from ..registry import case_module, get_case
 
 
@@ -90,8 +90,8 @@ def run(case_id: str, *, seed: int, models_dir: str, sampling: dict | None = Non
     ).reshape(len(sample), -1)
     parity = float(np.max(np.abs(pred_dde - pred_onnx)))
 
-    # measure the ort-web-proxy inference time on the full eval grid (CPU onnxruntime stands in for ort-web)
-    _coords, XY, _shape = linspace_grid(case.domain, case.grid)
+    # measure the ort-web-proxy inference time on the full FIELD grid at the default parameter regime
+    _coords, XY, _shape = param_grid(case, {p.key: p.default for p in case.param_specs})
     XYf = XY.astype(np.float32)
     sess.run(["u"], {"coords": XYf[:64]})  # warm up
     n_rep = 5

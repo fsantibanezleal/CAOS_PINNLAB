@@ -24,6 +24,26 @@ def linspace_grid(domain: dict[str, tuple[float, float]], res: dict[str, int]):
     return coords, XY, shape
 
 
+def param_grid(case, params: dict | None = None):
+    """Build the FIELD grid (over case.axes, the 2-D heatmap) and the full [N, d] network input in case.inputs order,
+    filling any PARAMETER axis (an input not in case.axes) with the variant's constant value from `params`.
+
+    Returns (coords1d: {field-axis -> 1D array}, X: [N, d] over ALL inputs, shape: field-grid shape). For a
+    non-parametric case (axes == inputs, params empty) this is exactly linspace_grid over the inputs.
+    """
+    params = params or {}
+    axes = case.axes
+    coords = {a: np.linspace(case.domain[a][0], case.domain[a][1], case.grid[a]) for a in axes}
+    mesh = np.meshgrid(*[coords[a] for a in axes], indexing="ij")
+    field_cols = {a: m.ravel() for a, m in zip(axes, mesh)}
+    shape = tuple(case.grid[a] for a in axes)
+    n = int(next(iter(field_cols.values())).size)
+    X = np.empty((n, len(case.inputs)), dtype=np.float64)
+    for j, ax in enumerate(case.inputs):
+        X[:, j] = field_cols[ax] if ax in field_cols else float(params[ax])
+    return coords, X, shape
+
+
 def l2_relative(pred: np.ndarray, truth: np.ndarray) -> float:
     """Relative L2 error ||pred - truth|| / ||truth||. If truth ≡ 0 (degenerate control), return ||pred||."""
     p = np.asarray(pred, dtype=np.float64).ravel()
