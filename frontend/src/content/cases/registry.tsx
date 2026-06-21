@@ -1,11 +1,13 @@
 import type { ReactNode } from "react";
 
+import { Heat1dContext } from "./Heat1dContext";
 import { PoissonContext } from "./PoissonContext";
 
 /** case_id -> deep bilingual Context component. Cases are added here as they are migrated to the workbench
  *  structure (ADR-0016 §9). A missing entry renders a clear "in preparation" note (never a blank panel). */
 const CASE_CONTEXT: Record<string, (p: { lang: "en" | "es" }) => ReactNode> = {
   "bench-poisson2d": PoissonContext,
+  "bench-heat1d": Heat1dContext,
 };
 
 export function ContextFor(caseId: string, lang: "en" | "es"): ReactNode {
