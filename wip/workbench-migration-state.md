@@ -53,11 +53,11 @@ traces + one shared ONNX). The web shell, components and pipeline are done; this
 | poll-soil-barrier | single | 1 | 0.19% | FBPINN kink — honestly high (~2e-1), CPU 2-channel lane, labeled |
 | ind-heat2d-inverse | single (inverse) | 1 | k:4.0% | recover k(x,y) from 100 sparse noisy sensors; multi-output PFNN |
 | mine-thickener-settling | parametric `R`∈[0.3,0.9] | 6 | 0.41% | Bürger-Concha settling; exact descending tanh; no RAR, W widened to 0.10 |
+| mine-heap-leach-rt | time-scrubber `t` | 6 | cA 1e-4 / cB 2e-4 | 2-species advection-diffusion-reaction MMS; multi-output; ocean pattern, baked clean |
 
-**12 committed.** Remaining to bake (7): mine-comminution-pbe (parametric g), mine-heap-leach-rt (time-scrubber t),
-bench-darcy-operator (discrete FNO samples), ind-helmholtz (single), bench-navier-cavity (single),
-env-soil-heat-real (single REAL), poll-source-uq-bpinn (single UQ). All have committed Contexts + design notes in
-wip/case-designs/.
+**13 committed.** Remaining to bake (6): mine-comminution-pbe (parametric g), bench-darcy-operator (discrete FNO
+samples — neuraloperator lane), ind-helmholtz (single), bench-navier-cavity (single), env-soil-heat-real (single REAL),
+poll-source-uq-bpinn (single UQ). All have committed Contexts + design notes in wip/case-designs/.
 
 **Designed (Contexts committed + design notes in wip/case-designs/, ready to bake):** the workflow
 `wip/migrate-remaining-cases.workflow.mjs` (12 parallel agents) produced honest, adversarially-anchor-checked designs.
