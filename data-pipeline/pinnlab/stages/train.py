@@ -31,8 +31,13 @@ def run(case_id: str, *, seed: int, models_dir: str, sampling: dict | None = Non
     adam_iters = 300 if quick else int(t.get("adam", 12000))
     model.train(iterations=adam_iters, display_every=max(1, adam_iters // 6))
     if (not quick) and t.get("lbfgs", True):
-        model.compile("L-BFGS")
+        lw = t.get("loss_weights")
+        model.compile("L-BFGS", loss_weights=lw) if lw is not None else model.compile("L-BFGS")
         model.train()
+
+    # optional case-defined refinement (e.g. RAR adaptive sampling for sharp fronts) before export
+    if (not quick) and getattr(mod, "refine", None) is not None:
+        mod.refine(model, case, seed)
 
     # export the raw trained net to ONNX (input dim = d coordinates)
     net = model.net

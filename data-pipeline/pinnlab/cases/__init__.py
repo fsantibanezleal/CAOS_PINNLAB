@@ -8,7 +8,16 @@ from __future__ import annotations
 
 from types import ModuleType
 
-from . import bench_heat1d, bench_poisson2d, bench_wave1d
+from . import (
+    bench_allencahn,
+    bench_burgers1d,
+    bench_heat1d,
+    bench_navier_cavity,
+    bench_poisson2d,
+    bench_wave1d,
+    ind_helmholtz,
+    poll_ocean_transport,
+)
 from .base import CaseSpec
 
 # Order here = display order. One module per case (dossier §7).
@@ -16,6 +25,11 @@ _MODULES: list[ModuleType] = [
     bench_poisson2d,
     bench_heat1d,
     bench_wave1d,
+    bench_burgers1d,
+    bench_allencahn,
+    bench_navier_cavity,
+    ind_helmholtz,
+    poll_ocean_transport,
 ]
 
 CASES: list[CaseSpec] = [m.CASE for m in _MODULES]
