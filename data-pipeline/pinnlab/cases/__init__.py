@@ -18,6 +18,7 @@ from . import (
     ind_helmholtz,
     mine_heap_leach_rt,
     poll_ocean_transport,
+    poll_soil_barrier,
 )
 from .base import CaseSpec
 
@@ -32,6 +33,7 @@ _MODULES: list[ModuleType] = [
     ind_helmholtz,
     poll_ocean_transport,
     mine_heap_leach_rt,
+    poll_soil_barrier,
 ]
 
 CASES: list[CaseSpec] = [m.CASE for m in _MODULES]
