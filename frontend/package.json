@@ -1,0 +1,32 @@
+{
+  "name": "pinnlab-web",
+  "private": true,
+  "version": "0.2.0",
+  "type": "module",
+  "description": "PINN-Lab SPA — interactive PINN catalogue with onnxruntime-web live inference + replay of committed field artifacts.",
+  "scripts": {
+    "predev": "node copy-data.mjs",
+    "dev": "vite",
+    "prebuild": "node copy-data.mjs",
+    "build": "tsc --noEmit && vite build",
+    "preview": "vite preview --port 4173"
+  },
+  "dependencies": {
+    "i18next": "^24.2.0",
+    "katex": "^0.16.11",
+    "onnxruntime-web": "^1.22.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "react-i18next": "^15.4.0",
+    "react-router-dom": "^7.1.0",
+    "zustand": "^5.0.3"
+  },
+  "devDependencies": {
+    "@types/katex": "^0.16.7",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "@vitejs/plugin-react": "^4.3.4",
+    "typescript": "^5.7.2",
+    "vite": "^6.0.7"
+  }
+}
