@@ -3,6 +3,7 @@ import type { ReactNode } from "react";
 import { AllenCahnContext } from "./AllenCahnContext";
 import { Burgers1dContext } from "./Burgers1dContext";
 import { ComminutionContext } from "./ComminutionContext";
+import { DarcyOperatorContext } from "./DarcyOperatorContext";
 import { FlotationContext } from "./FlotationContext";
 import { HeapLeachContext } from "./HeapLeachContext";
 import { Heat1dContext } from "./Heat1dContext";
@@ -40,6 +41,7 @@ const CASE_CONTEXT: Record<string, (p: { lang: "en" | "es" }) => ReactNode> = {
   "bench-navier-cavity": NavierCavityContext,
   "env-soil-heat-real": SoilHeatRealContext,
   "poll-source-uq-bpinn": SourceUqBpinnContext,
+  "bench-darcy-operator": DarcyOperatorContext,
 };
 
 export function ContextFor(caseId: string, lang: "en" | "es"): ReactNode {

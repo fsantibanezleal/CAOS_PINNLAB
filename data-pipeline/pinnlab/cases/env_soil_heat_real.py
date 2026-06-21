@@ -18,7 +18,7 @@ from pathlib import Path
 
 import numpy as np
 
-from .base import CaseSpec
+from .base import CaseSpec, Variant
 
 _DATA_PATH = Path(__file__).resolve().parents[3] / "data" / "reference" / "uscrn" / "soil_temp_il_champaign.json"
 _D = json.loads(_DATA_PATH.read_text(encoding="utf-8"))
@@ -54,12 +54,23 @@ CASE = CaseSpec(
     outputs=("T",),
     domain={"z": (0.0, 1.0), "t": (0.0, 1.0)},
     grid={"z": 49, "t": _NT},
+    field_axes=("z", "t"),  # single 2-D heatmap over depth × time; no parametric axis (alpha is recovered, not swept)
     expected_band="damped, phase-lagged seasonal wave with depth; held-out 10/20/50 cm relative-L2 vs REAL temps ~7e-2 (~1 deg C RMSE)",
     validation_anchor="real-data-holdout",
     train={"lr": 1e-3, "adam": 18000, "lbfgs": False, "num_domain": 4000, "num_boundary": 0, "num_initial": 0, "num_test": 2000, "loss_weights": [1, 60, 60, 20]},
     notes="REAL USCRN soil temps; 5/100 cm real Dirichlet boundaries; recovered alpha=kappa*L^2/span (mm^2/s); "
           "held-out 10/20/50 cm out-of-sample validation. Adam-only so the trainable diffusivity is never dropped.",
 )
+
+
+def variants() -> list[Variant]:
+    # Single VALIDATED-REAL variant: alpha is recovered (not a network-input knob) and the real surface forcing has no
+    # closed form, so there is no honest parametric family — the field is the one measured T(z,t) reconstruction.
+    return [Variant(
+        "real", "USCRN (real data)", "USCRN (datos reales)", {},
+        "Soil-temperature field reconstructed from real 5/100 cm boundaries; validated out-of-sample vs 10/20/50 cm.",
+        "Campo de temperatura de suelo reconstruido desde bordes reales 5/100 cm; validado fuera de muestra vs 10/20/50 cm.",
+    )]
 
 
 def extra_metrics(sf) -> dict:
