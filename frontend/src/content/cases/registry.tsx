@@ -2,6 +2,7 @@ import type { ReactNode } from "react";
 
 import { AllenCahnContext } from "./AllenCahnContext";
 import { Burgers1dContext } from "./Burgers1dContext";
+import { ComminutionContext } from "./ComminutionContext";
 import { FlotationContext } from "./FlotationContext";
 import { HeapLeachContext } from "./HeapLeachContext";
 import { Heat1dContext } from "./Heat1dContext";
@@ -30,6 +31,7 @@ const CASE_CONTEXT: Record<string, (p: { lang: "en" | "es" }) => ReactNode> = {
   "ind-heat2d-inverse": Heat2dInverseContext,
   "mine-thickener-settling": ThickenerContext,
   "mine-heap-leach-rt": HeapLeachContext,
+  "mine-comminution-pbe": ComminutionContext,
 };
 
 export function ContextFor(caseId: string, lang: "en" | "es"): ReactNode {
