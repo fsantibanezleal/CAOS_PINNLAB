@@ -18,6 +18,7 @@ from . import (
     ctrl_zero_source,
     ind_heat2d_inverse,
     ind_helmholtz,
+    mine_flotation_kinetics,
     mine_heap_leach_rt,
     mine_thickener_settling,
     poll_ocean_transport,
@@ -42,6 +43,7 @@ _MODULES: list[ModuleType] = [
     ind_heat2d_inverse,
     mine_thickener_settling,
     poll_tailings_seepage,
+    mine_flotation_kinetics,
 ]
 
 CASES: list[CaseSpec] = [m.CASE for m in _MODULES]
