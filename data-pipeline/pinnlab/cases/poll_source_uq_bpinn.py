@@ -50,7 +50,10 @@ CASE = CaseSpec(
     validation_anchor="analytic",
     train={"lr": 1e-3, "adam": 6000, "lbfgs": False, "num_domain": 1500, "num_boundary": 0, "num_test": 2000},
     notes="Deep ensemble of K=5 independently-initialized PINNs (approx. Bayesian); hard c=0 walls; N=24 sparse noisy "
-          "sensors; exported as a single ONNX emitting [mean, std]. Custom-engine (prebuilt) case.",
+          "sensors; exported as a single ONNX emitting [mean, std]. Custom-engine (prebuilt) case. "
+          "Single honest benchmark variant: the UQ knob (sensor noise/sparsity) is a TRAINING-DATA knob, not a network "
+          "input, so a discrete family would need K separate ONNX exports the share-one-ONNX pipeline does not support; "
+          "and a parameter sweep would erase the sparse-sensor UQ story (ADR-0016 §9.A). Not parametric.",
 )
 
 
