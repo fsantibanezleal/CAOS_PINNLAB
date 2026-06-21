@@ -48,8 +48,9 @@ header.top {
   padding: 10px 20px; border-bottom: 1px solid var(--border);
   background: linear-gradient(180deg, var(--panel), var(--bg)); position: sticky; top: 0; z-index: 10;
 }
-.brand { display: flex; align-items: baseline; gap: 10px; font-weight: 700; }
-.brand .dot { color: var(--accent); }
+.brand { display: flex; align-items: center; gap: 8px; font-weight: 700; color: var(--text); }
+.brand:hover { text-decoration: none; }
+.brand .brand-mark { color: var(--accent); flex: none; }
 .brand small { color: var(--muted); font-weight: 400; }
 nav.main { display: flex; gap: 4px; flex-wrap: wrap; margin-left: 8px; }
 nav.main a {
@@ -57,11 +58,26 @@ nav.main a {
 }
 nav.main a.active, nav.main a:hover { background: var(--panel-2); color: var(--text); text-decoration: none; }
 .spacer { flex: 1; }
+.header-actions { display: flex; align-items: center; gap: 6px; }
+.header-sep { width: 1px; height: 22px; background: var(--border); margin: 0 4px; }
 .iconbtn {
+  display: inline-flex; align-items: center; gap: 6px;
   border: 1px solid var(--border); background: var(--panel); color: var(--text);
-  border-radius: 8px; padding: 6px 10px; cursor: pointer; font-size: 13px;
+  border-radius: 8px; padding: 6px 9px; cursor: pointer; font-size: 13px; line-height: 1;
 }
-.iconbtn:hover { background: var(--panel-2); }
+.iconbtn:hover { background: var(--panel-2); text-decoration: none; color: var(--text); }
+.iconbtn.lang span { font-size: 12px; font-weight: 600; }
+
+/* footer (ADR-0016) */
+.site-footer {
+  margin-top: auto; padding: 16px 20px; border-top: 1px solid var(--border);
+  background: var(--panel); color: var(--muted); font-size: 12.5px;
+  display: flex; flex-direction: column; gap: 6px;
+}
+.footer-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.footer-meta a { color: var(--muted); }
+.footer-meta a:hover { color: var(--accent); }
+.site-footer .faint { color: var(--muted); opacity: 0.75; }
 
 main.content { flex: 1; padding: 22px; max-width: 1280px; width: 100%; margin: 0 auto; }
 .layout { display: grid; grid-template-columns: 280px 1fr; gap: 20px; }

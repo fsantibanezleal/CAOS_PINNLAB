@@ -1,8 +1,11 @@
+import { Briefcase, Github, Globe, Info, Languages, Moon, Sun, Waves } from "lucide-react";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { NavLink, Outlet } from "react-router-dom";
 
 import { ArchitectureModal } from "./components/ArchitectureModal";
+import { EXTERNAL_LINKS } from "./lib/links";
+import { APP_VERSION } from "./lib/version";
 import i18n from "./i18n";
 import { useUI, type Lang } from "./store";
 
@@ -28,11 +31,11 @@ export function App() {
   return (
     <div className="shell">
       <header className="top">
-        <div className="brand">
-          {t("brand")}
-          <span className="dot">●</span>
+        <NavLink to="/" className="brand" aria-label={t("brand")}>
+          <Waves size={18} aria-hidden="true" className="brand-mark" />
+          <span>{t("brand")}</span>
           <small>{t("tagline")}</small>
-        </div>
+        </NavLink>
         <nav className="main">
           {NAV.map(([path, key]) => (
             <NavLink key={key} to={`/${path}`} end={path === ""} className={({ isActive }) => (isActive ? "active" : "")}>
@@ -41,22 +44,53 @@ export function App() {
           ))}
         </nav>
         <div className="spacer" />
-        <button className="iconbtn" onClick={() => setArchOpen(true)} title={t("arch.open")} aria-label={t("arch.open")}>
-          ⓘ
-        </button>
-        <button className="iconbtn" onClick={() => switchLang(lang === "en" ? "es" : "en")} title="Language">
-          {lang.toUpperCase()}
-        </button>
-        <button className="iconbtn" onClick={toggleTheme} title="Theme">
-          {theme === "dark" ? "☀" : "☾"}
-        </button>
-        <a className="iconbtn" href="https://github.com/fsantibanezleal/CAOS_PINNLAB" target="_blank" rel="noreferrer">
-          GitHub
-        </a>
+        <div className="header-actions">
+          <a className="iconbtn" href={EXTERNAL_LINKS.github} target="_blank" rel="noreferrer noopener" title={t("header.github")} aria-label={t("header.github")}>
+            <Github size={17} aria-hidden="true" />
+          </a>
+          <a className="iconbtn" href={EXTERNAL_LINKS.personal} target="_blank" rel="noreferrer noopener" title={t("header.personal")} aria-label={t("header.personal")}>
+            <Globe size={17} aria-hidden="true" />
+          </a>
+          <a className="iconbtn" href={EXTERNAL_LINKS.portfolio} target="_blank" rel="noreferrer noopener" title={t("header.portfolio")} aria-label={t("header.portfolio")}>
+            <Briefcase size={17} aria-hidden="true" />
+          </a>
+          <span className="header-sep" aria-hidden="true" />
+          <button className="iconbtn" onClick={() => setArchOpen(true)} title={t("arch.open")} aria-label={t("arch.open")}>
+            <Info size={17} aria-hidden="true" />
+          </button>
+          <button className="iconbtn lang" onClick={() => switchLang(lang === "en" ? "es" : "en")} title={t("settings.lang", { defaultValue: "Language" })} aria-label="Language">
+            <Languages size={17} aria-hidden="true" />
+            <span>{lang.toUpperCase()}</span>
+          </button>
+          <button className="iconbtn" onClick={toggleTheme} title={t("settings.theme", { defaultValue: "Theme" })} aria-label="Theme">
+            {theme === "dark" ? <Sun size={17} aria-hidden="true" /> : <Moon size={17} aria-hidden="true" />}
+          </button>
+        </div>
       </header>
+
       <main className="content">
         <Outlet />
       </main>
+
+      <footer className="site-footer">
+        <div className="footer-meta">
+          <span>{t("footer.attribution")}</span>
+          <span aria-hidden="true">·</span>
+          <span>{t("footer.complement")}</span>
+        </div>
+        <div className="footer-meta">
+          <a href={EXTERNAL_LINKS.github} target="_blank" rel="noreferrer noopener">{t("header.github")}</a>
+          <span aria-hidden="true">·</span>
+          <a href={EXTERNAL_LINKS.personal} target="_blank" rel="noreferrer noopener">{t("header.personal")}</a>
+          <span aria-hidden="true">·</span>
+          <a href={EXTERNAL_LINKS.portfolio} target="_blank" rel="noreferrer noopener">{t("header.portfolio")}</a>
+          <span aria-hidden="true">·</span>
+          <span className="faint">{t("footer.license")}</span>
+          <span aria-hidden="true">·</span>
+          <span className="faint">{t("footer.version")} v{APP_VERSION}</span>
+        </div>
+      </footer>
+
       {archOpen && <ArchitectureModal onClose={() => setArchOpen(false)} />}
     </div>
   );

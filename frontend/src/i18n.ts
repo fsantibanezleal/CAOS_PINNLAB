@@ -5,6 +5,18 @@ import { initReactI18next } from "react-i18next";
 const en = {
   brand: "PINN-Lab",
   tagline: "Physics-Informed Neural Networks — a runnable catalogue",
+  header: {
+    github: "Source code (GitHub)",
+    personal: "Personal site",
+    portfolio: "Portfolio",
+  },
+  footer: {
+    attribution: "Felipe Santibañez-Leal",
+    complement: "a CAOS research investigation",
+    license: "Research & educational use",
+    version: "Version",
+  },
+  settings: { lang: "Language", theme: "Theme" },
   nav: {
     app: "App",
     introduction: "Introduction",
@@ -89,6 +101,18 @@ const en = {
 const es: typeof en = {
   brand: "PINN-Lab",
   tagline: "Redes Neuronales Informadas por Física — un catálogo ejecutable",
+  header: {
+    github: "Código fuente (GitHub)",
+    personal: "Sitio personal",
+    portfolio: "Portafolio",
+  },
+  footer: {
+    attribution: "Felipe Santibañez-Leal",
+    complement: "una investigación CAOS",
+    license: "Uso investigativo y educativo",
+    version: "Versión",
+  },
+  settings: { lang: "Idioma", theme: "Tema" },
   nav: {
     app: "App",
     introduction: "Introducción",
@@ -172,7 +196,7 @@ const es: typeof en = {
 
 i18n.use(initReactI18next).init({
   resources: { en: { t: en }, es: { t: es } },
-  lng: localStorage.getItem("pinnlab.lang") || (navigator.language?.startsWith("es") ? "es" : "en"),
+  lng: localStorage.getItem("pinnlab.lang") || "en", // ADR-0011: English default, no navigator auto-detect
   fallbackLng: "en",
   defaultNS: "t",
   interpolation: { escapeValue: false },

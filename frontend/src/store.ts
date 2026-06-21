@@ -17,9 +17,9 @@ function initialTheme(): Theme {
   return saved === "light" || saved === "dark" ? saved : "dark";
 }
 function initialLang(): Lang {
+  // ADR-0011: English is the default for every app. NO navigator auto-detect — only an explicit saved choice wins.
   const saved = localStorage.getItem("pinnlab.lang");
-  if (saved === "en" || saved === "es") return saved;
-  return navigator.language?.startsWith("es") ? "es" : "en";
+  return saved === "en" || saved === "es" ? saved : "en";
 }
 
 export const useUI = create<UIState>((set, get) => ({
