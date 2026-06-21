@@ -15,6 +15,7 @@ from . import (
     bench_navier_cavity,
     bench_poisson2d,
     bench_wave1d,
+    ctrl_zero_source,
     ind_helmholtz,
     mine_heap_leach_rt,
     poll_ocean_transport,
@@ -34,6 +35,7 @@ _MODULES: list[ModuleType] = [
     poll_ocean_transport,
     mine_heap_leach_rt,
     poll_soil_barrier,
+    ctrl_zero_source,
 ]
 
 CASES: list[CaseSpec] = [m.CASE for m in _MODULES]
