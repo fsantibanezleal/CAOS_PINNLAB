@@ -3,6 +3,25 @@
 All notable changes to **PINN-Lab**. Format: `X.XX.XXX` (display) — see `pinnlab.__version__`. Keep `0.x` while on
 synthetic/benchmark data. Tag every release.
 
+## [0.05.000] — 2026-06-21
+
+Uncertainty quantification — the last unexercised SOTA method family — plus the generic engine path that enables it.
+
+### Added — `poll-source-uq-bpinn` (case #18, Bayesian PINN / deep ensemble)
+- Trains **K=5 independently-initialized PINNs with per-member bagging** (deep ensembles ≈ approximate Bayesian
+  inference) for 1D pollutant diffusion from **24 sparse noisy sensors**. The predictive **mean** tracks the analytic
+  field (relative-L2 **1.2 %**) and the ensemble **std** is the epistemic uncertainty — small near sensors/walls,
+  ~2.7× larger in data-sparse regions. **2σ calibration = 100 %** (well-calibrated, not overconfident).
+- Exported as **one self-contained ONNX emitting `[mean, std]`** → lane **live** (101 KB, 3.8 ms, parity 2.4e-7).
+- Honesty `synthetic-illustrative` (UQ demonstrator on a manufactured field).
+
+### Added — engine: prebuilt-engine path
+- `train.py` now supports **custom-engine cases** (`build()` returns `{"model", "input_dim", "prebuilt": True}`): the
+  case trains its own net (a deep ensemble here; FNO operator nets later), so the generic Adam→L-BFGS→refine loop is
+  skipped while ONNX export + parity + the lane gate still apply. `build(seed)` may optionally accept `quick=` (passed
+  only to builds that declare it), so custom-engine cases get a cheap CI path.
+- `docs/cases/poll-source-uq-bpinn.md`.
+
 ## [0.04.000] — 2026-06-21
 
 The first REAL-data case. Everything prior validates against closed-form / reduced-model truth; this milestone adds a

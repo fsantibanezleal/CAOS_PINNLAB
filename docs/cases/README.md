@@ -5,14 +5,14 @@ artifact the web app replays. Cases carry a **category** (the registry groups by
 (`synthetic` · `synthetic-illustrative` · `validated-real`). Every number below is the committed manifest's measured
 value; lanes are derived from measurements (see [the gate](../architecture/the-gate.md)).
 
-## The catalogue (17 cases)
+## The catalogue (18 cases)
 
 | Category | Cases |
 |----------|-------|
 | **canonical-benchmark** | poisson2d · heat1d · wave1d · burgers1d · allencahn · navier-cavity |
 | **industrial-fluids-heat** | helmholtz · heat2d-inverse |
 | **mining / mineral-processing** | heap-leach-rt · thickener-settling · flotation-kinetics · comminution-pbe |
-| **pollution / environmental** | ocean-transport · soil-barrier · tailings-seepage · **soil-heat-real (REAL DATA)** |
+| **pollution / environmental** | ocean-transport · soil-barrier · tailings-seepage · **soil-heat-real (REAL DATA)** · source-uq-bpinn (UQ) |
 | **control** | zero-source |
 
 ## Honesty: what "real" means here
@@ -32,6 +32,7 @@ engineering closures, but no open plant/field dataset exists for them (documente
 ## Per-case write-ups
 
 - [env-soil-heat-real](env-soil-heat-real.md) — the real-data inverse (USCRN).
+- [poll-source-uq-bpinn](poll-source-uq-bpinn.md) — Bayesian PINN (deep ensemble) with epistemic uncertainty.
 
 (Remaining per-case pages are added as the catalogue is documented; every case's full spec — equation, method,
 anchor, metrics — is always available live in its manifest and on the App/Benchmark pages.)

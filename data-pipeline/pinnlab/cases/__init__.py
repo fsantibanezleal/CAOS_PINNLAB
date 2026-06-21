@@ -25,6 +25,7 @@ from . import (
     mine_thickener_settling,
     poll_ocean_transport,
     poll_soil_barrier,
+    poll_source_uq_bpinn,
     poll_tailings_seepage,
 )
 from .base import CaseSpec
@@ -48,6 +49,7 @@ _MODULES: list[ModuleType] = [
     mine_flotation_kinetics,
     mine_comminution_pbe,
     env_soil_heat_real,
+    poll_source_uq_bpinn,
 ]
 
 CASES: list[CaseSpec] = [m.CASE for m in _MODULES]

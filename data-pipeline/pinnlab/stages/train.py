@@ -21,23 +21,32 @@ def run(case_id: str, *, seed: int, models_dir: str, sampling: dict | None = Non
     import onnxruntime as ort
     import torch
 
+    import inspect
+
     case = get_case(case_id)
     mod = case_module(case_id)
-    built = mod.build(seed)
+    # custom-engine cases (deep ensembles, operator nets) train inside build() and pass quick through; the standard
+    # DeepXDE cases keep the plain build(seed) signature.
+    built = mod.build(seed, quick=quick) if "quick" in inspect.signature(mod.build).parameters else mod.build(seed)
     model = built["model"]
     d = int(built["input_dim"])
     t = case.train
 
-    adam_iters = 300 if quick else int(t.get("adam", 12000))
-    model.train(iterations=adam_iters, display_every=max(1, adam_iters // 6))
-    if (not quick) and t.get("lbfgs", True):
-        lw = t.get("loss_weights")
-        model.compile("L-BFGS", loss_weights=lw) if lw is not None else model.compile("L-BFGS")
-        model.train()
+    if built.get("prebuilt"):
+        # the case already trained its own net (e.g. a deep ensemble exported as one [mean,std] graph); the generic
+        # Adam->L-BFGS->refine loop does not apply. It must expose `.net` (torch module) + `.predict(X)` for export+parity.
+        pass
+    else:
+        adam_iters = 300 if quick else int(t.get("adam", 12000))
+        model.train(iterations=adam_iters, display_every=max(1, adam_iters // 6))
+        if (not quick) and t.get("lbfgs", True):
+            lw = t.get("loss_weights")
+            model.compile("L-BFGS", loss_weights=lw) if lw is not None else model.compile("L-BFGS")
+            model.train()
 
-    # optional case-defined refinement (e.g. RAR adaptive sampling for sharp fronts) before export
-    if (not quick) and getattr(mod, "refine", None) is not None:
-        mod.refine(model, case, seed)
+        # optional case-defined refinement (e.g. RAR adaptive sampling for sharp fronts) before export
+        if (not quick) and getattr(mod, "refine", None) is not None:
+            mod.refine(model, case, seed)
 
     # export the raw trained net to ONNX (input dim = d coordinates)
     net = model.net
