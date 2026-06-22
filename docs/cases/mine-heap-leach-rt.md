@@ -3,7 +3,8 @@
 The mining-mineral-processing entry. It exercises the **coupled multi-output PINN with a nonlinear bimolecular
 reaction term** under downward Darcy advection — the catalogue's stress test for a single network that must solve two
 PDEs simultaneously, each carrying a nonlinear coupling, validated against a method of manufactured solutions (MMS)
-anchor.
+anchor. It is presented as a **time-scrubber**: `field_axes=(x,z)`, time is the swept parameter (6 snapshots
+$t\in\{0,0.2,0.4,0.6,0.8,1.0\}$), so the web **Live** tab scrubs $t$ and replays the reacting fronts.
 
 ## Problem
 
@@ -20,7 +21,7 @@ $$ c_A^\* = e^{-t}\sin(\pi x)\cos(\pi z) + 1.5,\qquad c_B^\* = e^{-t/2}\cos(\pi 
 
 and the source terms $f_A, f_B = \mathcal{L}[c^\*]$ are the analytic residuals of the operator applied to these fields,
 so the manufactured pair is an exact solution. Soft Dirichlet boundary conditions and the initial condition are set to
-$c^\*$. Domain grid: $41\times41\times21$ in $(x,z,t)$.
+$c^\*$. Field grid $41\times41$ in $(x,z)$ per snapshot; time is the swept network input.
 
 ## Method
 
@@ -38,17 +39,18 @@ critical minerals (arXiv:2506.15960).
 
 ## Result (measured, seed 42)
 
+Validation anchor: the analytic MMS field, scored per time-snapshot variant:
+
 | metric | value |
 |--------|-------|
-| $c_A$ relative-L2 vs MMS analytic | **7.9e-05** |
-| $c_B$ relative-L2 vs MMS analytic | **8.5e-05** |
-| $c_A$ max abs error | 0.001684 |
+| $c_A$ relative-L2 vs MMS analytic | **≤ 1e-4** across all 6 snapshots |
+| $c_B$ relative-L2 vs MMS analytic | **≤ 2e-4** across all 6 snapshots |
 | validation anchor | **analytic** (MMS) |
-| ONNX parity (max abs) | 1.192e-06 |
-| lane | **live** (31 KB ONNX, 4.82 ms infer) |
+| ONNX parity (max abs) | 1.19e-06 |
+| lane | **live** (one shared ONNX; Live = time scrubber) |
 
-The validation anchor is the analytic MMS field. Both species reach relative-L2 below 1e-4 — comfortably inside the
-case's `< 2e-2 per species` target band — so this is a genuinely well-converged result, not a CPU-limited compromise.
+Both species reach relative-L2 below 2e-4 at every snapshot — comfortably inside the case's `< 2e-2 per species`
+target band — so this is a genuinely well-converged result, not a CPU-limited compromise.
 The single-network multi-output design resolves the nonlinear $k_f c_A c_B$ coupling without sacrificing accuracy on
 either channel; $c_A$ is the primary output and $c_B$'s error is reported via `extra_metrics`.
 
