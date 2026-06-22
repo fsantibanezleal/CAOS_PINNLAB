@@ -10,7 +10,8 @@ from pathlib import Path
 
 import numpy as np
 
-from ..model.analytic import linspace_grid
+from ..io.formats import strip_onnx_metadata
+from ..model.analytic import param_grid
 from ..registry import case_module, get_case
 
 
@@ -77,6 +78,7 @@ def run(case_id: str, *, seed: int, models_dir: str, sampling: dict | None = Non
         opset_version=18, dynamo=True, verbose=False,
         external_data=False,  # embed weights -> a single self-contained .onnx for onnxruntime-web
     )
+    strip_onnx_metadata(onnx_path)  # the dynamo exporter embeds the local build path in metadata — strip it (clean public artifact)
 
     # parity: ONNX must match model.predict on a random in-domain sample (proves the train->web bridge is faithful)
     rng = np.random.default_rng(seed + 1)
@@ -90,8 +92,8 @@ def run(case_id: str, *, seed: int, models_dir: str, sampling: dict | None = Non
     ).reshape(len(sample), -1)
     parity = float(np.max(np.abs(pred_dde - pred_onnx)))
 
-    # measure the ort-web-proxy inference time on the full eval grid (CPU onnxruntime stands in for ort-web)
-    _coords, XY, _shape = linspace_grid(case.domain, case.grid)
+    # measure the ort-web-proxy inference time on the full FIELD grid at the default parameter regime
+    _coords, XY, _shape = param_grid(case, {p.key: p.default for p in case.param_specs})
     XYf = XY.astype(np.float32)
     sess.run(["u"], {"coords": XYf[:64]})  # warm up
     n_rep = 5

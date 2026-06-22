@@ -17,7 +17,7 @@ from __future__ import annotations
 
 import numpy as np
 
-from .base import CaseSpec
+from .base import CaseSpec, ParamSpec, Variant
 
 PI = np.pi
 VZ = 1.0
@@ -27,7 +27,7 @@ KF = 1.0
 CASE = CaseSpec(
     id="mine-heap-leach-rt",
     category="mining-mineral-processing",
-    title="Heap-leach reactive transport — advection-diffusion-reaction PINN (2 species)",
+    title="Heap-leach reactive transport — advection-diffusion-reaction PINN (2 species, time-scrubber)",
     governing_equations=(
         r"\partial_t c_i + \mathbf{v}\cdot\nabla c_i = D\nabla^2 c_i - k_f c_A c_B + f_i,\ "
         r"\mathbf{v}=(0,1),\ D=0.05,\ k_f=1\ \text{on}\ (0,1)^2\times(0,1]"
@@ -38,7 +38,9 @@ CASE = CaseSpec(
     inputs=("x", "z", "t"),
     outputs=("cA", "cB"),
     domain={"x": (0.0, 1.0), "z": (0.0, 1.0), "t": (0.0, 1.0)},
-    grid={"x": 41, "z": 41, "t": 21},
+    grid={"x": 41, "z": 41},
+    field_axes=("x", "z"),
+    param_specs=(ParamSpec("t", "Time t", "Tiempo t", 0.5, 0.0, 1.0, 0.02),),
     expected_band="downward-advecting reacting fronts; relative-L2 vs MMS analytic < 2e-2 per species",
     validation_anchor="analytic",
     train={
@@ -65,16 +67,44 @@ def _cB_np(x: np.ndarray) -> np.ndarray:
     return np.exp(-0.5 * tt) * np.cos(PI * xx) * np.sin(PI * zz) + 1.5
 
 
+_STATE: dict[str, float] = {}  # analytic() stashes the current snapshot t for extra_metrics (per-variant, sequential)
+
+
 def analytic(xzt: np.ndarray) -> np.ndarray:
-    """Primary output cA* (cB* checked in extra_metrics)."""
-    return _cA_np(np.asarray(xzt, dtype=np.float64))
+    """Primary output cA* (cB* checked in extra_metrics at the same snapshot t)."""
+    xzt = np.asarray(xzt, dtype=np.float64)
+    _STATE["t"] = float(xzt[0, 2])  # the variant's snapshot time (grid is param-filled in inputs order x,z,t)
+    return _cA_np(xzt)
+
+
+def variants() -> list[Variant]:
+    presets = [
+        ("t00", 0.0, "Lixiviant front entering (t=0) — both species at the manufactured initial state, sharpest contrast.",
+                     "Frente de lixiviante entrando (t=0) — ambas especies en el estado inicial manufacturado, máximo contraste."),
+        ("t02", 0.2, "t=0.2 — fronts advecting downward; cA has decayed faster than cB.",
+                     "t=0.2 — frentes advectando hacia abajo; cA decae más rápido que cB."),
+        ("t04", 0.4, "t=0.4 — clear split in the two species' amplitudes (e^{-t} vs e^{-t/2}).",
+                     "t=0.4 — separación clara entre las amplitudes de las especies (e^{-t} vs e^{-t/2})."),
+        ("t06", 0.6, "t=0.6 — cA noticeably weaker; reaction sink most uneven across the bed.",
+                     "t=0.6 — cA notablemente más débil; el sumidero de reacción más desigual en el lecho."),
+        ("t08", 0.8, "t=0.8 — both relaxing toward the +1.5 baseline; cA nearly flat.",
+                     "t=0.8 — ambas relajando hacia la línea base +1.5; cA casi plana."),
+        ("t10", 1.0, "t=1.0 — late percolation; cA almost uniform, cB still modulated.",
+                     "t=1.0 — percolación tardía; cA casi uniforme, cB aún modulada."),
+    ]
+    return [Variant(vid, f"t={tv:g}", f"t={tv:g}", {"t": tv}, en, es) for vid, tv, en, es in presets]
 
 
 def extra_metrics(sf) -> dict:
-    from ..model.analytic import l2_relative, linspace_grid
+    from ..model.analytic import l2_relative
 
-    _coords, XYZ, _shape = linspace_grid(CASE.domain, CASE.grid)
-    cB_truth = _cB_np(XYZ)
+    t_snap = float(_STATE.get("t", 0.5))
+    x = np.asarray(sf.axes["x"], dtype=np.float64)
+    z = np.asarray(sf.axes["z"], dtype=np.float64)
+    xx, zz = np.meshgrid(x, z, indexing="ij")
+    tt = np.full(xx.size, t_snap)
+    XZT = np.stack([xx.ravel(), zz.ravel(), tt], axis=1)
+    cB_truth = _cB_np(XZT)
     cB_pred = sf.fields["cB"].reshape(-1, 1)
     return {"cB_l2_relative": round(l2_relative(cB_pred, cB_truth), 6)}
 

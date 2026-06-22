@@ -89,7 +89,7 @@ const METHODS: Method[] = [
     bodyEs:
       "El residual en forma fuerte no es la única opción. hp-VPINN minimiza el residual DÉBIL (variacional) contra funciones de prueba, bajando el orden de derivación y manejando soluciones de menor regularidad; las PINN separables (SPINN) factorizan la red por eje para escalar a >10^7 puntos. Son las rutas a problemas grandes, rígidos y de alta dimensión.",
     eq: String.raw`\int_\Omega \mathcal{N}[u_\theta]\,v\,d\mathbf{x}=0\quad \forall\,v\in V_h \ \text{(weak form)}`,
-    cases: "documented (docs/methods/variational-scalable.md)",
+    cases: "documented in the method dossier (roadmap method)",
     ref: 6,
   },
   {
@@ -154,8 +154,8 @@ export function Methodology() {
       <h1>{es ? "Metodología — métodos SOTA" : "Methodology — SOTA methods"}</h1>
       <p className="muted">
         {es
-          ? "Cada familia de métodos del estado del arte se EJERCE en al menos un caso de PINN-Lab (no solo se nombra) y se documenta en docs/methods/. Abajo: la idea, su formulación, los casos que la ejercitan y la referencia primaria. La receta base Adam→L-BFGS se usa en todos."
-          : "Each state-of-the-art method family is EXERCISED in at least one PINN-Lab case (not merely named) and documented in docs/methods/. Below: the idea, its formulation, the cases that exercise it, and the primary reference. The Adam→L-BFGS base recipe is used everywhere."}
+          ? "Cada familia de métodos del estado del arte se EJERCE en al menos un caso de PINN-Lab (no solo se nombra). Abajo: la idea, su formulación, los casos que la ejercitan y la referencia primaria revisada por pares. La receta base Adam→L-BFGS se usa en todos."
+          : "Each state-of-the-art method family is EXERCISED in at least one PINN-Lab case (not merely named). Below: the idea, its formulation, the cases that exercise it, and the primary peer-reviewed reference. The Adam→L-BFGS base recipe is used everywhere."}
       </p>
 
       {METHODS.map((m) => (
@@ -168,7 +168,6 @@ export function Methodology() {
               <strong className="muted">{es ? "Casos: " : "Cases: "}</strong>
               <span className="mono">{m.cases}</span>
             </span>
-            <code className="muted" style={{ fontSize: 12 }}>docs/methods/{m.group}.md</code>
           </div>
           <p className="muted" style={{ fontSize: 12, marginTop: 6 }}>
             {REFS[m.ref - 1]?.cite}{" "}

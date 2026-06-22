@@ -18,7 +18,7 @@ from __future__ import annotations
 
 import numpy as np
 
-from .base import CaseSpec
+from .base import CaseSpec, Variant
 
 D_SOIL = 1.0
 D_BARR = 1.0e-1  # 10x diffusion contrast (a 100x jump makes the kink too severe for a 2-channel net on CPU)
@@ -59,6 +59,16 @@ def analytic(xt: np.ndarray) -> np.ndarray:
     x = xt[:, 0:1]
     t = xt[:, 1:2]
     return (1.0 - np.exp(-t)) * _psi_np(x)
+
+
+def variants() -> list[Variant]:
+    # Single honest benchmark: the coefficient-jump kink at the fixed 10x contrast is already the limiting difficulty;
+    # a contrast sweep would let the sharpest regime dominate the L2 and blur the feature (ADR-0016 §9.A).
+    return [Variant(
+        "barrier10x", "Barrier (10× contrast)", "Barrera (contraste 10×)", {},
+        "10× low-D barrier in [0.45,0.55]: the plume is slowed and c develops a kink at each barrier face.",
+        "Barrera de baja D (10×) en [0.45,0.55]: el plume se frena y c desarrolla un quiebre en cada cara.",
+    )]
 
 
 def build(seed: int) -> dict:

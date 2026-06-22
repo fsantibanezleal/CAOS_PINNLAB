@@ -26,7 +26,8 @@ def _solve_darcy(a: np.ndarray) -> np.ndarray:
     n = a.shape[0]
     h = 1.0 / (n - 1)
     N = n * n
-    idx = lambda i, j: i * n + j
+    def idx(i, j):
+        return i * n + j
     A = sp.lil_matrix((N, N))
     b = np.zeros(N)
     for i in range(n):
@@ -70,5 +71,6 @@ def make_dataset(seed: int, n_grid: int, n_train: int, n_test: int):
     X = np.concatenate([a_n, grid], axis=1).astype(np.float32)
     Y = u_n.astype(np.float32)
     stats = {"a_mu": a_mu, "a_sd": a_sd, "u_mu": u_mu, "u_sd": u_sd}
-    t = lambda z: torch.as_tensor(z)
+    def t(z):
+        return torch.as_tensor(z)
     return t(X[:n_train]), t(Y[:n_train]), t(X[n_train:]), t(Y[n_train:]), stats, (a_arr, u_arr)

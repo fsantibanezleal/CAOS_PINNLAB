@@ -1,127 +1,146 @@
-"""Group A · canonical-benchmark — 1D viscous Burgers, shock-front PINN with RESIDUAL-BASED ADAPTIVE REFINEMENT (RAR).
+"""Group A · canonical-benchmark — 1D viscous Burgers, PARAMETRIC in the viscosity nu, HARD-CONSTRAINT PINN with
+RESIDUAL-BASED ADAPTIVE REFINEMENT (RAR) for the sharp front.
 
 Governing equation:
-    u_t + u u_x = nu u_xx,   nu = 0.01/pi,   x in [-1,1], t in [0,1],
-    IC  u(x,0) = -sin(pi x),   BC  u(-1,t) = u(1,t) = 0.
-The small viscosity makes a steep internal layer (quasi-shock) form near x=0 as t->1.
+    u_t + u u_x = nu u_xx,   x in [-1,1], t in [0,1].
+Exact TRAVELING-SHOCK family (validation anchor, closed form for ANY nu) — Whitham, *Linear and Nonlinear Waves*:
+    u*(x,t;nu) = s - (Delta/2) tanh( k (x - x0 - s t) ),   k = Delta/(4 nu),
+with left/right states u_L = s + Delta/2, u_R = s - Delta/2. We use u_L=1, u_R=0 (=> Delta=1, s=1/2) and an initial
+front position x0=-0.4, so a front of width ~4*nu translates to the right at speed s and stays interior to [-1,1].
+The viscosity nu sets the front THICKNESS: small nu => a razor-sharp internal layer (quasi-shock), large nu => a
+diffuse ramp. nu is a NETWORK INPUT, so ONE trained net covers the whole viscosity family and the web `Live` tab
+sweeps nu continuously — watch the shock sharpen (small nu) or smear (large nu) via the shared ONNX.
 
-Method — RAR / RAR-G (residual-based adaptive refinement, Wu et al. CMAME 2023): start from uniform collocation
-(soft BC/IC), then greedily ADD collocation where the residual is largest, so the sharp front gets resolved.
-Validation anchor: the standard spectral reference `Burgers.npz` (Raissi 2019 / DeepXDE, MIT) — a NUMERICAL
-reference, not real-world data (see wip/pinn-lab/real-datasets.md).
+Method — HARD CONSTRAINTS (IC + both Dirichlet BCs satisfied exactly by an output transform, no IC/BC loss) PLUS
+RAR / RAR-G (residual-based adaptive refinement, Wu et al. CMAME 2023): after the base fit, greedily ADD collocation
+points where the PDE residual is largest, so the moving front is resolved without a globally dense grid.
 """
 from __future__ import annotations
 
-import pathlib
-
 import numpy as np
 
-from .base import CaseSpec
+from .base import CaseSpec, ParamSpec, Variant
 
-_DATASET = pathlib.Path(__file__).resolve().parents[3] / "data" / "reference" / "burgers" / "Burgers.npz"
+NU_MIN, NU_MAX = 0.02, 0.08
+DELTA, SPEED, X0 = 1.0, 0.5, -0.4  # u_L=1, u_R=0 => Delta=1, s=1/2; initial front at x0
+
+
+def _k(nu):
+    return DELTA / (4.0 * nu)
+
 
 CASE = CaseSpec(
     id="bench-burgers1d",
     category="canonical-benchmark",
-    title="1D viscous Burgers — RAR adaptive-sampling PINN (shock front)",
+    title="1D viscous Burgers, parametric viscosity — hard-constraint PINN + RAR (traveling shock)",
     governing_equations=(
-        r"u_t + u u_x = \nu u_{xx},\ \nu=0.01/\pi,\ x\in[-1,1],\ t\in[0,1],\quad "
-        r"u(x,0)=-\sin(\pi x),\ u(\pm 1,t)=0"
+        r"u_t + u\,u_x = \nu\,u_{xx}\ \text{on}\ (-1,1)\times(0,1],\ "
+        r"u^*=s-\tfrac{\Delta}{2}\tanh\!\big(\tfrac{\Delta}{4\nu}(x-x_0-st)\big),\ \Delta=1,\ s=\tfrac12"
     ),
-    method="rar-adaptive-sampling",
+    method="hard-constraints-rar",
     engine="deepxde",
-    real_or_synthetic="synthetic",  # validation anchor is a spectral numerical reference, NOT real-world data
-    inputs=("x", "t"),
+    real_or_synthetic="synthetic",
+    inputs=("x", "t", "nu"),
     outputs=("u",),
-    domain={"x": (-1.0, 1.0), "t": (0.0, 1.0)},
-    grid={"x": 256, "t": 100},  # nominal; eval_grid() below uses the exact Burgers.npz grid
-    expected_band="smooth then a steep internal layer near x=0 as t->1; relative-L2 vs Burgers.npz < 5e-3",
-    validation_anchor="dataset",
+    domain={"x": (-1.0, 1.0), "t": (0.0, 1.0), "nu": (NU_MIN, NU_MAX)},
+    grid={"x": 241, "t": 121},
+    field_axes=("x", "t"),
+    param_specs=(ParamSpec("nu", "Viscosity ν", "Viscosidad ν", 0.04, NU_MIN, NU_MAX, 0.002),),
+    expected_band="a tanh front of width ~4ν translating right at speed 1/2; relative-L2 vs analytic < 2e-2",
+    validation_anchor="analytic",
     train={
-        "layers": [2, 20, 20, 20, 1],
-        "lr": 1e-3,
-        "adam": 10000,
+        "layers": [3, 96, 96, 96, 96, 96, 1],
+        "activation": "tanh",
+        "lr": 8e-4,
+        "adam": 18000,
         "lbfgs": True,
-        "num_domain": 2500,
-        "num_boundary": 100,
-        "num_initial": 160,
-        # RAR refinement (the method):
-        "rar_rounds": 8,
-        "rar_addk": 200,
-        "rar_adam": 5000,
-        "rar_pool": 50000,
+        "num_domain": 9000,
+        "num_test": 8000,
+        # RAR refinement (the method) — add high-residual points near the moving front:
+        "rar_rounds": 5,
+        "rar_addk": 400,
+        "rar_adam": 3000,
+        "rar_pool": 60000,
     },
-    notes="Soft BC/IC; RAR greedily adds top-k highest-residual collocation points to resolve the shock front.",
+    notes="Parametric in ν (continuous input); IC + both Dirichlet BCs exact via an output transform; RAR resolves the front.",
 )
 
 
-def _load():
-    return np.load(_DATASET)
+def analytic(xtn: np.ndarray) -> np.ndarray:
+    """u*(x,t;nu) = s - (Delta/2) tanh(k(nu) (x - x0 - s t)), on [N,3] (x,t,nu) -> [N,1]."""
+    xtn = np.asarray(xtn, dtype=np.float64)
+    x, t, nu = xtn[:, 0:1], xtn[:, 1:2], xtn[:, 2:3]
+    return SPEED - 0.5 * DELTA * np.tanh(_k(nu) * (x - X0 - SPEED * t))
+
+
+def variants() -> list[Variant]:
+    presets = [
+        ("nu02", 0.02, "Sharp shock (ν=0.02) — a razor-thin internal layer (width ~0.08).", "Shock agudo (ν=0.02) — capa interna finísima (ancho ~0.08)."),
+        ("nu03", 0.03, "ν=0.03 — still a steep front.", "ν=0.03 — front aún empinado."),
+        ("nu04", 0.04, "ν=0.04 — moderate front thickness.", "ν=0.04 — grosor de front moderado."),
+        ("nu05", 0.05, "ν=0.05 — a visibly smoother ramp.", "ν=0.05 — rampa visiblemente más suave."),
+        ("nu06", 0.06, "ν=0.06 — diffuse front.", "ν=0.06 — front difuso."),
+        ("nu08", 0.08, "Diffuse shock (ν=0.08) — a broad ramp (width ~0.32).", "Shock difuso (ν=0.08) — rampa ancha (ancho ~0.32)."),
+    ]
+    return [Variant(vid, f"ν={nu:g}", f"ν={nu:g}", {"nu": nu}, en, es) for vid, nu, en, es in presets]
 
 
 def _make_pde():
     import deepxde as dde
 
-    nu = 0.01 / np.pi
-
-    def pde(x, y):
-        dy_x = dde.grad.jacobian(y, x, i=0, j=0)
-        dy_t = dde.grad.jacobian(y, x, i=0, j=1)
-        dy_xx = dde.grad.hessian(y, x, i=0, j=0)
-        return dy_t + y * dy_x - nu * dy_xx
+    def pde(x, u):
+        u_t = dde.grad.jacobian(u, x, i=0, j=1)
+        u_x = dde.grad.jacobian(u, x, i=0, j=0)
+        u_xx = dde.grad.hessian(u, x, i=0, j=0)
+        nu = x[:, 2:3]
+        return u_t + u * u_x - nu * u_xx
 
     return pde
 
 
-def eval_grid():
-    """Evaluate on the EXACT Burgers.npz grid (x:256 in [-1,1], t:100 in [0,1]) so the L2 aligns with the reference."""
-    d = _load()
-    x = d["x"].ravel().astype(np.float64)
-    t = d["t"].ravel().astype(np.float64)
-    xx, tt = np.meshgrid(x, t, indexing="ij")
-    XY = np.stack([xx.ravel(), tt.ravel()], axis=1)
-    return {"x": x, "t": t}, XY, (len(x), len(t))
-
-
-def reference_on_grid() -> np.ndarray:
-    """The spectral reference field usol, shape (256, 100) = (x, t) — aligned with eval_grid()."""
-    return _load()["usol"].astype(np.float64)
-
-
 def build(seed: int) -> dict:
     import deepxde as dde
+    import torch
 
     dde.config.set_random_seed(int(seed))
-    geom = dde.geometry.Interval(-1.0, 1.0)
-    timedomain = dde.geometry.TimeDomain(0.0, 0.99)  # upstream choice; reference grid still spans [0,1]
-    geomtime = dde.geometry.GeometryXTime(geom, timedomain)
+    geom = dde.geometry.Hypercube([-1.0, 0.0, NU_MIN], [1.0, 1.0, NU_MAX])
     pde = _make_pde()
 
-    bc = dde.icbc.DirichletBC(geomtime, lambda x: 0.0, lambda _, on_boundary: on_boundary)
-    ic = dde.icbc.IC(geomtime, lambda x: -np.sin(np.pi * x[:, 0:1]), lambda _, on_initial: on_initial)
-
     t = CASE.train
-    data = dde.data.TimePDE(
-        geomtime, pde, [bc, ic],
-        num_domain=t["num_domain"], num_boundary=t["num_boundary"], num_initial=t["num_initial"],
+    data = dde.data.PDE(
+        geom, pde, [],
+        num_domain=t["num_domain"], num_boundary=0, solution=analytic, num_test=t["num_test"],
     )
-    net = dde.nn.FNN(t["layers"], "tanh", "Glorot normal")
+    net = dde.nn.FNN(t["layers"], t["activation"], "Glorot normal")
+
+    def output_transform(x, u):
+        xs = x[:, 0:1]
+        ts = x[:, 1:2]
+        nus = x[:, 2:3]
+        k = DELTA / (4.0 * nus)
+        # IC baseline g(x;nu) = u*(x,0;nu); it already matches the (time-constant, saturated) Dirichlet BCs at x=+-1.
+        g = SPEED - 0.5 * DELTA * torch.tanh(k * (xs - X0))
+        # t*(1-x^2) vanishes at t=0 (=> IC exact) and at x=+-1 (=> BCs exact); the net learns only the interior evolution.
+        return g + ts * (1.0 - xs ** 2) * u
+
+    net.apply_output_transform(output_transform)
     model = dde.Model(data, net)
-    model.compile("adam", lr=t["lr"])
-    return {"model": model, "input_dim": 2}
+    model.compile("adam", lr=t["lr"], metrics=["l2 relative error"])
+    return {"model": model, "input_dim": 3}
 
 
 def refine(model, case, seed: int) -> None:
-    """RAR-G: greedily add the top-k highest-residual points and re-train, several rounds."""
+    """RAR-G: greedily add the top-k highest-residual points (concentrated on the moving front) and re-train."""
     pde = _make_pde()
-    geomtime = model.data.geom
+    geom = model.data.geom
     t = case.train
-    for _ in range(int(t.get("rar_rounds", 8))):
-        X = geomtime.random_points(int(t.get("rar_pool", 50000)))
+    for _ in range(int(t.get("rar_rounds", 5))):
+        X = geom.random_points(int(t.get("rar_pool", 60000)))
         err = np.abs(np.asarray(model.predict(X, operator=pde)))[:, 0]
-        idx = np.argsort(err)[-int(t.get("rar_addk", 200)):]
+        idx = np.argsort(err)[-int(t.get("rar_addk", 400)):]
         model.data.add_anchors(X[idx])
-        model.compile("adam", lr=t["lr"])
-        model.train(iterations=int(t.get("rar_adam", 5000)), disregard_previous_best=True)
+        model.compile("adam", lr=t["lr"], metrics=["l2 relative error"])
+        model.train(iterations=int(t.get("rar_adam", 3000)), disregard_previous_best=True)
+    if t.get("lbfgs", True):
         model.compile("L-BFGS")
         model.train()

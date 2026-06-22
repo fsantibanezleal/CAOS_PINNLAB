@@ -16,7 +16,7 @@ from __future__ import annotations
 
 import numpy as np
 
-from .base import CaseSpec
+from .base import CaseSpec, Variant
 
 N_SENSORS = 100
 NOISE = 0.01
@@ -47,6 +47,7 @@ CASE = CaseSpec(
     outputs=("k", "T"),  # k (the inverse target) is the PRIMARY output -> l2_relative scores k vs k*
     domain={"x": (0.0, 1.0), "y": (0.0, 1.0)},
     grid={"x": 81, "y": 81},
+    field_axes=("x", "y"),  # the baked heatmap is the recovered k(x,y); single-variant inverse (no parameter axis)
     expected_band="recovered conductivity field k(x,y); relative-L2 vs k* ~1e-2-5e-2 (loosest where |grad T| is small, near the boundary)",
     validation_anchor="analytic",
     train={"lr": 1e-3, "adam": 20000, "lbfgs": True, "num_domain": 2000, "num_boundary": 200, "num_test": 4000, "loss_weights": [1, 100]},
@@ -57,6 +58,16 @@ CASE = CaseSpec(
 def analytic(xy: np.ndarray) -> np.ndarray:
     """Primary output is k -> score the recovered conductivity against k*."""
     return k_true(xy)
+
+
+def variants() -> list[Variant]:
+    # Single honest benchmark: k* is a fixed MMS field and there is no network-input knob to sweep (the data-side
+    # knobs — noise / sensor count — would each need a fresh inverse solve). One variant, never a fabricated sweep.
+    return [Variant(
+        "default", "Recovered k(x,y)", "k(x,y) recuperado", {},
+        "Conductivity field recovered from ~100 sparse noisy T sensors; relative-L2 vs the exact k*.",
+        "Campo de conductividad recuperado desde ~100 sensores T dispersos y ruidosos; L2-relativo vs el k* exacto.",
+    )]
 
 
 def extra_metrics(sf) -> dict:
