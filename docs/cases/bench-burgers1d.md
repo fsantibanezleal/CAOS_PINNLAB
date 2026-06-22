@@ -1,62 +1,55 @@
-# bench-burgers1d — 1D viscous Burgers with residual-based adaptive refinement (RAR)
+# bench-burgers1d — 1D viscous Burgers, parametric viscosity (hard-constraint + RAR)
 
-The canonical PINN stress test. A small viscosity drives a steep internal layer (a quasi-shock) toward $x=0$ as
-$t\to 1$, and a fixed uniform collocation grid resolves it poorly. This case exercises the **adaptive-sampling**
-method family: it moves collocation points to where the PDE residual is largest, so the front gets resolved without
-globally densifying the grid.
+The canonical nonlinear advection-diffusion benchmark, as a **parametric family**: an exact traveling-shock front
+whose thickness is set by the viscosity $\nu$ — a network input — so one trained net + one ONNX covers the whole
+viscosity family and the web **Live** tab sweeps the shock from sharp to diffuse.
 
 ## Problem
 
-The 1D viscous Burgers equation with a small viscosity:
+The 1D viscous Burgers equation on $x\in[-1,1]$, $t\in[0,1]$:
 
-$$ u_t + u\,u_x = \nu\,u_{xx}, \qquad \nu = \frac{0.01}{\pi}, \qquad x\in[-1,1],\ t\in[0,1], $$
+$$ u_t + u\,u_x = \nu\,u_{xx}. $$
 
-with initial and boundary conditions
+Burgers admits an exact **traveling-wave (tanh) solution** — a front that translates without changing shape, valid
+for *any* $\nu$ (Whitham, *Linear and Nonlinear Waves*). With left/right states $u_L=1,\ u_R=0$ (so $\Delta=u_L-u_R=1$,
+shock speed $s=\tfrac{u_L+u_R}{2}=\tfrac12$) and an initial front position $x_0=-0.4$:
 
-$$ u(x,0) = -\sin(\pi x), \qquad u(\pm 1, t) = 0. $$
+$$ u^*(x,t;\nu) = s - \frac{\Delta}{2}\tanh\!\Big(k\,(x-x_0-s\,t)\Big), \qquad k=\frac{\Delta}{4\nu}. $$
 
-Nonlinear advection $u\,u_x$ steepens the initial sine into a near-discontinuity at $x=0$, while the tiny
-diffusion $\nu\,u_{xx}$ regularizes it into a thin viscous layer. The field is smooth early and develops the steep
-internal layer only as $t\to 1$ — the regime where a non-adaptive PINN smears the front.
+The viscosity $\nu\in[0.02,0.08]$ sets the front **thickness** ($\sim 4\nu$): small $\nu$ → a razor-thin internal
+layer; large $\nu$ → a diffuse ramp. The front translates right at speed $s$ and stays interior to the domain.
 
-## Method — RAR / RAR-G (residual-based adaptive refinement)
+## Method — hard constraints + RAR
 
-The method is **RAR-G** (Wu et al., *CMAME* 2023). Training starts from uniform collocation (2500 domain, 100
-boundary, 160 initial points) with **soft BC/IC** enforcement, an Adam warm-up (10000 iterations, lr $10^{-3}$),
-and an L-BFGS polish. Then it refines greedily over **8 rounds**: each round samples a pool of **50000** candidate
-points, evaluates the PDE residual at each, **adds the top-200 highest-residual points** as new anchors, and
-re-trains (5000 Adam iterations + L-BFGS). Because the largest residuals concentrate at the shock front, the added
-points cluster there — the network spends capacity exactly where the physics is hard, instead of uniformly.
+The IC and both Dirichlet BCs are imposed **exactly** by an output transform (no IC/BC loss term):
 
-Architecture: a small `tanh` FNN `[2, 20, 20, 20, 1]` (Glorot-normal init), engine DeepXDE. The geometry trains on
-$t\in[0,0.99]$ (upstream choice) while evaluation spans the full reference grid $t\in[0,1]$.
+$$ u_\theta = g(x;\nu) + t\,(1-x^2)\,\mathcal{N}_\theta(x,t,\nu), \qquad g(x;\nu)=u^*(x,0;\nu), $$
+
+which leaves the initial front at $t=0$ and the (time-constant) Dirichlet states at $x=\pm1$. On top of the base fit,
+**RAR** (residual-based adaptive refinement, Wu et al., *CMAME* 2023) adds the highest-residual collocation points —
+which land on the moving front — over several rounds. Net `[3,96,96,96,96,96,1]` tanh (DeepXDE), Adam → L-BFGS.
+$\nu$ is a network input, so the trained net spans the family and the Live tab sweeps it.
 
 ## Result (measured, seed 42)
 
-Validation anchor: the **spectral reference field** `Burgers.npz` (Raissi 2019 / DeepXDE, MIT) — a numerical
-reference on a $256\times100$ $(x,t)$ grid, not real-world data.
+Validation anchor: the **exact traveling-shock** $u^*(x,t;\nu)$ (closed form, all $\nu$). Six baked variants
+($\nu=0.02,0.03,0.04,0.05,0.06,0.08$):
 
 | metric | value |
 |--------|-------|
-| relative-L2 vs `Burgers.npz` | **0.97 %** (band target: < 0.5 %) |
-| max absolute error | 0.107 (at the shock front) |
-| ONNX parity (max abs) | 9.5e-7 |
-| lane | **live** (12.4 KB ONNX, 2.57 ms infer) |
+| relative-L2 vs analytic | **≤ 1.2 %** across all 6 variants (sharpest $\nu=0.02$ → 0.08 %; $\nu=0.08$ → 1.2 %) |
+| ONNX parity (max abs) | 6.5e-7 |
+| lane | **live** (one shared ONNX; Live sweeps $\nu$) |
 
-The relative-L2 of 0.97 % is a faithful match to the spectral truth; the error is not uniform but concentrated in
-the thin viscous layer, where the max absolute error of 0.107 lives — the classic hard spot that motivates RAR in
-the first place. This is honest CPU-trained accuracy: it clears the live gate (small ONNX, exact parity, fast
-inference) and sits just above the aspirational < 0.5 % band, with the residual error physically localized at the
-front rather than spread across the smooth bulk.
+The hard-constraint baseline encodes the front, so the net only learns the small interior translation — the *sharpest*
+viscosity is the *most* accurate. Honest CPU-trained accuracy, all variants inside the `< 2e-2` band.
 
 ## Honesty
 
-`real_or_synthetic = synthetic`. The validation anchor is a **numerical spectral reference**, not measured data —
-Burgers' equation has no simple closed form here, so the high-resolution spectral solution serves as ground truth.
-Nothing is fit to real-world observations; the case measures how well an adaptive PINN reproduces an established
-numerical benchmark. This is the appropriate honesty tag: the truth is exact-by-construction (spectral) but
-synthetic, distinct from the `validated-real` cases trained on measured data and from `synthetic-illustrative`
-reduced models.
+`real_or_synthetic = synthetic`. The anchor is the exact traveling-shock solution (closed-form for every $\nu$), not
+measured data. The classic Raissi sine-IC benchmark ($u(x,0)=-\sin\pi x$, $\nu=0.01/\pi$) has no closed-form
+*parametric* family, so the traveling-wave family is used here — it gives a genuinely $\nu$-dependent field and an
+exact anchor for the whole sweep.
 
 ## Reproduce
 

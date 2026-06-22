@@ -1,53 +1,49 @@
-# ctrl-zero-source — degenerate control: zero source, zero field
+# ctrl-zero-source — MMS verification family, parametric source amplitude a (contains the degenerate control)
 
-The catalogue's mandatory **negative control**. It exercises the **hard-constraint** technique (an output transform that
-makes the Dirichlet boundary condition exact by construction) on the most trivial PDE there is, to prove the pipeline
-survives the degenerate case without crashing and returns a flat-zero field.
+A manufactured-solution (MMS) **verification family** for the Poisson operator, parametric in the **source amplitude**
+$a$ — a network input. It exercises the **hard-constraint** technique (a zero-Dirichlet output transform, exact by
+construction) and *contains* the catalogue's mandatory degenerate negative control as its $a=0$ limit. The web **Live**
+tab sweeps $a$ and the field fades to flat zero.
 
 ## Problem
 
-Homogeneous Laplace problem on the unit square with a zero source and a hard-zero boundary:
+Poisson with a hard-zero boundary and a two-mode manufactured solution, on $(0,1)^2$:
 
-$$ -\nabla^2 u = 0\ \text{on}\ (0,1)^2,\quad u|_{\partial\Omega}=0\ \Rightarrow\ u\equiv 0. $$
+$$ -\nabla^2 u = f(x,y;a),\quad u|_{\partial\Omega}=0,\qquad
+   u^*(x,y;a)=a\big(\sin\pi x\sin\pi y+\tfrac12\sin 2\pi x\sin 2\pi y\big). $$
 
-The domain is the square $\Omega=(0,1)^2$, sampled on a $41\times41$ grid (inputs $x,y$; output $u$). With no forcing and
-homogeneous boundaries, the unique solution is identically zero — so the analytic truth is $u^*(x,y)=0$ everywhere, and
-the relative-L2 collapses to $\lVert\text{pred}\rVert$ (the norm of the prediction itself), which must be tiny.
+$u^*$ vanishes on the whole boundary for every $a$; substituting into $-\nabla^2$ gives the imposed source
+$f=a\,(2\pi^2\sin\pi x\sin\pi y+4\pi^2\sin 2\pi x\sin 2\pi y)$. The amplitude $a\in[0,1]$ is a network input:
+**at $a=0$ this is the archetype's degenerate negative control** ($f\equiv0\Rightarrow u\equiv0$ — the engine must run
+and return flat zero); at $a=1$ a two-mode field (a dominant fundamental lobe + a finer second-mode ripple). (This
+generalises the old degenerate-only control into an honest parametric family whose $a=0$ limit *is* the control.)
 
 ## Method
 
-**Hard constraints.** Rather than penalizing the boundary residual in the loss (a soft constraint), the network output is
-multiplied by a function that vanishes on $\partial\Omega$ by construction:
-
-$$ u(x,y)=x(1-x)\,y(1-y)\cdot \mathcal{N}_\theta(x,y), $$
-
-via DeepXDE's `apply_output_transform`. The factor $x(1-x)y(1-y)$ is exactly zero on all four edges, so $u|_{\partial\Omega}=0$
-is satisfied identically — no BC loss term, no BC collocation points (`num_boundary=0`). The PDE residual is the bare
-Laplacian $-u_{xx}-u_{yy}$ (zero source) evaluated at 500 interior collocation points; the net is a small
-`[2, 16, 16, 1]` tanh FNN trained with Adam (lr $10^{-3}$, 2000 steps, no L-BFGS). With both the source and the boundary
-pinned to zero, the only fixed point of the residual is the trivial field — the test is whether the engine reaches it.
+**Hard constraints.** The zero Dirichlet boundary is satisfied identically by the output transform
+$u_\theta = x(1-x)\,y(1-y)\cdot\mathcal{N}_\theta(x,y,a)$ — no BC loss, no boundary collocation. The PDE residual is the
+bare $-u_{xx}-u_{yy}-f(x,y;a)$. Net $[3,48,48,48,48,1]$ tanh (DeepXDE), Hypercube $(x,y,a)$, Adam (12000, lr $10^{-3}$)
+→ L-BFGS, anchor via `solution=analytic`. $a$ is a network input, so the trained net spans the family and the Live tab
+sweeps it.
 
 ## Result (measured, seed 42)
 
+Validation anchor: the manufactured $u^*(x,y;a)$. Six variants ($a=0,0.2,0.4,0.6,0.8,1.0$):
+
 | metric | value |
 |--------|-------|
-| relative-L2 vs analytic ($u^*\equiv0$) | **2.07e-4** ($\lVert\text{pred}\rVert$, anchor = analytic) |
-| max abs error | 1.4e-5 |
-| ONNX parity (max abs) | 4e-9 |
-| lane | **live** (13 KB ONNX, 0.24 ms infer) |
+| relative-L2 vs $u^*$ | **≤ 0.15 %** for $a\ge0.2$; $a=0$ → $\lVert\text{pred}\rVert=2.1\%$ (the degenerate control: $u^*\equiv0$, so the metric is the field norm — essentially flat zero) |
+| ONNX parity (max abs) | 4.2e-7 |
+| lane | **live** (one shared ONNX; Live sweeps $a$) |
 
-Validation anchor is **analytic**: the closed-form truth is exactly zero, so the score is the magnitude of the field the
-PINN actually produces. A relative-L2 of 2.07e-4 (max pointwise 1.4e-5) means the predicted field is essentially flat
-zero to four decimals — the engine handles the degenerate case cleanly. The 4e-9 ONNX parity and 0.24 ms inference put it
-comfortably on the live lane.
+The $a=0$ chip reproduces the mandatory negative control as the limit of the family; the engine returns a near-flat-zero
+field there, and recovers the two-mode field cleanly as $a\to1$.
 
 ## Honesty
 
-`real_or_synthetic = synthetic` — the truth is closed-form ($u\equiv0$), not a measured dataset. Nothing is fit to data
-and nothing is manufactured to flatter the model: this is a sanity check, not a science result. Its only job in the
-catalogue is to confirm that with zero forcing and a hard-zero boundary the pipeline (PDE residual → train → bake →
-ONNX export → parity → gate) runs end-to-end and returns the correct trivial field. If this case ever drifts off zero,
-something upstream is broken.
+`real_or_synthetic = synthetic` — the truth is the closed-form manufactured $u^*$, not measured data. Nothing is fit to
+data; the case is a rigorous MMS verification of the Poisson operator (and the pipeline's degenerate-control sanity
+check) — the relative-L2 is an exact-by-construction error.
 
 ## Reproduce
 

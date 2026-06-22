@@ -1,64 +1,50 @@
-# poll-ocean-transport — 2D advection-diffusion PINN (passive scalar in a gyre)
+# poll-ocean-transport — 2D advection-diffusion PINN (time-scrubber over an advected pollutant patch)
 
-The first case to put **two spatial dimensions and time** under the same network. It exercises the
-**unsteady advection-diffusion** family with the method of manufactured solutions (MMS) as the validation anchor:
-a passive pollutant carried by a prescribed divergence-free ocean gyre while eddy-diffusing.
+Two spatial dimensions and time under one network, presented as a **time-scrubber**: a pollutant patch drifts with a
+coastal current and spreads by eddy diffusion. **Time is the swept parameter** — `field_axes=(x,y)`, six time
+snapshots — so the web **Live** tab scrubs $t$ and replays the spill drifting and diluting.
 
 ## Problem
 
-A passive scalar $c$ (plastic / oil-spill tracer) is advected by an incompressible current $\mathbf{v}$ and
-diffused by eddy diffusivity $D$ on the unit square over one time unit:
+A passive scalar $c$ (plastic / oil tracer) advects with a uniform current $\mathbf{v}$ and diffuses with eddy
+diffusivity $D$ on the unit square over one time unit:
 
-$$ c_t + \mathbf{v}\cdot\nabla c = D\,\nabla^2 c + f, \qquad \nabla\cdot\mathbf{v}=0,\ D=0.01, $$
+$$ c_t + \mathbf{v}\cdot\nabla c = D\,\nabla^2 c, \qquad \mathbf{v}=(0.45,\,0.35),\ D=0.01. $$
 
-$$ \mathbf{v} = \big(-A\sin(\pi x)\cos(\pi y),\ A\cos(\pi x)\sin(\pi y)\big),\quad A=1. $$
+For a Gaussian point release this has an **exact solution** (the advected-diffused 2D Green's function — a genuine
+solution, *not* a manufactured source):
 
-The current is a single divergence-free gyre. The domain is $(x,y)\in(0,1)^2$, $t\in(0,1]$, sampled on a
-$41\times41\times21$ grid. The Péclet number $\mathrm{Pe}=AL/D\approx 100$ — strongly advection-dominated, yet it
-converges without a curriculum.
+$$ c^*(x,y,t)=\frac{s_0^2}{s_0^2+2Dt}\,\exp\!\Big(-\frac{(x-x_0-v_x t)^2+(y-y_0-v_y t)^2}{2\,(s_0^2+2Dt)}\Big). $$
 
-The **manufactured truth** (validation anchor) is
-
-$$ c^*(x,y,t)=e^{-2D\pi^2 t}\sin(\pi x)\sin(\pi y), $$
-
-and the source term $f=\mathbf{v}\cdot\nabla c^*$ is set to exactly whatever the gyre does to $c^*$, so $c^*$ is an
-exact solution of the forced PDE.
+The patch **center** moves with the current ($\mathbf{x}_0+\mathbf{v}t$), its **variance** grows linearly
+($s^2=s_0^2+2Dt$), and its **peak** decays as $s_0^2/s^2$ (mass conserved). Péclet $\mathrm{Pe}=|\mathbf{v}|L/D\approx45$
+— advection-dominated. (The earlier gyre-MMS field was a decaying eigenmode that did not visibly move; it was replaced
+by this genuinely-translating exact solution.)
 
 ## Method
 
-**Advection-diffusion PINN with soft IC/BC.** The network is a $[3,64,64,64,64,1]$ tanh FNN (DeepXDE engine)
-trained Adam (18000 steps, lr $10^{-3}$) → L-BFGS. The residual encodes the full transport operator —
-$c_t$, the gyre dot-product $v_x c_x + v_y c_y$, the Laplacian $D(c_{xx}+c_{yy})$, and the MMS source.
-
-The design choice that makes the score honest: the Dirichlet boundary ($c=c^*$ on the open boundary) and the
-initial condition ($c=c^*$ at $t=0$) are imposed as **soft penalty losses**, not hard-baked into the output.
-Loss weights $[1,10,50]$ for $[\text{pde},\text{bc},\text{ic}]$ keep the data-fit terms from being drowned by the
-interior residual. Because the constraints are soft, the network must genuinely learn the interior transport field
-rather than interpolate a hard-coded boundary — so the reported relative-L2 is the true PINN error, not a boundary
-artifact.
+**Advection-diffusion PINN with soft IC/BC.** Net $[3,64,64,64,64,1]$ tanh (DeepXDE), Adam (18000, lr $10^{-3}$) →
+L-BFGS, loss weights $[1,10,50]$ for $[\text{pde},\text{bc},\text{ic}]$. The Dirichlet boundary ($c=c^*$) and IC
+($c=c^*$ at $t=0$) are **soft penalties**, so the net genuinely learns the interior transport and the relative-L2 is
+the true PINN error. Time is a network input; the six variants fix $t\in\{0,0.2,0.4,0.6,0.8,1.0\}$ and the Live tab
+sweeps it continuously (a time scrubber over the shared ONNX).
 
 ## Result (measured, seed 42)
 
+Validation anchor: the **exact advected-diffused Gaussian** $c^*$. Six time-snapshot variants:
+
 | metric | value |
 |--------|-------|
-| relative-L2 vs MMS analytic | **0.0314 %** (3.14e-4) |
-| max absolute error | 7.72e-4 |
-| validation anchor | analytic (MMS closed form) |
-| ONNX parity (max abs) | **5.96e-7** |
-| lane | **live** (61 KB, 6.54 ms infer, opset 18) |
-
-The relative-L2 of **3.1e-4** is comfortably inside the expected band (`< 1e-2`) and is not CPU-limited — the
-advection-dominated $\mathrm{Pe}\approx100$ field is recovered cleanly, and the ONNX export reproduces the trained
-net to single-precision parity (5.96e-7).
+| relative-L2 vs exact | **≤ 0.19 %** across all 6 snapshots ($t=0$ → 0.06 %; $t=1$ → 0.19 %) |
+| ONNX parity (max abs) | 4.8e-7 |
+| lane | **live** (one shared ONNX; Live = time scrubber) |
 
 ## Honesty
 
-`real_or_synthetic = synthetic-illustrative`. The truth is a closed-form MMS field, not a fit to a real spill or a
-real ocean-current product — the gyre, the diffusivity, and the tracer profile are a **physically-faithful
-illustration** of how a pollutant spreads under a current, not a measurement. What *is* real is the PINN error:
-because IC/BC are soft, the relative-L2 measures the network's actual interior accuracy against the exact analytic
-solution, with nothing hard-coded to flatter it. Use this case as a transport-solver template, not as a forecast of
-any specific spill.
+`real_or_synthetic = synthetic-illustrative`. The truth is a closed-form exact solution, not a fit to a real spill or
+a real ocean-current product — a **physically-faithful illustration** of advective-diffusive transport. The uniform
+current is a deliberate simplification (no gyre / time-varying flow). What is real is the PINN error: with soft IC/BC,
+the relative-L2 measures the network's actual interior accuracy against the exact solution.
 
 ## Reproduce
 
