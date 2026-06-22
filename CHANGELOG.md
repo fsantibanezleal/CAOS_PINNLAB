@@ -3,6 +3,49 @@
 All notable changes to **PINN-Lab**. Format: `X.XX.XXX` (display) — see `pinnlab.__version__`. Keep `0.x` while on
 synthetic/benchmark data. Tag every release.
 
+## [0.10.000] — 2026-06-22 — the SimLab-style per-case workbench, all 19 cases, deployed
+
+The defining release: every case is now a **workbench**, the whole catalogue is migrated, and the app is live at
+**https://pinnlab.fasl-work.com**.
+
+### Added — per-case workbench (manifest/v2) across all 19 cases
+- **A workbench per case** mirroring CAOS_SIMLAB (ADR-0016 §9): a **variant bar** (parameter regimes as chips + lane
+  badge + bilingual note) + **four sub-tabs — Field / Live / Charts / Context**. The **Field** view is an interactive
+  viridis heatmap with a value read-out at the cursor + colorbar + two line-cut profiles; **Live** re-evaluates the
+  exported ONNX in-browser (onnxruntime-web) as you move the parameter slider; **Charts** is a clickable per-variant
+  relative-L2 comparison; **Context** is a deep bilingual (EN/ES) write-up (the problem → components → formalization in
+  KaTeX → scope → what each variant shows → how to read & use the viz).
+- **manifest/v2** (`pinnlab.manifest/v2`): each case bakes one compact field trace **per variant**, with `param_specs`
+  + `field_axes`; a **parametric** case makes its physical knob a *network input* so ONE trained net + ONE ONNX drives
+  the whole family and the Live tab sweeps it continuously (stronger than SimLab's pre-simulated regimes).
+- **Parametric families (6 variants, Live sweep):** poisson (source mode `k`), heat1d (diffusivity `α`), wave1d
+  (speed `c`, SIREN), burgers1d (viscosity `ν`, traveling-shock + RAR), ctrl-zero-source (amplitude `a`, contains the
+  degenerate `a=0` control), tailings-seepage (Gardner sorptive `α`, exact **Kirchhoff** family), thickener-settling
+  (descent rate `R`, Bürger-Concha), comminution-pbe (grind rate `g`). **Time-scrubbers** (param = `t`):
+  ocean-transport (advected-diffused Gaussian), heap-leach-rt (2-species reactive transport).
+- **Single honest benchmarks** (no fabricated regimes — ADR-0016 §9.A): allencahn (stiff, stationary front),
+  flotation-kinetics (full-family `C(k,t)` map), soil-barrier (FBPINN kink), helmholtz (high-wavenumber Fourier
+  features), navier-cavity (Ghia Re=100), heat2d-inverse (recover `k(x,y)` from sparse sensors), source-uq-bpinn
+  (deep-ensemble UQ), **env-soil-heat-real (REAL NOAA USCRN data** — recovered `α=0.30 mm²/s`, held-out RMSE 1.03 °C).
+  darcy-operator ships a **discrete** family of 6 held-out FNO test samples (operator generalization 5.5 %).
+- **Honest measured bands** per case (relative-L2 ≤0.4 % for the clean analytic families; ~10 % for the spectral-bias
+  Helmholtz / ~17 % for the CPU Navier-cavity — labeled honestly, GPU lanes noted). ONNX parity `< 1e-4` everywhere.
+
+### Added — deep content + docs
+- Content pages rewritten to depth: Introduction (PINN loss in KaTeX), Implementation (5 sub-tabs of the build/web/
+  design flows), Methodology (9 SOTA method families + DOIs), Experiments (per-category narrative). **Zero internal
+  repo paths in the rendered UI.**
+- `docs/` entry point (`docs/README.md`) + a real `guides/` set (getting-started, pipeline, web-app, add-a-case,
+  interpreting-results) + `frameworks/` & `methods/` landings + a runnable `docs/frameworks/deepxde/example.py`.
+- Root `README.md` rewritten for PINN-Lab (was the generic template boilerplate).
+
+### Fixed — green CI + clean public artifacts
+- Updated `tests/*` + `scripts/check_artifacts.py` to the **manifest/v2** schema (per-variant `trace`/`metrics`;
+  parametric poisson `input_dim=3`).
+- `strip_onnx_metadata()` (io/formats) wired into the ONNX export — the dynamo exporter embedded the local build path
+  in graph metadata; stripped from all 19 `.onnx` (inference/parity unaffected) so no local-machine path ships.
+- ruff clean (E702/F401/E731). CI (guards + test) is green.
+
 ## [0.07.000] — 2026-06-21
 
 ### Added — `bench-darcy-operator` (case #19, the operator-learning method family)
