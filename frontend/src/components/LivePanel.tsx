@@ -5,10 +5,21 @@ import { onnxUrl } from "../lib/data";
 import { evalNet } from "../lib/onnx";
 import { FieldView } from "./FieldView";
 
+/** A zoomed/panned sub-window of an axis range. zoom>=1 (1 = full domain); pan in [-1,1] shifts the window center
+ *  within the domain (no effect at zoom 1). The window always stays inside the trained domain, so every probe is a
+ *  valid in-domain evaluation — zooming/panning genuinely re-runs the net on a different sub-grid (it visibly moves,
+ *  which is the point: it proves the browser is computing, not replaying). */
+function windowRange([lo, hi]: [number, number], zoom: number, pan: number): [number, number] {
+  const span = hi - lo;
+  const half = span / (2 * Math.max(1, zoom));
+  const c = (lo + hi) / 2 + pan * (span / 2 - half);
+  return [c - half, c + half];
+}
+
 /** The `Live` tab: re-evaluates the field IN THE BROWSER via onnxruntime-web. For a parametric case the param
- *  sliders drive a live re-evaluation of the shared ONNX (move k -> the field recomputes); for a non-parametric live
- *  case a resolution slider re-evaluates the trained net at any grid; a precompute (field-IO operator) case explains
- *  that the operator ran offline and the baked result is replayed. This is the live counterpart of the pipeline. */
+ *  sliders drive a live re-evaluation of the shared ONNX (move k -> the field recomputes); EVERY live case also gets
+ *  an Explore (zoom + pan) control that re-runs the net on a sub-window (visibly moves -> proves it is computing) and
+ *  a resolution slider; a precompute (field-IO operator) case explains the baked result is replayed. */
 export function LivePanel({ manifest, lang }: { manifest: CaseManifest; lang: "en" | "es" }) {
   const es = lang === "es";
   const fieldAxes = manifest.field_axes;
@@ -21,6 +32,7 @@ export function LivePanel({ manifest, lang }: { manifest: CaseManifest; lang: "e
   );
   const [res, setRes] = useState(81);
   const [oIdx, setOIdx] = useState(0);
+  const [view, setView] = useState({ zoom: 1, panX: 0, panY: 0 });
   const [field, setField] = useState<number[][] | null>(null);
   const [ms, setMs] = useState<number | null>(null);
   const [err, setErr] = useState<string | null>(null);
@@ -56,8 +68,8 @@ export function LivePanel({ manifest, lang }: { manifest: CaseManifest; lang: "e
       const coords = new Float32Array(n * d);
       const a0 = fieldAxes[0];
       const a1 = fieldAxes[1];
-      const [x0, x1] = ranges[a0];
-      const [y0, y1] = ranges[a1];
+      const [x0, x1] = windowRange(ranges[a0], view.zoom, view.panX);
+      const [y0, y1] = windowRange(ranges[a1], view.zoom, view.panY);
       let k = 0;
       for (let ix = 0; ix < nx; ix++) {
         const xv = x0 + ((x1 - x0) * ix) / (nx - 1);
@@ -89,7 +101,7 @@ export function LivePanel({ manifest, lang }: { manifest: CaseManifest; lang: "e
     } catch (e) {
       if (id === reqId.current) setErr(String(e));
     }
-  }, [ranges, livable, manifest, res, params, oIdx, fieldAxes.join(",")]);
+  }, [ranges, livable, manifest, res, params, oIdx, view, fieldAxes.join(",")]);
 
   useEffect(() => {
     void recompute();
@@ -106,6 +118,10 @@ export function LivePanel({ manifest, lang }: { manifest: CaseManifest; lang: "e
       </div>
     );
   }
+
+  const wx: [number, number] = ranges ? windowRange(ranges[fieldAxes[0]], view.zoom, view.panX) : [0, 1];
+  const wy: [number, number] = ranges ? windowRange(ranges[fieldAxes[1]], view.zoom, view.panY) : [0, 1];
+  const zoomed = view.zoom > 1.0001;
 
   return (
     <div className="live-panel">
@@ -144,6 +160,25 @@ export function LivePanel({ manifest, lang }: { manifest: CaseManifest; lang: "e
           </label>
         ))}
         <label className="ctl">
+          <span>{es ? "Zoom (explorar)" : "Zoom (explore)"}: <strong className="mono">{view.zoom.toFixed(2)}×</strong></span>
+          <input className="scrub" type="range" min={1} max={5} step={0.25} value={view.zoom}
+            onChange={(e) => setView((v) => ({ ...v, zoom: Number(e.target.value) }))} />
+        </label>
+        {zoomed && (
+          <>
+            <label className="ctl">
+              <span>{es ? "Desplazar X" : "Pan X"}: <strong className="mono">{view.panX.toFixed(2)}</strong></span>
+              <input className="scrub" type="range" min={-1} max={1} step={0.05} value={view.panX}
+                onChange={(e) => setView((v) => ({ ...v, panX: Number(e.target.value) }))} />
+            </label>
+            <label className="ctl">
+              <span>{es ? "Desplazar Y" : "Pan Y"}: <strong className="mono">{view.panY.toFixed(2)}</strong></span>
+              <input className="scrub" type="range" min={-1} max={1} step={0.05} value={view.panY}
+                onChange={(e) => setView((v) => ({ ...v, panY: Number(e.target.value) }))} />
+            </label>
+          </>
+        )}
+        <label className="ctl">
           <span>{es ? "Resolución" : "Resolution"}: <strong className="mono">{res}×{res}</strong></span>
           <input className="scrub" type="range" min={33} max={161} step={4} value={res} onChange={(e) => setRes(Number(e.target.value))} />
         </label>
@@ -155,8 +190,8 @@ export function LivePanel({ manifest, lang }: { manifest: CaseManifest; lang: "e
         <>
           <FieldView
             field={field}
-            axisX={{ label: fieldAxes[0], lo: ranges![fieldAxes[0]][0], hi: ranges![fieldAxes[0]][1] }}
-            axisY={{ label: fieldAxes[1], lo: ranges![fieldAxes[1]][0], hi: ranges![fieldAxes[1]][1] }}
+            axisX={{ label: fieldAxes[0], lo: wx[0], hi: wx[1] }}
+            axisY={{ label: fieldAxes[1], lo: wy[0], hi: wy[1] }}
             outputLabel={manifest.outputs[oIdx]}
           />
           {ms !== null && (
