@@ -23,6 +23,7 @@ A_MIN, A_MAX = 0.1, 1.0
 
 CASE = CaseSpec(
     id="bench-heat1d",
+    system_type="time-evol-1d",
     category="canonical-benchmark",
     title="1D transient heat/diffusion, parametric diffusivity — time-dependent hard-constraint PINN",
     governing_equations=(

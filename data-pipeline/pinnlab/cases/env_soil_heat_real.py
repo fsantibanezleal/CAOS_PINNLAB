@@ -41,6 +41,7 @@ def _norm(d: int) -> np.ndarray:
 
 CASE = CaseSpec(
     id="env-soil-heat-real",
+    system_type="time-evol-1d",
     category="pollution-environmental",
     title="Subsurface heat conduction — recover soil thermal diffusivity from REAL USCRN temperatures",
     governing_equations=(

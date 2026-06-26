@@ -31,6 +31,7 @@ def _k(nu):
 
 CASE = CaseSpec(
     id="bench-burgers1d",
+    system_type="time-evol-1d",
     category="canonical-benchmark",
     title="1D viscous Burgers, parametric viscosity — hard-constraint PINN + RAR (traveling shock)",
     governing_equations=(
