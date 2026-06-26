@@ -93,34 +93,36 @@ export function FieldView({
 
   return (
     <div className="fieldview">
-      <div className="fieldview-main">
+      <div className="fieldview-map">
         <div className="field-wrap" onMouseMove={onMove} onMouseLeave={() => setCur(null)}>
           <canvas ref={canvasRef} className="field-canvas" style={{ aspectRatio: `${nx} / ${ny || 1}` }} />
           {cur && (
             <>
               <div className="xhair xhair-v" style={{ left: `${cx * 100}%` }} />
-              <div className="xhair xhair-h" style={{ top: `${(1 - cy) * 100}%` }} />
-              <div className="xhair-dot" style={{ left: `${cx * 100}%`, top: `${(1 - cy) * 100}%` }} />
+              <div className="xhair xhair-h" style={{ top: `${cy * 100}%` }} />
+              <div className="xhair-dot" style={{ left: `${cx * 100}%`, top: `${cy * 100}%` }} />
             </>
           )}
         </div>
         <Colorbar lo={lo} hi={hi} value={val} label={outputLabel} />
       </div>
 
-      <div className="readout">
-        {cur ? (
-          <span className="mono">
-            {axisX.label}={ax(cur.ix, axisX, nx).toFixed(3)} &nbsp; {axisY.label}={ax(cur.iy, axisY, ny).toFixed(3)}
-            &nbsp; → &nbsp; <strong>{outputLabel}={val!.toExponential(3)}</strong>
-          </span>
-        ) : (
-          <span className="muted">hover the field to read the value at any point · field min {lo.toExponential(2)} · max {hi.toExponential(2)}</span>
-        )}
-      </div>
+      <div className="fieldview-side">
+        <div className="readout">
+          {cur ? (
+            <span className="mono">
+              {axisX.label}={ax(cur.ix, axisX, nx).toFixed(3)} &nbsp; {axisY.label}={ax(cur.iy, axisY, ny).toFixed(3)}
+              &nbsp; → &nbsp; <strong>{outputLabel}={val!.toExponential(3)}</strong>
+            </span>
+          ) : (
+            <span className="muted">hover the field to read the value at any point · field min {lo.toExponential(2)} · max {hi.toExponential(2)}</span>
+          )}
+        </div>
 
-      <div className="profiles">
-        <Profile title={`${outputLabel} vs ${axisX.label}`} n={nx} values={rowProfile} cursorIdx={cur?.ix ?? -1} />
-        <Profile title={`${outputLabel} vs ${axisY.label}`} n={ny} values={colProfile} cursorIdx={cur?.iy ?? -1} />
+        <div className="profiles">
+          <Profile title={`${outputLabel} vs ${axisX.label}`} n={nx} values={rowProfile} cursorIdx={cur?.ix ?? -1} />
+          <Profile title={`${outputLabel} vs ${axisY.label}`} n={ny} values={colProfile} cursorIdx={cur?.iy ?? -1} />
+        </div>
       </div>
     </div>
   );
