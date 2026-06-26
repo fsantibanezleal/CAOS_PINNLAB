@@ -1,8 +1,8 @@
 """Stage 5 — evaluate (the TEST stage): relative-L2 of the PINN field vs the validation anchor (analytic / reference
-dataset / FEM), plus the ONNX-vs-model parity (the train->web contract check). Evaluated AT the variant's parameter
+dataset / numerical), plus the ONNX-vs-model parity (the train->web contract check). Evaluated AT the variant's parameter
 regime (for a parametric case the analytic anchor is computed on the same param-filled grid as the baked field). A
 case may additionally expose `extra_metrics(sf)` for a bespoke anchor (e.g. Ghia cavity, held-out real data).
-Leakage-safe: the reference is the closed-form/dataset/FEM truth, never PINN output."""
+Leakage-safe: the reference is the closed-form/dataset/numerical truth, never PINN output."""
 from __future__ import annotations
 
 import numpy as np

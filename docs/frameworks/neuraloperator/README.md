@@ -336,7 +336,7 @@ operators are good replay-lane candidates even when export technically succeeds.
 | **Primary case** | **`bench-darcy-operator`** (canonical Group A) — exercises FNO + PINO, discretization-invariance, and zero-shot super-resolution. The one operator case kept in v1 to harden the operator lane (dossier Open-Question §7: keep one, defer the rest). |
 | **Methods exercised** | `methods/fno.md` (#19) and `methods/pino.md` (#20) — both first land in `bench-darcy-operator`. |
 | **Live vs replay** | Decided by the gate per case. FNO ONNX export is fragile (FFT/complex); if export + `onnxruntime-web` inference pass the gate, serve live, **else replay** the baked field. Default expectation for the first operator case is **replay-backed**, with live as a stretch goal. |
-| **Validation obligation** | Operators are distribution-bounded — `bench-darcy-operator` **must** be validated **out-of-distribution** against a classical Darcy FEM/FVM reference, and the Benchmark page must surface the documented failure modes (unseen high freqs, OOD BC blow-up, energy dissipation). |
+| **Validation obligation** | Operators are distribution-bounded — `bench-darcy-operator` **must** be validated **out-of-distribution** against a classical numerical Darcy reference (finite-difference), and the Benchmark page must surface the documented failure modes (unseen high freqs, OOD BC blow-up, energy dissipation). |
 | **Future use** | Any *parametric* mining/pollution surrogate (a PDE family rather than a single instance) would also use this engine — deferred to v2 per the dossier; the Darcy case proves the lane first. |
 
 **One-line stance:** use `neuraloperator` only where the problem is genuinely a *family* of PDE

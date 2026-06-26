@@ -56,13 +56,13 @@ export function Implementation() {
         <li><strong>feature / sampling</strong> — arma el plan de colocación (muestreo del dominio y, si aplica, refinamiento).</li>
         <li><strong>train</strong> — ajusta el PINN con el motor SOTA (Adam → L-BFGS, + RAR si el caso lo define), exporta a ONNX y verifica paridad.</li>
         <li><strong>infer</strong> — evalúa el campo en la grilla de cada variante (régimen de parámetro).</li>
-        <li><strong>evaluate</strong> — calcula el <InlineMath tex={String.raw`L^2`} /> relativo contra la referencia analítica/FEM (la etapa de <em>test</em>).</li>
+        <li><strong>evaluate</strong> — calcula el <InlineMath tex={String.raw`L^2`} /> relativo contra la referencia analítica/numérica (la etapa de <em>test</em>).</li>
         <li><strong>export</strong> — escribe el artefacto de replay decimado + el manifest por variante.</li>
       </ol>
       <p>
         El error reportado es el <strong>L2 relativo</strong> contra el ancla de validación, sobre la grilla del campo:
       </p>
-      <Equation tex={String.raw`\varepsilon_{\text{rel}}=\frac{\lVert u_\theta - u^*\rVert_2}{\lVert u^*\rVert_2},\qquad u^*=\text{referencia analítica/FEM}.`} />
+      <Equation tex={String.raw`\varepsilon_{\text{rel}}=\frac{\lVert u_\theta - u^*\rVert_2}{\lVert u^*\rVert_2},\qquad u^*=\text{referencia analítica/numérica}.`} />
       <p className="muted">
         Determinismo: misma semilla, mismo resultado. El motor pesado (DeepXDE/PhysicsNeMo) se usa AQUÍ, de verdad — no
         es decorativo.
@@ -76,11 +76,11 @@ export function Implementation() {
         <li><strong>feature / sampling</strong> — build the collocation plan (domain sampling and, where applicable, refinement).</li>
         <li><strong>train</strong> — fit the PINN with the SOTA engine (Adam → L-BFGS, + RAR if the case defines it), export to ONNX and verify parity.</li>
         <li><strong>infer</strong> — evaluate the field on each variant's grid (parameter regime).</li>
-        <li><strong>evaluate</strong> — compute the relative <InlineMath tex={String.raw`L^2`} /> against the analytic/FEM reference (the <em>test</em> stage).</li>
+        <li><strong>evaluate</strong> — compute the relative <InlineMath tex={String.raw`L^2`} /> against the analytic/numerical reference (the <em>test</em> stage).</li>
         <li><strong>export</strong> — write the decimated replay artifact + the per-variant manifest.</li>
       </ol>
       <p>The reported error is the <strong>relative L2</strong> against the validation anchor, over the field grid:</p>
-      <Equation tex={String.raw`\varepsilon_{\text{rel}}=\frac{\lVert u_\theta - u^*\rVert_2}{\lVert u^*\rVert_2},\qquad u^*=\text{analytic/FEM reference}.`} />
+      <Equation tex={String.raw`\varepsilon_{\text{rel}}=\frac{\lVert u_\theta - u^*\rVert_2}{\lVert u^*\rVert_2},\qquad u^*=\text{analytic/numerical reference}.`} />
       <p className="muted">
         Determinism: same seed, same result. The heavy engine (DeepXDE/PhysicsNeMo) is used HERE, for real — it is not
         decorative.
@@ -168,14 +168,14 @@ export function Implementation() {
     <>
       <p>Autorar un caso nuevo sigue un flujo de diseño fijo, de la física a la web:</p>
       <ol>
-        <li><strong>Definir el caso:</strong> EDP, dominio, entradas/salidas, ejes del campo y el ancla de validación (analítica/MMS/FEM).</li>
+        <li><strong>Definir el caso:</strong> EDP, dominio, entradas/salidas, ejes del campo y el ancla de validación (analítica/MMS/numérica).</li>
         <li><strong>Elegir el método SOTA</strong> que la física exige (hard constraints, RAR, Fourier features, descomposición de dominio, operador…).</li>
         <li><strong>Parametrizar:</strong> si existe una familia con forma cerrada, el parámetro físico se vuelve una <em>entrada de la red</em> y el caso bakea ≥6 variantes; si no, se publica como un benchmark de variante única, honestamente etiquetado.</li>
         <li><strong>Hornear y verificar:</strong> correr el pipeline, exigir un <InlineMath tex={String.raw`L^2`} /> relativo dentro de la banda esperada y paridad ONNX.</li>
         <li><strong>Escribir el Context</strong> bilingüe profundo y registrarlo, luego verificar la web con capturas antes de publicar.</li>
       </ol>
       <p className="muted">
-        Honestidad por diseño: cada caso declara si su ancla es analítica, FEM o datos reales, y si los valores son
+        Honestidad por diseño: cada caso declara si su ancla es analítica, numérica/benchmark o datos reales, y si los valores son
         ilustrativos-sintéticos o medidos. Nada se presenta como un gemelo digital calibrado si no lo es.
       </p>
     </>
@@ -183,14 +183,14 @@ export function Implementation() {
     <>
       <p>Authoring a new case follows a fixed design flow, from physics to web:</p>
       <ol>
-        <li><strong>Define the case:</strong> PDE, domain, inputs/outputs, field axes and the validation anchor (analytic/MMS/FEM).</li>
+        <li><strong>Define the case:</strong> PDE, domain, inputs/outputs, field axes and the validation anchor (analytic/MMS/numerical).</li>
         <li><strong>Pick the SOTA method</strong> the physics demands (hard constraints, RAR, Fourier features, domain decomposition, operator…).</li>
         <li><strong>Parametrize:</strong> if a closed-form family exists, the physical parameter becomes a <em>network input</em> and the case bakes ≥6 variants; otherwise it ships as a single-variant benchmark, honestly labeled.</li>
         <li><strong>Bake and verify:</strong> run the pipeline, require a relative <InlineMath tex={String.raw`L^2`} /> within the expected band and ONNX parity.</li>
         <li><strong>Write the deep</strong> bilingual Context and register it, then screenshot-verify the web before publishing.</li>
       </ol>
       <p className="muted">
-        Honesty by design: each case declares whether its anchor is analytic, FEM or real data, and whether values are
+        Honesty by design: each case declares whether its anchor is analytic, numerical/benchmark or real data, and whether values are
         illustrative-synthetic or measured. Nothing is presented as a calibrated digital twin if it is not one.
       </p>
     </>

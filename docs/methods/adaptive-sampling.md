@@ -182,7 +182,7 @@ uniform and adaptive sampling reduces to the baseline. Use it where the residual
   need causal/curriculum training (group B) and better architectures (group D) on top; the
   paper itself stacks RAD with those, it does not replace them. The residual indicator is also a
   proxy — a low residual does **not** guarantee a low solution error, so an honest Benchmark
-  page must still compare against an analytic / FEM reference, not just report the residual.
+  page must still compare against an analytic / numerical reference, not just report the residual.
 - **Resampling vs. refinement trade-off.** RAD's full resample tracks moving features but
   discards converged points each step (relying on the $c$ floor to retain them); RAR-G/RAR-D
   accumulate and never forget but can over-grow and over-concentrate. There is no universally

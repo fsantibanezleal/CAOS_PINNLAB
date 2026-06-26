@@ -2,7 +2,7 @@
 
 A catalogue of Physics-Informed Neural Network cases (canonical benchmarks + mining/mineral-processing +
 pollution/environmental + industrial fluids/heat). Each case trains a PINN OFFLINE with the deep-research-chosen
-SOTA engine (DeepXDE primary; PhysicsNeMo/neuraloperator per case), validates it against an analytic/FEM reference,
+SOTA engine (DeepXDE primary; PhysicsNeMo/neuraloperator per case), validates it against an analytic or numerical reference,
 exports the trained network to ONNX, and bakes a compact replay artifact + manifest. The web app runs the ONNX in
 the browser (onnxruntime-web) for live field evaluation and replays the baked artifact as a fallback.
 

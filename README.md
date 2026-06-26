@@ -1,8 +1,8 @@
 # PINN-Lab — a runnable catalogue of Physics-Informed Neural Networks
 
 PINN-Lab is a **real, reproducible product**, not a demo: a catalogue of ~20 partial-differential-equation cases,
-each trained offline by a state-of-the-art Physics-Informed Neural Network engine, **validated against an analytic /
-FEM reference**, exported to **ONNX**, and **replayed and re-inferred in the browser**. Every case ships its
+each trained offline by a state-of-the-art Physics-Informed Neural Network engine, **validated against an analytic
+or numerical reference**, exported to **ONNX**, and **replayed and re-inferred in the browser**. Every case ships its
 governing equations, the SOTA method that solves it, an interactive visualization that reacts to the cursor and the
 controls, and an honest benchmark vs. the reference — and the whole thing is deterministic given `(case, seed)`.
 
