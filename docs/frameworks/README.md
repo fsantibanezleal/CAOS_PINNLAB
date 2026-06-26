@@ -2,6 +2,8 @@
 
 The engines PINN-Lab trains with. The **deep research is binding** (ADR): every engine selected lives here *and* in
 the pinned requirements, and the pipeline actually uses it — no hand-rolled substitute for a prescribed SOTA engine.
+The one documented exception: the operator lane ships a **self-contained FNO** (`model/fno.py`) for clean ONNX export,
+with **neuraloperator** as the documented **reference** (not a runtime dependency).
 Each guide covers what the engine is, how to install/configure it deterministically, the API surface PINN-Lab leans
 on, a runnable example, and the train→ONNX→web bridge.
 
@@ -9,7 +11,7 @@ on, a runnable example, and the train→ONNX→web bridge.
 |--------|------|-------|
 | **DeepXDE** (PyTorch backend) | the **primary** offline engine for most cases (forward + inverse PINNs, RAR, hard constraints) | [deepxde/](deepxde/README.md) · [runnable example](deepxde/example.py) |
 | **PhysicsNeMo** | the GPU / geometry-heavy lane (3-D, steady Navier–Stokes) + an ONNX-deploy path | [physicsnemo/](physicsnemo/README.md) |
-| **neuraloperator** | operator learning — the Fourier Neural Operator (FNO) for the parametric Darcy case | [neuraloperator/](neuraloperator/README.md) |
+| **neuraloperator** *(reference)* | operator-learning **reference** for the Fourier Neural Operator (FNO); the Darcy case uses a self-contained FNO (`model/fno.py`) — `neuralop` is **not** a dependency | [neuraloperator/](neuraloperator/README.md) |
 | **jax-pi (jaxpi)** | the SOTA-ceiling reference (causal weighting, curriculum) — cited as the accuracy ceiling, not the default | [jaxpi/](jaxpi/README.md) |
 | **PINA** | a PyTorch-Lightning PINN framework — surveyed for the variational/operator lanes | [pina/](pina/README.md) |
 | **NeuralPDE.jl** | the Julia symbolic-PDE PINN stack — surveyed for the strong-/weak-form discretizers | [neuralpde-jl/](neuralpde-jl/README.md) |
@@ -25,5 +27,5 @@ browser's **Live** lane evaluates exactly the function that was validated offlin
 ## Choosing an engine for a new case
 
 Default to **DeepXDE/CPU**. Reach for **PhysicsNeMo** only when the case is 3-D or geometry-heavy beyond CPU fidelity,
-or for **neuraloperator** when the case is an operator (a whole input→solution map) rather than a single BVP. The
+or the **self-contained FNO** (`model/fno.py`; **neuraloperator** is the documented reference) when the case is an operator (a whole input→solution map) rather than a single BVP. The
 choice is recorded in the case's manifest (`engine.framework`) and on the Experiments page.

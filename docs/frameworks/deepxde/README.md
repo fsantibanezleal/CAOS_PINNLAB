@@ -294,7 +294,7 @@ The product hinges on **exported PINNs running client-side**. The verified path 
 | **D · industrial** | `ind-heat2d-inverse` (inverse $k(x)$), `ind-helmholtz` |
 | **control** | `ctrl-zero-source` (degenerate: $S=0$, IC $=0$ → field $\equiv 0$; the engine must not crash) |
 
-The **operator cases** (`bench-darcy-operator` and parametric surrogates) go to neuraloperator; the **GPU/3D-geometry-heavy** cases go to PhysicsNeMo. Everything else is DeepXDE — which is why this is the most-used engine and the page to read first.
+The **operator cases** (`bench-darcy-operator` and parametric surrogates) use a self-contained FNO (`model/fno.py`; neuraloperator is the documented reference); the **GPU/3D-geometry-heavy** cases go to PhysicsNeMo. Everything else is DeepXDE — which is why this is the most-used engine and the page to read first.
 
 **Method primitives DeepXDE supplies to the §4 catalogue:** RAR/RAD adaptive sampling, hard-constraint output transforms, Fourier-feature networks (`MsFFN`), gPINN, Adam→L-BFGS, DeepONet, and native inverse via `dde.Variable`. Causal training, modified-MLP, PirateNets, NTK/grad-norm weighting and SOAP are layered on as manual recipes (technique source: `frameworks/jaxpi/`).
 

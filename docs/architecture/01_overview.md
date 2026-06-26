@@ -31,7 +31,7 @@ docs/                    this wiki (architecture / frameworks / methods / cases 
 preprocess → feature_extraction → train → infer → evaluate → export
 ```
 
-- **train** is the heavy SOTA stage: it builds the case's PINN (DeepXDE / PhysicsNeMo / neuraloperator), runs the
+- **train** is the heavy SOTA stage: it builds the case's PINN (DeepXDE / PhysicsNeMo / a self-contained FNO), runs the
   training recipe (Adam → L-BFGS, plus a case-defined RAR refinement hook for sharp-front cases), exports the trained
   net to **ONNX (opset 18)**, and verifies **ONNX-vs-`model.predict` parity** (< 1e-4) — the train → web bridge.
 - **evaluate** is the TEST stage: relative-L2 of the PINN field vs the validation anchor (analytic / reference

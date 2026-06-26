@@ -1,9 +1,10 @@
-# neuraloperator — the operator-learning engine (FNO / TFNO / SFNO / GINO)
+# neuraloperator — the operator-learning reference library (FNO / TFNO / SFNO / GINO)
 
 > Framework guide for PINN-Lab. Role: the **operator-learning** lane — parametric, many-query
 > surrogates that map an *input function* (e.g. a permeability field $a(x)$) to a *solution field*
-> $u(x)$ over a whole family of PDE instances, not one instance at a time. This is the engine behind
-> the `bench-darcy-operator` case.
+> $u(x)$ over a whole family of PDE instances, not one instance at a time. It is the documented
+> **reference** for PINN-Lab's `bench-darcy-operator` case, which ships a **self-contained FNO**
+> (`data-pipeline/pinnlab/model/fno.py`) for clean ONNX export — `neuralop` itself is **not** a dependency.
 
 ---
 
@@ -92,8 +93,10 @@ Benchmark page must show where the operator degrades.
 
 ## Install (verified)
 
-`neuraloperator` 2.0.0 (released **2025-10-22**, MIT, Python ≥ 3.9, PyTorch backend). It belongs in
-the **heavy precompute venv** (`.venv-pipeline`), never the live lane.
+`neuraloperator` 2.0.0 (released **2025-10-22**, MIT, Python ≥ 3.9, PyTorch backend). PINN-Lab does
+**not** install it — the `bench-darcy-operator` case ships a self-contained FNO (`model/fno.py`); the
+steps below are for readers who want the full reference library. If installed, it would belong in the
+**heavy precompute venv** (`.venv-pipeline`), never the live lane.
 
 ```bash
 # in the precompute venv (PyTorch already installed for the chosen CUDA/CPU build)
@@ -332,7 +335,7 @@ operators are good replay-lane candidates even when export technically succeeds.
 
 | Aspect | Mapping |
 |---|---|
-| **Lane** | **Offline / precompute** (`requirements-precompute.txt`, `.venv-pipeline`). Operator training is heavy and dataset-based; nothing from `neuralop` enters the live lane. |
+| **Lane** | **Offline / precompute** (`.venv-pipeline`). Operator training is heavy and dataset-based. PINN-Lab uses a **self-contained FNO** (`model/fno.py`), **not** the `neuralop` package — neither enters the live lane; `neuralop` is the documented reference only. |
 | **Primary case** | **`bench-darcy-operator`** (canonical Group A) — exercises FNO + PINO, discretization-invariance, and zero-shot super-resolution. The one operator case kept in v1 to harden the operator lane (dossier Open-Question §7: keep one, defer the rest). |
 | **Methods exercised** | `methods/fno.md` (#19) and `methods/pino.md` (#20) — both first land in `bench-darcy-operator`. |
 | **Live vs replay** | Decided by the gate per case. FNO ONNX export is fragile (FFT/complex); if export + `onnxruntime-web` inference pass the gate, serve live, **else replay** the baked field. Default expectation for the first operator case is **replay-backed**, with live as a stretch goal. |
