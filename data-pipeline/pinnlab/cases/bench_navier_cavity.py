@@ -33,6 +33,7 @@ GHIA_V = np.array([0.00000, 0.09233, 0.10091, 0.10890, 0.12317, 0.16077, 0.17507
 
 CASE = CaseSpec(
     id="bench-navier-cavity",
+    system_type="vector-flow",
     category="canonical-benchmark",
     title="2D lid-driven cavity — steady Navier-Stokes PINN (u, v, p)",
     governing_equations=(
