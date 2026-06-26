@@ -3,6 +3,31 @@
 All notable changes to **PINN-Lab**. Format: `X.XX.XXX` (display) — see `pinnlab.__version__`. Keep `0.x` while on
 synthetic/benchmark data. Tag every release.
 
+## [0.11.000] — 2026-06-26 — per-category view kits: the catalogue stops looking identical (animation)
+
+Cases no longer all render as one static heatmap. ADR-0063 introduces an orthogonal **`system_type` →
+`view_kit`** axis: the Field tab picks a render kit by *kind of system*, and the time-evolving cases now
+**animate**. Driven by a 5-agent deep-research pass (`wip/app-redesign/`). Phase 0 + Phase 1 of a 5-phase plan.
+
+### Added — the view-kit architecture (ADR-0063)
+- **`system_type` + `view_kit`** on `CaseSpec` / the manifest / `contract.ts`; `FieldView` refactored into
+  **`HeatmapKit`** (the default, pixel-identical), one of several kits selected via `kits/registry.ts`. Unknown/
+  absent `view_kit` falls back to `HeatmapKit` — zero regression for un-migrated cases.
+- **`TimeEvolutionKit`** (11 cases): plays `u(space)` forward over the baked time axis with a dashed initial-frame
+  ghost and a y-scale locked across the run; the `[space,t]` carpet is a click-to-seek bar. **No retraining.**
+- **`SpatioTemporalKit`** (2 cases: ocean-transport, heap-leach): animates the 2-D field over its time-snapshot
+  variants with a colorbar fixed across frames + hover read-out. **No retraining.**
+- Shared primitives: `useAnimator` (rAF, wall-clock speed, honest stop-at-end), `Transport` (play/scrub/speed/
+  loop), `HeatCanvas`, `LineProfile`; `viridis` extracted to `lib/colormap.ts`.
+- Verified with Playwright (preview): all 13 autoplay + pause works + **0 console/page errors**; the 6 steady/
+  vector/inverse cases unchanged (their kits arrive in Phases 2–4: dynamical-systems/double-pendulum, vector-flow,
+  UQ, mode-shape, inverse).
+
+### Changed — honesty remediation (audited against the engine)
+- Anchors described as **analytic/numerical**, never "FEM" — no case uses a finite-element anchor (kept the honest
+  "not a replacement for FEM/FVM"). **neuraloperator** is the documented *reference*, not a dependency (the Darcy
+  case ships a self-contained FNO). Case **count = 19** everywhere (was ~20 / 18).
+
 ## [0.10.000] — 2026-06-22 — the SimLab-style per-case workbench, all 19 cases, deployed
 
 The defining release: every case is now a **workbench**, the whole catalogue is migrated, and the app is live at
