@@ -20,6 +20,7 @@ export function LivePanel({ manifest, lang }: { manifest: CaseManifest; lang: "e
     Object.fromEntries(manifest.param_specs.map((p) => [p.key, p.default])),
   );
   const [res, setRes] = useState(81);
+  const [oIdx, setOIdx] = useState(0);
   const [field, setField] = useState<number[][] | null>(null);
   const [ms, setMs] = useState<number | null>(null);
   const [err, setErr] = useState<string | null>(null);
@@ -73,11 +74,14 @@ export function LivePanel({ manifest, lang }: { manifest: CaseManifest; lang: "e
       const out = await evalNet(url, coords, n, d);
       const dt = performance.now() - t0;
       if (id !== reqId.current) return;
-      const primary = out[manifest.outputs[0]] ?? Object.values(out)[0];
+      // The ONNX exports a SINGLE output tensor [n, nOut] (the export names it "u" even for multi-output nets), so the
+      // browser gets one flat array with the nOut columns interleaved. Pick column oIdx for the selected output field.
+      const raw = Object.values(out)[0];
+      const nOut = manifest.outputs.length;
       const f: number[][] = [];
       for (let ix = 0; ix < nx; ix++) {
         const col: number[] = [];
-        for (let iy = 0; iy < ny; iy++) col.push(primary[ix * ny + iy]);
+        for (let iy = 0; iy < ny; iy++) col.push(raw[(ix * ny + iy) * nOut + oIdx]);
         f.push(col);
       }
       setField(f);
@@ -85,7 +89,7 @@ export function LivePanel({ manifest, lang }: { manifest: CaseManifest; lang: "e
     } catch (e) {
       if (id === reqId.current) setErr(String(e));
     }
-  }, [ranges, livable, manifest, res, params, fieldAxes.join(",")]);
+  }, [ranges, livable, manifest, res, params, oIdx, fieldAxes.join(",")]);
 
   useEffect(() => {
     void recompute();
@@ -112,6 +116,16 @@ export function LivePanel({ manifest, lang }: { manifest: CaseManifest; lang: "e
       </p>
 
       <div className="live-controls">
+        {manifest.outputs.length > 1 && (
+          <label className="ctl">
+            <span>{es ? "Campo" : "Field"}</span>
+            <div className="variant-chips">
+              {manifest.outputs.map((o, i) => (
+                <button key={o} type="button" className={"variant-chip" + (i === oIdx ? " active" : "")} onClick={() => setOIdx(i)}>{o}</button>
+              ))}
+            </div>
+          </label>
+        )}
         {manifest.param_specs.map((p) => (
           <label key={p.key} className="ctl">
             <span>
@@ -143,7 +157,7 @@ export function LivePanel({ manifest, lang }: { manifest: CaseManifest; lang: "e
             field={field}
             axisX={{ label: fieldAxes[0], lo: ranges![fieldAxes[0]][0], hi: ranges![fieldAxes[0]][1] }}
             axisY={{ label: fieldAxes[1], lo: ranges![fieldAxes[1]][0], hi: ranges![fieldAxes[1]][1] }}
-            outputLabel={manifest.outputs[0]}
+            outputLabel={manifest.outputs[oIdx]}
           />
           {ms !== null && (
             <p className="hint">

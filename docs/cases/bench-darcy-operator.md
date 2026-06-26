@@ -36,15 +36,17 @@ operator exports cleanly to ONNX. Data-driven training: relative-L2 loss on $(a,
 
 | metric | value |
 |--------|-------|
-| **held-out test relative-L2** (the operator-generalization metric, 64 unseen $a$) | **5.6 %** |
-| displayed-sample relative-L2 (FNO vs FD reference) | **2.4 %** |
-| ONNX parity (max abs) | **1.7e-6** |
+| **held-out test relative-L2** (the operator-generalization metric, 64 unseen $a$) | **5.5 %** |
+| per-sample relative-L2 (FNO vs FD reference) | mostly **2–10 %** |
+| ONNX parity (max abs) | **1.8e-6** |
 | lane | **precompute** (field-IO operator — not browser-coordinate-drivable) |
-| ONNX size · field-forward time | 2.78 MB · 16.8 ms |
 
-One trained FNO reproduces unseen pressure fields to ~5.6 % across 64 held-out coefficient fields — genuine operator
-generalization, not a per-instance fit. The App shows a representative test sample as three switchable fields (output
-selector): the input coefficient $a$, the FNO prediction $u_{\text{pred}}$, and the FD reference $u_{\text{true}}$.
+One trained FNO reproduces unseen pressure fields to ~5.5 % across 64 held-out coefficient fields — genuine operator
+generalization, not a per-instance fit. The workbench ships **6 discrete variants** — six held-out coefficient fields
+the FNO never saw at training — and the chip selector switches between them; each shows three switchable fields (the
+input coefficient $a$, the FNO prediction $u_{\text{pred}}$, the FD reference $u_{\text{true}}$). The headline metric
+stays the held-out **test-set** mean (the true operator-generalization number); each chip also reports its own sample
+L2.
 
 ## Why precompute (honest lane)
 
