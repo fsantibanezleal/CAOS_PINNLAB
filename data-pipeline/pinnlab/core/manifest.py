@@ -44,6 +44,8 @@ def build_case_manifest(
         "inputs": list(case.inputs),
         "outputs": list(case.outputs),
         "field_axes": list(case.axes),
+        "system_type": case.system_type,   # ADR-0063: kind-of-system axis (Experiments still group by `category`)
+        "view_kit": case.kit,              # which web kit renders Field/Live (default "HeatmapKit")
         "param_specs": [
             {
                 "key": p.key, "label_en": p.label_en, "label_es": p.label_es,

@@ -3,7 +3,7 @@ import { useEffect, useState, type ReactNode } from "react";
 import type { CaseManifest, FieldTrace } from "../lib/contract";
 import { loadManifest, loadTrace } from "../lib/data";
 import { Equation } from "./Equation";
-import { FieldView } from "./FieldView";
+import { resolveKit } from "./kits/registry";
 import { LivePanel } from "./LivePanel";
 import { SubTabs } from "./SubTabs";
 import { VariantCharts } from "./VariantCharts";
@@ -24,7 +24,6 @@ export function CaseExperiment({
   const [manifest, setManifest] = useState<CaseManifest | null>(null);
   const [activeId, setActiveId] = useState<string>("");
   const [trace, setTrace] = useState<FieldTrace | null>(null);
-  const [outIdx, setOutIdx] = useState(0);
   const [err, setErr] = useState<string | null>(null);
 
   useEffect(() => {
@@ -47,7 +46,6 @@ export function CaseExperiment({
     if (!active) return;
     let alive = true;
     setTrace(null);
-    setOutIdx(0);
     loadTrace(active.trace.path).then((t) => alive && setTrace(t)).catch((e) => alive && setErr(String(e)));
     return () => {
       alive = false;
@@ -57,36 +55,13 @@ export function CaseExperiment({
   if (err) return <div className="banner error">⚠ {err}</div>;
   if (!manifest || !active) return <div className="loading">{es ? "Cargando…" : "Loading…"}</div>;
 
-  const outName = manifest.outputs[outIdx] ?? manifest.outputs[0];
-  const field2d = trace ? (trace.fields[outName] as number[][]) : null;
-  const fa = manifest.field_axes;
-  const ax0 = trace?.axes[fa[0]] ?? [0, 1];
-  const ax1 = trace?.axes[fa[1]] ?? [0, 1];
+  const Kit = resolveKit(manifest.view_kit);
   const l2 = active.metrics.l2_relative;
 
   const fieldTab = (
     <div>
       <Equation tex={manifest.governing_equations} />
-      {manifest.outputs.length > 1 && (
-        <div className="row" style={{ gap: 8, marginBottom: 8 }}>
-          <span className="muted" style={{ fontSize: 13 }}>{es ? "Campo" : "Field"}</span>
-          <div className="variant-chips">
-            {manifest.outputs.map((o, i) => (
-              <button key={o} className={"variant-chip" + (i === outIdx ? " active" : "")} onClick={() => setOutIdx(i)}>{o}</button>
-            ))}
-          </div>
-        </div>
-      )}
-      {field2d ? (
-        <FieldView
-          field={field2d}
-          axisX={{ label: fa[0], lo: ax0[0], hi: ax0[ax0.length - 1] }}
-          axisY={{ label: fa[1], lo: ax1[0], hi: ax1[ax1.length - 1] }}
-          outputLabel={outName}
-        />
-      ) : (
-        <div className="loading">{es ? "Cargando campo…" : "Loading field…"}</div>
-      )}
+      <Kit key={manifest.case_id} manifest={manifest} trace={trace} active={active} lang={lang} />
       <p className="muted" style={{ fontSize: 13 }}>{manifest.expected_band}</p>
       <div className="meta-strip">
         <span><b className="muted">{es ? "Método" : "Method"}</b> <span className="mono">{manifest.method}</span></span>
