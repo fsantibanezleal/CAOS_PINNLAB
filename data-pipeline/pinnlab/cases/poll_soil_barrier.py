@@ -29,7 +29,6 @@ BETA = 40.0  # partition-of-unity window sharpness
 
 CASE = CaseSpec(
     id="poll-soil-barrier",
-    system_type="time-evol-1d",
     category="pollution-environmental",
     title="Contaminated-site barrier — domain-decomposition (FBPINN) PINN",
     governing_equations=(

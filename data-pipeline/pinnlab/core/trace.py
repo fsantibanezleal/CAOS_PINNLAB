@@ -21,8 +21,11 @@ def _decimate_index(n: int, cap: int = MAX_AXIS) -> list[int]:
 
 
 def build_trace(sf: SolutionField, *, value_round: int = 5) -> dict:
-    """Decimate a SolutionField to a compact, JSON-serializable replay artifact."""
-    idx = {name: _decimate_index(len(coords)) for name, coords in sf.axes.items()}
+    """Decimate a SolutionField to a compact, JSON-serializable replay artifact. A 1-D trace (an ODE/trajectory
+    case: dims = ("t",)) keeps more samples than a 2-D heatmap — 81 points is too coarse for a smooth animated
+    trajectory, whereas an 81x81 field is already 6561 cells."""
+    cap = 601 if len(sf.dims) <= 1 else MAX_AXIS
+    idx = {name: _decimate_index(len(coords), cap) for name, coords in sf.axes.items()}
     axes_out = {name: [round(float(sf.axes[name][i]), 5) for i in ix] for name, ix in idx.items()}
 
     # gather the decimation indices along the field's dims order

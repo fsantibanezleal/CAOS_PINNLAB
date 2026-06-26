@@ -110,4 +110,7 @@ def run(case_id: str, *, seed: int, models_dir: str, sampling: dict | None = Non
         "input_dim": d,
         "infer_ms": infer_ms,
         "opset": 18,
+        # a case can declare it is not coordinate-driven in the browser (e.g. an ODE trajectory whose Field tab is a
+        # baked animation, not a per-pixel heatmap) -> the gate routes it to the precompute/replay lane.
+        "web_drivable": bool(built.get("web_drivable", True)),
     }

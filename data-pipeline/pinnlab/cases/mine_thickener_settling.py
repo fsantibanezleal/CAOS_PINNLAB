@@ -40,7 +40,6 @@ R_DEF = 0.80                       # the legacy single-case value, now the slide
 
 CASE = CaseSpec(
     id="mine-thickener-settling",
-    system_type="time-evol-1d",
     category="mining-mineral-processing",
     title="Thickener / tailings settling — Bürger-Concha degenerate conservation law (parametric descent rate)",
     governing_equations=(

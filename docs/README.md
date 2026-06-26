@@ -2,7 +2,7 @@
 
 > The navigable entry point to the PINN-Lab docs. Start here.
 
-PINN-Lab is a runnable catalogue of 19 partial-differential-equation cases, each trained offline by a
+PINN-Lab is a runnable catalogue of 20 differential-equation cases (PDEs + a chaotic ODE system), each trained offline by a
 state-of-the-art Physics-Informed Neural Network engine, validated against an analytic or numerical reference, exported to
 ONNX, and replayed/inferred in the browser. This `docs/` tree is the **core of the repository**: the physics, the
 methods, the architecture and the how-to guides all live here, written *as the code is versioned* — not bolted on at

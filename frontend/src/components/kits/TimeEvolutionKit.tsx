@@ -87,8 +87,8 @@ export function TimeEvolutionKit({ manifest, trace, lang }: KitProps) {
       </div>
       <p className="hint">
         {es
-          ? "Reproducción animada de la solución horneada — Play / arrastra la barra o haz clic en el mapa para saltar en el tiempo. La pestaña Live re-evalúa el ONNX en vivo."
-          : "Animated replay of the baked solution — Play / drag the bar or click the carpet to seek in time. The Live tab re-evaluates the ONNX live."}
+          ? "Pulsa ▶ para ver cómo evoluciona el perfil en el tiempo (o arrastra la barra). El mapa de abajo es el espacio–tiempo completo — haz clic para saltar a un instante. (La pestaña Live re-evalúa el ONNX en vivo.)"
+          : "Press ▶ to watch the profile evolve over time (or drag the bar). The map below is the full space–time field — click it to jump to an instant. (The Live tab re-evaluates the ONNX live.)"}
       </p>
     </div>
   );
