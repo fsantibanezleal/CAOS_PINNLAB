@@ -69,7 +69,7 @@ const en = {
       text: "Each case is classified LIVE or PRECOMPUTE from MEASUREMENTS, never by hand: live iff the ONNX ≤ 4 MB AND one full-grid inference ≤ 120 ms AND the baked trace ≤ 1 MB. A LIVE case ships its .onnx and runs interactively in the browser; a PRECOMPUTE case ships only the replay trace. The verdict and the three measured numbers go into the manifest, and CI re-derives the lane from them so a mislabel cannot ship — the boundary between what is computed live and what is precomputed is honest and auditable.",
     },
     methods: {
-      text: "19 cases across canonical benchmarks, mining / mineral-processing, pollution / environmental, industrial fluids & heat, and control — each exercising a real SOTA technique, each honestly labeled. The matrix maps cases to methods; the blocks summarize the method families and the honesty taxonomy.",
+      text: "20 cases across canonical benchmarks, mining / mineral-processing, pollution / environmental, industrial fluids & heat, and control — each exercising a real SOTA technique, each honestly labeled. The matrix maps cases to methods; the blocks summarize the method families and the honesty taxonomy.",
       constraints: {
         title: "Hard constraints & architectures",
         text: "Output-transform hard BC/IC (Poisson, heat, wave), Fourier-feature inputs (Helmholtz), SIREN, PFNN — boundary conditions satisfied exactly and captured inside the exported ONNX graph.",
@@ -165,7 +165,7 @@ const es: typeof en = {
       text: "Cada caso se clasifica LIVE o PRECOMPUTE a partir de MEDICIONES, nunca a mano: live si y solo si el ONNX ≤ 4 MB Y una inferencia de grilla completa ≤ 120 ms Y la traza horneada ≤ 1 MB. Un caso LIVE envía su .onnx y corre interactivo en el navegador; un caso PRECOMPUTE envía solo la traza de replay. El veredicto y los tres números medidos van al manifiesto, y CI re-deriva el lane desde ellos para que una etiqueta errónea no pueda desplegarse — la frontera entre lo que se computa en vivo y lo precomputado es honesta y auditable.",
     },
     methods: {
-      text: "19 casos en benchmarks canónicos, minería / procesamiento de minerales, contaminación / ambiental, fluidos & calor industrial, y control — cada uno ejercitando una técnica SOTA real, cada uno etiquetado con honestidad. La matriz mapea casos a métodos; los bloques resumen las familias de métodos y la taxonomía de honestidad.",
+      text: "20 casos en benchmarks canónicos, minería / procesamiento de minerales, contaminación / ambiental, fluidos & calor industrial, y control — cada uno ejercitando una técnica SOTA real, cada uno etiquetado con honestidad. La matriz mapea casos a métodos; los bloques resumen las familias de métodos y la taxonomía de honestidad.",
       constraints: {
         title: "Restricciones duras y arquitecturas",
         text: "BC/IC duras por output-transform (Poisson, calor, onda), entradas con features de Fourier (Helmholtz), SIREN, PFNN — condiciones de borde satisfechas exactamente y capturadas dentro del grafo ONNX exportado.",

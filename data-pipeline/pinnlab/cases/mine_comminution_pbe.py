@@ -28,7 +28,6 @@ SIG0_SQ = 0.01           # initial size variance (sigma0 ~ 0.10)
 
 CASE = CaseSpec(
     id="mine-comminution-pbe",
-    system_type="time-evol-1d",
     category="mining-mineral-processing",
     title="Comminution population balance — size-transport reduced PINN (parametric grind rate)",
     governing_equations=(

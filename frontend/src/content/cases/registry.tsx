@@ -4,6 +4,7 @@ import { AllenCahnContext } from "./AllenCahnContext";
 import { Burgers1dContext } from "./Burgers1dContext";
 import { ComminutionContext } from "./ComminutionContext";
 import { DarcyOperatorContext } from "./DarcyOperatorContext";
+import { DoublePendulumContext } from "./DoublePendulumContext";
 import { FlotationContext } from "./FlotationContext";
 import { HeapLeachContext } from "./HeapLeachContext";
 import { Heat1dContext } from "./Heat1dContext";
@@ -28,6 +29,7 @@ const CASE_CONTEXT: Record<string, (p: { lang: "en" | "es" }) => ReactNode> = {
   "bench-wave1d": Wave1dContext,
   "bench-burgers1d": Burgers1dContext,
   "bench-allencahn": AllenCahnContext,
+  "dyn-double-pendulum": DoublePendulumContext,
   "poll-ocean-transport": OceanTransportContext,
   "mine-flotation-kinetics": FlotationContext,
   "ctrl-zero-source": ZeroSourceContext,
@@ -52,5 +54,5 @@ export function ContextFor(caseId: string, lang: "en" | "es"): ReactNode {
 
 /** A short, human tab label from the case id (strip the category prefix). */
 export function caseLabel(caseId: string): string {
-  return caseId.replace(/^(bench|mine|poll|ind|ctrl|env)-/, "");
+  return caseId.replace(/^(bench|mine|poll|ind|ctrl|env|dyn)-/, "");
 }

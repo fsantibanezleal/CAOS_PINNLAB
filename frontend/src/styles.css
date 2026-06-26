@@ -275,3 +275,17 @@ ol li, ul li { margin: 4px 0; }
 .st-readout { font-size: 12.5px; margin-top: 8px; min-height: 18px; }
 
 @media (max-width: 760px) { .te-carpet { width: 100%; } .te-hero { flex-basis: 100%; } }
+
+/* ── TrajectoryAnimationKit (ode-dynamical) ─────────────────────────────────────────── */
+.traj-grid { display: flex; gap: 16px; align-items: flex-start; flex-wrap: wrap; }
+.traj-hero { flex: 0 0 auto; }
+.pendulum-canvas { background: var(--panel); border: 1px solid var(--border); border-radius: 10px; display: block; }
+.traj-legend { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 6px; font-size: 12px; color: var(--muted); }
+.traj-legend span { display: inline-flex; align-items: center; gap: 5px; }
+.traj-legend .sw { width: 11px; height: 11px; border-radius: 2px; display: inline-block; }
+.traj-side { flex: 1 1 340px; min-width: 280px; display: flex; flex-direction: column; gap: 10px; }
+.trace-svg { width: 100%; height: auto; background: var(--panel); border: 1px solid var(--border); border-radius: 8px; }
+.tp-title { font-size: 11px; fill: var(--text); font-weight: 600; }
+.tp-tick { font-size: 9px; fill: var(--muted); font-family: ui-monospace, monospace; }
+.tp-axis { font-size: 10px; fill: var(--muted); }
+.traj-kit > .trace-svg { margin-top: 10px; }

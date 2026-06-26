@@ -3,6 +3,27 @@
 All notable changes to **PINN-Lab**. Format: `X.XX.XXX` (display) — see `pinnlab.__version__`. Keep `0.x` while on
 synthetic/benchmark data. Tag every release.
 
+## [0.12.000] — 2026-06-26 — the dynamical-systems category: an animated chaotic double pendulum + leaner field UX
+
+The 20th case is the **double pendulum** — the `ode-dynamical` flagship and the first case with no spatial field:
+the PINN maps `t → (θ₁, θ₂)` and the App animates the swinging linkage. Plus a UX cut: animation is kept only where
+the motion teaches something.
+
+### Added — `dyn-double-pendulum` + `TrajectoryAnimationKit`
+- New ODE/trajectory path in the pipeline (a trajectory is a 1-D-in-`t` multi-output trace; the 1-D trace keeps up
+  to 601 samples; `web_drivable=False` → precompute lane). Soft-IC IVP (a `t²` hard-IC was rejected: it kills the
+  gradient near `t=0`). Engine: DeepXDE, tanh, Adam→L-BFGS; ONNX parity ~1.6e-6.
+- **RK45 anchor** (`rtol=atol=1e-10`) + a twin-IC trajectory baked alongside the PINN. Honest headline:
+  **leave-time = 1.99 s** (the PINN tracks to ~0.02 rad then diverges; L2 = 9.3% over 3 s) — chaos past the Lyapunov
+  horizon, shown not hidden (the PINN arm turns red after the leave-time; the butterfly panel diverges).
+- `TrajectoryAnimationKit`: animated linkage (PINN ghost over RK45) + θ₁–θ₂ phase portrait + butterfly |Δθ| (semilog)
+  + angles-vs-`t` with the leave-time marked. Deep bilingual Context + per-case doc.
+
+### Changed — animation only where it aports
+- Per the owner's call: **4 cases stay animated** (allencahn front, burgers1d shock, wave1d oscillation,
+  ocean-transport plume); the other **9 revert to the static heatmap** (the x–t carpet already shows their
+  evolution — the scrub added little). Kept kits lead with a clear "Press ▶ to…" caption.
+
 ## [0.11.001] — 2026-06-26 — animation is PAUSED by default (no autoplay; kill the compute bomb)
 
 Hotfix. The animated kits autoplayed on load with an infinite loop — a `requestAnimationFrame` replay that pinned
