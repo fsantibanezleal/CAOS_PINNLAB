@@ -1,4 +1,5 @@
 import { HeatmapKit } from "./HeatmapKit";
+import { InverseOverlayKit } from "./InverseOverlayKit";
 import { SpatioTemporalKit } from "./SpatioTemporalKit";
 import { TimeEvolutionKit } from "./TimeEvolutionKit";
 import { TrajectoryAnimationKit } from "./TrajectoryAnimationKit";
@@ -16,8 +17,9 @@ export const KITS: Record<string, KitComponent> = {
   TrajectoryAnimationKit,
   VectorFieldKit,
   UQBandKit,
+  InverseOverlayKit,
   // Phase 3: PhasePortraitKit
-  // Phase 4: ModeShapeKit, InverseOverlayKit
+  // Phase 4: ModeShapeKit
 };
 
 export function resolveKit(viewKit?: string): KitComponent {

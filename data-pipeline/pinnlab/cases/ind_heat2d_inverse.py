@@ -32,8 +32,22 @@ def t_true(X: np.ndarray) -> np.ndarray:
     return np.sin(np.pi * X[:, 0:1]) * np.sin(np.pi * X[:, 1:2])
 
 
+# the sparse sensors are shared by build() (the PINN data) and extra_metrics (baked into the trace for the App).
+_OBS_XY: np.ndarray | None = None
+_OBS_T: np.ndarray | None = None
+
+
+def _sensors(seed: int) -> tuple[np.ndarray, np.ndarray]:
+    rng = np.random.default_rng(seed)
+    ob_xy = rng.uniform(0.05, 0.95, size=(N_SENSORS, 2))
+    ob_T = t_true(ob_xy) + NOISE * rng.standard_normal((N_SENSORS, 1))
+    return ob_xy, ob_T
+
+
 CASE = CaseSpec(
     id="ind-heat2d-inverse",
+    system_type="inverse-assim",
+    view_kit="InverseOverlayKit",
     category="industrial-fluids-heat",
     title="2D inverse heat conduction — recover conductivity k(x,y) from sparse sensors",
     governing_equations=(
@@ -73,8 +87,20 @@ def variants() -> list[Variant]:
 def extra_metrics(sf) -> dict:
     from ..model.analytic import l2_relative, linspace_grid
 
-    _coords, XY, _shape = linspace_grid(CASE.domain, CASE.grid)
+    _coords, XY, shape = linspace_grid(CASE.domain, CASE.grid)
     t_pred = sf.fields["T"].reshape(-1, 1)
+    # bake the truth field + the sparse sensors so the InverseOverlayKit can overlay observations on the recovered
+    # field and compare k vs k* (the inverse "answer" + its evidence).
+    sf.fields["k_true"] = k_true(XY).reshape(shape)
+    if _OBS_XY is not None:
+        sf.inverse = {
+            "param": "k",
+            "observe_output": "T",
+            "observations": [
+                [round(float(x), 4), round(float(y), 4), round(float(tv), 4)]
+                for (x, y), tv in zip(_OBS_XY, _OBS_T.reshape(-1))
+            ],
+        }
     return {"T_l2_relative": round(l2_relative(t_pred, t_true(XY)), 6)}
 
 
@@ -103,10 +129,10 @@ def build(seed: int) -> dict:
         div_kgradT = k * (T_xx + T_yy) + k_x * T_x + k_y * T_y
         return div_kgradT - q_source(x)
 
-    # sparse noisy temperature sensors (synthetic measurements)
-    rng = np.random.default_rng(seed)
-    ob_xy = rng.uniform(0.05, 0.95, size=(N_SENSORS, 2))
-    ob_T = t_true(ob_xy) + NOISE * rng.standard_normal((N_SENSORS, 1))
+    # sparse noisy temperature sensors (synthetic measurements) — shared with extra_metrics via module globals
+    global _OBS_XY, _OBS_T
+    ob_xy, ob_T = _sensors(seed)
+    _OBS_XY, _OBS_T = ob_xy, ob_T
     observe_T = dde.icbc.PointSetBC(ob_xy, ob_T, component=1)  # data on T (component 1)
 
     net = dde.nn.PFNN([2, [40, 40], [40, 40], [40, 40], 2], "tanh", "Glorot uniform")

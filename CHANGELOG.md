@@ -3,6 +3,14 @@
 All notable changes to **PINN-Lab**. Format: `X.XX.XXX` (display) — see `pinnlab.__version__`. Keep `0.x` while on
 synthetic/benchmark data. Tag every release.
 
+## [0.14.000] — 2026-06-26 — InverseOverlayKit: the recovered field + its sparse evidence
+
+- **InverseOverlayKit** (`ind-heat2d-inverse`, inverse-assim): the recovered conductivity field `k(x,y)` with the
+  **100 sparse noisy T sensors overlaid as dots** — the evidence the PDE prior interpolates between. Toggle recovered
+  `k` / true `k*` / `|k−k*|` / `T`; hover read-out; k-L2 = 4.0% (worst near the boundary where `|∇T|` is small).
+- The case now bakes the sensor positions + measured T into `trace.inverse` and the true `k*` as a field (the case
+  already trained fine — a low-risk re-bake, not new physics). Static (no animation).
+
 ## [0.13.000] — 2026-06-26 — vector-flow + UQ kits (no retraining; static, no bomb)
 
 Two more `system_type → view_kit` mappings, both from already-baked artifacts (no retraining), both static (no
