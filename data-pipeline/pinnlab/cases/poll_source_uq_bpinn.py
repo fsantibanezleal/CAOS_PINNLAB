@@ -33,6 +33,7 @@ def analytic(xt: np.ndarray) -> np.ndarray:
 
 CASE = CaseSpec(
     id="poll-source-uq-bpinn",
+    system_type="uq-bayesian",
     category="pollution-environmental",
     title="Bayesian PINN (deep ensemble) — pollutant diffusion with epistemic uncertainty",
     governing_equations=(

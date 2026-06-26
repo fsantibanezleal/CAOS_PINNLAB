@@ -2,6 +2,8 @@ import { HeatmapKit } from "./HeatmapKit";
 import { SpatioTemporalKit } from "./SpatioTemporalKit";
 import { TimeEvolutionKit } from "./TimeEvolutionKit";
 import { TrajectoryAnimationKit } from "./TrajectoryAnimationKit";
+import { UQBandKit } from "./UQBandKit";
+import { VectorFieldKit } from "./VectorFieldKit";
 import type { KitComponent } from "./types";
 
 /** ADR-0063: the view-kit registry. `manifest.view_kit` selects which kit renders the Field tab; an
@@ -12,7 +14,9 @@ export const KITS: Record<string, KitComponent> = {
   TimeEvolutionKit,
   SpatioTemporalKit,
   TrajectoryAnimationKit,
-  // Phase 3: VectorFieldKit, UQBandKit, PhasePortraitKit
+  VectorFieldKit,
+  UQBandKit,
+  // Phase 3: PhasePortraitKit
   // Phase 4: ModeShapeKit, InverseOverlayKit
 };
 

@@ -3,6 +3,18 @@
 All notable changes to **PINN-Lab**. Format: `X.XX.XXX` (display) — see `pinnlab.__version__`. Keep `0.x` while on
 synthetic/benchmark data. Tag every release.
 
+## [0.13.000] — 2026-06-26 — vector-flow + UQ kits (no retraining; static, no bomb)
+
+Two more `system_type → view_kit` mappings, both from already-baked artifacts (no retraining), both static (no
+animation, no autoplay):
+
+- **VectorFieldKit** (`bench-navier-cavity`, vector-flow): RK4 **streamlines** + optional quiver over a scalar
+  background (speed / pressure / vorticity) + hover read-out of (u, v, |U|, p). Reveals the recirculating lid-driven
+  cavity vortex that a per-scalar heatmap hid.
+- **UQBandKit** (`poll-source-uq-bpinn`, uq-bayesian): mean `c(x)` with a filled **±1σ / ±2σ band** at a paused time
+  slider + the σ(x) magnitude curve + the calibration coverage (@2σ = 99.97%, K=5 ensemble). Band at true scale —
+  honest about a well-calibrated (thin) uncertainty; the σ curve shows where it concentrates.
+
 ## [0.12.000] — 2026-06-26 — the dynamical-systems category: an animated chaotic double pendulum + leaner field UX
 
 The 20th case is the **double pendulum** — the `ode-dynamical` flagship and the first case with no spatial field:
