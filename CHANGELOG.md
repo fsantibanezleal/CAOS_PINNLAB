@@ -3,6 +3,18 @@
 All notable changes to **PINN-Lab**. Format: `X.XX.XXX` (display) — see `pinnlab.__version__`. Keep `0.x` while on
 synthetic/benchmark data. Tag every release.
 
+## [0.11.001] — 2026-06-26 — animation is PAUSED by default (no autoplay; kill the compute bomb)
+
+Hotfix. The animated kits autoplayed on load with an infinite loop — a `requestAnimationFrame` replay that pinned
+a CPU core continuously and never stopped, even unattended. Now:
+
+- **No autoplay.** Every animated kit (TimeEvolution / SpatioTemporal / Trajectory) starts **paused** on the first
+  (meaningful) frame; nothing computes until the user presses Play.
+- **No infinite loop.** A Play runs ONCE through the timeline and stops at the end (looping is opt-in per case);
+  pressing Play at the end restarts from the start.
+- **Hidden-tab safety.** Animation stops the instant the browser tab is hidden (`visibilitychange` → pause), so
+  there is no background CPU when the page is not in view.
+
 ## [0.11.000] — 2026-06-26 — per-category view kits: the catalogue stops looking identical (animation)
 
 Cases no longer all render as one static heatmap. ADR-0063 introduces an orthogonal **`system_type` →

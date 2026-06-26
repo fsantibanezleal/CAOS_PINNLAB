@@ -19,9 +19,11 @@ export interface Animator {
 export function useAnimator(nFrames: number, opts?: { fps?: number; startPlaying?: boolean }): Animator {
   const baseFps = opts?.fps ?? 12;
   const [frame, setFrameState] = useState(0);
-  const [playing, setPlaying] = useState(opts?.startPlaying ?? true);
+  // DEFAULT PAUSED + NON-LOOPING (no autoplay): nothing computes until the user presses Play, and a Play runs ONCE
+  // through and stops — never an unbounded replay that pins a CPU core. The user opts into looping per case.
+  const [playing, setPlaying] = useState(opts?.startPlaying ?? false);
   const [speed, setSpeed] = useState(1);
-  const [loop, setLoop] = useState(true);
+  const [loop, setLoop] = useState(false);
 
   const frameRef = useRef(0);
   const raf = useRef(0);
@@ -75,7 +77,23 @@ export function useAnimator(nFrames: number, opts?: { fps?: number; startPlaying
     };
   }, [playing, nFrames, speed, loop, baseFps]);
 
-  const toggle = useCallback(() => setPlaying((p) => !p), []);
+  // pressing Play at the end restarts from the first frame (don't silently no-op)
+  const toggle = useCallback(() => {
+    setPlaying((p) => {
+      if (!p && frameRef.current >= nFrames - 1) {
+        frameRef.current = 0;
+        setFrameState(0);
+      }
+      return !p;
+    });
+  }, [nFrames]);
+
+  // HARD SAFETY: stop animating the moment the tab is hidden (no background CPU); the rAF effect tears down.
+  useEffect(() => {
+    const onVis = () => { if (typeof document !== "undefined" && document.hidden) setPlaying(false); };
+    if (typeof document !== "undefined") document.addEventListener("visibilitychange", onVis);
+    return () => { if (typeof document !== "undefined") document.removeEventListener("visibilitychange", onVis); };
+  }, []);
 
   return { frame, setFrame, playing, toggle, setPlaying, speed, setSpeed, loop, setLoop, nFrames };
 }
