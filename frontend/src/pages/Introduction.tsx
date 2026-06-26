@@ -42,8 +42,8 @@ export function Introduction() {
       <ul>
         <li>
           {es
-            ? "Un catálogo ejecutable de ~20 casos de PDEs en cuatro grupos: benchmarks canónicos → minería/procesamiento mineral → polución/ambiental → fluidos/calor industriales. Cada caso se entrena offline con un motor SOTA, se valida contra una referencia analítica/numérica, se exporta a ONNX y se reproduce/infiere en el navegador."
-            : "A runnable catalogue of ~20 PDE cases in four groups: canonical benchmarks → mining/mineral-processing → pollution/environmental → industrial fluids/heat. Each case is trained offline by a SOTA engine, validated against an analytic or numerical reference, exported to ONNX, and replayed/inferred in the browser."}
+            ? "Un catálogo ejecutable de 19 casos de PDEs en cuatro grupos: benchmarks canónicos → minería/procesamiento mineral → polución/ambiental → fluidos/calor industriales. Cada caso se entrena offline con un motor SOTA, se valida contra una referencia analítica/numérica, se exporta a ONNX y se reproduce/infiere en el navegador."
+            : "A runnable catalogue of 19 PDE cases in four groups: canonical benchmarks → mining/mineral-processing → pollution/environmental → industrial fluids/heat. Each case is trained offline by a SOTA engine, validated against an analytic or numerical reference, exported to ONNX, and replayed/inferred in the browser."}
         </li>
         <li>
           {es
