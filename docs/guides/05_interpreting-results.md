@@ -11,7 +11,7 @@ $$
 \varepsilon_{\text{rel}}=\frac{\lVert u_\theta - u^*\rVert_2}{\lVert u^*\rVert_2}
 $$
 
-- `u_θ` is the trained network; `u*` is the reference (analytic / dataset / FEM).
+- `u_θ` is the trained network; `u*` is the reference (analytic / dataset / numerical).
 - It is reported **per variant** (each parameter regime is validated independently).
 - Rough reading: `< 1e-2` is a solid PINN solve; `~1e-1` flags a genuinely hard case (high-wavenumber spectral bias,
   a coefficient-jump kink) — reported honestly, not hidden, usually with a note that a GPU / annealing tightens it.

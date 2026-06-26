@@ -23,8 +23,8 @@ export function Benchmark() {
       <h1>Benchmark</h1>
       <p className="muted">
         {lang === "es"
-          ? "Honestidad: error relativo vs la referencia (analítica/dataset/FEM), paridad ONNX-vs-modelo, y etiqueta de datos sintéticos vs reales. Sin números maquillados."
-          : "Honesty: relative error vs the reference (analytic/dataset/FEM), ONNX-vs-model parity, and the synthetic-vs-real data label. No dressed-up numbers."}
+          ? "Honestidad: error relativo vs la referencia (analítica/dataset/numérica), paridad ONNX-vs-modelo, y etiqueta de datos sintéticos vs reales. Sin números maquillados."
+          : "Honesty: relative error vs the reference (analytic/dataset/numerical), ONNX-vs-model parity, and the synthetic-vs-real data label. No dressed-up numbers."}
       </p>
       <div className="panel">
         <table className="tbl">
