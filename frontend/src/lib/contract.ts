@@ -71,6 +71,11 @@ export interface CaseManifest {
   inputs: string[]; // ALL network inputs (incl. parameter axes)
   outputs: string[];
   field_axes: string[]; // the 2-D heatmap axes
+  // ADR-0063: an orthogonal "what kind of system is this" axis that SELECTS the render kit.
+  // `category` stays the physics-domain bucket (Experiments/Benchmark grouping); `system_type`
+  // drives `view_kit`. Optional so pre-kit manifests still validate — the app falls back to HeatmapKit.
+  system_type?: string; // ode-dynamical | time-evol-1d | time-evol-2d | steady-elliptic | vector-flow | inverse-assim | eigen-modal | uq-bayesian | operator-surrogate
+  view_kit?: string; // HeatmapKit | TimeEvolutionKit | SpatioTemporalKit | VectorFieldKit | TrajectoryAnimationKit | PhasePortraitKit | ModeShapeKit | UQBandKit | InverseOverlayKit
   param_specs: ParamSpec[];
   engine: EngineRef;
   seed: number;

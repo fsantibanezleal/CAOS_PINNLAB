@@ -241,3 +241,37 @@ ol li, ul li { margin: 4px 0; }
 .prose section { margin-block: 22px; }
 .prose h2 { font-size: 19px; margin: 18px 0 8px; }
 .prose h3 { font-size: 15.5px; margin: 14px 0 6px; color: var(--accent); }
+
+/* ── ADR-0063 render kits: shared transport + animated kits ───────────────────────────── */
+.transport { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin: 4px 0 12px; }
+.t-btn { width: 34px; height: 30px; border: 1px solid var(--border); border-radius: 7px; background: var(--panel);
+  color: var(--accent); cursor: pointer; font-size: 13px; line-height: 1; }
+.t-btn:hover { border-color: var(--accent); }
+.t-scrub { flex: 1 1 200px; min-width: 160px; }
+.t-readout { font-size: 12.5px; color: var(--muted); white-space: nowrap; }
+.t-ctl { display: inline-flex; align-items: center; gap: 6px; font-size: 12.5px; color: var(--muted); }
+.t-ctl select { background: var(--panel); color: var(--text); border: 1px solid var(--border); border-radius: 6px; padding: 2px 4px; }
+
+.te-grid { display: flex; gap: 16px; align-items: flex-start; flex-wrap: wrap; }
+.te-hero { flex: 1 1 420px; min-width: 300px; }
+.te-carpet { flex: 0 0 auto; width: 300px; max-width: 100%; }
+.te-carpet-label { font-size: 12px; margin-bottom: 4px; }
+
+.lineprofile-svg { width: 100%; height: auto; background: var(--panel); border: 1px solid var(--border); border-radius: 8px; }
+.lp-tick { font-size: 9px; fill: var(--muted); font-family: ui-monospace, monospace; }
+.lp-axislabel { font-size: 11px; fill: var(--muted); }
+.lp-readout { font-size: 12.5px; margin-top: 6px; min-height: 18px; }
+
+.heatcanvas { position: relative; width: 100%; }
+.heatcanvas .field-canvas { width: 100%; image-rendering: pixelated; border: 1px solid var(--border); border-radius: 8px; display: block; }
+.carpet-cursor { position: absolute; left: 0; right: 0; height: 0; border-top: 1.5px solid #ff5d5d; pointer-events: none; box-shadow: 0 0 0 0.5px rgba(0,0,0,0.4); }
+
+.st-grid { display: flex; gap: 12px; align-items: stretch; }
+.st-map { flex: 1 1 auto; min-width: 240px; max-width: 520px; cursor: crosshair; }
+.st-cbar { flex: 0 0 auto; display: flex; gap: 4px; }
+.st-cbar-scale { width: 12px; border: 1px solid var(--border); border-radius: 3px; overflow: hidden; display: flex; flex-direction: column; }
+.st-cbar-scale > div { flex: 1; }
+.st-cbar-labels { display: flex; flex-direction: column; justify-content: space-between; font-size: 10px; color: var(--muted); }
+.st-readout { font-size: 12.5px; margin-top: 8px; min-height: 18px; }
+
+@media (max-width: 760px) { .te-carpet { width: 100%; } .te-hero { flex-basis: 100%; } }

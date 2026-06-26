@@ -1,19 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 
-// viridis colormap (10 anchors, linear interp)
-const VIRIDIS = [
-  [68, 1, 84], [72, 40, 120], [62, 74, 137], [49, 104, 142], [38, 130, 142],
-  [31, 158, 137], [53, 183, 121], [110, 206, 88], [181, 222, 43], [253, 231, 37],
-];
-function viridis(t: number): [number, number, number] {
-  t = Math.max(0, Math.min(1, t));
-  const x = t * (VIRIDIS.length - 1);
-  const i = Math.floor(x);
-  const f = x - i;
-  const a = VIRIDIS[i];
-  const b = VIRIDIS[Math.min(i + 1, VIRIDIS.length - 1)];
-  return [a[0] + (b[0] - a[0]) * f, a[1] + (b[1] - a[1]) * f, a[2] + (b[2] - a[2]) * f];
-}
+import { viridis } from "../lib/colormap";
 
 export interface FieldAxis {
   label: string;

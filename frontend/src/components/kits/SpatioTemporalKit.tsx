@@ -1,0 +1,115 @@
+import { useEffect, useMemo, useState } from "react";
+
+import type { FieldTrace } from "../../lib/contract";
+import { fieldRange, viridis } from "../../lib/colormap";
+import { loadTrace } from "../../lib/data";
+import { HeatCanvas } from "./HeatCanvas";
+import { Transport } from "./Transport";
+import type { KitProps } from "./types";
+import { useAnimator } from "./useAnimator";
+
+/** SpatioTemporalKit — a 2-D spatial field that EVOLVES in time, where time is the swept parameter and each
+ *  variant is a time snapshot (e.g. ocean-transport, heap-leach). It loads ALL variant traces and animates the
+ *  2-D heatmap forward over t, with a color scale fixed across every frame (so the motion is real, not a
+ *  per-frame autoscale) and a hover value read-out. No retraining — every snapshot is already baked. */
+export function SpatioTemporalKit({ manifest, lang }: KitProps) {
+  const es = lang === "es";
+  const [outIdx, setOutIdx] = useState(0);
+  const outName = manifest.outputs[outIdx] ?? manifest.outputs[0];
+  const fa = manifest.field_axes;
+  const tKey = manifest.param_specs[0]?.key ?? "t";
+
+  const [traces, setTraces] = useState<FieldTrace[] | null>(null);
+  const [err, setErr] = useState<string | null>(null);
+
+  useEffect(() => {
+    let alive = true;
+    setTraces(null);
+    Promise.all(manifest.variants.map((v) => loadTrace(v.trace.path)))
+      .then((ts) => alive && setTraces(ts))
+      .catch((e) => alive && setErr(String(e)));
+    return () => { alive = false; };
+  }, [manifest.case_id]);
+
+  const data = useMemo(() => {
+    if (!traces || !traces.length) return null;
+    const frames = traces.map((t) => t.fields[outName] as number[][]);
+    let lo = Infinity;
+    let hi = -Infinity;
+    for (const fr of frames) {
+      const [a, b] = fieldRange(fr);
+      if (a < lo) lo = a;
+      if (b > hi) hi = b;
+    }
+    const range: [number, number] = [lo, hi > lo ? hi : lo + 1];
+    const ax0 = traces[0]?.axes[fa[0]] ?? [0, 1];
+    const ax1 = traces[0]?.axes[fa[1]] ?? [0, 1];
+    const tVals = manifest.variants.map((v) => v.params[tKey] ?? 0);
+    return { frames, range, ax0, ax1, tVals };
+  }, [traces, outName, fa, tKey, manifest.variants]);
+
+  const nF = data?.frames.length ?? manifest.variants.length;
+  const anim = useAnimator(nF, { fps: 6 });
+  const f = Math.min(anim.frame, nF - 1);
+  const [hover, setHover] = useState<{ x: number; y: number; v: number } | null>(null);
+
+  if (err) return <div className="banner error">{err}</div>;
+  if (!data) return <div className="loading">{es ? "Cargando fotogramas…" : "Loading frames…"}</div>;
+
+  const { frames, range, ax0, ax1, tVals } = data;
+  const frame = frames[f];
+  const nH = frame.length;
+  const nV = frame[0]?.length ?? 0;
+
+  function onMove(e: React.MouseEvent) {
+    const rect = (e.currentTarget as HTMLElement).getBoundingClientRect();
+    const fx = (e.clientX - rect.left) / rect.width;
+    const fy = (e.clientY - rect.top) / rect.height;
+    const iH = Math.max(0, Math.min(nH - 1, Math.round(fx * (nH - 1))));
+    const iV = Math.max(0, Math.min(nV - 1, Math.round((1 - fy) * (nV - 1))));
+    setHover({ x: ax0[iH] ?? iH, y: ax1[iV] ?? iV, v: frame[iH][iV] });
+  }
+
+  return (
+    <div className="st-kit">
+      {manifest.outputs.length > 1 && (
+        <div className="row" style={{ gap: 8, marginBottom: 8 }}>
+          <span className="muted" style={{ fontSize: 13 }}>{es ? "Campo" : "Field"}</span>
+          <div className="variant-chips">
+            {manifest.outputs.map((o, i) => (
+              <button key={o} type="button" className={"variant-chip" + (i === outIdx ? " active" : "")} onClick={() => setOutIdx(i)}>{o}</button>
+            ))}
+          </div>
+        </div>
+      )}
+      <Transport anim={anim} lang={lang} axisLabel={tKey} axisValue={tVals[f] ?? 0} />
+      <div className="st-grid">
+        <div className="st-map" onMouseMove={onMove} onMouseLeave={() => setHover(null)}>
+          <HeatCanvas field={frame} range={range} ariaLabel={`${outName} at ${tKey}=${(tVals[f] ?? 0).toFixed(2)}`} />
+        </div>
+        <div className="st-cbar" aria-hidden>
+          <div className="st-cbar-scale">
+            {Array.from({ length: 24 }, (_, i) => {
+              const [r, g, b] = viridis(1 - i / 23);
+              return <div key={i} style={{ background: `rgb(${r},${g},${b})` }} />;
+            })}
+          </div>
+          <div className="st-cbar-labels mono">
+            <span>{range[1].toExponential(1)}</span>
+            <span>{range[0].toExponential(1)}</span>
+          </div>
+        </div>
+      </div>
+      <div className="st-readout mono">
+        {hover
+          ? <>{fa[0]}={hover.x.toFixed(3)} &nbsp; {fa[1]}={hover.y.toFixed(3)} &nbsp;→&nbsp; <strong>{outName}={hover.v.toExponential(3)}</strong></>
+          : <span className="muted">{`hover the field · ${outName} scale fixed across frames [${range[0].toExponential(1)}, ${range[1].toExponential(1)}]`}</span>}
+      </div>
+      <p className="hint">
+        {es
+          ? `Campo 2-D evolucionando en ${tKey} — cada fotograma es un instante horneado. Play / arrastra la barra. La pestaña Live re-evalúa el ONNX en cualquier ${tKey}.`
+          : `2-D field evolving in ${tKey} — each frame is a baked snapshot. Play / drag the bar. The Live tab re-evaluates the ONNX at any ${tKey}.`}
+      </p>
+    </div>
+  );
+}

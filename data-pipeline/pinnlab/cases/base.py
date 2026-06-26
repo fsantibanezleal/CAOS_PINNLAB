@@ -27,6 +27,34 @@ CATEGORIES = (
     "control",
 )
 
+# ADR-0063: an ORTHOGONAL "what kind of system is this" axis that SELECTS the web render kit. `category`
+# stays the physics-domain bucket (Experiments/Benchmark grouping); `system_type` drives `view_kit`, so a
+# time-evolution case animates, a dynamical system shows a trajectory, a vector field shows streamlines, etc.
+SYSTEM_TYPES = (
+    "ode-dynamical",      # t -> state vector; an animated trajectory + phase portrait (no spatial field)
+    "time-evol-1d",       # (x,t) -> u; an animated 1-D profile over time + the x-t carpet as a seek-bar
+    "time-evol-2d",       # (x,y,t) -> u; an animated 2-D field over time
+    "steady-elliptic",    # (x,y) -> u; a static heatmap (the one honest still-field class)
+    "vector-flow",        # (x,y) -> (u,v,p); streamlines / quiver
+    "inverse-assim",      # reconstructed field + sparse observation overlay + parameter-convergence
+    "eigen-modal",        # eigenvalues + animated mode shapes
+    "uq-bayesian",        # mean ± uncertainty band
+    "operator-surrogate", # input-function -> solution-field map
+)
+# system_type -> default render kit (a case may override via `view_kit`).
+SYSTEM_TYPE_KIT = {
+    "ode-dynamical": "TrajectoryAnimationKit",
+    "time-evol-1d": "TimeEvolutionKit",
+    "time-evol-2d": "SpatioTemporalKit",
+    "steady-elliptic": "HeatmapKit",
+    "vector-flow": "VectorFieldKit",
+    "inverse-assim": "InverseOverlayKit",
+    "eigen-modal": "ModeShapeKit",
+    "uq-bayesian": "UQBandKit",
+    "operator-surrogate": "HeatmapKit",
+}
+DEFAULT_KIT = "HeatmapKit"
+
 
 @dataclass(frozen=True)
 class ParamSpec:
@@ -68,11 +96,13 @@ class CaseSpec:
     domain: dict[str, tuple[float, float]]   # bounds per input axis (ALL inputs, incl. parameter axes)
     grid: dict[str, int]                # eval resolution per FIELD axis (the baked 2-D heatmap)
     expected_band: str                  # what a domain expert should see (honesty band)
-    validation_anchor: str              # "analytic" | "fem-ref" | "dataset" | "real-data-holdout" | "none"
+    validation_anchor: str              # "analytic" | "numerical-ref" | "dataset" | "operator-test-l2" | "benchmark-ghia" | "real-data-holdout" | "integrator-ref" | "none"
     train: dict[str, Any] = field(default_factory=dict)   # net + sampling + optimizer plan
     field_axes: tuple[str, ...] = ()    # the 2 input axes that form the baked heatmap; defaults to `inputs`
     param_specs: tuple[ParamSpec, ...] = ()   # the tunable parameter axes (inputs NOT in field_axes)
     inverse_truth: dict[str, float] = field(default_factory=dict)  # ground-truth coeffs for inverse cases
+    system_type: str = ""               # ADR-0063: kind-of-system axis that selects the render kit ("" -> HeatmapKit)
+    view_kit: str = ""                  # explicit kit override ("" -> derived from system_type)
     notes: str = ""
 
     @property
@@ -80,9 +110,16 @@ class CaseSpec:
         """The field (heatmap) axes — `field_axes` if set, else all `inputs` (non-parametric default)."""
         return self.field_axes or self.inputs
 
+    @property
+    def kit(self) -> str:
+        """The web render kit: explicit `view_kit`, else the default for `system_type`, else HeatmapKit."""
+        return self.view_kit or SYSTEM_TYPE_KIT.get(self.system_type, DEFAULT_KIT)
+
     def __post_init__(self):
         if self.category not in CATEGORIES:
             raise ValueError(f"{self.id}: unknown category {self.category!r}; valid: {CATEGORIES}")
+        if self.system_type and self.system_type not in SYSTEM_TYPES:
+            raise ValueError(f"{self.id}: unknown system_type {self.system_type!r}; valid: {SYSTEM_TYPES}")
         if set(self.domain) != set(self.inputs):
             raise ValueError(f"{self.id}: domain axes {set(self.domain)} must match inputs {self.inputs}")
         if set(self.grid) != set(self.axes):

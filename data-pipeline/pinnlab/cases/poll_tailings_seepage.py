@@ -36,6 +36,7 @@ def _lam(alpha):
 
 CASE = CaseSpec(
     id="poll-tailings-seepage",
+    system_type="time-evol-1d",
     category="pollution-environmental",
     title="Tailings-dam unsaturated seepage — Richards (Gardner), parametric sorptive number α",
     governing_equations=(
