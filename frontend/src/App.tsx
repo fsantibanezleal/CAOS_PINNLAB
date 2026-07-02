@@ -73,21 +73,20 @@ export function App() {
       </main>
 
       <footer className="site-footer">
+        {/* Compact, to-the-point footer (ADR-0016 §2): brand + lab + version + author + single GitHub + license.
+            The personal/portfolio links already live in the header, so they are NOT repeated here (focus error). */}
         <div className="footer-meta">
-          <span>{t("footer.attribution")}</span>
+          <span className="footer-brand">{t("brand")}</span>
           <span aria-hidden="true">·</span>
           <span>{t("footer.complement")}</span>
-        </div>
-        <div className="footer-meta">
-          <a href={EXTERNAL_LINKS.github} target="_blank" rel="noreferrer noopener">{t("header.github")}</a>
-          <span aria-hidden="true">·</span>
-          <a href={EXTERNAL_LINKS.personal} target="_blank" rel="noreferrer noopener">{t("header.personal")}</a>
-          <span aria-hidden="true">·</span>
-          <a href={EXTERNAL_LINKS.portfolio} target="_blank" rel="noreferrer noopener">{t("header.portfolio")}</a>
-          <span aria-hidden="true">·</span>
-          <span className="faint">{t("footer.license")}</span>
           <span aria-hidden="true">·</span>
           <span className="faint">{t("footer.version")} v{APP_VERSION}</span>
+          <span aria-hidden="true">·</span>
+          <span>{t("footer.attribution")}</span>
+          <span aria-hidden="true">·</span>
+          <a href={EXTERNAL_LINKS.github} target="_blank" rel="noreferrer noopener">{t("header.github")}</a>
+          <span aria-hidden="true">·</span>
+          <span className="faint">{t("footer.license")}</span>
         </div>
       </footer>
 

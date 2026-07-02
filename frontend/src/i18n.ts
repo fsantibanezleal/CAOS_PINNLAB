@@ -11,7 +11,7 @@ const en = {
     portfolio: "Portfolio",
   },
   footer: {
-    attribution: "Felipe Santibañez-Leal",
+    attribution: "Developed by Felipe Santibáñez-Leal",
     complement: "a CAOS research investigation",
     license: "Research & educational use",
     version: "Version",
@@ -107,7 +107,7 @@ const es: typeof en = {
     portfolio: "Portafolio",
   },
   footer: {
-    attribution: "Felipe Santibañez-Leal",
+    attribution: "Desarrollado por Felipe Santibáñez-Leal",
     complement: "una investigación CAOS",
     license: "Uso investigativo y educativo",
     version: "Versión",
