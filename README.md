@@ -1,5 +1,10 @@
 # PINN-Lab — a runnable catalogue of Physics-Informed Neural Networks
 
+[![CI](https://img.shields.io/github/actions/workflow/status/fsantibanezleal/CAOS_PINNLAB/ci.yml?branch=main&label=CI)](https://github.com/fsantibanezleal/CAOS_PINNLAB/actions)
+[![License](https://img.shields.io/github/license/fsantibanezleal/CAOS_PINNLAB)](LICENSE)
+[![Version](https://img.shields.io/github/v/tag/fsantibanezleal/CAOS_PINNLAB?label=version&sort=semver)](https://github.com/fsantibanezleal/CAOS_PINNLAB/tags)
+[![Live demo](https://img.shields.io/badge/demo-live-2ea44f)](https://pinnlab.fasl-work.com)
+
 PINN-Lab is a **real, reproducible product**, not a demo: a catalogue of 20 differential-equation cases (PDEs + a chaotic ODE system),
 each trained offline by a state-of-the-art Physics-Informed Neural Network engine, **validated against an analytic
 or numerical reference**, exported to **ONNX**, and **replayed and re-inferred in the browser**. Every case ships its
