@@ -3,11 +3,13 @@ import { useEffect, useState, type ReactNode } from "react";
 import type { CaseManifest, FieldTrace } from "../lib/contract";
 import { loadManifest, loadTrace } from "../lib/data";
 import { Equation } from "./Equation";
+import { CompareKit } from "./kits/CompareKit";
+import { DiagnosticsKit } from "./kits/DiagnosticsKit";
 import { resolveKit } from "./kits/registry";
 import { LivePanel } from "./LivePanel";
 import { VariantCharts } from "./VariantCharts";
 
-type TabId = "field" | "live" | "charts" | "context";
+type TabId = "compare" | "field" | "live" | "charts" | "context" | "diagnostics";
 
 /** One case = a full-width workbench (ADR-0016 §9 + ADR-0063), mirroring CAOS_RES_Lidar3D's `.work` shell:
  *  a LEFT control rail (the case selector, passed in as `selector`, then the regime chips + the view switch),
@@ -31,6 +33,11 @@ export function CaseExperiment({
   const [trace, setTrace] = useState<FieldTrace | null>(null);
   const [err, setErr] = useState<string | null>(null);
   const [tab, setTab] = useState<TabId>("field");
+
+  useEffect(() => {
+    // When a case ships the method-ladder comparison (issue #25), land on it - it is the richest view.
+    if (manifest) setTab(manifest.comparison ? "compare" : "field");
+  }, [manifest?.case_id]);
 
   useEffect(() => {
     let alive = true;
@@ -64,9 +71,11 @@ export function CaseExperiment({
   }, [active?.trace.path]);
 
   const VIEWS: { id: TabId; label: string; sub: string }[] = [
+    ...(manifest?.comparison ? [{ id: "compare" as TabId, label: es ? "Comparar" : "Compare", sub: es ? "estándar vs PINN" : "standard vs PINN" }] : []),
     { id: "field", label: es ? "Campo" : "Field", sub: es ? "campo interactivo" : "interactive field" },
     { id: "live", label: "Live", sub: es ? "inferencia en el navegador" : "in-browser inference" },
     { id: "charts", label: "Charts", sub: es ? "comparación de regímenes" : "regime comparison" },
+    ...(manifest?.diagnostics ? [{ id: "diagnostics" as TabId, label: es ? "Diagnóstico" : "Diagnostics", sub: es ? "por qué falla" : "why it fails" }] : []),
     { id: "context", label: "Context", sub: es ? "teoría y ecuaciones" : "theory + equations" },
   ];
 
@@ -93,7 +102,11 @@ export function CaseExperiment({
   const l2 = active.metrics.l2_relative;
 
   const stage =
-    tab === "field" ? (
+    tab === "compare" ? (
+      <CompareKit manifest={manifest} lang={lang} />
+    ) : tab === "diagnostics" ? (
+      <DiagnosticsKit manifest={manifest} lang={lang} />
+    ) : tab === "field" ? (
       <Kit key={manifest.case_id} manifest={manifest} trace={trace} active={active} lang={lang} />
     ) : tab === "live" ? (
       <LivePanel manifest={manifest} lang={lang} />

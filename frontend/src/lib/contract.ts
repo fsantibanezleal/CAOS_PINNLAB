@@ -87,6 +87,46 @@ export interface CaseManifest {
   inverse: Record<string, unknown>;
   run_ms: number;
   variants: VariantEntry[];
+  // The method-ladder demonstration (issue #25): a comparison of the STANDARD PDE solution vs the naive/adapted/
+  // data-driven PINN, and the diagnostics that explain WHY. Present only for cases whose pipeline computes them.
+  comparison?: ComparisonBlock;
+  diagnostics?: { path: string };
+}
+
+/** One lane in the method-ladder comparison: a field key in the comparison trace + how to read it. */
+export interface CompareLane {
+  key: string; // field name in the comparison trace
+  label_en: string;
+  label_es: string;
+  role: "reference" | "exact" | "baseline" | "fix" | "data"; // standard | analytic | naive | adapted | data-driven
+  err?: string; // optional companion error-field key (|lane - standard|)
+}
+
+export interface ComparisonBlock {
+  trace: string; // path (under data/derived) of the comparison trace
+  lanes: CompareLane[];
+  onnx_naive?: string; // the naive lane's ONNX (for a Live on/off toggle)
+  note_en: string;
+  note_es: string;
+}
+
+/** The comparison trace: several fields (standard / analytic / naive / adapted / errors) on one grid. */
+export interface CompareTrace {
+  schema?: string;
+  case_id: string;
+  dims: string[];
+  axes: Record<string, number[]>;
+  fields: Record<string, number[][]>;
+  summary?: Record<string, number>;
+}
+
+/** Diagnostics that explain the method contrast (e.g. the wavenumber sweep + radial spectrum). */
+export interface Diagnostics {
+  schema?: string;
+  case_id: string;
+  wavenumber_sweep?: { n: number[]; naive: number[]; adapted: number[] };
+  radial_spectrum?: { k: number[]; standard: number[]; naive: number[]; adapted: number[] };
+  l2?: Record<string, number>;
 }
 
 /** The compact replay artifact = a decimated solution field (core/trace.py:build_trace). */
