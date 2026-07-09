@@ -3,6 +3,21 @@
 All notable changes to **PINN-Lab**. Format: `X.XX.XXX` (display) — see `pinnlab.__version__`. Keep `0.x` while on
 synthetic/benchmark data. Tag every release.
 
+## [0.15.000] — 2026-06-26 — App reorganized: domain groups + functionality cards (not 20 flat tabs)
+
+The App section is restructured from a single flat 20-tab strip into a legible three-level navigation:
+
+- **Level 1 — scenario domains.** A group nav by physics `category` (Canonical benchmarks 8 · Mining 4 · Pollution 5
+  · Industrial 2 · Control 1), each with a count + a one-line "what this domain is" intro.
+- **Level 2 — functionality cards.** Within a domain, a grid of case cards; each shows the case + its
+  **functionality badges**: the view-kit (Time evolution / Trajectory / Vector flow / Inverse overlay / …), the
+  data-honesty label (synthetic / synthetic-illustrative / **REAL data**), and the SOTA method. The groupings of
+  functionalities are now legible at a glance.
+- **Level 3 — the workbench** (Field / Live / Charts / Context) — unchanged; lands on the first case (ADR-0016).
+
+`index.json` is enriched with per-case `system_type` / `view_kit` / `method` / `real_or_synthetic`
+(`build_index` + `contract.ts`) so the cards render badges without loading every manifest.
+
 ## [0.14.000] — 2026-06-26 — InverseOverlayKit: the recovered field + its sparse evidence
 
 - **InverseOverlayKit** (`ind-heat2d-inverse`, inverse-assim): the recovered conductivity field `k(x,y)` with the
