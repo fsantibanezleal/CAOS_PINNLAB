@@ -3,6 +3,15 @@
 All notable changes to **PINN-Lab**. Format: `X.XX.XXX` (display) — see `pinnlab.__version__`. Keep `0.x` while on
 synthetic/benchmark data. Tag every release.
 
+## [0.17.000] — 2026-07-09 — Highlights strip: the REAL-data + data-hybrid cases stop being lost
+
+The one case trained on REAL measured data (`env-soil-heat-real`) was buried as one card among 20. The App now
+opens with a **Highlights strip** above the domain groups, surfacing the standouts that pure-forward-physics cases
+drown out — **REAL data first, starred + green** (`soil-heat-real`, NOAA soil temperatures), then the hybrid
+data+physics (`heat2d-inverse`), data+uncertainty (`source-uq-bpinn`), and chaotic-dynamics (`double-pendulum`)
+cases. Clicking a highlight jumps to it in its domain. This elevates exactly where PINNs genuinely win
+(data-hybrid / real-data), not just the synthetic forward benchmarks.
+
 ## [0.16.000] — 2026-07-09 — Methodology as a classical → SOTA → beyond-SOTA ladder (cited)
 
 Driven by a verified deep-research pass (117 agents, 21 adversarially-verified claims;
