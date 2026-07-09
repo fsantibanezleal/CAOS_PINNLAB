@@ -3,6 +3,16 @@
 All notable changes to **PINN-Lab**. Format: `X.XX.XXX` (display), see `pinnlab.__version__`. Keep `0.x` while on
 synthetic/benchmark data. Tag every release.
 
+## [0.20.004] (2026-07-09) darcy FNO-vs-FD comparison + full validation; honest call on wave1d (issue #25)
+
+- **darcy-operator**: a real comparison with ZERO training - the Fourier Neural Operator's one-pass prediction vs the
+  classical finite-difference reference (both already baked), relative-L2 = 2.5% on a held-out permeability field.
+- **Honest call**: a fair wave1d test (BOTH SIREN and tanh trained fresh at the hard regime c=2) lands them both at
+  ~11% - SIREN's spectral-bias edge is not visible at a feasible CPU budget. Rather than ship a fabricated contrast,
+  wave1d keeps its honest standard-vs-PINN comparison. The genuinely dramatic naive-fails (Helmholtz, allencahn,
+  heat2d-inverse) are fundamental and regime-independent; those are the real ones.
+- **Full validation**: all 20 cases render (17 with a Compare view, all with a Field view), light + dark, 0 console errors.
+
 ## [0.20.003] (2026-07-09) the DATA-DRIVEN contrast: heat2d-inverse pure-physics vs physics+data (issue #25)
 
 Answering "is it data-driven?" with real computed content. For the 2D inverse conductivity problem:
