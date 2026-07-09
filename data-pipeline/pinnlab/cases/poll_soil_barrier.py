@@ -129,3 +129,63 @@ def build(seed: int) -> dict:
     model = dde.Model(data, net)
     model.compile("adam", lr=t["lr"], metrics=["l2 relative error"])
     return {"model": model, "input_dim": 2}
+
+
+def build_naive(seed: int) -> dict:
+    """NAIVE lane: ONE smooth single-channel net (no domain decomposition), same hard IC/BC. A single smooth network
+    cannot represent the discontinuous c_x at the low-permeability barrier faces, so it rounds off the kink — the
+    failure the FBPINN partition-of-unity blend fixes. Same net size, so the contrast is the METHOD, not capacity."""
+    import deepxde as dde
+    import torch
+
+    dde.config.set_random_seed(int(seed))
+    geom = dde.geometry.Interval(0.0, 1.0)
+    timedomain = dde.geometry.TimeDomain(0.0, 1.0)
+    geomtime = dde.geometry.GeometryXTime(geom, timedomain)
+
+    def psi_torch(xs):
+        r = (torch.clamp(xs, 0, AB) / D_SOIL
+             + torch.clamp(xs - AB, 0, BB - AB) / D_BARR
+             + torch.clamp(xs - BB, 0, 1 - BB) / D_SOIL)
+        return 1.0 - r / R_L
+
+    def d_field(xs):
+        chi = ((xs >= AB) & (xs <= BB)).to(xs.dtype)
+        return D_SOIL * (1.0 - chi) + D_BARR * chi
+
+    def pde(x, c):
+        xs = x[:, 0:1]
+        ts = x[:, 1:2]
+        c_t = dde.grad.jacobian(c, x, i=0, j=1)
+        c_xx = dde.grad.hessian(c, x, i=0, j=0)
+        f = torch.exp(-ts) * psi_torch(xs)
+        return c_t - d_field(xs) * c_xx - f
+
+    net = dde.nn.FNN([2] + [64] * 4 + [1], "tanh", "Glorot normal")  # SINGLE channel (no partition-of-unity)
+
+    def naive_transform(x, y):
+        xs = x[:, 0:1]
+        ts = x[:, 1:2]
+        lift = (1.0 - torch.exp(-ts)) * (1.0 - xs)
+        vanish = ts * xs * (1.0 - xs)
+        return lift + vanish * y  # one smooth net -> cannot produce the kink in c_x
+
+    net.apply_output_transform(naive_transform)
+
+    n_a = 40
+    t_a = np.linspace(0.0, 1.0, n_a)
+    anchors = np.concatenate([
+        np.stack([np.full(n_a, AB), t_a], axis=1),
+        np.stack([np.full(n_a, BB), t_a], axis=1),
+        np.stack([np.full(n_a, X_C), t_a], axis=1),
+    ])
+    t = CASE.train
+    data = dde.data.TimePDE(
+        geomtime, pde, [],
+        num_domain=t["num_domain"], num_boundary=t["num_boundary"],
+        num_initial=t["num_initial"], solution=analytic, num_test=t["num_test"],
+        anchors=anchors,
+    )
+    model = dde.Model(data, net)
+    model.compile("adam", lr=t["lr"], metrics=["l2 relative error"])
+    return {"model": model, "input_dim": 2}

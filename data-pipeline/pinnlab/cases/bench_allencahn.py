@@ -112,6 +112,31 @@ def build(seed: int) -> dict:
     return {"model": model, "input_dim": 2}
 
 
+def build_naive(seed: int) -> dict:
+    """NAIVE lane: the plain SOFT PINN — the IC and BC are loss terms (no hard-constraint ansatz) and there is NO RAR.
+    This is the documented failure mode: it collapses to a metastable state and smears the sharp +/-1 transition
+    layers. Same net size as the adapted lane, so the contrast is the METHOD (hard constraints + RAR), not capacity."""
+    import deepxde as dde
+
+    dde.config.set_random_seed(int(seed))
+    geom = dde.geometry.Interval(-1.0, 1.0)
+    timedomain = dde.geometry.TimeDomain(0.0, 1.0)
+    geomtime = dde.geometry.GeometryXTime(geom, timedomain)
+    pde = _make_pde()
+    ic = dde.icbc.IC(geomtime, lambda x: (x[:, 0:1] ** 2) * np.cos(np.pi * x[:, 0:1]), lambda _, on_initial: on_initial)
+    # endpoint-matched Dirichlet: x^2 cos(pi x) = -1 at x = +/-1 (the same endpoints the hard ansatz bakes in)
+    bc = dde.icbc.DirichletBC(geomtime, lambda x: -np.ones((len(x), 1)), lambda _, on_boundary: on_boundary)
+    t = CASE.train
+    data = dde.data.TimePDE(
+        geomtime, pde, [ic, bc],
+        num_domain=t["num_domain"], num_boundary=t["num_boundary"], num_initial=t["num_initial"],
+    )
+    net = dde.nn.FNN(t["layers"], "tanh", "Glorot normal")  # NO output transform -> soft constraints
+    model = dde.Model(data, net)
+    model.compile("adam", lr=t["lr"], loss_weights=[1, 100, 100])  # weight IC + BC losses
+    return {"model": model, "input_dim": 2}
+
+
 def refine(model, case, seed: int) -> None:
     """RAR-G: greedily add top-k highest-residual points (chases the moving interface), several rounds."""
     pde = _make_pde()
