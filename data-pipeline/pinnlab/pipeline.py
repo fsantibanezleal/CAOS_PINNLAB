@@ -87,8 +87,12 @@ def run_all(seed: int = 42, *, quick: bool = False) -> list[dict]:
     entries = []
     for c in registry.list_cases():
         precompute(c.id, seed=seed, quick=quick)
-        entries.append({"case_id": c.id, "category": c.category, "title": c.title,
-                        "manifest_path": f"manifests/{c.id}.json"})
+        entries.append({
+            "case_id": c.id, "category": c.category, "title": c.title,
+            "manifest_path": f"manifests/{c.id}.json",
+            "system_type": c.system_type, "view_kit": c.kit,
+            "method": c.method, "real_or_synthetic": c.real_or_synthetic,
+        })
     write_json(MANIFESTS / "index.json", build_index(entries))
     return entries
 

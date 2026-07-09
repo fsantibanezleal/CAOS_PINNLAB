@@ -105,6 +105,11 @@ export interface CaseIndexEntry {
   category: string;
   title: string;
   manifest_path: string;
+  // enriched (index/v1): drives the App's grouped nav + the functionality badges on each case card
+  system_type?: string;
+  view_kit?: string;
+  method?: string;
+  real_or_synthetic?: string;
 }
 
 export interface CaseIndex {
@@ -121,4 +126,46 @@ export const CATEGORY_LABELS: Record<string, { en: string; es: string }> = {
   "pollution-environmental": { en: "Pollution & environmental", es: "Polución y ambiental" },
   "industrial-fluids-heat": { en: "Industrial fluids & heat", es: "Fluidos e ingeniería térmica" },
   control: { en: "Controls", es: "Controles" },
+};
+
+/** One-line "what this scenario domain is" — the group intro on the App page. */
+export const CATEGORY_INTRO: Record<string, { en: string; es: string }> = {
+  "canonical-benchmark": {
+    en: "The reference PDEs and one chaotic ODE that harden the engine + the train→ONNX→web contract: elliptic, parabolic, hyperbolic, advection, an operator, and a dynamical system.",
+    es: "Las PDEs de referencia y una EDO caótica que endurecen el motor + el contrato train→ONNX→web: elíptica, parabólica, hiperbólica, advección, un operador y un sistema dinámico.",
+  },
+  "mining-mineral-processing": {
+    en: "Reduced-model processes from mineral processing — comminution, flotation, thickening, heap leaching — each a standard engineering closure, honestly labelled synthetic-illustrative.",
+    es: "Procesos de modelo reducido del procesamiento mineral — conminución, flotación, espesamiento, lixiviación en pilas — cada uno un cierre de ingeniería estándar, etiquetado con honestidad como sintético-ilustrativo.",
+  },
+  "pollution-environmental": {
+    en: "Transport, seepage and uncertainty in environmental settings — an advecting plume, a barrier, unsaturated seepage, a Bayesian source, and the one case trained on REAL data (NOAA soil temperatures).",
+    es: "Transporte, filtración e incertidumbre en entornos ambientales — una pluma que se advecta, una barrera, filtración no saturada, una fuente bayesiana, y el único caso entrenado con datos REALES (temperaturas de suelo NOAA).",
+  },
+  "industrial-fluids-heat": {
+    en: "Where PINNs genuinely win: an inverse conductivity recovery from sparse sensors, and a Helmholtz field with Fourier-feature inputs.",
+    es: "Donde las PINNs ganan de verdad: una recuperación inversa de conductividad desde sensores dispersos, y un campo de Helmholtz con entradas de Fourier features.",
+  },
+  control: {
+    en: "Degenerate sanity anchors — the engine must not crash on a trivial (zero-source) case.",
+    es: "Anclas de sanidad degeneradas — el motor no debe fallar en un caso trivial (fuente cero).",
+  },
+};
+
+/** Short badge label for the view kit = the FUNCTIONALITY each case exercises (shown on the case card). */
+export const VIEW_KIT_LABELS: Record<string, { en: string; es: string }> = {
+  HeatmapKit: { en: "Field heatmap", es: "Mapa de campo" },
+  TimeEvolutionKit: { en: "Time evolution", es: "Evolución temporal" },
+  SpatioTemporalKit: { en: "2-D over time", es: "2-D en el tiempo" },
+  TrajectoryAnimationKit: { en: "Trajectory (animated)", es: "Trayectoria (animada)" },
+  VectorFieldKit: { en: "Vector flow", es: "Flujo vectorial" },
+  UQBandKit: { en: "Uncertainty band", es: "Banda de incertidumbre" },
+  InverseOverlayKit: { en: "Inverse overlay", es: "Overlay inverso" },
+};
+
+/** Honesty label for the data provenance (shown on the case card). */
+export const DATA_LABELS: Record<string, { en: string; es: string }> = {
+  synthetic: { en: "synthetic", es: "sintético" },
+  "synthetic-illustrative": { en: "synthetic-illustrative", es: "sintético-ilustrativo" },
+  "validated-real": { en: "REAL data", es: "datos REALES" },
 };
