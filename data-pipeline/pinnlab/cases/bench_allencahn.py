@@ -23,7 +23,6 @@ D_COEF = 0.001
 
 CASE = CaseSpec(
     id="bench-allencahn",
-    system_type="time-evol-1d",
     category="canonical-benchmark",
     title="Allen-Cahn (stiff reaction-diffusion) — hard-constraint + RAR PINN",
     governing_equations=(

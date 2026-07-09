@@ -24,7 +24,6 @@ C_MIN, C_MAX = 0.5, 2.0
 
 CASE = CaseSpec(
     id="bench-wave1d",
-    system_type="time-evol-1d",
     category="canonical-benchmark",
     title="1D wave equation, parametric speed — SIREN + hard-constraint PINN",
     governing_equations=(

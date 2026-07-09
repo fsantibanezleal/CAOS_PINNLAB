@@ -3,6 +3,22 @@
 All notable changes to **PINN-Lab**. Format: `X.XX.XXX` (display) — see `pinnlab.__version__`. Keep `0.x` while on
 synthetic/benchmark data. Tag every release.
 
+## [0.19.000] — 2026-07-09 — consistent probe + labelled dimensions (the space-time heatmap is the EVOLUTION)
+
+Owner feedback: the play-button (animated) field cases had lost the value-at-cursor + the two cross-section graphs
+that the plain heatmap cases (darcy, poisson) keep, and it was unclear whether a heatmap showed the evolution or a
+static final state. Fixed by REPLACING the animation with the heatmap+probe on those cases and labelling dimensions:
+
+- **Reverted the 4 animated field cases** (allencahn, burgers1d, wave1d, ocean-transport) to HeatmapKit — so every
+  field case again shows the crosshair + value-at-cursor read-out + the two line-cut profiles (u along each axis).
+  No play button; consistent with darcy/poisson. (The double pendulum stays a trajectory — it has no field.)
+- **Axis-dimension labels on the heatmap** (FieldView): the horizontal + vertical axis names are drawn, and a time
+  axis is marked "t — time →".
+- **A dimension caption** states exactly what you are seeing: for a time-dependent PDE, "SPACE–TIME field u(x,t):
+  the whole evolution in one image … reading up the time axis shows how it evolves. It is NOT a static final
+  state."; for a steady field, "no time dimension"; for a param-time case, "spatial snapshot at t=… (use the regime
+  chips to step through time)."
+
 ## [0.18.000] — 2026-07-09 — the HYBRID data+physics rung (the practical winner), cited + honestly scoped
 
 Answering "why aren't we featuring the data-driven PINN?" — from a verified deep-research pass on hybrid CFD PINNs

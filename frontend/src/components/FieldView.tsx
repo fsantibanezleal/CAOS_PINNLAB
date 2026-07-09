@@ -8,6 +8,9 @@ export interface FieldAxis {
   hi: number;
 }
 
+const TIME_NAMES = new Set(["t", "time", "tau", "tt", "τ"]);
+const dimName = (l: string) => (TIME_NAMES.has(l) ? `${l} — time →` : l);
+
 /** Interactive 2-D field viewer: a viridis heatmap with a hover crosshair + value read-out, a colorbar, and two
  *  line-cut profiles (u along x at the cursor row, u along y at the cursor column). `field[ix][iy]` with ix on the
  *  horizontal axis and larger iy drawn at the top (math convention). Reacts to the cursor — the value read-out and
@@ -81,17 +84,23 @@ export function FieldView({
   return (
     <div className="fieldview">
       <div className="fieldview-map">
-        <div className="field-wrap" onMouseMove={onMove} onMouseLeave={() => setCur(null)}>
-          <canvas ref={canvasRef} className="field-canvas" style={{ aspectRatio: `${nx} / ${ny || 1}` }} />
-          {cur && (
-            <>
-              <div className="xhair xhair-v" style={{ left: `${cx * 100}%` }} />
-              <div className="xhair xhair-h" style={{ top: `${cy * 100}%` }} />
-              <div className="xhair-dot" style={{ left: `${cx * 100}%`, top: `${cy * 100}%` }} />
-            </>
-          )}
+        <div className="axis-y-label">{dimName(axisY.label)}</div>
+        <div className="fw-stack">
+          <div className="fw-row">
+            <div className="field-wrap" onMouseMove={onMove} onMouseLeave={() => setCur(null)}>
+              <canvas ref={canvasRef} className="field-canvas" style={{ aspectRatio: `${nx} / ${ny || 1}` }} />
+              {cur && (
+                <>
+                  <div className="xhair xhair-v" style={{ left: `${cx * 100}%` }} />
+                  <div className="xhair xhair-h" style={{ top: `${cy * 100}%` }} />
+                  <div className="xhair-dot" style={{ left: `${cx * 100}%`, top: `${cy * 100}%` }} />
+                </>
+              )}
+            </div>
+            <Colorbar lo={lo} hi={hi} value={val} label={outputLabel} />
+          </div>
+          <div className="axis-x-label">{dimName(axisX.label)}</div>
         </div>
-        <Colorbar lo={lo} hi={hi} value={val} label={outputLabel} />
       </div>
 
       <div className="fieldview-side">
