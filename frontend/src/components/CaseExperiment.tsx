@@ -147,25 +147,22 @@ export function CaseExperiment({
         </div>
       </aside>
 
-      {/* CENTER stage: the active view, full width */}
-      <section className="pl-stage" aria-label={manifest.title}>
-        {stage}
-      </section>
-
-      {/* RIGHT rail: governing equation + metrics + expected band */}
-      <aside className="pl-rail">
-        <h4>{es ? "Ecuación gobernante" : "Governing equation"}</h4>
-        <div className="pl-right-eq"><Equation tex={manifest.governing_equations} /></div>
-        <h4>{es ? "Métricas" : "Metrics"}</h4>
-        <div className="pl-metrics">
-          <span className="k">{es ? "Método" : "Method"}</span><span className="v mono">{manifest.method}</span>
-          <span className="k">{es ? "Motor" : "Engine"}</span><span className="v mono">{manifest.engine.framework}</span>
-          <span className="k">L2</span><span className="v mono">{typeof l2 === "number" ? l2.toExponential(2) : String(l2)}</span>
-          <span className="k">{es ? "Paridad ONNX" : "ONNX parity"}</span><span className="v mono">{manifest.onnx.parity_max_abs.toExponential(1)}</span>
+      {/* MAIN: a full-width TOP context strip (equation never cut) then the full-width stage under it */}
+      <div className="pl-main">
+        <div className="pl-context">
+          <div className="pl-ctx-eq"><Equation tex={manifest.governing_equations} /></div>
+          <div className="pl-ctx-meta">
+            <span className="pl-ctx-metric"><b className="muted">{es ? "Método" : "Method"}</b> <span className="mono">{manifest.method}</span></span>
+            <span className="pl-ctx-metric"><b className="muted">{es ? "Motor" : "Engine"}</b> <span className="mono">{manifest.engine.framework}</span></span>
+            <span className="pl-ctx-metric"><b className="muted">L2</b> <span className="mono">{typeof l2 === "number" ? l2.toExponential(2) : String(l2)}</span></span>
+            <span className="pl-ctx-metric"><b className="muted">{es ? "Paridad ONNX" : "ONNX parity"}</b> <span className="mono">{manifest.onnx.parity_max_abs.toExponential(1)}</span></span>
+          </div>
+          <p className="pl-ctx-band muted">{manifest.expected_band}</p>
         </div>
-        <h4>{es ? "Banda esperada" : "Expected band"}</h4>
-        <p className="muted" style={{ fontSize: 12.5, margin: 0, lineHeight: 1.5 }}>{manifest.expected_band}</p>
-      </aside>
+        <section className="pl-stage" aria-label={manifest.title}>
+          {stage}
+        </section>
+      </div>
     </div>
   );
 }

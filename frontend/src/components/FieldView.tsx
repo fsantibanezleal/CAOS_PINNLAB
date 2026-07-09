@@ -51,16 +51,21 @@ export function FieldView({
   const anim = useAnimator(nT, { fps: 12 });
   const it = hasTime ? Math.min(anim.frame, nT - 1): 0;
 
-  // the pinned crosshair (click-to-pin). Its time component is kept in sync with the animator below.
+  // sel = the pinned/last location. pinned=false -> the two graphs FOLLOW the cursor (the released mode); a single
+  // click PINS them here; a double click RELEASES back to follow. Both modes in one.
   const [sel, setSel] = useState<{ ix: number; iy: number }>(() => ({
     ix: timeIsX ? 0: Math.floor(nx / 2),
     iy: timeIsY ? 0: Math.floor(ny / 2),
   }));
-  // transient hover position (read-out only; the graphs follow the PIN, not the hover)
+  const [pinned, setPinned] = useState(false);
   const [hov, setHov] = useState<{ ix: number; iy: number } | null>(null);
 
-  // the effective crosshair: space from the pin, time from the animator
-  const cur = timeIsY ? { ix: sel.ix, iy: it }: timeIsX ? { ix: it, iy: sel.iy }: sel;
+  // released + hovering -> the graphs follow the cursor fully; pinned (or off-map) -> space from sel, time from the
+  // animator (so Play still drives the evolution at the pinned location).
+  const following = !pinned && !!hov;
+  const base = following ? hov! : sel;
+  const curTime = hasTime ? (following ? (timeIsY ? hov!.iy : hov!.ix) : it) : 0;
+  const cur = timeIsY ? { ix: base.ix, iy: curTime }: timeIsX ? { ix: curTime, iy: base.iy }: base;
 
   const { lo, hi } = useMemo(() => {
     let lo = Infinity;
@@ -107,6 +112,7 @@ export function FieldView({
   }
   function onClick(e: React.MouseEvent) {
     const { ix, iy } = idxFromEvent(e);
+    setPinned(true); // single click -> pin/fix the graphs here
     anim.setPlaying(false);
     if (timeIsY) {
       setSel((s) => ({ ...s, ix }));
@@ -118,6 +124,9 @@ export function FieldView({
       setSel({ ix, iy });
     }
   }
+  function onDblClick() {
+    setPinned(false); // double click -> release: the graphs follow the cursor again
+  }
 
   const axVal = (i: number, a: FieldAxis, n: number) => a.lo + ((a.hi - a.lo) * i) / Math.max(1, n - 1);
   // read-out follows the hover if present, else the pin
@@ -126,7 +135,7 @@ export function FieldView({
   const readVal = field[readIx]?.[readIy] ?? null;
   const cx = cur.ix / Math.max(1, nx - 1);
   const cy = 1 - cur.iy / Math.max(1, ny - 1);
-  const tVal = hasTime ? (timeIsY ? axVal(it, axisY, ny): axVal(it, axisX, nx)): 0;
+  const tVal = hasTime ? (timeIsY ? axVal(curTime, axisY, ny): axVal(curTime, axisX, nx)): 0;
   const timeLabel = timeIsY ? axisY.label: axisX.label;
 
   // ---- the two line-cut graphs -------------------------------------------------------------------
@@ -136,11 +145,11 @@ export function FieldView({
   let g1: { xLabel: string; n: number; values: number[]; init?: number[]; cursor: number };
   let g2: { xLabel: string; n: number; values: number[]; cursor: number };
   if (timeIsY) {
-    g1 = { xLabel: axisX.label, n: nx, values: field.map((c) => c[it]), init: field.map((c) => c[0]), cursor: cur.ix };
-    g2 = { xLabel: axisY.label, n: ny, values: field[sel.ix] ?? [], cursor: it };
+    g1 = { xLabel: axisX.label, n: nx, values: field.map((c) => c[curTime]), init: field.map((c) => c[0]), cursor: cur.ix };
+    g2 = { xLabel: axisY.label, n: ny, values: field[base.ix] ?? [], cursor: curTime };
   } else if (timeIsX) {
-    g1 = { xLabel: axisY.label, n: ny, values: field[it] ?? [], init: field[0] ?? [], cursor: cur.iy };
-    g2 = { xLabel: axisX.label, n: nx, values: field.map((c) => c[sel.iy]), cursor: it };
+    g1 = { xLabel: axisY.label, n: ny, values: field[curTime] ?? [], init: field[0] ?? [], cursor: cur.iy };
+    g2 = { xLabel: axisX.label, n: nx, values: field.map((c) => c[base.iy]), cursor: curTime };
   } else {
     g1 = { xLabel: axisX.label, n: nx, values: field.map((c) => c[cur.iy]), cursor: cur.ix };
     g2 = { xLabel: axisY.label, n: ny, values: field[cur.ix] ?? [], cursor: cur.iy };
@@ -157,7 +166,7 @@ export function FieldView({
         <div className="axis-y-label">{dimTag(axisY.label)}</div>
         <div className="fw-stack">
           <div className="fw-row">
-            <div className="field-wrap" onMouseMove={onMove} onMouseLeave={() => setHov(null)} onClick={onClick} title={es ? "Clic para fijar la ubicación": "Click to pin the location"}>
+            <div className="field-wrap" onMouseMove={onMove} onMouseLeave={() => setHov(null)} onClick={onClick} onDoubleClick={onDblClick} title={es ? (pinned ? "Fijado. Doble clic para soltar (los gráficos siguen el cursor)": "Clic para fijar; los gráficos siguen el cursor") : (pinned ? "Pinned. Double-click to release (graphs follow the cursor)": "Click to pin; the graphs follow the cursor")}>
               <canvas ref={canvasRef} className="field-canvas" style={{ aspectRatio: `${nx} / ${ny || 1}` }} />
               <div className="xhair xhair-v" style={{ left: `${cx * 100}%` }} />
               <div className="xhair xhair-h" style={{ top: `${cy * 100}%` }} />
@@ -174,7 +183,7 @@ export function FieldView({
           <span className="mono">
             {axisX.label}={axVal(readIx, axisX, nx).toFixed(3)} &nbsp; {axisY.label}={axVal(readIy, axisY, ny).toFixed(3)}
             &nbsp; → &nbsp; <strong>{outputLabel}={readVal != null ? readVal.toExponential(3): "-"}</strong>
-            {hov ? <span className="muted"> &nbsp;({es ? "bajo el cursor": "under cursor"})</span>: <span className="muted"> &nbsp;({es ? "fijado": "pinned"})</span>}
+            <span className="muted"> &nbsp;({pinned ? (es ? "fijado · doble clic para soltar": "pinned · double-click to release") : (es ? "sigue el cursor · clic para fijar": "follows cursor · click to pin")})</span>
           </span>
         </div>
 
@@ -207,8 +216,8 @@ export function FieldView({
         <p className="fieldview-hint muted">
           {hasTime
             ? es
-              ? "Clic en el mapa para fijar la ubicación y actualizar los gráficos. Pulsa ▶ para ver la evolución en el tiempo (la línea discontinua es el estado inicial t=0)."
-             : "Click the map to pin a location and update the graphs. Press ▶ to watch it evolve in time (the dashed line is the initial state t=0)."
+              ? "Los dos gráficos SIGUEN el cursor. Un clic los FIJA en un punto, doble clic los suelta. Pulsa ▶ para ver la evolución (discontinua = estado inicial t=0)."
+             : "The two graphs FOLLOW the cursor. Single-click to PIN them at a spot, double-click to release. Press ▶ to watch it evolve in time (dashed = initial state t=0)."
            : es
               ? "Clic en el mapa para fijar la ubicación; los dos gráficos son cortes del campo en esa fila y esa columna."
              : "Click the map to pin a location; the two graphs are cuts of the field along that row and column."}
