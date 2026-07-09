@@ -3,6 +3,15 @@
 All notable changes to **PINN-Lab**. Format: `X.XX.XXX` (display), see `pinnlab.__version__`. Keep `0.x` while on
 synthetic/benchmark data. Tag every release.
 
+## [0.20.003] (2026-07-09) the DATA-DRIVEN contrast: heat2d-inverse pure-physics vs physics+data (issue #25)
+
+Answering "is it data-driven?" with real computed content. For the 2D inverse conductivity problem:
+- **pure physics (NO sensor data)** leaves k(x,y) underdetermined -> the recovered field is nowhere near k*
+  (L2 = 356% vs the analytic standard);
+- **physics + ~100 sparse T sensors** recovers it (L2 = 4.0%).
+Shown as standard | pure-physics | physics+data + error maps. The DATA is what makes the inverse solvable - the
+concrete demonstration of the hybrid data+physics PINN, computed, not asserted.
+
 ## [0.20.002] (2026-07-09) two more REAL naive-vs-fix ladders: allencahn (collapse) + soil-barrier (issue #25)
 
 Fast training path (~1-3 min/case, no L-BFGS) so the naive contrast is real without the hour-long runs.

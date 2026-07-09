@@ -154,3 +154,49 @@ def build(seed: int) -> dict:
     model = dde.Model(data, net)
     model.compile("adam", lr=t["lr"], loss_weights=t["loss_weights"])
     return {"model": model, "input_dim": 2}
+
+
+def build_naive(seed: int) -> dict:
+    """NAIVE (pure-physics, NO DATA) lane: the SAME inverse net + PDE residual but with the sparse T sensors REMOVED.
+    The PDE div(k grad T)=q with T=0 on the boundary is satisfied by many (k,T) pairs, so without observations k is
+    underdetermined and the recovered k does NOT match k* - the direct demonstration that the DATA is what makes the
+    inverse solvable (physics alone is not enough)."""
+    import deepxde as dde
+    import torch
+
+    dde.config.set_random_seed(int(seed))
+    geom = dde.geometry.Rectangle([0.0, 0.0], [1.0, 1.0])
+
+    def q_source(x):
+        px = np.pi * x[:, 0:1]
+        py = np.pi * x[:, 1:2]
+        s = torch.sin(px) * torch.sin(py)
+        return (np.pi ** 2 / 2.0) * (-4.0 * s ** 2 + torch.sin(px) ** 2 + torch.sin(py) ** 2 - 4.0 * s)
+
+    def pde(x, y):
+        T_x = dde.grad.jacobian(y, x, i=1, j=0)
+        T_y = dde.grad.jacobian(y, x, i=1, j=1)
+        T_xx = dde.grad.hessian(y, x, component=1, i=0, j=0)
+        T_yy = dde.grad.hessian(y, x, component=1, i=1, j=1)
+        k = y[:, 0:1]
+        k_x = dde.grad.jacobian(y, x, i=0, j=0)
+        k_y = dde.grad.jacobian(y, x, i=0, j=1)
+        return k * (T_xx + T_yy) + k_x * T_x + k_y * T_y - q_source(x)
+
+    net = dde.nn.PFNN([2, [40, 40], [40, 40], [40, 40], 2], "tanh", "Glorot uniform")
+
+    def output_transform(x, y):
+        xx = x[:, 0:1]
+        yy = x[:, 1:2]
+        k = torch.nn.functional.softplus(y[:, 0:1]) + 1e-3
+        t = xx * (1.0 - xx) * yy * (1.0 - yy) * y[:, 1:2]
+        return torch.cat([k, t], dim=1)
+
+    net.apply_output_transform(output_transform)
+    t = CASE.train
+    data = dde.data.PDE(  # NO observe_T, NO sensor anchors -> pure physics, k underdetermined
+        geom, pde, [], num_domain=t["num_domain"], num_boundary=t["num_boundary"], num_test=t["num_test"],
+    )
+    model = dde.Model(data, net)
+    model.compile("adam", lr=t["lr"])
+    return {"model": model, "input_dim": 2}
