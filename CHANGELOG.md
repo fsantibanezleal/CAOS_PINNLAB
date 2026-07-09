@@ -3,6 +3,16 @@
 All notable changes to **PINN-Lab**. Format: `X.XX.XXX` (display), see `pinnlab.__version__`. Keep `0.x` while on
 synthetic/benchmark data. Tag every release.
 
+## [0.20.002] (2026-07-09) two more REAL naive-vs-fix ladders: allencahn (collapse) + soil-barrier (issue #25)
+
+Fast training path (~1-3 min/case, no L-BFGS) so the naive contrast is real without the hour-long runs.
+- **allencahn**: the textbook PINN failure, computed and shown. The naive SOFT PINN collapses to a metastable state
+  and smears the sharp +/-1 transition layers (L2 = 95% vs the spectral-reference standard); the hard-constraint +
+  RAR fix tracks them (L2 = 0.4%). standard | naive | adapted + error maps.
+- **soil-barrier**: the single-domain naive vs the FBPINN domain-decomposition, both against the MMS standard. Honest
+  outcome shown as-is: on the CPU lane both land near 19% (the FBPINN edge here is subtle, at the kink) - not dressed up.
+- Generic `build_naive_lane.py` adds a naive lane to any case with `build_naive()` + an existing comparison.
+
 ## [0.20.001] (2026-07-09) Helmholtz flagship: the FULL real ladder (naive vs Fourier) + diagnostics (issue #25)
 
 The reference case computed end-to-end, all REAL, nothing staged:
