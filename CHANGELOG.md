@@ -3,6 +3,16 @@
 All notable changes to **PINN-Lab**. Format: `X.XX.XXX` (display), see `pinnlab.__version__`. Keep `0.x` while on
 synthetic/benchmark data. Tag every release.
 
+## [0.20.001] (2026-07-09) Helmholtz flagship: the FULL real ladder (naive vs Fourier) + diagnostics (issue #25)
+
+The reference case computed end-to-end, all REAL, nothing staged:
+- **Compare view**: standard (classical FDM solve) | **naive plain-tanh PINN (120.8% error, visibly broken by
+  spectral bias)** | **Fourier-feature PINN (9.3%, matches)** | analytic (MMS), plus the two error maps. You can SEE
+  the naive lane fail to resolve the high-wavenumber pattern while the Fourier lane nails it.
+- **Diagnostics view**: the wavenumber sweep (naive: 3% at n=1 -> ~100% at n>=2; Fourier stays low) and the radial
+  spectral energy - the WHY behind the failure. Real numbers from real training runs.
+- Naive ONNX exported for a future Live on/off toggle.
+
 ## [0.20.000] (2026-07-09) COMPARE view: the standard PDE solution vs the PINN, on real baked data (issue #25)
 
 The offline pipeline now COMPUTES the comparison the docs describe (it did not before: each case baked one thin PINN
