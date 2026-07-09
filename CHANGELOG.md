@@ -3,7 +3,7 @@
 All notable changes to **PINN-Lab**. Format: `X.XX.XXX` (display) — see `pinnlab.__version__`. Keep `0.x` while on
 synthetic/benchmark data. Tag every release.
 
-## [0.19.000] — 2026-07-09 — consistent probe + labelled dimensions (the space-time heatmap is the EVOLUTION)
+## [0.18.001] — 2026-07-09 — consistent probe + labelled dimensions (the space-time heatmap is the EVOLUTION)
 
 Owner feedback: the play-button (animated) field cases had lost the value-at-cursor + the two cross-section graphs
 that the plain heatmap cases (darcy, poisson) keep, and it was unclear whether a heatmap showed the evolution or a
