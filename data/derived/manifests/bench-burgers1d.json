@@ -178,5 +178,25 @@
     "max_abs_error": 0.021945
    }
   }
- ]
+ ],
+ "comparison": {
+  "trace": "bench-burgers1d/comparison.json",
+  "lanes": [
+   {
+    "key": "standard",
+    "label_en": "standard (analytic)",
+    "label_es": "estándar (analítica)",
+    "role": "reference"
+   },
+   {
+    "key": "adapted",
+    "label_en": "hard-constraints-rar PINN",
+    "label_es": "PINN hard-constraints-rar",
+    "role": "fix",
+    "err": "err_adapted"
+   }
+  ],
+  "note_en": "The PINN (hard-constraints-rar) field vs the closed-form standard solution, and their pointwise error. Relative-L2 = 0.1%.",
+  "note_es": "El campo de la PINN (hard-constraints-rar) frente a la solución estándar de forma cerrada, y su error puntual. L2 relativa = 0.1%."
+ }
 }

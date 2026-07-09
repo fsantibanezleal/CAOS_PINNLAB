@@ -3,6 +3,20 @@
 All notable changes to **PINN-Lab**. Format: `X.XX.XXX` (display), see `pinnlab.__version__`. Keep `0.x` while on
 synthetic/benchmark data. Tag every release.
 
+## [0.20.000] (2026-07-09) COMPARE view: the standard PDE solution vs the PINN, on real baked data (issue #25)
+
+The offline pipeline now COMPUTES the comparison the docs describe (it did not before: each case baked one thin PINN
+field, so there was nothing rich to show). First deliverable: every case with a closed-form reference gets a real
+"standard vs PINN" comparison, baked with NO retraining (the PINN field is already baked; the standard is analytic).
+
+- **Compare view (default)** per case: the STANDARD solution vs the adapted PINN vs their pointwise error map, with
+  a shared hover probe that reads every lane at a point, and the real baked relative-L2 headline. 14 cases so far.
+- Honest, not staged: e.g. the domain-decomposition (FBPINN) barrier case shows a real 19.1% error concentrated at
+  the barrier faces; the easy forward cases show <1% (the PINN genuinely matches the standard there).
+- `CompareKit` + `DiagnosticsKit` are manifest-driven, so they light up for every case as its pipeline computes a
+  comparison. Manifest gains `comparison` + `diagnostics` blocks.
+- Next: the Helmholtz flagship full ladder (naive tanh vs Fourier + wavenumber sweep + spectrum) is computing now.
+
 ## [0.19.000] (2026-07-09) full-width App shell (mirrors Lidar3D): left rail + stage + right stats
 
 The App content was boxed into a narrow centered column while the header and footer used the full width. The App is

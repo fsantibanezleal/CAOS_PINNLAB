@@ -68,5 +68,25 @@
     "T_l2_relative": 0.007664
    }
   }
- ]
+ ],
+ "comparison": {
+  "trace": "ind-heat2d-inverse/comparison.json",
+  "lanes": [
+   {
+    "key": "standard",
+    "label_en": "standard (analytic)",
+    "label_es": "estándar (analítica)",
+    "role": "reference"
+   },
+   {
+    "key": "adapted",
+    "label_en": "inverse-field PINN",
+    "label_es": "PINN inverse-field",
+    "role": "fix",
+    "err": "err_adapted"
+   }
+  ],
+  "note_en": "The PINN (inverse-field) field vs the closed-form standard solution, and their pointwise error. Relative-L2 = 4.0%.",
+  "note_es": "El campo de la PINN (inverse-field) frente a la solución estándar de forma cerrada, y su error puntual. L2 relativa = 4.0%."
+ }
 }
