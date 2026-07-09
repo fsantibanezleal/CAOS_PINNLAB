@@ -77,38 +77,34 @@ export function AppPage() {
   // the left-rail case selector (rendered by CaseExperiment at the top of the left column)
   const selector = (
     <div className="pl-selector">
-      <h4>{es ? "Destacados" : "Highlights"}</h4>
-      <div className="pl-caselist">
-        {FEATURED.map((f) => {
-          const c = index.cases.find((x) => x.case_id === f.id);
-          if (!c) return null;
-          return (
-            <button
-              key={f.id}
-              type="button"
-              className={"pl-caseitem" + (f.id === caseId ? " on" : "")}
-              onClick={() => selectCase(c.category, f.id)}
-            >
-              <span className="pl-star">{f.star ? "★" : "•"}</span>
-              {caseLabel(f.id)}
-            </button>
-          );
-        })}
-      </div>
+      <label className="pl-selrow">
+        <span className="pl-sellabel">{es ? "Destacados" : "Highlights"}</span>
+        <select
+          className="pl-select"
+          value={FEATURED.some((f) => f.id === caseId) ? caseId : ""}
+          onChange={(e) => {
+            const id = e.target.value;
+            const c = index.cases.find((x) => x.case_id === id);
+            if (c) selectCase(c.category, id);
+          }}
+        >
+          <option value="">{es ? "Ir a un destacado…" : "Jump to a highlight…"}</option>
+          {FEATURED.map((f) => {
+            const c = index.cases.find((x) => x.case_id === f.id);
+            if (!c) return null;
+            return <option key={f.id} value={f.id}>{(f.star ? "★ " : "") + caseLabel(f.id)}</option>;
+          })}
+        </select>
+      </label>
 
-      <h4>{es ? "Dominio" : "Domain"}</h4>
-      <div className="pl-domainchips">
-        {present.map((cat) => (
-          <button
-            key={cat}
-            type="button"
-            className={"pl-domainchip" + (cat === group ? " on" : "")}
-            onClick={() => selectGroup(cat)}
-          >
-            {CATEGORY_LABELS[cat]?.[lang] ?? cat} ({groups[cat].length})
-          </button>
-        ))}
-      </div>
+      <label className="pl-selrow">
+        <span className="pl-sellabel">{es ? "Dominio" : "Domain"}</span>
+        <select className="pl-select" value={group} onChange={(e) => selectGroup(e.target.value)}>
+          {present.map((cat) => (
+            <option key={cat} value={cat}>{(CATEGORY_LABELS[cat]?.[lang] ?? cat) + ` (${groups[cat].length})`}</option>
+          ))}
+        </select>
+      </label>
 
       <h4>{es ? "Caso" : "Case"} ({activeCases.length})</h4>
       <div className="pl-caselist pl-caselist-scroll">

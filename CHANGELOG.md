@@ -3,6 +3,12 @@
 All notable changes to **PINN-Lab**. Format: `X.XX.XXX` (display), see `pinnlab.__version__`. Keep `0.x` while on
 synthetic/benchmark data. Tag every release.
 
+## [0.20.006] (2026-07-09) UI: Highlights + Domain as compact dropdowns (#24)
+
+The Highlights and Domain selectors in the left rail are now compact dropdowns instead of expanded chip/button lists,
+freeing vertical space (the Case list + Regime + View switch all sit higher). Full re-validation via the new Domain
+dropdown: all 20 cases, light + dark, 0 console errors.
+
 ## [0.20.005] (2026-07-09) UI polish (#24): equation top-strip (never cut) + both-mode field probe
 
 Addressing the flagged UI issues:
