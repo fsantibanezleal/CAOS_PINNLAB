@@ -3,6 +3,24 @@
 All notable changes to **PINN-Lab**. Format: `X.XX.XXX` (display), see `pinnlab.__version__`. Keep `0.x` while on
 synthetic/benchmark data. Tag every release.
 
+## [0.19.000] (2026-07-09) full-width App shell (mirrors Lidar3D): left rail + stage + right stats
+
+The App content was boxed into a narrow centered column while the header and footer used the full width. The App is
+now a FULL-WIDTH workbench mirroring CAOS_RES_Lidar3D's `.work` shell, so the content finally uses the whole viewport.
+
+- **`main.content` is full-width**; the App route (`.content-app`) fills the viewport, the doc routes (`.content-doc`)
+  keep a centered, readable 1280px column. No more double `max-width` cap on the App (was 1280 then 1180).
+- **Three-column App (`.pl-work` grid: 300px / 1fr / 320px, full viewport height):**
+  - LEFT rail: the case selection (Highlights with the REAL case starred, Domain chips, a scrollable Case list),
+    then the Regime chips + the note, then the View switch (Field / Live / Charts / Context).
+  - CENTER stage: the active view, full width. The field heatmap, streamlines and the inverse panels get much more room.
+  - RIGHT rail: the governing equation + the method / engine / L2 / ONNX-parity metrics + the expected band.
+  - Every control from the old stacked layout is preserved, just re-slotted into the three columns; nothing removed.
+- **Fixed a latent crash** exposed by the new layout: switching to a VectorField case (navier-cavity) could pair the
+  new manifest with the PREVIOUS case's trace for one render and crash the whole App. The trace is now reset the
+  moment the case changes, plus a defensive guard in VectorFieldKit.
+- Verified: all 20 cases in the new shell, light + dark, every view, 0 console errors; doc pages still centered.
+
 ## [0.18.003] (2026-07-09) both modes together on every evolution case: PLAY + probe, and a content sweep
 
 Correction of 0.18.001/0.18.002, which had DELETED the play button when adding the probe. Both now coexist:

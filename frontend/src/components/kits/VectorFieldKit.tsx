@@ -70,6 +70,8 @@ export function VectorFieldKit({ manifest, trace, lang }: KitProps) {
     if (!trace || !hasUV) return null;
     const u = trace.fields.u as number[][];
     const v = trace.fields.v as number[][];
+    // guard a mismatched/stale trace (e.g. mid case-switch): u/v must be 2-D grids or we bail to the loader.
+    if (!Array.isArray(u) || !Array.isArray(u[0]) || !Array.isArray(v) || !Array.isArray(v[0])) return null;
     const p = (trace.fields.p as number[][]) ?? u;
     const xs = (trace.axes[fa[0]] ?? []) as number[];
     const ys = (trace.axes[fa[1]] ?? []) as number[];
