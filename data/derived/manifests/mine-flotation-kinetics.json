@@ -1,1 +1,68 @@
-{"schema":"pinnlab.manifest/v2","case_id":"mine-flotation-kinetics","category":"mining-mineral-processing","title":"Froth-flotation kinetics — parametric first-order PINN C(k,t)","governing_equations":"\\partial_t C = -k\\,C,\\ C(k,0)=1\\ \\Rightarrow\\ C^*=e^{-k t},\\ R=1-C;\\ k\\in[0.5,5]\\ (\\text{rate constant})","method":"parametric-kinetics","real_or_synthetic":"synthetic-illustrative","expected_band":"exponential decay of floatable concentration; faster for larger k; relative-L2 vs analytic < 5e-3","validation_anchor":"analytic","inputs":["k","t"],"outputs":["C"],"field_axes":["k","t"],"param_specs":[],"engine":{"package":"pinnlab","version":"0.07.000","framework":"deepxde"},"seed":42,"trace_schema":"pinnlab.field/v1","onnx":{"path":"mine-flotation-kinetics.onnx","bytes":13315,"parity_max_abs":4.77e-07,"opset":18,"input_dim":2},"lane":"live","gate":{"lane":"live","onnx_bytes":13315,"infer_ms":1.06,"trace_bytes":52895,"reasons":[]},"flags":[],"inverse":{},"run_ms":72071.49,"variants":[{"id":"family","label_en":"Full k-family","label_es":"Familia completa de k","note_en":"The whole rate-constant family C(k,t) in one map: recovery R=1−C fills in faster for larger k.","note_es":"Toda la familia de constantes de tasa C(k,t) en un mapa: la recuperación R=1−C sube más rápido a mayor k.","params":{},"trace":{"path":"mine-flotation-kinetics/family.json","bytes":52895},"metrics":{"onnx_parity_max_abs":4.77e-07,"validation_anchor":"analytic","l2_relative":0.000786,"max_abs_error":0.001872}}]}
+{
+ "schema": "pinnlab.manifest/v2",
+ "case_id": "mine-flotation-kinetics",
+ "category": "mining-mineral-processing",
+ "title": "Froth-flotation kinetics: parametric first-order PINN C(k,t)",
+ "governing_equations": "\\partial_t C = -k\\,C,\\ C(k,0)=1\\ \\Rightarrow\\ C^*=e^{-k t},\\ R=1-C;\\ k\\in[0.5,5]\\ (\\text{rate constant})",
+ "method": "parametric-kinetics",
+ "real_or_synthetic": "synthetic-illustrative",
+ "expected_band": "exponential decay of floatable concentration; faster for larger k; relative-L2 vs analytic < 5e-3",
+ "validation_anchor": "analytic",
+ "inputs": [
+  "k",
+  "t"
+ ],
+ "outputs": [
+  "C"
+ ],
+ "field_axes": [
+  "k",
+  "t"
+ ],
+ "param_specs": [],
+ "engine": {
+  "package": "pinnlab",
+  "version": "0.07.000",
+  "framework": "deepxde"
+ },
+ "seed": 42,
+ "trace_schema": "pinnlab.field/v1",
+ "onnx": {
+  "path": "mine-flotation-kinetics.onnx",
+  "bytes": 13315,
+  "parity_max_abs": 4.77e-07,
+  "opset": 18,
+  "input_dim": 2
+ },
+ "lane": "live",
+ "gate": {
+  "lane": "live",
+  "onnx_bytes": 13315,
+  "infer_ms": 1.06,
+  "trace_bytes": 52895,
+  "reasons": []
+ },
+ "flags": [],
+ "inverse": {},
+ "run_ms": 72071.49,
+ "variants": [
+  {
+   "id": "family",
+   "label_en": "Full k-family",
+   "label_es": "Familia completa de k",
+   "note_en": "The whole rate-constant family C(k,t) in one map: recovery R=1−C fills in faster for larger k.",
+   "note_es": "Toda la familia de constantes de tasa C(k,t) en un mapa: la recuperación R=1−C sube más rápido a mayor k.",
+   "params": {},
+   "trace": {
+    "path": "mine-flotation-kinetics/family.json",
+    "bytes": 52895
+   },
+   "metrics": {
+    "onnx_parity_max_abs": 4.77e-07,
+    "validation_anchor": "analytic",
+    "l2_relative": 0.000786,
+    "max_abs_error": 0.001872
+   }
+  }
+ ]
+}

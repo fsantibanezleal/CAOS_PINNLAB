@@ -42,7 +42,7 @@ def _norm(d: int) -> np.ndarray:
 CASE = CaseSpec(
     id="env-soil-heat-real",
     category="pollution-environmental",
-    title="Subsurface heat conduction — recover soil thermal diffusivity from REAL USCRN temperatures",
+    title="Subsurface heat conduction: recover soil thermal diffusivity from REAL USCRN temperatures",
     governing_equations=(
         r"T_t=\alpha\,T_{zz},\ z\in[5,100]\,\mathrm{cm};\ \text{5 \& 100 cm = real Dirichlet boundaries},\ "
         r"\text{recover }\alpha,\ \text{validate vs held-out 10/20/50 cm}"

@@ -1,1 +1,186 @@
-{"schema":"pinnlab.manifest/v2","case_id":"bench-darcy-operator","category":"canonical-benchmark","title":"Darcy-flow operator learning — Fourier Neural Operator G: a(x) -> u(x)","governing_equations":"-\\nabla\\!\\cdot(a(\\mathbf{x})\\nabla u)=1,\\ u|_{\\partial\\Omega}=0\\ \\text{on}\\ (0,1)^2;\\ \\text{learn the operator}\\ \\mathcal{G}_\\theta: a\\mapsto u\\ \\text{(FNO)}","method":"operator-fno","real_or_synthetic":"synthetic","expected_band":"one FNO maps any coefficient field a(x) to its pressure field in one pass; held-out test relative-L2 ~5-12%","validation_anchor":"operator-test-l2","inputs":["x","y"],"outputs":["u_pred","u_true","a"],"field_axes":["x","y"],"param_specs":[],"engine":{"package":"pinnlab","version":"0.07.000","framework":"fno-torch"},"seed":42,"trace_schema":"pinnlab.field/v1","onnx":{"path":"bench-darcy-operator.onnx","bytes":2624480,"parity_max_abs":1.788e-06,"opset":18,"input_dim":2},"lane":"precompute","gate":{"lane":"precompute","onnx_bytes":2624480,"infer_ms":21.22,"trace_bytes":21170,"reasons":["field-IO operator — not browser-coordinate-drivable"]},"flags":[],"inverse":{},"run_ms":202417.33,"variants":[{"id":"s1","label_en":"Held-out a #1","label_es":"a fuera de muestra #1","note_en":"An unseen permeability field — one frozen FNO maps it to its pressure in a single pass.","note_es":"Un campo de permeabilidad no visto — un FNO congelado lo mapea a su presión en una sola pasada.","params":{"sample":0},"trace":{"path":"bench-darcy-operator/s1.json","bytes":21133},"metrics":{"onnx_parity_max_abs":1.788e-06,"validation_anchor":"operator-test-l2","l2_relative":0.054997,"sample_l2_relative":0.02462,"n_test":64,"ensemble_K":0}},{"id":"s2","label_en":"Held-out a #2","label_es":"a fuera de muestra #2","note_en":"A different channel geometry — same operator, no retraining.","note_es":"Una geometría de canales distinta — el mismo operador, sin reentrenar.","params":{"sample":1},"trace":{"path":"bench-darcy-operator/s2.json","bytes":21170},"metrics":{"onnx_parity_max_abs":1.788e-06,"validation_anchor":"operator-test-l2","l2_relative":0.054997,"sample_l2_relative":0.026321,"n_test":64,"ensemble_K":0}},{"id":"s3","label_en":"Held-out a #3","label_es":"a fuera de muestra #3","note_en":"More tortuous high-permeability paths — the FNO still recovers the pressure field.","note_es":"Caminos de alta permeabilidad más tortuosos — el FNO aún recupera el campo de presión.","params":{"sample":2},"trace":{"path":"bench-darcy-operator/s3.json","bytes":21157},"metrics":{"onnx_parity_max_abs":1.788e-06,"validation_anchor":"operator-test-l2","l2_relative":0.054997,"sample_l2_relative":0.032951,"n_test":64,"ensemble_K":0}},{"id":"s4","label_en":"Held-out a #4","label_es":"a fuera de muestra #4","note_en":"A blockier conductivity pattern — tests the operator on coarser interfaces.","note_es":"Un patrón de conductividad más en bloques — prueba el operador en interfaces más gruesas.","params":{"sample":3},"trace":{"path":"bench-darcy-operator/s4.json","bytes":21105},"metrics":{"onnx_parity_max_abs":1.788e-06,"validation_anchor":"operator-test-l2","l2_relative":0.054997,"sample_l2_relative":0.02934,"n_test":64,"ensemble_K":0}},{"id":"s5","label_en":"Held-out a #5","label_es":"a fuera de muestra #5","note_en":"Thin connected channels — the hardest pressure gradients.","note_es":"Canales delgados conectados — los gradientes de presión más difíciles.","params":{"sample":4},"trace":{"path":"bench-darcy-operator/s5.json","bytes":21157},"metrics":{"onnx_parity_max_abs":1.788e-06,"validation_anchor":"operator-test-l2","l2_relative":0.054997,"sample_l2_relative":0.040142,"n_test":64,"ensemble_K":0}},{"id":"s6","label_en":"Held-out a #6","label_es":"a fuera de muestra #6","note_en":"Another unseen instance — the operator generalizes across the whole family.","note_es":"Otra instancia no vista — el operador generaliza sobre toda la familia.","params":{"sample":5},"trace":{"path":"bench-darcy-operator/s6.json","bytes":21029},"metrics":{"onnx_parity_max_abs":1.788e-06,"validation_anchor":"operator-test-l2","l2_relative":0.054997,"sample_l2_relative":0.037812,"n_test":64,"ensemble_K":0}}]}
+{
+ "schema": "pinnlab.manifest/v2",
+ "case_id": "bench-darcy-operator",
+ "category": "canonical-benchmark",
+ "title": "Darcy-flow operator learning: Fourier Neural Operator G: a(x) -> u(x)",
+ "governing_equations": "-\\nabla\\!\\cdot(a(\\mathbf{x})\\nabla u)=1,\\ u|_{\\partial\\Omega}=0\\ \\text{on}\\ (0,1)^2;\\ \\text{learn the operator}\\ \\mathcal{G}_\\theta: a\\mapsto u\\ \\text{(FNO)}",
+ "method": "operator-fno",
+ "real_or_synthetic": "synthetic",
+ "expected_band": "one FNO maps any coefficient field a(x) to its pressure field in one pass; held-out test relative-L2 ~5-12%",
+ "validation_anchor": "operator-test-l2",
+ "inputs": [
+  "x",
+  "y"
+ ],
+ "outputs": [
+  "u_pred",
+  "u_true",
+  "a"
+ ],
+ "field_axes": [
+  "x",
+  "y"
+ ],
+ "param_specs": [],
+ "engine": {
+  "package": "pinnlab",
+  "version": "0.07.000",
+  "framework": "fno-torch"
+ },
+ "seed": 42,
+ "trace_schema": "pinnlab.field/v1",
+ "onnx": {
+  "path": "bench-darcy-operator.onnx",
+  "bytes": 2624480,
+  "parity_max_abs": 1.788e-06,
+  "opset": 18,
+  "input_dim": 2
+ },
+ "lane": "precompute",
+ "gate": {
+  "lane": "precompute",
+  "onnx_bytes": 2624480,
+  "infer_ms": 21.22,
+  "trace_bytes": 21170,
+  "reasons": [
+   "field-IO operator: not browser-coordinate-drivable"
+  ]
+ },
+ "flags": [],
+ "inverse": {},
+ "run_ms": 202417.33,
+ "variants": [
+  {
+   "id": "s1",
+   "label_en": "Held-out a #1",
+   "label_es": "a fuera de muestra #1",
+   "note_en": "An unseen permeability field: one frozen FNO maps it to its pressure in a single pass.",
+   "note_es": "Un campo de permeabilidad no visto: un FNO congelado lo mapea a su presión en una sola pasada.",
+   "params": {
+    "sample": 0
+   },
+   "trace": {
+    "path": "bench-darcy-operator/s1.json",
+    "bytes": 21133
+   },
+   "metrics": {
+    "onnx_parity_max_abs": 1.788e-06,
+    "validation_anchor": "operator-test-l2",
+    "l2_relative": 0.054997,
+    "sample_l2_relative": 0.02462,
+    "n_test": 64,
+    "ensemble_K": 0
+   }
+  },
+  {
+   "id": "s2",
+   "label_en": "Held-out a #2",
+   "label_es": "a fuera de muestra #2",
+   "note_en": "A different channel geometry: same operator, no retraining.",
+   "note_es": "Una geometría de canales distinta: el mismo operador, sin reentrenar.",
+   "params": {
+    "sample": 1
+   },
+   "trace": {
+    "path": "bench-darcy-operator/s2.json",
+    "bytes": 21170
+   },
+   "metrics": {
+    "onnx_parity_max_abs": 1.788e-06,
+    "validation_anchor": "operator-test-l2",
+    "l2_relative": 0.054997,
+    "sample_l2_relative": 0.026321,
+    "n_test": 64,
+    "ensemble_K": 0
+   }
+  },
+  {
+   "id": "s3",
+   "label_en": "Held-out a #3",
+   "label_es": "a fuera de muestra #3",
+   "note_en": "More tortuous high-permeability paths: the FNO still recovers the pressure field.",
+   "note_es": "Caminos de alta permeabilidad más tortuosos: el FNO aún recupera el campo de presión.",
+   "params": {
+    "sample": 2
+   },
+   "trace": {
+    "path": "bench-darcy-operator/s3.json",
+    "bytes": 21157
+   },
+   "metrics": {
+    "onnx_parity_max_abs": 1.788e-06,
+    "validation_anchor": "operator-test-l2",
+    "l2_relative": 0.054997,
+    "sample_l2_relative": 0.032951,
+    "n_test": 64,
+    "ensemble_K": 0
+   }
+  },
+  {
+   "id": "s4",
+   "label_en": "Held-out a #4",
+   "label_es": "a fuera de muestra #4",
+   "note_en": "A blockier conductivity pattern: tests the operator on coarser interfaces.",
+   "note_es": "Un patrón de conductividad más en bloques: prueba el operador en interfaces más gruesas.",
+   "params": {
+    "sample": 3
+   },
+   "trace": {
+    "path": "bench-darcy-operator/s4.json",
+    "bytes": 21105
+   },
+   "metrics": {
+    "onnx_parity_max_abs": 1.788e-06,
+    "validation_anchor": "operator-test-l2",
+    "l2_relative": 0.054997,
+    "sample_l2_relative": 0.02934,
+    "n_test": 64,
+    "ensemble_K": 0
+   }
+  },
+  {
+   "id": "s5",
+   "label_en": "Held-out a #5",
+   "label_es": "a fuera de muestra #5",
+   "note_en": "Thin connected channels: the hardest pressure gradients.",
+   "note_es": "Canales delgados conectados: los gradientes de presión más difíciles.",
+   "params": {
+    "sample": 4
+   },
+   "trace": {
+    "path": "bench-darcy-operator/s5.json",
+    "bytes": 21157
+   },
+   "metrics": {
+    "onnx_parity_max_abs": 1.788e-06,
+    "validation_anchor": "operator-test-l2",
+    "l2_relative": 0.054997,
+    "sample_l2_relative": 0.040142,
+    "n_test": 64,
+    "ensemble_K": 0
+   }
+  },
+  {
+   "id": "s6",
+   "label_en": "Held-out a #6",
+   "label_es": "a fuera de muestra #6",
+   "note_en": "Another unseen instance: the operator generalizes across the whole family.",
+   "note_es": "Otra instancia no vista: el operador generaliza sobre toda la familia.",
+   "params": {
+    "sample": 5
+   },
+   "trace": {
+    "path": "bench-darcy-operator/s6.json",
+    "bytes": 21029
+   },
+   "metrics": {
+    "onnx_parity_max_abs": 1.788e-06,
+    "validation_anchor": "operator-test-l2",
+    "l2_relative": 0.054997,
+    "sample_l2_relative": 0.037812,
+    "n_test": 64,
+    "ensemble_K": 0
+   }
+  }
+ ]
+}

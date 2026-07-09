@@ -1,1 +1,72 @@
-{"schema":"pinnlab.manifest/v2","case_id":"dyn-double-pendulum","category":"canonical-benchmark","title":"Double pendulum (chaotic) — a PINN as a t → state map, vs a high-accuracy integrator","governing_equations":"\\ddot{\\theta}_1 = f_1(\\theta_1,\\theta_2,\\dot\\theta_1,\\dot\\theta_2),\\quad \\ddot{\\theta}_2 = f_2(\\cdot);\\ \\ \\theta_i(0)=120^\\circ,\\ \\dot\\theta_i(0)=0;\\ \\text{anchor: RK45 } (\\mathrm{rtol}=\\mathrm{atol}=10^{-10})","method":"ode-residual-hard-ic","real_or_synthetic":"synthetic-illustrative","expected_band":"the PINN tracks the integrator for a short horizon, then a chaotic trajectory peels away; the honest metric is the leave-time (where |Δθ| first exceeds 0.30 rad), not a long-term match","validation_anchor":"integrator-ref","inputs":["t"],"outputs":["th1","th2"],"field_axes":["t"],"system_type":"ode-dynamical","view_kit":"TrajectoryAnimationKit","param_specs":[],"engine":{"package":"pinnlab","version":"0.11.001","framework":"deepxde"},"seed":42,"trace_schema":"pinnlab.field/v1","onnx":{"path":"dyn-double-pendulum.onnx","bytes":117951,"parity_max_abs":1.669e-06,"opset":18,"input_dim":1},"lane":"precompute","gate":{"lane":"precompute","onnx_bytes":117951,"infer_ms":0.4,"trace_bytes":34224,"reasons":["field-IO operator — not browser-coordinate-drivable"]},"flags":[],"inverse":{},"run_ms":3248017.5,"variants":[{"id":"default","label_en":"Default","label_es":"Por defecto","note_en":"","note_es":"","params":{},"trace":{"path":"dyn-double-pendulum/default.json","bytes":34224},"metrics":{"onnx_parity_max_abs":1.669e-06,"validation_anchor":"integrator-ref","l2_relative":0.093375,"leave_time":1.99,"lyapunov_est":0.0205}}]}
+{
+ "schema": "pinnlab.manifest/v2",
+ "case_id": "dyn-double-pendulum",
+ "category": "canonical-benchmark",
+ "title": "Double pendulum (chaotic): a PINN as a t to state map, vs a high-accuracy integrator",
+ "governing_equations": "\\ddot{\\theta}_1 = f_1(\\theta_1,\\theta_2,\\dot\\theta_1,\\dot\\theta_2),\\quad \\ddot{\\theta}_2 = f_2(\\cdot);\\ \\ \\theta_i(0)=120^\\circ,\\ \\dot\\theta_i(0)=0;\\ \\text{anchor: RK45 } (\\mathrm{rtol}=\\mathrm{atol}=10^{-10})",
+ "method": "ode-residual-hard-ic",
+ "real_or_synthetic": "synthetic-illustrative",
+ "expected_band": "the PINN tracks the integrator for a short horizon, then a chaotic trajectory peels away; the honest metric is the leave-time (where |Δθ| first exceeds 0.30 rad), not a long-term match",
+ "validation_anchor": "integrator-ref",
+ "inputs": [
+  "t"
+ ],
+ "outputs": [
+  "th1",
+  "th2"
+ ],
+ "field_axes": [
+  "t"
+ ],
+ "system_type": "ode-dynamical",
+ "view_kit": "TrajectoryAnimationKit",
+ "param_specs": [],
+ "engine": {
+  "package": "pinnlab",
+  "version": "0.11.001",
+  "framework": "deepxde"
+ },
+ "seed": 42,
+ "trace_schema": "pinnlab.field/v1",
+ "onnx": {
+  "path": "dyn-double-pendulum.onnx",
+  "bytes": 117951,
+  "parity_max_abs": 1.669e-06,
+  "opset": 18,
+  "input_dim": 1
+ },
+ "lane": "precompute",
+ "gate": {
+  "lane": "precompute",
+  "onnx_bytes": 117951,
+  "infer_ms": 0.4,
+  "trace_bytes": 34224,
+  "reasons": [
+   "field-IO operator: not browser-coordinate-drivable"
+  ]
+ },
+ "flags": [],
+ "inverse": {},
+ "run_ms": 3248017.5,
+ "variants": [
+  {
+   "id": "default",
+   "label_en": "Default",
+   "label_es": "Por defecto",
+   "note_en": "",
+   "note_es": "",
+   "params": {},
+   "trace": {
+    "path": "dyn-double-pendulum/default.json",
+    "bytes": 34224
+   },
+   "metrics": {
+    "onnx_parity_max_abs": 1.669e-06,
+    "validation_anchor": "integrator-ref",
+    "l2_relative": 0.093375,
+    "leave_time": 1.99,
+    "lyapunov_est": 0.0205
+   }
+  }
+ ]
+}

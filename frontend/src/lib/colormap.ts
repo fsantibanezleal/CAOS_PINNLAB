@@ -1,4 +1,4 @@
-// viridis colormap (10 anchors, linear interp) — the single source shared by every render kit so heatmaps,
+// viridis colormap (10 anchors, linear interp): the single source shared by every render kit so heatmaps,
 // carpets and 2-D animation frames all use the identical perceptually-uniform scale.
 const VIRIDIS = [
   [68, 1, 84], [72, 40, 120], [62, 74, 137], [49, 104, 142], [38, 130, 142],
@@ -28,5 +28,5 @@ export function fieldRange(field: number[][]): [number, number] {
     }
   }
   if (!Number.isFinite(lo) || !Number.isFinite(hi)) return [0, 1];
-  return hi > lo ? [lo, hi] : [lo, lo + 1];
+  return hi > lo ? [lo, hi]: [lo, lo + 1];
 }

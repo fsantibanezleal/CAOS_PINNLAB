@@ -1,6 +1,8 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 
 import { viridis } from "../lib/colormap";
+import { Transport } from "./kits/Transport";
+import { useAnimator } from "./kits/useAnimator";
 
 export interface FieldAxis {
   label: string;
@@ -9,27 +11,56 @@ export interface FieldAxis {
 }
 
 const TIME_NAMES = new Set(["t", "time", "tau", "tt", "τ"]);
-const dimName = (l: string) => (TIME_NAMES.has(l) ? `${l} — time →` : l);
+const isTime = (l: string) => TIME_NAMES.has(l.toLowerCase());
+/** Axis caption: tag a time axis so the reader knows which direction is time. */
+const dimTag = (l: string) => (isTime(l) ? `${l} (time)`: l);
 
-/** Interactive 2-D field viewer: a viridis heatmap with a hover crosshair + value read-out, a colorbar, and two
- *  line-cut profiles (u along x at the cursor row, u along y at the cursor column). `field[ix][iy]` with ix on the
- *  horizontal axis and larger iy drawn at the top (math convention). Reacts to the cursor — the value read-out and
- *  both profiles update live as you move the pointer. */
+/** Interactive field viewer: the single Field/Live visualization for every scalar-field case (ADR-0063).
+ *  A viridis heatmap of `field[ix][iy]` (ix on the horizontal axis, larger iy drawn at the top) with:
+ *   - a hover read-out (value under the pointer at any time),
+ *   - CLICK-TO-PIN: click the map to lock a location; the two side graphs + crosshair follow the pin,
+ *   - a PLAY button (only when one axis is time): animate the evolution forward; the pinned time index is the
+ *     single shared time-cursor (play advances it, clicking/scrubbing sets it), so both modes coexist,
+ *   - two line-cut graphs with real axis labels: the SPATIAL profile at the selected time (dashed = initial
+ *     state t=0, solid = selected time, so you compare initial vs selected) and the TEMPORAL trace at the
+ *     pinned location. For a steady (no-time) field both graphs are spatial cross-sections. */
 export function FieldView({
   field,
   axisX,
   axisY,
   outputLabel,
+  lang = "en",
 }: {
   field: number[][];
   axisX: FieldAxis;
   axisY: FieldAxis;
   outputLabel: string;
+  lang?: "en" | "es";
 }) {
+  const es = lang === "es";
   const nx = field.length;
   const ny = field[0]?.length ?? 0;
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const [cur, setCur] = useState<{ ix: number; iy: number } | null>(null);
+
+  const timeIsX = isTime(axisX.label);
+  const timeIsY = isTime(axisY.label);
+  const hasTime = timeIsX || timeIsY;
+  const nT = timeIsX ? nx: timeIsY ? ny: 1;
+
+  // ONE shared time-cursor: the animator drives it (play), scrubbing/clicking seeks it. Default paused.
+  const anim = useAnimator(nT, { fps: 12 });
+  const it = hasTime ? Math.min(anim.frame, nT - 1): 0;
+
+  // the pinned crosshair (click-to-pin). Its time component is kept in sync with the animator below.
+  const [sel, setSel] = useState<{ ix: number; iy: number }>(() => ({
+    ix: timeIsX ? 0: Math.floor(nx / 2),
+    iy: timeIsY ? 0: Math.floor(ny / 2),
+  }));
+  // transient hover position (read-out only; the graphs follow the PIN, not the hover)
+  const [hov, setHov] = useState<{ ix: number; iy: number } | null>(null);
+
+  // the effective crosshair: space from the pin, time from the animator
+  const cur = timeIsY ? { ix: sel.ix, iy: it }: timeIsX ? { ix: it, iy: sel.iy }: sel;
 
   const { lo, hi } = useMemo(() => {
     let lo = Infinity;
@@ -38,7 +69,7 @@ export function FieldView({
       if (v < lo) lo = v;
       if (v > hi) hi = v;
     }
-    return { lo, hi };
+    return { lo: Number.isFinite(lo) ? lo: 0, hi: Number.isFinite(hi) ? hi: 1 };
   }, [field]);
   const span = hi - lo || 1;
 
@@ -63,68 +94,125 @@ export function FieldView({
     ctx.putImageData(img, 0, 0);
   }, [field, nx, ny, lo, span]);
 
-  function onMove(e: React.MouseEvent) {
+  function idxFromEvent(e: React.MouseEvent) {
     const rect = (e.currentTarget as HTMLElement).getBoundingClientRect();
     const fx = (e.clientX - rect.left) / rect.width;
     const fy = (e.clientY - rect.top) / rect.height;
     const ix = Math.max(0, Math.min(nx - 1, Math.round(fx * (nx - 1))));
     const iy = Math.max(0, Math.min(ny - 1, Math.round((1 - fy) * (ny - 1))));
-    setCur({ ix, iy });
+    return { ix, iy };
+  }
+  function onMove(e: React.MouseEvent) {
+    setHov(idxFromEvent(e));
+  }
+  function onClick(e: React.MouseEvent) {
+    const { ix, iy } = idxFromEvent(e);
+    anim.setPlaying(false);
+    if (timeIsY) {
+      setSel((s) => ({ ...s, ix }));
+      anim.setFrame(iy);
+    } else if (timeIsX) {
+      setSel((s) => ({ ...s, iy }));
+      anim.setFrame(ix);
+    } else {
+      setSel({ ix, iy });
+    }
   }
 
-  const ax = (i: number, a: FieldAxis, n: number) => a.lo + ((a.hi - a.lo) * i) / Math.max(1, n - 1);
-  const val = cur ? field[cur.ix][cur.iy] : null;
-  const cx = cur ? cur.ix / Math.max(1, nx - 1) : 0;
-  const cy = cur ? 1 - cur.iy / Math.max(1, ny - 1) : 0;
+  const axVal = (i: number, a: FieldAxis, n: number) => a.lo + ((a.hi - a.lo) * i) / Math.max(1, n - 1);
+  // read-out follows the hover if present, else the pin
+  const readIx = hov ? hov.ix: cur.ix;
+  const readIy = hov ? hov.iy: cur.iy;
+  const readVal = field[readIx]?.[readIy] ?? null;
+  const cx = cur.ix / Math.max(1, nx - 1);
+  const cy = 1 - cur.iy / Math.max(1, ny - 1);
+  const tVal = hasTime ? (timeIsY ? axVal(it, axisY, ny): axVal(it, axisX, nx)): 0;
+  const timeLabel = timeIsY ? axisY.label: axisX.label;
 
-  // line-cut profiles at the cursor
-  const rowProfile = cur ? field.map((col) => col[cur.iy]) : [];
-  const colProfile = cur ? field[cur.ix] : [];
-  // initial-state overlay: for a space-time field, show the profile at t=0 (dashed) under the selected-time one,
-  // so you compare the INITIAL state vs the SELECTED state. (Index 0 on whichever axis is time.)
-  const timeIsX = TIME_NAMES.has(axisX.label);
-  const timeIsY = TIME_NAMES.has(axisY.label);
-  const ref1 = cur && timeIsY ? field.map((col) => col[0]) : undefined; // u vs x at t=0
-  const ref2 = cur && timeIsX ? field[0] : undefined; // u vs y-axis at t=0 (when x is time)
+  // ---- the two line-cut graphs -------------------------------------------------------------------
+  // Graph 1 = SPATIAL profile at the selected time (animated); dashed reference = the same profile at t=0.
+  // Graph 2 = the OTHER cross-section (a temporal trace at the pinned location for a time case; the second
+  // spatial cut for a steady case).
+  let g1: { xLabel: string; n: number; values: number[]; init?: number[]; cursor: number };
+  let g2: { xLabel: string; n: number; values: number[]; cursor: number };
+  if (timeIsY) {
+    g1 = { xLabel: axisX.label, n: nx, values: field.map((c) => c[it]), init: field.map((c) => c[0]), cursor: cur.ix };
+    g2 = { xLabel: axisY.label, n: ny, values: field[sel.ix] ?? [], cursor: it };
+  } else if (timeIsX) {
+    g1 = { xLabel: axisY.label, n: ny, values: field[it] ?? [], init: field[0] ?? [], cursor: cur.iy };
+    g2 = { xLabel: axisX.label, n: nx, values: field.map((c) => c[sel.iy]), cursor: it };
+  } else {
+    g1 = { xLabel: axisX.label, n: nx, values: field.map((c) => c[cur.iy]), cursor: cur.ix };
+    g2 = { xLabel: axisY.label, n: ny, values: field[cur.ix] ?? [], cursor: cur.iy };
+  }
 
   return (
     <div className="fieldview">
+      {hasTime && (
+        <div className="fieldview-transport">
+          <Transport anim={anim} lang={lang} axisLabel={timeLabel} axisValue={tVal} />
+        </div>
+      )}
       <div className="fieldview-map">
-        <div className="axis-y-label">{dimName(axisY.label)}</div>
+        <div className="axis-y-label">{dimTag(axisY.label)}</div>
         <div className="fw-stack">
           <div className="fw-row">
-            <div className="field-wrap" onMouseMove={onMove} onMouseLeave={() => setCur(null)}>
+            <div className="field-wrap" onMouseMove={onMove} onMouseLeave={() => setHov(null)} onClick={onClick} title={es ? "Clic para fijar la ubicación": "Click to pin the location"}>
               <canvas ref={canvasRef} className="field-canvas" style={{ aspectRatio: `${nx} / ${ny || 1}` }} />
-              {cur && (
-                <>
-                  <div className="xhair xhair-v" style={{ left: `${cx * 100}%` }} />
-                  <div className="xhair xhair-h" style={{ top: `${cy * 100}%` }} />
-                  <div className="xhair-dot" style={{ left: `${cx * 100}%`, top: `${cy * 100}%` }} />
-                </>
-              )}
+              <div className="xhair xhair-v" style={{ left: `${cx * 100}%` }} />
+              <div className="xhair xhair-h" style={{ top: `${cy * 100}%` }} />
+              <div className="xhair-dot" style={{ left: `${cx * 100}%`, top: `${cy * 100}%` }} />
             </div>
-            <Colorbar lo={lo} hi={hi} value={val} label={outputLabel} />
+            <Colorbar lo={lo} hi={hi} value={readVal} label={outputLabel} />
           </div>
-          <div className="axis-x-label">{dimName(axisX.label)}</div>
+          <div className="axis-x-label">{dimTag(axisX.label)}</div>
         </div>
       </div>
 
       <div className="fieldview-side">
         <div className="readout">
-          {cur ? (
-            <span className="mono">
-              {axisX.label}={ax(cur.ix, axisX, nx).toFixed(3)} &nbsp; {axisY.label}={ax(cur.iy, axisY, ny).toFixed(3)}
-              &nbsp; → &nbsp; <strong>{outputLabel}={val!.toExponential(3)}</strong>
-            </span>
-          ) : (
-            <span className="muted">hover the field to read the value at any point · field min {lo.toExponential(2)} · max {hi.toExponential(2)}</span>
-          )}
+          <span className="mono">
+            {axisX.label}={axVal(readIx, axisX, nx).toFixed(3)} &nbsp; {axisY.label}={axVal(readIy, axisY, ny).toFixed(3)}
+            &nbsp; → &nbsp; <strong>{outputLabel}={readVal != null ? readVal.toExponential(3): "-"}</strong>
+            {hov ? <span className="muted"> &nbsp;({es ? "bajo el cursor": "under cursor"})</span>: <span className="muted"> &nbsp;({es ? "fijado": "pinned"})</span>}
+          </span>
         </div>
 
         <div className="profiles">
-          <Profile title={`${outputLabel} vs ${axisX.label}`} n={nx} values={rowProfile} cursorIdx={cur?.ix ?? -1} reference={ref1} />
-          <Profile title={`${outputLabel} vs ${axisY.label}`} n={ny} values={colProfile} cursorIdx={cur?.iy ?? -1} reference={ref2} />
+          <Profile
+            title={`${outputLabel} vs ${dimTag(g1.xLabel)}`}
+            legend={g1.init ? { tVal, timeLabel }: undefined}
+            xLabel={dimTag(g1.xLabel)}
+            yLabel={outputLabel}
+            n={g1.n}
+            values={g1.values}
+            reference={g1.init}
+            cursorIdx={g1.cursor}
+            yLo={lo}
+            yHi={hi}
+            es={es}
+          />
+          <Profile
+            title={`${outputLabel} vs ${dimTag(g2.xLabel)}`}
+            xLabel={dimTag(g2.xLabel)}
+            yLabel={outputLabel}
+            n={g2.n}
+            values={g2.values}
+            cursorIdx={g2.cursor}
+            yLo={lo}
+            yHi={hi}
+            es={es}
+          />
         </div>
+        <p className="fieldview-hint muted">
+          {hasTime
+            ? es
+              ? "Clic en el mapa para fijar la ubicación y actualizar los gráficos. Pulsa ▶ para ver la evolución en el tiempo (la línea discontinua es el estado inicial t=0)."
+             : "Click the map to pin a location and update the graphs. Press ▶ to watch it evolve in time (the dashed line is the initial state t=0)."
+           : es
+              ? "Clic en el mapa para fijar la ubicación; los dos gráficos son cortes del campo en esa fila y esa columna."
+             : "Click the map to pin a location; the two graphs are cuts of the field along that row and column."}
+        </p>
       </div>
     </div>
   );
@@ -132,7 +220,7 @@ export function FieldView({
 
 function Colorbar({ lo, hi, value, label }: { lo: number; hi: number; value: number | null; label: string }) {
   const stops = Array.from({ length: 24 }, (_, i) => i / 23);
-  const t = value !== null ? (value - lo) / (hi - lo || 1) : null;
+  const t = value !== null ? (value - lo) / (hi - lo || 1): null;
   return (
     <div className="colorbar" title={label}>
       <div className="colorbar-scale">
@@ -152,24 +240,37 @@ function Colorbar({ lo, hi, value, label }: { lo: number; hi: number; value: num
 
 function Profile({
   title,
+  legend,
+  xLabel,
+  yLabel,
   n,
   values,
   cursorIdx,
   reference,
+  yLo,
+  yHi,
+  es,
 }: {
   title: string;
+  legend?: { tVal: number; timeLabel: string };
+  xLabel: string;
+  yLabel: string;
   n: number;
   values: number[];
   cursorIdx: number;
   reference?: number[];
+  yLo: number;
+  yHi: number;
+  es: boolean;
 }) {
   const W = 280;
   const H = 96;
   const pad = 6;
   const hasRef = !!reference && reference.length > 1;
-  const all = hasRef ? values.concat(reference!) : values;
-  const lo = Math.min(...(all.length ? all : [0]));
-  const hi = Math.max(...(all.length ? all : [1]));
+  // y-scale LOCKED to the whole field [yLo,yHi] so the animated profile does not jump frame-to-frame and the
+  // initial-vs-selected comparison is on one honest scale.
+  const lo = yLo;
+  const hi = yHi;
   const span = hi - lo || 1;
   const toPts = (arr: number[]) =>
     arr
@@ -179,29 +280,40 @@ function Profile({
         return `${x.toFixed(1)},${y.toFixed(1)}`;
       })
       .join(" ");
-  const cxFrac = cursorIdx >= 0 ? cursorIdx / Math.max(1, n - 1) : null;
+  const cxFrac = cursorIdx >= 0 ? cursorIdx / Math.max(1, n - 1): null;
   return (
     <div className="profile">
       <div className="profile-title muted">
         {title}
-        {hasRef && <span className="profile-legend"> · <span className="pl-sel">selected</span> vs <span className="pl-ref">initial (t=0)</span></span>}
-      </div>
-      <svg viewBox={`0 0 ${W} ${H}`} className="profile-svg" preserveAspectRatio="none">
-        <line x1={pad} y1={H - pad} x2={W - pad} y2={H - pad} stroke="var(--border)" strokeWidth="0.8" />
-        {hasRef && <polyline points={toPts(reference!)} fill="none" stroke="var(--muted)" strokeWidth="1.2" strokeDasharray="4 3" />}
-        {values.length > 1 && <polyline points={toPts(values)} fill="none" stroke="var(--accent)" strokeWidth="1.6" />}
-        {cxFrac !== null && (
-          <line
-            x1={pad + cxFrac * (W - 2 * pad)}
-            y1={pad}
-            x2={pad + cxFrac * (W - 2 * pad)}
-            y2={H - pad}
-            stroke="var(--accent-2)"
-            strokeWidth="1"
-            strokeDasharray="3 2"
-          />
+        {legend && (
+          <span className="profile-legend">
+            {" "}
+            · <span className="pl-sel">{es ? "seleccionado": "selected"} ({legend.timeLabel}={legend.tVal.toFixed(2)})</span>{" "}
+            {es ? "vs": "vs"} <span className="pl-ref">{es ? "inicial": "initial"} ({legend.timeLabel}=0)</span>
+          </span>
         )}
-      </svg>
+      </div>
+      <div className="profile-plot">
+        <span className="profile-ylabel">{yLabel}</span>
+        <svg viewBox={`0 0 ${W} ${H}`} className="profile-svg" preserveAspectRatio="none">
+          <line x1={pad} y1={H - pad} x2={W - pad} y2={H - pad} stroke="var(--border)" strokeWidth="0.8" />
+          <line x1={pad} y1={pad} x2={pad} y2={H - pad} stroke="var(--border)" strokeWidth="0.8" />
+          {hasRef && <polyline points={toPts(reference!)} fill="none" stroke="var(--muted)" strokeWidth="1.2" strokeDasharray="4 3" />}
+          {values.length > 1 && <polyline points={toPts(values)} fill="none" stroke="var(--accent)" strokeWidth="1.6" />}
+          {cxFrac !== null && (
+            <line
+              x1={pad + cxFrac * (W - 2 * pad)}
+              y1={pad}
+              x2={pad + cxFrac * (W - 2 * pad)}
+              y2={H - pad}
+              stroke="var(--accent-2)"
+              strokeWidth="1"
+              strokeDasharray="3 2"
+            />
+          )}
+        </svg>
+      </div>
+      <div className="profile-xlabel">{xLabel}</div>
     </div>
   );
 }

@@ -49,7 +49,7 @@ CASE = CaseSpec(
     system_type="inverse-assim",
     view_kit="InverseOverlayKit",
     category="industrial-fluids-heat",
-    title="2D inverse heat conduction — recover conductivity k(x,y) from sparse sensors",
+    title="2D inverse heat conduction: recover conductivity k(x,y) from sparse sensors",
     governing_equations=(
         r"\nabla\!\cdot(k(x,y)\nabla T)=q\ \text{on}\ (0,1)^2,\ T|_{\partial\Omega}=0;\ "
         r"\text{recover}\ k\ \text{from sparse }T\text{ obs};\ k^*=1+\tfrac12\sin\pi x\sin\pi y"

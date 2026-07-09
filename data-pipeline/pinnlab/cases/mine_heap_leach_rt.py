@@ -27,7 +27,7 @@ KF = 1.0
 CASE = CaseSpec(
     id="mine-heap-leach-rt",
     category="mining-mineral-processing",
-    title="Heap-leach reactive transport — advection-diffusion-reaction PINN (2 species, time-scrubber)",
+    title="Heap-leach reactive transport: advection-diffusion-reaction PINN (2 species, time-scrubber)",
     governing_equations=(
         r"\partial_t c_i + \mathbf{v}\cdot\nabla c_i = D\nabla^2 c_i - k_f c_A c_B + f_i,\ "
         r"\mathbf{v}=(0,1),\ D=0.05,\ k_f=1\ \text{on}\ (0,1)^2\times(0,1]"

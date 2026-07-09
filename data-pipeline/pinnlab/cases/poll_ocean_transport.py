@@ -28,7 +28,7 @@ S0_SQ = 0.008  # initial Gaussian variance (sigma0 ~ 0.089)
 CASE = CaseSpec(
     id="poll-ocean-transport",
     category="pollution-environmental",
-    title="Ocean pollutant transport — 2D advection-diffusion PINN (time-scrubber)",
+    title="Ocean pollutant transport: 2D advection-diffusion PINN (time-scrubber)",
     governing_equations=(
         r"c_t + \mathbf{v}\cdot\nabla c = D\nabla^2 c,\ \mathbf{v}=(0.45,0.35),\ D=0.01,\ "
         r"c^*=\tfrac{s_0^2}{s_0^2+2Dt}\,e^{-\|\mathbf{x}-\mathbf{x}_0-\mathbf{v}t\|^2/(2(s_0^2+2Dt))}"

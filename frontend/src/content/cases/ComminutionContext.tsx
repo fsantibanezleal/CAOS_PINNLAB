@@ -1,12 +1,12 @@
 import { Equation, InlineMath } from "../../components/Equation";
 
 /** Deep bilingual Context for mine-comminution-pbe (size-transport reduction of the comminution PBE, parametric in
- *  the grind rate — an advected-diffused size distribution shifting toward smaller particles). */
+ *  the grind rate: an advected-diffused size distribution shifting toward smaller particles). */
 export function ComminutionContext({ lang }: { lang: "en" | "es" }) {
   const es = lang === "es";
   return es ? (
     <>
-      <h2>El problema: la molienda corre la distribución de tamaños hacia partículas finas — con una tasa de molienda ajustable</h2>
+      <h2>El problema: la molienda corre la distribución de tamaños hacia partículas finas: con una tasa de molienda ajustable</h2>
       <p>
         <strong>El problema.</strong> En la conminución (molienda SAG / de bolas) las partículas se fracturan
         continuamente, de modo que la <strong>distribución de tamaños</strong> <InlineMath tex={String.raw`n(s,t)`} />
@@ -14,7 +14,7 @@ export function ComminutionContext({ lang }: { lang: "en" | "es" }) {
         poblacional</em> (PBE), una ecuación íntegro-diferencial con núcleos de <em>selección</em> y <em>ruptura</em>.
         Aquí trabajamos la <strong>reducción de transporte en tamaño</strong>: la fragmentación neta se representa como
         un <em>arrastre</em> hacia tamaños menores (la tasa de molienda <InlineMath tex={String.raw`g`} />) más una
-        <em> dispersión</em> en tamaño <InlineMath tex={String.raw`D`} /> que ensancha la distribución —
+        <em> dispersión</em> en tamaño <InlineMath tex={String.raw`D`} /> que ensancha la distribución: 
         <InlineMath tex={String.raw`n_t + (-g)\,n_s = D\,n_{ss}`} />. La <strong>tasa de molienda</strong>
         <InlineMath tex={String.raw`g`} /> es ajustable: una sola red aprende toda la familia
         <InlineMath tex={String.raw`n(s,t;g)`} />, y en el tab <strong>Live</strong> el deslizador de
@@ -26,15 +26,15 @@ export function ComminutionContext({ lang }: { lang: "en" | "es" }) {
       <ul>
         <li><strong>Dominio:</strong> tamaño normalizado <InlineMath tex={String.raw`s\in[0,1]`} /> (1 = grueso, 0 = fino) × tiempo de molienda <InlineMath tex={String.raw`t\in[0,1]`} />, grilla del campo <InlineMath tex={String.raw`81\times81`} /> por instante.</li>
         <li><strong>Incógnita:</strong> la densidad de la distribución de tamaños <InlineMath tex={String.raw`n(s,t)`} /> (masa por intervalo de tamaño).</li>
-        <li><strong>Parámetro de control:</strong> la <em>tasa de molienda</em> <InlineMath tex={String.raw`g\in[0,0.6]`} /> — un input de la red. Fija cuán rápido el centro de la distribución baja en tamaño.</li>
-        <li><strong>Dispersión en tamaño:</strong> <InlineMath tex={String.raw`D=0.012`} /> — ensancha la distribución (la firma de la fragmentación, que reparte masa en un rango de tamaños).</li>
+        <li><strong>Parámetro de control:</strong> la <em>tasa de molienda</em> <InlineMath tex={String.raw`g\in[0,0.6]`} />: un input de la red. Fija cuán rápido el centro de la distribución baja en tamaño.</li>
+        <li><strong>Dispersión en tamaño:</strong> <InlineMath tex={String.raw`D=0.012`} />: ensancha la distribución (la firma de la fragmentación, que reparte masa en un rango de tamaños).</li>
         <li><strong>Condición inicial:</strong> una alimentación gruesa estrecha centrada en <InlineMath tex={String.raw`s_0=0.8`} /> (varianza inicial <InlineMath tex={String.raw`\sigma_0^2=0.01`} />).</li>
       </ul>
 
       <h3>Formalización</h3>
       <p>
         Para una alimentación gaussiana, la reducción de transporte en tamaño tiene <strong>solución exacta</strong> (la
-        función de Green 1D advectada por el arrastre de molienda) — es nuestra <strong>ancla de validación</strong>, no
+        función de Green 1D advectada por el arrastre de molienda): es nuestra <strong>ancla de validación</strong>, no
         una fuente manufacturada:
       </p>
       <Equation tex={String.raw`n^*(s,t;g)=\sqrt{\frac{\sigma_0^2}{\sigma_0^2+2Dt}}\;\exp\!\Big(-\frac{\big(s-(s_0-g\,t)\big)^2}{2\,(\sigma_0^2+2Dt)}\Big).`} />
@@ -44,11 +44,11 @@ export function ComminutionContext({ lang }: { lang: "en" | "es" }) {
         (<InlineMath tex={String.raw`\sigma^2=\sigma_0^2+2Dt`} />, el ensanchamiento por fragmentación) y el
         <em> pico</em> decae como <InlineMath tex={String.raw`\sigma_0/\sigma`} /> porque la masa total se conserva. Al
         sustituir <InlineMath tex={String.raw`n^*`} /> en la EDP el residual es idénticamente cero para
-        <em> cualquier</em> <InlineMath tex={String.raw`g`} /> — la velocidad de arrastre del centro,
+        <em> cualquier</em> <InlineMath tex={String.raw`g`} />: la velocidad de arrastre del centro,
         <InlineMath tex={String.raw`-g`} />, equilibra exactamente al término de transporte. La PINN
         <InlineMath tex={String.raw`n_\theta(s,t,g)`} /> minimiza el residual de transporte en puntos de colocación, con
         la IC (la alimentación) y la BC (<InlineMath tex={String.raw`n^*`} /> en el borde) impuestas de forma blanda y
-        ponderada — así la red aprende de verdad el campo interior y el L2 reportado es el error real del PINN.
+        ponderada: así la red aprende de verdad el campo interior y el L2 reportado es el error real del PINN.
       </p>
 
       <h3>El método: balance poblacional reducido</h3>
@@ -57,7 +57,7 @@ export function ComminutionContext({ lang }: { lang: "en" | "es" }) {
         con un núcleo de <em>selección</em> <InlineMath tex={String.raw`S`} /> (qué tan rápido se rompe cada tamaño) y
         uno de <em>ruptura</em> <InlineMath tex={String.raw`b`} /> (cómo se reparten los fragmentos). Aquí ejercitamos su
         <strong> reducción de transporte</strong>: el primer momento del núcleo de ruptura es un <em>arrastre</em> hacia
-        tamaños menores y el segundo momento, una <em>dispersión</em> — la aproximación de Fokker–Planck del operador de
+        tamaños menores y el segundo momento, una <em>dispersión</em>: la aproximación de Fokker-Planck del operador de
         fragmentación. Esto convierte una ecuación íntegro-diferencial en una EDP de deriva-difusión con
         <strong> ancla cerrada exacta</strong>, ideal para un banco de pruebas de PINN; el modelo de núcleos completo se
         documenta como el modelo verdadero.
@@ -77,7 +77,7 @@ export function ComminutionContext({ lang }: { lang: "en" | "es" }) {
 
       <p>
         <strong>Qué muestra cada variante.</strong> El barrido de la tasa de molienda recorre la intensidad de la
-        conminución: <em>g=0</em> — sin arrastre, la distribución solo se ensancha en su sitio (molino apenas activo);
+        conminución: <em>g=0</em>: sin arrastre, la distribución solo se ensancha en su sitio (molino apenas activo);
         <em> g=0.12/0.24/0.36</em> la corren progresivamente hacia tamaños menores; <em>g=0.48</em> y <em>g=0.6</em>
         (molienda intensa) la llevan muy abajo, con el grueso de la masa ya en los finos al final de la residencia. En
         todas, la distribución <strong>se ensancha al mismo ritmo</strong> <InlineMath tex={String.raw`\sigma\propto\sqrt{\sigma_0^2+2Dt}`} />
@@ -85,19 +85,19 @@ export function ComminutionContext({ lang }: { lang: "en" | "es" }) {
       </p>
       <p>
         <strong>Cómo leer y usar la viz.</strong> El <strong>heatmap</strong> de <InlineMath tex={String.raw`n(s,t)`} />
-        (s horizontal, t vertical) muestra una <em>banda diagonal</em> que baja en tamaño al avanzar la molienda — su
+        (s horizontal, t vertical) muestra una <em>banda diagonal</em> que baja en tamaño al avanzar la molienda: su
         <em> inclinación</em> es la tasa <InlineMath tex={String.raw`g`} /> y su <em>anchura creciente</em> es la
         dispersión <InlineMath tex={String.raw`D`} />. Pasa el cursor para leer el valor exacto y mira el
         <strong> perfil de corte</strong> en <InlineMath tex={String.raw`s`} /> (la distribución de tamaños en un
-        instante — la campana que se corre y se aplana) y en <InlineMath tex={String.raw`t`} /> (cómo crece y luego cae
+        instante: la campana que se corre y se aplana) y en <InlineMath tex={String.raw`t`} /> (cómo crece y luego cae
         la masa en un tamaño fijo conforme la moda pasa por él). Los <strong>chips</strong> cargan cada tasa de molienda;
         en <strong>Live</strong>, desliza <InlineMath tex={String.raw`g`} /> y ve la distribución correrse hacia los
         finos en vivo en tu navegador (onnxruntime-web).
       </p>
     </>
-  ) : (
+  ): (
     <>
-      <h2>The problem: grinding shifts the size distribution toward fines — with a tunable grind rate</h2>
+      <h2>The problem: grinding shifts the size distribution toward fines: with a tunable grind rate</h2>
       <p>
         <strong>The problem.</strong> In comminution (SAG / ball milling) particles fracture continuously, so the
         <strong> particle-size distribution</strong> <InlineMath tex={String.raw`n(s,t)`} /> shifts toward smaller sizes
@@ -105,7 +105,7 @@ export function ComminutionContext({ lang }: { lang: "en" | "es" }) {
         equation with <em>selection</em> and <em>breakage</em> kernels. Here we work its <strong>size-transport
         reduction</strong>: net fragmentation is represented as a <em>drift</em> toward smaller size (the grind rate
         <InlineMath tex={String.raw`g`} />) plus a <em>dispersion</em> in size <InlineMath tex={String.raw`D`} /> that
-        broadens the distribution — <InlineMath tex={String.raw`n_t + (-g)\,n_s = D\,n_{ss}`} />. The <strong>grind
+        broadens the distribution: <InlineMath tex={String.raw`n_t + (-g)\,n_s = D\,n_{ss}`} />. The <strong>grind
         rate</strong> <InlineMath tex={String.raw`g`} /> is tunable: a single network learns the whole family
         <InlineMath tex={String.raw`n(s,t;g)`} />, and in the <strong>Live</strong> tab moving the
         <InlineMath tex={String.raw`g`} /> slider drives the distribution toward fines faster (hard grinding) or slower
@@ -116,15 +116,15 @@ export function ComminutionContext({ lang }: { lang: "en" | "es" }) {
       <ul>
         <li><strong>Domain:</strong> normalized size <InlineMath tex={String.raw`s\in[0,1]`} /> (1 = coarse, 0 = fine) × grind time <InlineMath tex={String.raw`t\in[0,1]`} />, an <InlineMath tex={String.raw`81\times81`} /> field grid per instant.</li>
         <li><strong>Unknown:</strong> the size-distribution density <InlineMath tex={String.raw`n(s,t)`} /> (mass per size interval).</li>
-        <li><strong>Control parameter:</strong> the <em>grind rate</em> <InlineMath tex={String.raw`g\in[0,0.6]`} /> — a network input. It sets how fast the distribution's center moves down in size.</li>
-        <li><strong>Size dispersion:</strong> <InlineMath tex={String.raw`D=0.012`} /> — broadens the distribution (the fragmentation signature, spreading mass over a range of sizes).</li>
+        <li><strong>Control parameter:</strong> the <em>grind rate</em> <InlineMath tex={String.raw`g\in[0,0.6]`} />: a network input. It sets how fast the distribution's center moves down in size.</li>
+        <li><strong>Size dispersion:</strong> <InlineMath tex={String.raw`D=0.012`} />: broadens the distribution (the fragmentation signature, spreading mass over a range of sizes).</li>
         <li><strong>Initial condition:</strong> a narrow coarse feed centered at <InlineMath tex={String.raw`s_0=0.8`} /> (initial variance <InlineMath tex={String.raw`\sigma_0^2=0.01`} />).</li>
       </ul>
 
       <h3>Formalization</h3>
       <p>
         For a Gaussian feed, the size-transport reduction has an <strong>exact solution</strong> (the 1D Green's
-        function advected by the grind drift) — it is our <strong>validation anchor</strong>, not a manufactured source:
+        function advected by the grind drift): it is our <strong>validation anchor</strong>, not a manufactured source:
       </p>
       <Equation tex={String.raw`n^*(s,t;g)=\sqrt{\frac{\sigma_0^2}{\sigma_0^2+2Dt}}\;\exp\!\Big(-\frac{\big(s-(s_0-g\,t)\big)^2}{2\,(\sigma_0^2+2Dt)}\Big).`} />
       <p>
@@ -132,10 +132,10 @@ export function ComminutionContext({ lang }: { lang: "en" | "es" }) {
         shift toward fines), the <em>variance</em> grows linearly (<InlineMath tex={String.raw`\sigma^2=\sigma_0^2+2Dt`} />,
         the fragmentation broadening) and the <em>peak</em> decays as <InlineMath tex={String.raw`\sigma_0/\sigma`} />
         because total mass is conserved. Substituting <InlineMath tex={String.raw`n^*`} /> into the PDE makes the
-        residual identically zero for <em>any</em> <InlineMath tex={String.raw`g`} /> — the center's drift velocity,
+        residual identically zero for <em>any</em> <InlineMath tex={String.raw`g`} />: the center's drift velocity,
         <InlineMath tex={String.raw`-g`} />, exactly balances the transport term. The PINN
         <InlineMath tex={String.raw`n_\theta(s,t,g)`} /> minimises the transport residual at collocation points, with the
-        IC (the feed) and BC (<InlineMath tex={String.raw`n^*`} /> on the boundary) imposed softly and weighted — so the
+        IC (the feed) and BC (<InlineMath tex={String.raw`n^*`} /> on the boundary) imposed softly and weighted: so the
         network genuinely learns the interior field and the reported L2 is the true PINN error.
       </p>
 
@@ -145,7 +145,7 @@ export function ComminutionContext({ lang }: { lang: "en" | "es" }) {
         with a <em>selection</em> kernel <InlineMath tex={String.raw`S`} /> (how fast each size breaks) and a
         <em> breakage</em> kernel <InlineMath tex={String.raw`b`} /> (how fragments are distributed). Here we exercise
         its <strong>transport reduction</strong>: the first moment of the breakage kernel is a <em>drift</em> toward
-        smaller sizes and the second moment a <em>dispersion</em> — the Fokker–Planck approximation of the fragmentation
+        smaller sizes and the second moment a <em>dispersion</em>: the Fokker-Planck approximation of the fragmentation
         operator. This turns an integro-differential equation into a drift-diffusion PDE with an <strong>exact
         closed-form anchor</strong>, ideal for a PINN test bed; the full kernel model is documented as the true model.
       </p>
@@ -162,7 +162,7 @@ export function ComminutionContext({ lang }: { lang: "en" | "es" }) {
       </p>
 
       <p>
-        <strong>What each variant shows.</strong> The grind-rate sweep walks the intensity of comminution: <em>g=0</em> —
+        <strong>What each variant shows.</strong> The grind-rate sweep walks the intensity of comminution: <em>g=0</em>: 
         no drift, the distribution only broadens in place (a barely-active mill); <em>g=0.12/0.24/0.36</em> shift it
         progressively toward smaller sizes; <em>g=0.48</em> and <em>g=0.6</em> (hard grinding) drive it far down, with
         the bulk of the mass already in the fines by the end of residence. In all of them the distribution
@@ -172,10 +172,10 @@ export function ComminutionContext({ lang }: { lang: "en" | "es" }) {
       <p>
         <strong>How to read &amp; use the viz.</strong> The <strong>heatmap</strong> of
         <InlineMath tex={String.raw`n(s,t)`} /> (s horizontal, t vertical) shows a <em>diagonal band</em> moving down in
-        size as grinding proceeds — its <em>slope</em> is the rate <InlineMath tex={String.raw`g`} /> and its
+        size as grinding proceeds: its <em>slope</em> is the rate <InlineMath tex={String.raw`g`} /> and its
         <em> growing width</em> is the dispersion <InlineMath tex={String.raw`D`} />. Hover to read the exact value and
         watch the <strong>line-cut profile</strong> in <InlineMath tex={String.raw`s`} /> (the size distribution at an
-        instant — the bell shifting and flattening) and in <InlineMath tex={String.raw`t`} /> (how mass at a fixed size
+        instant: the bell shifting and flattening) and in <InlineMath tex={String.raw`t`} /> (how mass at a fixed size
         rises then falls as the mode passes through it). The <strong>chips</strong> load each grind rate; in
         <strong> Live</strong>, slide <InlineMath tex={String.raw`g`} /> and watch the distribution shift toward fines
         live in your browser (onnxruntime-web).

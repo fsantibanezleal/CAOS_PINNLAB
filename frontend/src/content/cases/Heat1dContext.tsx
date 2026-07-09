@@ -5,12 +5,12 @@ export function Heat1dContext({ lang }: { lang: "en" | "es" }) {
   const es = lang === "es";
   return es ? (
     <>
-      <h2>El problema: cómo se relaja un perfil de temperatura — difusión 1D con difusividad ajustable</h2>
+      <h2>El problema: cómo se relaja un perfil de temperatura: difusión 1D con difusividad ajustable</h2>
       <p>
         <strong>El problema.</strong> Una barra de longitud unitaria parte con un perfil de temperatura senoidal
         <InlineMath tex={String.raw`u(x,0)=\sin(\pi x)`} /> y sus extremos se mantienen a cero. ¿Cómo decae ese perfil
         en el tiempo? La ecuación del calor (o de difusión) <InlineMath tex={String.raw`u_t=\alpha\,u_{xx}`} /> es la
-        EDP <em>parabólica</em> canónica — gobierna la conducción térmica, la difusión de un soluto y, con un cambio de
+        EDP <em>parabólica</em> canónica: gobierna la conducción térmica, la difusión de un soluto y, con un cambio de
         signo, el suavizado en visión por computador. Aquí la <strong>difusividad</strong>
         <InlineMath tex={String.raw`\alpha`} /> es ajustable de forma continua: una sola red aprende toda la familia
         <InlineMath tex={String.raw`u(x,t;\alpha)`} />, y en el tab <strong>Live</strong> mover el deslizador de
@@ -21,7 +21,7 @@ export function Heat1dContext({ lang }: { lang: "en" | "es" }) {
       <ul>
         <li><strong>Dominio:</strong> espacio <InlineMath tex={String.raw`x\in[0,1]`} /> × tiempo <InlineMath tex={String.raw`t\in[0,1]`} />, grilla del campo <InlineMath tex={String.raw`161\times101`} />.</li>
         <li><strong>Incógnita:</strong> el campo <InlineMath tex={String.raw`u(x,t)`} /> (temperatura / concentración).</li>
-        <li><strong>Parámetro de control:</strong> la <em>difusividad</em> <InlineMath tex={String.raw`\alpha\in[0.1,1.0]`} /> — un input de la red. Fija la tasa de decaimiento.</li>
+        <li><strong>Parámetro de control:</strong> la <em>difusividad</em> <InlineMath tex={String.raw`\alpha\in[0.1,1.0]`} />: un input de la red. Fija la tasa de decaimiento.</li>
         <li><strong>Condición inicial:</strong> <InlineMath tex={String.raw`u(x,0)=\sin(\pi x)`} /> (modo fundamental).</li>
         <li><strong>Condiciones de borde:</strong> Dirichlet homogéneas <InlineMath tex={String.raw`u(0,t)=u(1,t)=0`} />.</li>
       </ul>
@@ -29,7 +29,7 @@ export function Heat1dContext({ lang }: { lang: "en" | "es" }) {
       <h3>Formalización</h3>
       <p>
         Para el modo fundamental, la solución exacta es separable y decae exponencialmente, válida para cualquier
-        <InlineMath tex={String.raw`\alpha`} /> — es nuestra <strong>ancla de validación</strong>:
+        <InlineMath tex={String.raw`\alpha`} />: es nuestra <strong>ancla de validación</strong>:
       </p>
       <Equation tex={String.raw`u^*(x,t;\alpha)=e^{-\alpha\pi^2 t}\,\sin(\pi x).`} />
       <p>
@@ -57,7 +57,7 @@ export function Heat1dContext({ lang }: { lang: "en" | "es" }) {
 
       <p>
         <strong>Qué muestra cada variante.</strong> El barrido de difusividad recorre la física del decaimiento:
-        <em>α=0.1</em> (lenta) — el perfil apenas baja en la ventana de tiempo; <em>α=0.2 / 0.4 / 0.6</em> aceleran el
+        <em>α=0.1</em> (lenta): el perfil apenas baja en la ventana de tiempo; <em>α=0.2 / 0.4 / 0.6</em> aceleran el
         decaimiento; <em>α=0.8</em> y <em>α=1.0</em> (rápida) colapsan la sinusoide a casi cero en
         <InlineMath tex={String.raw`t=1`} />. A igual perfil inicial, la difusividad fija <em>cuán rápido se olvida</em>
         el sistema su condición inicial.
@@ -73,14 +73,14 @@ export function Heat1dContext({ lang }: { lang: "en" | "es" }) {
         <InlineMath tex={String.raw`\alpha`} /> y ve el campo recalcularse en vivo en tu navegador (onnxruntime-web).
       </p>
     </>
-  ) : (
+  ): (
     <>
-      <h2>The problem: how a temperature profile relaxes — 1D diffusion with a tunable diffusivity</h2>
+      <h2>The problem: how a temperature profile relaxes: 1D diffusion with a tunable diffusivity</h2>
       <p>
         <strong>The problem.</strong> A unit-length bar starts with a sinusoidal temperature profile
         <InlineMath tex={String.raw`u(x,0)=\sin(\pi x)`} /> and its ends are held at zero. How does that profile decay
         in time? The heat (or diffusion) equation <InlineMath tex={String.raw`u_t=\alpha\,u_{xx}`} /> is the canonical
-        <em> parabolic</em> PDE — it governs thermal conduction, solute diffusion and, with a sign flip, smoothing in
+        <em> parabolic</em> PDE: it governs thermal conduction, solute diffusion and, with a sign flip, smoothing in
         computer vision. Here the <strong>diffusivity</strong> <InlineMath tex={String.raw`\alpha`} /> is continuously
         tunable: a single network learns the whole family <InlineMath tex={String.raw`u(x,t;\alpha)`} />, and in the
         <strong>Live</strong> tab moving the <InlineMath tex={String.raw`\alpha`} /> slider makes the profile decay
@@ -91,7 +91,7 @@ export function Heat1dContext({ lang }: { lang: "en" | "es" }) {
       <ul>
         <li><strong>Domain:</strong> space <InlineMath tex={String.raw`x\in[0,1]`} /> × time <InlineMath tex={String.raw`t\in[0,1]`} />, a <InlineMath tex={String.raw`161\times101`} /> field grid.</li>
         <li><strong>Unknown:</strong> the field <InlineMath tex={String.raw`u(x,t)`} /> (temperature / concentration).</li>
-        <li><strong>Control parameter:</strong> the <em>diffusivity</em> <InlineMath tex={String.raw`\alpha\in[0.1,1.0]`} /> — a network input. It sets the decay rate.</li>
+        <li><strong>Control parameter:</strong> the <em>diffusivity</em> <InlineMath tex={String.raw`\alpha\in[0.1,1.0]`} />: a network input. It sets the decay rate.</li>
         <li><strong>Initial condition:</strong> <InlineMath tex={String.raw`u(x,0)=\sin(\pi x)`} /> (the fundamental mode).</li>
         <li><strong>Boundary conditions:</strong> homogeneous Dirichlet <InlineMath tex={String.raw`u(0,t)=u(1,t)=0`} />.</li>
       </ul>
@@ -99,7 +99,7 @@ export function Heat1dContext({ lang }: { lang: "en" | "es" }) {
       <h3>Formalization</h3>
       <p>
         For the fundamental mode the exact solution is separable and decays exponentially, valid for any
-        <InlineMath tex={String.raw`\alpha`} /> — it is our <strong>validation anchor</strong>:
+        <InlineMath tex={String.raw`\alpha`} />: it is our <strong>validation anchor</strong>:
       </p>
       <Equation tex={String.raw`u^*(x,t;\alpha)=e^{-\alpha\pi^2 t}\,\sin(\pi x).`} />
       <p>
@@ -127,7 +127,7 @@ export function Heat1dContext({ lang }: { lang: "en" | "es" }) {
 
       <p>
         <strong>What each variant shows.</strong> The diffusivity sweep walks the physics of decay: <em>α=0.1</em>
-        (slow) — the profile barely drops over the window; <em>α=0.2 / 0.4 / 0.6</em> accelerate the decay; <em>α=0.8</em>
+        (slow): the profile barely drops over the window; <em>α=0.2 / 0.4 / 0.6</em> accelerate the decay; <em>α=0.8</em>
         and <em>α=1.0</em> (fast) collapse the sine to near zero by <InlineMath tex={String.raw`t=1`} />. From the same
         initial profile, the diffusivity sets <em>how fast the system forgets</em> its initial condition.
       </p>

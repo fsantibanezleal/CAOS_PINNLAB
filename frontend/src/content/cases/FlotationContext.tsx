@@ -5,34 +5,34 @@ export function FlotationContext({ lang }: { lang: "en" | "es" }) {
   const es = lang === "es";
   return es ? (
     <>
-      <h2>El problema: ¿qué tan rápido flota el mineral? — cinética de flotación de primer orden</h2>
+      <h2>El problema: ¿qué tan rápido flota el mineral?: cinética de flotación de primer orden</h2>
       <p>
         <strong>El problema.</strong> En una celda de flotación batch, las partículas de mineral valioso se adhieren a
         burbujas y suben a la espuma. La fracción flotable <InlineMath tex={String.raw`C`} /> decae con una cinética de
         <strong> primer orden</strong>, <InlineMath tex={String.raw`\dot C=-kC`} />, donde la <strong>constante de
-        tasa</strong> <InlineMath tex={String.raw`k`} /> (1/min) resume toda la flotabilidad — tamaño de partícula,
+        tasa</strong> <InlineMath tex={String.raw`k`} /> (1/min) resume toda la flotabilidad: tamaño de partícula,
         reactivos, hidrodinámica. La <em>recuperación</em> es <InlineMath tex={String.raw`R(t)=1-C(t)`} />. En vez de
         un solo <InlineMath tex={String.raw`k`} />, esta PINN aprende la <strong>familia completa</strong>
         <InlineMath tex={String.raw`C(k,t)`} /> tomando <InlineMath tex={String.raw`k`} /> como un segundo input de la
-        red — el modelo agrupado (lumped) que se usa para comparar circuitos de flotación.
+        red: el modelo agrupado (lumped) que se usa para comparar circuitos de flotación.
       </p>
 
       <h3>Componentes y variables</h3>
       <ul>
         <li><strong>Ejes del campo:</strong> constante de tasa <InlineMath tex={String.raw`k\in[0.5,5]`} /> (horizontal) × tiempo <InlineMath tex={String.raw`t\in[0,1]`} /> (vertical), grilla <InlineMath tex={String.raw`81\times81`} />.</li>
         <li><strong>Incógnita:</strong> la fracción flotable restante <InlineMath tex={String.raw`C(k,t)\in[0,1]`} />; la recuperación es <InlineMath tex={String.raw`R=1-C`} />.</li>
-        <li><strong>Constante de tasa:</strong> <InlineMath tex={String.raw`k`} /> — alta = flotación rápida (partículas bien liberadas, buen reactivo); baja = lenta.</li>
+        <li><strong>Constante de tasa:</strong> <InlineMath tex={String.raw`k`} />: alta = flotación rápida (partículas bien liberadas, buen reactivo); baja = lenta.</li>
         <li><strong>Condición inicial:</strong> <InlineMath tex={String.raw`C(k,0)=1`} /> (toda la masa flotable presente al inicio).</li>
       </ul>
 
       <h3>Formalización</h3>
-      <p>La EDO de primer orden tiene solución exacta para cualquier <InlineMath tex={String.raw`k`} /> — nuestra ancla:</p>
+      <p>La EDO de primer orden tiene solución exacta para cualquier <InlineMath tex={String.raw`k`} />: nuestra ancla:</p>
       <Equation tex={String.raw`\frac{dC}{dt}=-k\,C,\quad C(k,0)=1\ \Longrightarrow\ C^*(k,t)=e^{-k t},\qquad R=1-e^{-kt}.`} />
       <p>
         La PINN <InlineMath tex={String.raw`C_\theta(k,t)`} /> minimiza el residual de la EDO en el plano
         <InlineMath tex={String.raw`(k,t)`} />, con la IC impuesta de forma <strong>exacta</strong> por una restricción
-        dura — <InlineMath tex={String.raw`C_\theta = 1 + t\,\mathcal{N}_\theta(k,t)`} /> se anula a
-        <InlineMath tex={String.raw`1`} /> en <InlineMath tex={String.raw`t=0`} /> — así una sola red entrenada da la
+        dura: <InlineMath tex={String.raw`C_\theta = 1 + t\,\mathcal{N}_\theta(k,t)`} /> se anula a
+        <InlineMath tex={String.raw`1`} /> en <InlineMath tex={String.raw`t=0`} />: así una sola red entrenada da la
         concentración (y la recuperación) para <em>cualquier</em> constante de tasa sin reentrenar.
       </p>
 
@@ -62,17 +62,17 @@ export function FlotationContext({ lang }: { lang: "en" | "es" }) {
         <strong> Live</strong>, la red paramétrica re-evalúa el mapa completo en tu navegador (onnxruntime-web).
       </p>
     </>
-  ) : (
+  ): (
     <>
-      <h2>The problem: how fast does the ore float? — first-order flotation kinetics</h2>
+      <h2>The problem: how fast does the ore float?: first-order flotation kinetics</h2>
       <p>
         <strong>The problem.</strong> In a batch flotation cell, valuable-mineral particles attach to bubbles and rise
         into the froth. The floatable fraction <InlineMath tex={String.raw`C`} /> decays with <strong>first-order</strong>
         kinetics, <InlineMath tex={String.raw`\dot C=-kC`} />, where the <strong>rate constant</strong>
-        <InlineMath tex={String.raw`k`} /> (1/min) lumps all the floatability — particle size, reagents, hydrodynamics.
+        <InlineMath tex={String.raw`k`} /> (1/min) lumps all the floatability: particle size, reagents, hydrodynamics.
         The <em>recovery</em> is <InlineMath tex={String.raw`R(t)=1-C(t)`} />. Instead of one fixed
         <InlineMath tex={String.raw`k`} />, this PINN learns the <strong>whole family</strong>
-        <InlineMath tex={String.raw`C(k,t)`} /> by taking <InlineMath tex={String.raw`k`} /> as a second network input —
+        <InlineMath tex={String.raw`C(k,t)`} /> by taking <InlineMath tex={String.raw`k`} /> as a second network input: 
         the lumped model used to compare flotation circuits.
       </p>
 
@@ -80,18 +80,18 @@ export function FlotationContext({ lang }: { lang: "en" | "es" }) {
       <ul>
         <li><strong>Field axes:</strong> rate constant <InlineMath tex={String.raw`k\in[0.5,5]`} /> (horizontal) × time <InlineMath tex={String.raw`t\in[0,1]`} /> (vertical), an <InlineMath tex={String.raw`81\times81`} /> grid.</li>
         <li><strong>Unknown:</strong> the remaining floatable fraction <InlineMath tex={String.raw`C(k,t)\in[0,1]`} />; recovery is <InlineMath tex={String.raw`R=1-C`} />.</li>
-        <li><strong>Rate constant:</strong> <InlineMath tex={String.raw`k`} /> — high = fast flotation (well-liberated particles, good reagent); low = slow.</li>
+        <li><strong>Rate constant:</strong> <InlineMath tex={String.raw`k`} />: high = fast flotation (well-liberated particles, good reagent); low = slow.</li>
         <li><strong>Initial condition:</strong> <InlineMath tex={String.raw`C(k,0)=1`} /> (all floatable mass present at the start).</li>
       </ul>
 
       <h3>Formalization</h3>
-      <p>The first-order ODE has an exact solution for any <InlineMath tex={String.raw`k`} /> — our anchor:</p>
+      <p>The first-order ODE has an exact solution for any <InlineMath tex={String.raw`k`} />: our anchor:</p>
       <Equation tex={String.raw`\frac{dC}{dt}=-k\,C,\quad C(k,0)=1\ \Longrightarrow\ C^*(k,t)=e^{-k t},\qquad R=1-e^{-kt}.`} />
       <p>
         The PINN <InlineMath tex={String.raw`C_\theta(k,t)`} /> minimises the ODE residual over the
-        <InlineMath tex={String.raw`(k,t)`} /> plane, with the IC imposed <strong>exactly</strong> by a hard constraint —
+        <InlineMath tex={String.raw`(k,t)`} /> plane, with the IC imposed <strong>exactly</strong> by a hard constraint: 
         <InlineMath tex={String.raw`C_\theta = 1 + t\,\mathcal{N}_\theta(k,t)`} /> collapses to
-        <InlineMath tex={String.raw`1`} /> at <InlineMath tex={String.raw`t=0`} /> — so one trained network gives the
+        <InlineMath tex={String.raw`1`} /> at <InlineMath tex={String.raw`t=0`} />: so one trained network gives the
         concentration (and recovery) for <em>any</em> rate constant without retraining.
       </p>
 

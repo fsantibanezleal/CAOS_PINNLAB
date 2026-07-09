@@ -1,9 +1,32 @@
 # Changelog
 
-All notable changes to **PINN-Lab**. Format: `X.XX.XXX` (display) — see `pinnlab.__version__`. Keep `0.x` while on
+All notable changes to **PINN-Lab**. Format: `X.XX.XXX` (display), see `pinnlab.__version__`. Keep `0.x` while on
 synthetic/benchmark data. Tag every release.
 
-## [0.18.002] — 2026-07-09 — initial-vs-selected overlay on the field probe + cache-busting
+## [0.18.003] (2026-07-09) both modes together on every evolution case: PLAY + probe, and a content sweep
+
+Correction of 0.18.001/0.18.002, which had DELETED the play button when adding the probe. Both now coexist:
+
+- **Unified field view (`FieldView`):** every scalar-field case now has, at once,
+  - the **play button** (animate the time evolution forward, paused by default, one pass then stop, pauses on a
+    hidden tab), for the 10 cases with a real time axis (allencahn, burgers1d, heat1d, wave1d, soil-heat-real,
+    comminution, flotation, thickener, soil-barrier, tailings);
+  - the **click-to-pin probe**: click the map to lock a location; the crosshair, value read-out and the two
+    line-cut graphs follow the pin. Play and the pin share ONE time-cursor (play advances it, click/scrub sets it).
+  - **real axis labels** on the map and on both graphs (a time axis is tagged "(time)"), and the spatial graph
+    overlays **dashed = initial state (t=0)** against **solid = selected time**, with a legend.
+  - Steady cases (darcy, poisson, helmholtz, zero-source, ocean, heap-leach) correctly show no play button (no time
+    dimension), just the probe + two labelled cross-sections. Consistent behavior across all cases.
+- **Inverse case (`heat2d-inverse`) redesigned:** recovered k (with the ~100 sparse sensor dots), true k* on the same
+  color scale, the error |k-k*|, and measured T are shown SIDE BY SIDE, so it reads as an assimilation result, not a
+  bare heatmap.
+- **Content standards sweep (ADR-0067):** removed every em-dash / en-dash from the 20 case titles, the variant
+  notes, the captions and hints, and the deep Context / Methodology / Implementation / Experiments prose (661
+  occurrences across source + manifests). No em-dashes remain in the app content.
+- Verified with a per-case live audit (all 20 cases, light + dark): play button present on the time cases, probe +
+  two labelled graphs + legend on every field case, 4 panels + 100 sensor dots on the inverse, 0 console errors.
+
+## [0.18.002] (2026-07-09) initial-vs-selected overlay on the field probe + cache-busting
 
 - **Initial-vs-selected overlay:** in the space cross-section panel, the profile at the selected time (solid) is now
   overlaid with the **initial state t=0 (dashed)** — the initial-vs-selected comparison — combined with the value

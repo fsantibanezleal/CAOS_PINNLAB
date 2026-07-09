@@ -1,1 +1,214 @@
-{"schema":"pinnlab.index/v1","engine_version":"0.18.000","n_cases":20,"categories":["canonical-benchmark","control","industrial-fluids-heat","mining-mineral-processing","pollution-environmental"],"cases":[{"case_id":"bench-allencahn","category":"canonical-benchmark","title":"Allen-Cahn (stiff reaction-diffusion) — hard-constraint + RAR PINN","manifest_path":"manifests/bench-allencahn.json","system_type":"","view_kit":"HeatmapKit","method":"hard-constraints-rar","real_or_synthetic":"synthetic"},{"case_id":"bench-burgers1d","category":"canonical-benchmark","title":"1D viscous Burgers, parametric viscosity — hard-constraint PINN + RAR (traveling shock)","manifest_path":"manifests/bench-burgers1d.json","system_type":"","view_kit":"HeatmapKit","method":"hard-constraints-rar","real_or_synthetic":"synthetic"},{"case_id":"bench-darcy-operator","category":"canonical-benchmark","title":"Darcy-flow operator learning — Fourier Neural Operator G: a(x) -> u(x)","manifest_path":"manifests/bench-darcy-operator.json","system_type":"","view_kit":"HeatmapKit","method":"operator-fno","real_or_synthetic":"synthetic"},{"case_id":"bench-heat1d","category":"canonical-benchmark","title":"1D transient heat/diffusion, parametric diffusivity — time-dependent hard-constraint PINN","manifest_path":"manifests/bench-heat1d.json","system_type":"","view_kit":"HeatmapKit","method":"time-dependent-hard-constraints","real_or_synthetic":"synthetic"},{"case_id":"bench-navier-cavity","category":"canonical-benchmark","title":"2D lid-driven cavity — steady Navier-Stokes PINN (u, v, p)","manifest_path":"manifests/bench-navier-cavity.json","system_type":"vector-flow","view_kit":"VectorFieldKit","method":"multioutput-loss-weighting","real_or_synthetic":"synthetic-illustrative"},{"case_id":"bench-poisson2d","category":"canonical-benchmark","title":"2D Poisson (Dirichlet), parametric source mode — hard-constraint PINN","manifest_path":"manifests/bench-poisson2d.json","system_type":"","view_kit":"HeatmapKit","method":"hard-constraints","real_or_synthetic":"synthetic"},{"case_id":"bench-wave1d","category":"canonical-benchmark","title":"1D wave equation, parametric speed — SIREN + hard-constraint PINN","manifest_path":"manifests/bench-wave1d.json","system_type":"","view_kit":"HeatmapKit","method":"siren-hard-constraints","real_or_synthetic":"synthetic"},{"case_id":"ctrl-zero-source","category":"control","title":"Manufactured-solution control — parametric source amplitude (Poisson, hard-zero boundary)","manifest_path":"manifests/ctrl-zero-source.json","system_type":"","view_kit":"HeatmapKit","method":"hard-constraints","real_or_synthetic":"synthetic"},{"case_id":"dyn-double-pendulum","category":"canonical-benchmark","title":"Double pendulum (chaotic) — a PINN as a t → state map, vs a high-accuracy integrator","manifest_path":"manifests/dyn-double-pendulum.json","system_type":"ode-dynamical","view_kit":"TrajectoryAnimationKit","method":"ode-residual-hard-ic","real_or_synthetic":"synthetic-illustrative"},{"case_id":"env-soil-heat-real","category":"pollution-environmental","title":"Subsurface heat conduction — recover soil thermal diffusivity from REAL USCRN temperatures","manifest_path":"manifests/env-soil-heat-real.json","system_type":"","view_kit":"HeatmapKit","method":"inverse-parameter-real","real_or_synthetic":"validated-real"},{"case_id":"ind-heat2d-inverse","category":"industrial-fluids-heat","title":"2D inverse heat conduction — recover conductivity k(x,y) from sparse sensors","manifest_path":"manifests/ind-heat2d-inverse.json","system_type":"inverse-assim","view_kit":"InverseOverlayKit","method":"inverse-field","real_or_synthetic":"synthetic"},{"case_id":"ind-helmholtz","category":"industrial-fluids-heat","title":"2D Helmholtz (high-wavenumber) — Fourier-feature PINN","manifest_path":"manifests/ind-helmholtz.json","system_type":"","view_kit":"HeatmapKit","method":"fourier-features","real_or_synthetic":"synthetic"},{"case_id":"mine-comminution-pbe","category":"mining-mineral-processing","title":"Comminution population balance — size-transport reduced PINN (parametric grind rate)","manifest_path":"manifests/mine-comminution-pbe.json","system_type":"","view_kit":"HeatmapKit","method":"population-balance","real_or_synthetic":"synthetic-illustrative"},{"case_id":"mine-flotation-kinetics","category":"mining-mineral-processing","title":"Froth-flotation kinetics — parametric first-order PINN C(k,t)","manifest_path":"manifests/mine-flotation-kinetics.json","system_type":"","view_kit":"HeatmapKit","method":"parametric-kinetics","real_or_synthetic":"synthetic-illustrative"},{"case_id":"mine-heap-leach-rt","category":"mining-mineral-processing","title":"Heap-leach reactive transport — advection-diffusion-reaction PINN (2 species, time-scrubber)","manifest_path":"manifests/mine-heap-leach-rt.json","system_type":"","view_kit":"HeatmapKit","method":"advection-diffusion-reaction","real_or_synthetic":"synthetic-illustrative"},{"case_id":"mine-thickener-settling","category":"mining-mineral-processing","title":"Thickener / tailings settling — Bürger-Concha degenerate conservation law (parametric descent rate)","manifest_path":"manifests/mine-thickener-settling.json","system_type":"","view_kit":"HeatmapKit","method":"nonlinear-settling","real_or_synthetic":"synthetic-illustrative"},{"case_id":"poll-ocean-transport","category":"pollution-environmental","title":"Ocean pollutant transport — 2D advection-diffusion PINN (time-scrubber)","manifest_path":"manifests/poll-ocean-transport.json","system_type":"","view_kit":"HeatmapKit","method":"advection-diffusion","real_or_synthetic":"synthetic-illustrative"},{"case_id":"poll-soil-barrier","category":"pollution-environmental","title":"Contaminated-site barrier — domain-decomposition (FBPINN) PINN","manifest_path":"manifests/poll-soil-barrier.json","system_type":"","view_kit":"HeatmapKit","method":"domain-decomposition","real_or_synthetic":"synthetic-illustrative"},{"case_id":"poll-source-uq-bpinn","category":"pollution-environmental","title":"Bayesian PINN (deep ensemble) — pollutant diffusion with epistemic uncertainty","manifest_path":"manifests/poll-source-uq-bpinn.json","system_type":"uq-bayesian","view_kit":"UQBandKit","method":"bayesian-ensemble-uq","real_or_synthetic":"synthetic-illustrative"},{"case_id":"poll-tailings-seepage","category":"pollution-environmental","title":"Tailings-dam unsaturated seepage — Richards (Gardner), parametric sorptive number α","manifest_path":"manifests/poll-tailings-seepage.json","system_type":"","view_kit":"HeatmapKit","method":"richards-seepage","real_or_synthetic":"synthetic-illustrative"}]}
+{
+ "schema": "pinnlab.index/v1",
+ "engine_version": "0.18.000",
+ "n_cases": 20,
+ "categories": [
+  "canonical-benchmark",
+  "control",
+  "industrial-fluids-heat",
+  "mining-mineral-processing",
+  "pollution-environmental"
+ ],
+ "cases": [
+  {
+   "case_id": "bench-allencahn",
+   "category": "canonical-benchmark",
+   "title": "Allen-Cahn (stiff reaction-diffusion): hard-constraint + RAR PINN",
+   "manifest_path": "manifests/bench-allencahn.json",
+   "system_type": "",
+   "view_kit": "HeatmapKit",
+   "method": "hard-constraints-rar",
+   "real_or_synthetic": "synthetic"
+  },
+  {
+   "case_id": "bench-burgers1d",
+   "category": "canonical-benchmark",
+   "title": "1D viscous Burgers, parametric viscosity: hard-constraint PINN + RAR (traveling shock)",
+   "manifest_path": "manifests/bench-burgers1d.json",
+   "system_type": "",
+   "view_kit": "HeatmapKit",
+   "method": "hard-constraints-rar",
+   "real_or_synthetic": "synthetic"
+  },
+  {
+   "case_id": "bench-darcy-operator",
+   "category": "canonical-benchmark",
+   "title": "Darcy-flow operator learning: Fourier Neural Operator G: a(x) -> u(x)",
+   "manifest_path": "manifests/bench-darcy-operator.json",
+   "system_type": "",
+   "view_kit": "HeatmapKit",
+   "method": "operator-fno",
+   "real_or_synthetic": "synthetic"
+  },
+  {
+   "case_id": "bench-heat1d",
+   "category": "canonical-benchmark",
+   "title": "1D transient heat/diffusion, parametric diffusivity: time-dependent hard-constraint PINN",
+   "manifest_path": "manifests/bench-heat1d.json",
+   "system_type": "",
+   "view_kit": "HeatmapKit",
+   "method": "time-dependent-hard-constraints",
+   "real_or_synthetic": "synthetic"
+  },
+  {
+   "case_id": "bench-navier-cavity",
+   "category": "canonical-benchmark",
+   "title": "2D lid-driven cavity: steady Navier-Stokes PINN (u, v, p)",
+   "manifest_path": "manifests/bench-navier-cavity.json",
+   "system_type": "vector-flow",
+   "view_kit": "VectorFieldKit",
+   "method": "multioutput-loss-weighting",
+   "real_or_synthetic": "synthetic-illustrative"
+  },
+  {
+   "case_id": "bench-poisson2d",
+   "category": "canonical-benchmark",
+   "title": "2D Poisson (Dirichlet), parametric source mode: hard-constraint PINN",
+   "manifest_path": "manifests/bench-poisson2d.json",
+   "system_type": "",
+   "view_kit": "HeatmapKit",
+   "method": "hard-constraints",
+   "real_or_synthetic": "synthetic"
+  },
+  {
+   "case_id": "bench-wave1d",
+   "category": "canonical-benchmark",
+   "title": "1D wave equation, parametric speed: SIREN + hard-constraint PINN",
+   "manifest_path": "manifests/bench-wave1d.json",
+   "system_type": "",
+   "view_kit": "HeatmapKit",
+   "method": "siren-hard-constraints",
+   "real_or_synthetic": "synthetic"
+  },
+  {
+   "case_id": "ctrl-zero-source",
+   "category": "control",
+   "title": "Manufactured-solution control: parametric source amplitude (Poisson, hard-zero boundary)",
+   "manifest_path": "manifests/ctrl-zero-source.json",
+   "system_type": "",
+   "view_kit": "HeatmapKit",
+   "method": "hard-constraints",
+   "real_or_synthetic": "synthetic"
+  },
+  {
+   "case_id": "dyn-double-pendulum",
+   "category": "canonical-benchmark",
+   "title": "Double pendulum (chaotic): a PINN as a t to state map, vs a high-accuracy integrator",
+   "manifest_path": "manifests/dyn-double-pendulum.json",
+   "system_type": "ode-dynamical",
+   "view_kit": "TrajectoryAnimationKit",
+   "method": "ode-residual-hard-ic",
+   "real_or_synthetic": "synthetic-illustrative"
+  },
+  {
+   "case_id": "env-soil-heat-real",
+   "category": "pollution-environmental",
+   "title": "Subsurface heat conduction: recover soil thermal diffusivity from REAL USCRN temperatures",
+   "manifest_path": "manifests/env-soil-heat-real.json",
+   "system_type": "",
+   "view_kit": "HeatmapKit",
+   "method": "inverse-parameter-real",
+   "real_or_synthetic": "validated-real"
+  },
+  {
+   "case_id": "ind-heat2d-inverse",
+   "category": "industrial-fluids-heat",
+   "title": "2D inverse heat conduction: recover conductivity k(x,y) from sparse sensors",
+   "manifest_path": "manifests/ind-heat2d-inverse.json",
+   "system_type": "inverse-assim",
+   "view_kit": "InverseOverlayKit",
+   "method": "inverse-field",
+   "real_or_synthetic": "synthetic"
+  },
+  {
+   "case_id": "ind-helmholtz",
+   "category": "industrial-fluids-heat",
+   "title": "2D Helmholtz (high-wavenumber): Fourier-feature PINN",
+   "manifest_path": "manifests/ind-helmholtz.json",
+   "system_type": "",
+   "view_kit": "HeatmapKit",
+   "method": "fourier-features",
+   "real_or_synthetic": "synthetic"
+  },
+  {
+   "case_id": "mine-comminution-pbe",
+   "category": "mining-mineral-processing",
+   "title": "Comminution population balance: size-transport reduced PINN (parametric grind rate)",
+   "manifest_path": "manifests/mine-comminution-pbe.json",
+   "system_type": "",
+   "view_kit": "HeatmapKit",
+   "method": "population-balance",
+   "real_or_synthetic": "synthetic-illustrative"
+  },
+  {
+   "case_id": "mine-flotation-kinetics",
+   "category": "mining-mineral-processing",
+   "title": "Froth-flotation kinetics: parametric first-order PINN C(k,t)",
+   "manifest_path": "manifests/mine-flotation-kinetics.json",
+   "system_type": "",
+   "view_kit": "HeatmapKit",
+   "method": "parametric-kinetics",
+   "real_or_synthetic": "synthetic-illustrative"
+  },
+  {
+   "case_id": "mine-heap-leach-rt",
+   "category": "mining-mineral-processing",
+   "title": "Heap-leach reactive transport: advection-diffusion-reaction PINN (2 species, time-scrubber)",
+   "manifest_path": "manifests/mine-heap-leach-rt.json",
+   "system_type": "",
+   "view_kit": "HeatmapKit",
+   "method": "advection-diffusion-reaction",
+   "real_or_synthetic": "synthetic-illustrative"
+  },
+  {
+   "case_id": "mine-thickener-settling",
+   "category": "mining-mineral-processing",
+   "title": "Thickener / tailings settling: Bürger-Concha degenerate conservation law (parametric descent rate)",
+   "manifest_path": "manifests/mine-thickener-settling.json",
+   "system_type": "",
+   "view_kit": "HeatmapKit",
+   "method": "nonlinear-settling",
+   "real_or_synthetic": "synthetic-illustrative"
+  },
+  {
+   "case_id": "poll-ocean-transport",
+   "category": "pollution-environmental",
+   "title": "Ocean pollutant transport: 2D advection-diffusion PINN (time-scrubber)",
+   "manifest_path": "manifests/poll-ocean-transport.json",
+   "system_type": "",
+   "view_kit": "HeatmapKit",
+   "method": "advection-diffusion",
+   "real_or_synthetic": "synthetic-illustrative"
+  },
+  {
+   "case_id": "poll-soil-barrier",
+   "category": "pollution-environmental",
+   "title": "Contaminated-site barrier: domain-decomposition (FBPINN) PINN",
+   "manifest_path": "manifests/poll-soil-barrier.json",
+   "system_type": "",
+   "view_kit": "HeatmapKit",
+   "method": "domain-decomposition",
+   "real_or_synthetic": "synthetic-illustrative"
+  },
+  {
+   "case_id": "poll-source-uq-bpinn",
+   "category": "pollution-environmental",
+   "title": "Bayesian PINN (deep ensemble): pollutant diffusion with epistemic uncertainty",
+   "manifest_path": "manifests/poll-source-uq-bpinn.json",
+   "system_type": "uq-bayesian",
+   "view_kit": "UQBandKit",
+   "method": "bayesian-ensemble-uq",
+   "real_or_synthetic": "synthetic-illustrative"
+  },
+  {
+   "case_id": "poll-tailings-seepage",
+   "category": "pollution-environmental",
+   "title": "Tailings-dam unsaturated seepage: Richards (Gardner), parametric sorptive number α",
+   "manifest_path": "manifests/poll-tailings-seepage.json",
+   "system_type": "",
+   "view_kit": "HeatmapKit",
+   "method": "richards-seepage",
+   "real_or_synthetic": "synthetic-illustrative"
+  }
+ ]
+}

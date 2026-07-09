@@ -35,7 +35,7 @@ CASE = CaseSpec(
     id="poll-source-uq-bpinn",
     system_type="uq-bayesian",
     category="pollution-environmental",
-    title="Bayesian PINN (deep ensemble) — pollutant diffusion with epistemic uncertainty",
+    title="Bayesian PINN (deep ensemble): pollutant diffusion with epistemic uncertainty",
     governing_equations=(
         r"c_t = D\,c_{xx},\ c|_{x=0,1}=0,\ c^*=e^{-D\pi^2 t}\sin(\pi x);\ "
         r"\text{deep ensemble} \to [\text{mean},\ \text{std}]\ \text{(epistemic UQ from sparse noisy sensors)}"

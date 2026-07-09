@@ -37,9 +37,9 @@ const METHODS: Method[] = [
     en: "Causal & curriculum training",
     es: "Entrenamiento causal y por currículo",
     bodyEn:
-      "Standard time-dependent PINNs can converge to a solution that violates causality — fitting late times before the early dynamics are right. Causal training weights the temporal residual so a time slice is only emphasised once all earlier slices are already small, recovering the natural march of information; curriculum/time-marching does the same by solving on a growing time window.",
+      "Standard time-dependent PINNs can converge to a solution that violates causality: fitting late times before the early dynamics are right. Causal training weights the temporal residual so a time slice is only emphasised once all earlier slices are already small, recovering the natural march of information; curriculum/time-marching does the same by solving on a growing time window.",
     bodyEs:
-      "Las PINN temporales estándar pueden converger a una solución que viola la causalidad — ajustando tiempos tardíos antes de que la dinámica temprana sea correcta. El entrenamiento causal pondera el residual temporal para que una rebanada de tiempo solo se enfatice cuando las anteriores ya son pequeñas, recuperando la marcha natural de la información; el currículo/time-marching hace lo mismo resolviendo en una ventana temporal creciente.",
+      "Las PINN temporales estándar pueden converger a una solución que viola la causalidad: ajustando tiempos tardíos antes de que la dinámica temprana sea correcta. El entrenamiento causal pondera el residual temporal para que una rebanada de tiempo solo se enfatice cuando las anteriores ya son pequeñas, recuperando la marcha natural de la información; el currículo/time-marching hace lo mismo resolviendo en una ventana temporal creciente.",
     eq: String.raw`w_i=\exp\!\Big(-\varepsilon\sum_{j<i}\mathcal{L}_r(t_j)\Big),\qquad \mathcal{L}=\sum_i w_i\,\mathcal{L}_r(t_i)`,
     cases: "time-dependent cases (heat, wave, Burgers, Allen-Cahn)",
     ref: 2,
@@ -49,9 +49,9 @@ const METHODS: Method[] = [
     en: "Loss / gradient weighting",
     es: "Pesado de pérdidas / gradientes",
     bodyEn:
-      "A PINN minimises a sum of very differently-scaled terms — the PDE residual, each boundary/initial condition, data. If one term dominates the gradient, the others are never satisfied. NTK-, gradient-norm- and Self-Adaptive (SA-PINN) weighting rebalance the terms automatically so no loss starves; PINN-Lab uses fixed per-term weights where the residual scales differ.",
+      "A PINN minimises a sum of very differently-scaled terms: the PDE residual, each boundary/initial condition, data. If one term dominates the gradient, the others are never satisfied. NTK-, gradient-norm- and Self-Adaptive (SA-PINN) weighting rebalance the terms automatically so no loss starves; PINN-Lab uses fixed per-term weights where the residual scales differ.",
     bodyEs:
-      "Una PINN minimiza una suma de términos de escalas muy distintas — el residual de la EDP, cada condición de borde/inicial, los datos. Si un término domina el gradiente, los demás nunca se satisfacen. El pesado por NTK, por norma del gradiente y Self-Adaptive (SA-PINN) rebalancea los términos automáticamente; PINN-Lab usa pesos fijos por término donde las escalas del residual difieren.",
+      "Una PINN minimiza una suma de términos de escalas muy distintas: el residual de la EDP, cada condición de borde/inicial, los datos. Si un término domina el gradiente, los demás nunca se satisfacen. El pesado por NTK, por norma del gradiente y Self-Adaptive (SA-PINN) rebalancea los términos automáticamente; PINN-Lab usa pesos fijos por término donde las escalas del residual difieren.",
     eq: String.raw`\mathcal{L}=\sum_k \lambda_k\,\mathcal{L}_k,\qquad \lambda_k \;\propto\; \big(\text{tr}\,K_{kk}\big)^{-1}\ \text{(NTK)}`,
     cases: "bench-navier-cavity (PDE vs BC vs pressure gauge)",
     ref: 3,
@@ -73,7 +73,7 @@ const METHODS: Method[] = [
     en: "Domain decomposition (FBPINN)",
     es: "Descomposición de dominio (FBPINN)",
     bodyEn:
-      "When the solution has a kink or a high-contrast jump, one global network strains across it. Domain-decomposition PINNs (cPINN / XPINN / FBPINN) assign a sub-network to each subdomain and blend them with an overlapping partition of unity, so the kink is produced by two networks handing off rather than one tanh straining — better conditioning and parallelism.",
+      "When the solution has a kink or a high-contrast jump, one global network strains across it. Domain-decomposition PINNs (cPINN / XPINN / FBPINN) assign a sub-network to each subdomain and blend them with an overlapping partition of unity, so the kink is produced by two networks handing off rather than one tanh straining: better conditioning and parallelism.",
     bodyEs:
       "Cuando la solución tiene un quiebre o un salto de alto contraste, una red global se tensiona a través de él. Las PINN por descomposición de dominio (cPINN / XPINN / FBPINN) asignan una sub-red a cada subdominio y las mezclan con una partición de la unidad solapada, así el quiebre lo producen dos redes que se entregan el relevo en vez de una tanh forzándose.",
     eq: String.raw`u_\theta(\mathbf{x})=\sum_{j} w_j(\mathbf{x})\,\mathcal{N}_{\theta_j}(\mathbf{x}),\qquad \sum_j w_j\equiv 1`,
@@ -109,9 +109,9 @@ const METHODS: Method[] = [
     en: "Operator learning (FNO / DeepONet)",
     es: "Aprendizaje de operadores (FNO / DeepONet)",
     bodyEn:
-      "A PINN solves ONE boundary-value problem. An operator learns the solution MAP itself — G: a(x) ↦ u(x) — over a whole family of inputs, so one trained network answers any new instance in a single forward pass, no retraining. The Fourier Neural Operator does this by learning a global convolution in Fourier space: FFT, keep low modes, multiply by learnable weights, inverse FFT.",
+      "A PINN solves ONE boundary-value problem. An operator learns the solution MAP itself: G: a(x) ↦ u(x): over a whole family of inputs, so one trained network answers any new instance in a single forward pass, no retraining. The Fourier Neural Operator does this by learning a global convolution in Fourier space: FFT, keep low modes, multiply by learnable weights, inverse FFT.",
     bodyEs:
-      "Una PINN resuelve UN problema de valores de frontera. Un operador aprende el MAPA solución mismo — G: a(x) ↦ u(x) — sobre toda una familia de entradas, así una red entrenada responde cualquier instancia nueva en una pasada, sin reentrenar. El Fourier Neural Operator lo hace aprendiendo una convolución global en el espacio de Fourier: FFT, retener modos bajos, multiplicar por pesos aprendidos, FFT inversa.",
+      "Una PINN resuelve UN problema de valores de frontera. Un operador aprende el MAPA solución mismo: G: a(x) ↦ u(x): sobre toda una familia de entradas, así una red entrenada responde cualquier instancia nueva en una pasada, sin reentrenar. El Fourier Neural Operator lo hace aprendiendo una convolución global en el espacio de Fourier: FFT, retener modos bajos, multiplicar por pesos aprendidos, FFT inversa.",
     eq: String.raw`(\mathcal{K}v)(\mathbf{x})=\mathcal{F}^{-1}\!\big(R_\phi\cdot\mathcal{F}v\big)(\mathbf{x});\qquad \mathcal{G}_\theta:\ a\mapsto u`,
     cases: "bench-darcy-operator (FNO, held-out test L2 5.6%)",
     ref: 8,
@@ -121,9 +121,9 @@ const METHODS: Method[] = [
     en: "Dynamical systems & chaos (the Lyapunov horizon)",
     es: "Sistemas dinámicos y caos (el horizonte de Lyapunov)",
     bodyEn:
-      "An ODE case has no spatial field: the network maps time t to the STATE (a double pendulum's angles). The physics loss is the ODE residual at collocation times, with the initial condition enforced softly (a t² hard-constraint kills the gradient near t=0 and fails). For a CHAOTIC system no fixed network can track the true trajectory past a finite horizon — so the honest metric is the leave-time, not a long-term match: PINN-Lab bakes a high-accuracy RK45 anchor beside the PINN and reports where they first separate.",
+      "An ODE case has no spatial field: the network maps time t to the STATE (a double pendulum's angles). The physics loss is the ODE residual at collocation times, with the initial condition enforced softly (a t² hard-constraint kills the gradient near t=0 and fails). For a CHAOTIC system no fixed network can track the true trajectory past a finite horizon: so the honest metric is the leave-time, not a long-term match: PINN-Lab bakes a high-accuracy RK45 anchor beside the PINN and reports where they first separate.",
     bodyEs:
-      "Un caso EDO no tiene campo espacial: la red mapea el tiempo t al ESTADO (los ángulos de un péndulo doble). La pérdida física es el residual de la EDO en puntos de colocación, con la condición inicial impuesta de forma blanda (una restricción dura t² anula el gradiente cerca de t=0 y falla). Para un sistema CAÓTICO ninguna red fija puede seguir la trayectoria verdadera más allá de un horizonte finito — así que la métrica honesta es el leave-time, no un calce a largo plazo: PINN-Lab hornea un ancla RK45 de alta precisión junto a la PINN y reporta dónde se separan.",
+      "Un caso EDO no tiene campo espacial: la red mapea el tiempo t al ESTADO (los ángulos de un péndulo doble). La pérdida física es el residual de la EDO en puntos de colocación, con la condición inicial impuesta de forma blanda (una restricción dura t² anula el gradiente cerca de t=0 y falla). Para un sistema CAÓTICO ninguna red fija puede seguir la trayectoria verdadera más allá de un horizonte finito: así que la métrica honesta es el leave-time, no un calce a largo plazo: PINN-Lab hornea un ancla RK45 de alta precisión junto a la PINN y reporta dónde se separan.",
     eq: String.raw`\mathcal{L}=\tfrac1N\sum_t\big(r_1^2+r_2^2\big),\quad r_i=\ddot{\theta}_i^{\,\theta}-f_i;\qquad t_{\text{leave}}\sim \tfrac{1}{\lambda_{\max}}\ln\tfrac{1}{\varepsilon_0}`,
     cases: "dyn-double-pendulum (chaotic; leave-time 1.99 s, RK45 anchor)",
     ref: 2,
@@ -133,9 +133,9 @@ const METHODS: Method[] = [
     en: "Hybrid data + physics: inverse problems & UQ (where PINNs win)",
     es: "Híbrido datos + física: problemas inversos y UQ (donde las PINN ganan)",
     bodyEn:
-      "PINNs shine where classical solvers struggle: recovering an unknown field or parameter from sparse, noisy observations by adding a data term to the PDE residual. Uncertainty is then essential — a deep ensemble (a cheap Bayesian approximation) returns a predictive mean AND a calibrated error bar that grows where data is sparse. PINN-Lab does both, including one inverse case on REAL measured data.",
+      "PINNs shine where classical solvers struggle: recovering an unknown field or parameter from sparse, noisy observations by adding a data term to the PDE residual. Uncertainty is then essential: a deep ensemble (a cheap Bayesian approximation) returns a predictive mean AND a calibrated error bar that grows where data is sparse. PINN-Lab does both, including one inverse case on REAL measured data.",
     bodyEs:
-      "Las PINN brillan donde los solvers clásicos sufren: recuperar un campo o parámetro desconocido desde observaciones dispersas y ruidosas, sumando un término de datos al residual de la EDP. La incertidumbre es esencial — un deep ensemble (aproximación bayesiana barata) da una media predictiva Y una barra de error calibrada que crece donde faltan datos. PINN-Lab hace ambos, incluido un caso inverso sobre datos REALES medidos.",
+      "Las PINN brillan donde los solvers clásicos sufren: recuperar un campo o parámetro desconocido desde observaciones dispersas y ruidosas, sumando un término de datos al residual de la EDP. La incertidumbre es esencial: un deep ensemble (aproximación bayesiana barata) da una media predictiva Y una barra de error calibrada que crece donde faltan datos. PINN-Lab hace ambos, incluido un caso inverso sobre datos REALES medidos.",
     eq: String.raw`\min_{\theta,\,\xi}\ \mathcal{L}_{\text{PDE}}(\theta;\xi)+\mathcal{L}_{\text{data}}(\theta);\qquad \bar u=\tfrac1K\!\sum_k u_{\theta_k},\ \sigma=\mathrm{std}_k\,u_{\theta_k}`,
     cases: "ind-heat2d-inverse, env-soil-heat-real (REAL), poll-source-uq-bpinn (UQ)",
     ref: 9,
@@ -177,18 +177,18 @@ const BEYOND: Record<string, { en: string; es: string; ref?: number }> = {
     ref: 1,
   },
   "causal-curriculum": {
-    en: "Frontier: causal weighting was the FIRST method to make PINNs succeed on chaotic/turbulent systems (Lorenz, Kuramoto-Sivashinsky, 2D NS) [Wang 2024] — but only over a finite PRE-LYAPUNOV window (Lorenz shown t∈[0,20]; KS exceeds 10% error after t≈0.8). PINN-Lab's candidate-novel contribution is exactly this discipline: a Lyapunov-horizon-aware LEAVE-TIME metric (see the double pendulum) so the app never overclaims beyond the predictability window.",
-    es: "Frontera: el pesado causal fue el PRIMER método en hacer que las PINN tengan éxito en sistemas caóticos/turbulentos (Lorenz, Kuramoto-Sivashinsky, NS 2D) [Wang 2024] — pero solo en una ventana finita PRE-LYAPUNOV (Lorenz mostrado t∈[0,20]; KS supera 10% de error tras t≈0.8). La contribución candidata-novel de PINN-Lab es exactamente esa disciplina: una métrica LEAVE-TIME consciente del horizonte de Lyapunov (ver el péndulo doble) para no sobre-prometer más allá de la ventana de predecibilidad.",
+    en: "Frontier: causal weighting was the FIRST method to make PINNs succeed on chaotic/turbulent systems (Lorenz, Kuramoto-Sivashinsky, 2D NS) [Wang 2024]: but only over a finite PRE-LYAPUNOV window (Lorenz shown t∈[0,20]; KS exceeds 10% error after t≈0.8). PINN-Lab's candidate-novel contribution is exactly this discipline: a Lyapunov-horizon-aware LEAVE-TIME metric (see the double pendulum) so the app never overclaims beyond the predictability window.",
+    es: "Frontera: el pesado causal fue el PRIMER método en hacer que las PINN tengan éxito en sistemas caóticos/turbulentos (Lorenz, Kuramoto-Sivashinsky, NS 2D) [Wang 2024]: pero solo en una ventana finita PRE-LYAPUNOV (Lorenz mostrado t∈[0,20]; KS supera 10% de error tras t≈0.8). La contribución candidata-novel de PINN-Lab es exactamente esa disciplina: una métrica LEAVE-TIME consciente del horizonte de Lyapunov (ver el péndulo doble) para no sobre-prometer más allá de la ventana de predecibilidad.",
     ref: 2,
   },
   "loss-weighting": {
-    en: "Frontier: Residual-Based Attention (RBA) — a gradient-LESS per-point weighting (EMA of the residuals) that improves on adversarial Self-Adaptive PINNs at O(N) cost, no min-max [Anagnostopoulos 2024]. Candidate for PINN-Lab: RBA per-point weights + causal temporal weights together. Honest limit: NTK is a diagnosis, not THE single root cause — an ill-conditioned loss landscape is also implicated [Krishnapriyan 2021]; RBA can saturate.",
-    es: "Frontera: Atención Basada en Residual (RBA) — pesado por punto SIN gradiente (EMA de los residuales) que mejora a las Self-Adaptive PINN adversariales a costo O(N), sin min-max [Anagnostopoulos 2024]. Candidato para PINN-Lab: pesos RBA por punto + pesos causales temporales juntos. Límite honesto: NTK es un diagnóstico, no LA única causa raíz — también influye un paisaje de pérdida mal condicionado [Krishnapriyan 2021]; RBA puede saturar.",
+    en: "Frontier: Residual-Based Attention (RBA): a gradient-LESS per-point weighting (EMA of the residuals) that improves on adversarial Self-Adaptive PINNs at O(N) cost, no min-max [Anagnostopoulos 2024]. Candidate for PINN-Lab: RBA per-point weights + causal temporal weights together. Honest limit: NTK is a diagnosis, not THE single root cause: an ill-conditioned loss landscape is also implicated [Krishnapriyan 2021]; RBA can saturate.",
+    es: "Frontera: Atención Basada en Residual (RBA): pesado por punto SIN gradiente (EMA de los residuales) que mejora a las Self-Adaptive PINN adversariales a costo O(N), sin min-max [Anagnostopoulos 2024]. Candidato para PINN-Lab: pesos RBA por punto + pesos causales temporales juntos. Límite honesto: NTK es un diagnóstico, no LA única causa raíz: también influye un paisaje de pérdida mal condicionado [Krishnapriyan 2021]; RBA puede saturar.",
     ref: 10,
   },
   architectures: {
-    en: "Frontier: PirateNets — a gated residual MLP whose skip connections fix the pathological initialization that makes DEEP PINNs train worse than shallow ones, unlocking depth [Wang 2024]. Also physics-informed Kolmogorov-Arnold networks (PIKANs), learnable-activation networks with promising accuracy/interpretability [Toscano 2024]. Candidate for PINN-Lab: PirateNets or cheb-PIKAN as a drop-in for the oscillatory/stiff cases. Honest limit: PIKANs are heavier and not universally better yet.",
-    es: "Frontera: PirateNets — un MLP residual con compuertas cuyas conexiones de salto arreglan la inicialización patológica que hace que las PINN PROFUNDAS entrenen peor que las someras, habilitando la profundidad [Wang 2024]. También las redes de Kolmogorov-Arnold físicas (PIKAN), con activaciones aprendibles y precisión/interpretabilidad prometedoras [Toscano 2024]. Candidato para PINN-Lab: PirateNets o cheb-PIKAN como reemplazo directo en los casos oscilatorios/rígidos. Límite honesto: las PIKAN son más pesadas y aún no universalmente mejores.",
+    en: "Frontier: PirateNets: a gated residual MLP whose skip connections fix the pathological initialization that makes DEEP PINNs train worse than shallow ones, unlocking depth [Wang 2024]. Also physics-informed Kolmogorov-Arnold networks (PIKANs), learnable-activation networks with promising accuracy/interpretability [Toscano 2024]. Candidate for PINN-Lab: PirateNets or cheb-PIKAN as a drop-in for the oscillatory/stiff cases. Honest limit: PIKANs are heavier and not universally better yet.",
+    es: "Frontera: PirateNets: un MLP residual con compuertas cuyas conexiones de salto arreglan la inicialización patológica que hace que las PINN PROFUNDAS entrenen peor que las someras, habilitando la profundidad [Wang 2024]. También las redes de Kolmogorov-Arnold físicas (PIKAN), con activaciones aprendibles y precisión/interpretabilidad prometedoras [Toscano 2024]. Candidato para PINN-Lab: PirateNets o cheb-PIKAN como reemplazo directo en los casos oscilatorios/rígidos. Límite honesto: las PIKAN son más pesadas y aún no universalmente mejores.",
     ref: 11,
   },
   "domain-decomposition": {
@@ -202,13 +202,13 @@ const BEYOND: Record<string, { en: string; es: string; ref?: number }> = {
     ref: 13,
   },
   "inverse-uq": {
-    en: "This is where PINNs genuinely win: the HYBRID data+physics PINN. Adding a data term is not a hack — it is a fix for an OPTIMIZATION pathology: the PDE-residual gradients dominate (NTK K_rr ≫ K_uu), so a pure-physics net can settle on a low-residual but WRONG solution among the infinitely many satisfying the PDE; the data term supplies the missing gradient that anchors it to the realizable one. The seminal example is Hidden Fluid Mechanics [Raissi 2020], which reconstructs full velocity+pressure fields from sparse noisy visualizations + the Navier-Stokes residual — geometry/BC-agnostic, robust to noise. PINN-Lab's heat2d-inverse (sparse T sensors), soil-heat-real (REAL data) and uq-bpinn are exactly this rung. Honest scope: this is data ASSIMILATION / reconstruction (it needs data; it does not predict from nothing, and extrapolation beyond the data is unreliable) — the strong claim that a hybrid PINN beats classical CFD on a general forward solve is NOT supported.",
-    es: "Aquí es donde las PINN sí ganan: la PINN HÍBRIDA datos+física. Sumar un término de datos no es un truco — arregla una patología de OPTIMIZACIÓN: los gradientes del residual EDP dominan (NTK K_rr ≫ K_uu), así que una red física-pura puede quedarse en una solución de bajo residual pero INCORRECTA entre las infinitas que satisfacen la EDP; el término de datos aporta el gradiente que la ancla a la realizable. El ejemplo seminal es Hidden Fluid Mechanics [Raissi 2020], que reconstruye campos completos de velocidad+presión desde visualizaciones dispersas y ruidosas + el residual de Navier-Stokes — agnóstico a geometría/BC, robusto al ruido. heat2d-inverse (sensores T dispersos), soil-heat-real (datos REALES) y uq-bpinn son justo este peldaño. Alcance honesto: es ASIMILACIÓN / reconstrucción de datos (necesita datos; no predice desde la nada, y extrapolar más allá de los datos no es confiable) — la afirmación fuerte de que una PINN híbrida gana a la CFD clásica en un problema directo general NO está respaldada.",
+    en: "This is where PINNs genuinely win: the HYBRID data+physics PINN. Adding a data term is not a hack: it is a fix for an OPTIMIZATION pathology: the PDE-residual gradients dominate (NTK K_rr ≫ K_uu), so a pure-physics net can settle on a low-residual but WRONG solution among the infinitely many satisfying the PDE; the data term supplies the missing gradient that anchors it to the realizable one. The seminal example is Hidden Fluid Mechanics [Raissi 2020], which reconstructs full velocity+pressure fields from sparse noisy visualizations + the Navier-Stokes residual: geometry/BC-agnostic, robust to noise. PINN-Lab's heat2d-inverse (sparse T sensors), soil-heat-real (REAL data) and uq-bpinn are exactly this rung. Honest scope: this is data ASSIMILATION / reconstruction (it needs data; it does not predict from nothing, and extrapolation beyond the data is unreliable): the strong claim that a hybrid PINN beats classical CFD on a general forward solve is NOT supported.",
+    es: "Aquí es donde las PINN sí ganan: la PINN HÍBRIDA datos+física. Sumar un término de datos no es un truco: arregla una patología de OPTIMIZACIÓN: los gradientes del residual EDP dominan (NTK K_rr ≫ K_uu), así que una red física-pura puede quedarse en una solución de bajo residual pero INCORRECTA entre las infinitas que satisfacen la EDP; el término de datos aporta el gradiente que la ancla a la realizable. El ejemplo seminal es Hidden Fluid Mechanics [Raissi 2020], que reconstruye campos completos de velocidad+presión desde visualizaciones dispersas y ruidosas + el residual de Navier-Stokes: agnóstico a geometría/BC, robusto al ruido. heat2d-inverse (sensores T dispersos), soil-heat-real (datos REALES) y uq-bpinn son justo este peldaño. Alcance honesto: es ASIMILACIÓN / reconstrucción de datos (necesita datos; no predice desde la nada, y extrapolar más allá de los datos no es confiable): la afirmación fuerte de que una PINN híbrida gana a la CFD clásica en un problema directo general NO está respaldada.",
     ref: 16,
   },
   "operator-learning": {
-    en: "Frontier: physics-informed DeepONet learns the solution OPERATOR (a whole family a↦u), and the physics penalty cuts its data demand — a trainable surrogate that answers a new instance in one forward pass [Wang 2021]. Candidate for PINN-Lab: a physics-informed DeepONet over the parametric families. Honest limit: operators are distribution-bounded — accuracy degrades out-of-distribution, so validate OOD against a classical reference (as the Darcy case does).",
-    es: "Frontera: el DeepONet físico aprende el OPERADOR solución (toda una familia a↦u), y la penalización física reduce su demanda de datos — un surrogate entrenable que responde una instancia nueva en una pasada [Wang 2021]. Candidato para PINN-Lab: un DeepONet físico sobre las familias paramétricas. Límite honesto: los operadores están acotados por la distribución — la precisión cae fuera de distribución, así que valida OOD contra una referencia clásica (como hace el caso Darcy).",
+    en: "Frontier: physics-informed DeepONet learns the solution OPERATOR (a whole family a↦u), and the physics penalty cuts its data demand: a trainable surrogate that answers a new instance in one forward pass [Wang 2021]. Candidate for PINN-Lab: a physics-informed DeepONet over the parametric families. Honest limit: operators are distribution-bounded: accuracy degrades out-of-distribution, so validate OOD against a classical reference (as the Darcy case does).",
+    es: "Frontera: el DeepONet físico aprende el OPERADOR solución (toda una familia a↦u), y la penalización física reduce su demanda de datos: un surrogate entrenable que responde una instancia nueva en una pasada [Wang 2021]. Candidato para PINN-Lab: un DeepONet físico sobre las familias paramétricas. Límite honesto: los operadores están acotados por la distribución: la precisión cae fuera de distribución, así que valida OOD contra una referencia clásica (como hace el caso Darcy).",
     ref: 19,
   },
 };
@@ -218,19 +218,19 @@ export function Methodology() {
   const es = lang === "es";
   return (
     <div className="prose" style={{ maxWidth: 1100 }}>
-      <h1>{es ? "Metodología — métodos SOTA" : "Methodology — SOTA methods"}</h1>
+      <h1>{es ? "Metodología: métodos SOTA": "Methodology: SOTA methods"}</h1>
       <p className="muted">
         {es
           ? "Cada familia de métodos del estado del arte se EJERCE en al menos un caso de PINN-Lab (no solo se nombra). Abajo: la idea, su formulación, los casos que la ejercitan y la referencia primaria revisada por pares. La receta base Adam→L-BFGS se usa en todos."
-          : "Each state-of-the-art method family is EXERCISED in at least one PINN-Lab case (not merely named). Below, each family is a ladder — the idea + its formulation, the cases that exercise it, the primary peer-reviewed reference, and the SOTA frontier + a candidate-novel proposal with its honest limit. The Adam→L-BFGS base recipe is used everywhere."}
+         : "Each state-of-the-art method family is EXERCISED in at least one PINN-Lab case (not merely named). Below, each family is a ladder: the idea + its formulation, the cases that exercise it, the primary peer-reviewed reference, and the SOTA frontier + a candidate-novel proposal with its honest limit. The Adam→L-BFGS base recipe is used everywhere."}
       </p>
 
       <section className="panel scope-panel" style={{ marginBottom: 16 }}>
-        <h3 style={{ marginTop: 0 }}>{es ? "Alcance honesto: dónde ganan (y no) las PINN" : "Honest scope: where PINNs win (and don't)"}</h3>
+        <h3 style={{ marginTop: 0 }}>{es ? "Alcance honesto: dónde ganan (y no) las PINN": "Honest scope: where PINNs win (and don't)"}</h3>
         <p style={{ fontSize: 13.5 }}>
           {es
-            ? "Para un problema DIRECTO bien planteado, un solver clásico FEM/FVM/espectral bien afinado suele ser más rápido y preciso — de hecho, la generación actual de PINN AÚN NO supera al método de elementos finitos [Grossmann 2024]; esto es el consenso, no un fallo. La frontera verificada confirma dos límites duros: las PINN física-pura FALLAN al endurecerse el régimen (error ~100% en convección-dominada [Krishnapriyan 2021]) y en geometrías CFD complejas (el escalón hacia atrás estanca). El arreglo práctico es la PINN HÍBRIDA datos+física (ver 'Problemas inversos y UQ' abajo): un término de datos ancla la optimización mal condicionada a la solución realizable — por eso las PINN ganan en ASIMILACIÓN/inversión (datos escasos/ruidosos, surrogates paramétricos, alta dimensión), no en el problema directo."
-            : "For a single well-posed FORWARD solve, a tuned classical FEM/FVM/spectral solver is usually faster and more accurate — in fact the current generation of PINNs has NOT beaten the finite element method [Grossmann 2024]; this is the consensus, not a failure. The verified frontier confirms two hard limits: pure-physics PINNs FAIL as the regime hardens (~100% error on convection-dominated problems [Krishnapriyan 2021]) and on complex CFD geometry (the backward-facing step stalls). The practical fix is the HYBRID data+physics PINN (see 'Inverse problems & UQ' below): a data term anchors the ill-conditioned optimization to the realizable solution — which is why PINNs earn their keep on ASSIMILATION/inverse (sparse/noisy data, parametric surrogates, high-dimensional / mesh-impractical domains), not on the forward solve."}{" "}
+            ? "Para un problema DIRECTO bien planteado, un solver clásico FEM/FVM/espectral bien afinado suele ser más rápido y preciso: de hecho, la generación actual de PINN AÚN NO supera al método de elementos finitos [Grossmann 2024]; esto es el consenso, no un fallo. La frontera verificada confirma dos límites duros: las PINN física-pura FALLAN al endurecerse el régimen (error ~100% en convección-dominada [Krishnapriyan 2021]) y en geometrías CFD complejas (el escalón hacia atrás estanca). El arreglo práctico es la PINN HÍBRIDA datos+física (ver 'Problemas inversos y UQ' abajo): un término de datos ancla la optimización mal condicionada a la solución realizable: por eso las PINN ganan en ASIMILACIÓN/inversión (datos escasos/ruidosos, surrogates paramétricos, alta dimensión), no en el problema directo."
+           : "For a single well-posed FORWARD solve, a tuned classical FEM/FVM/spectral solver is usually faster and more accurate: in fact the current generation of PINNs has NOT beaten the finite element method [Grossmann 2024]; this is the consensus, not a failure. The verified frontier confirms two hard limits: pure-physics PINNs FAIL as the regime hardens (~100% error on convection-dominated problems [Krishnapriyan 2021]) and on complex CFD geometry (the backward-facing step stalls). The practical fix is the HYBRID data+physics PINN (see 'Inverse problems & UQ' below): a data term anchors the ill-conditioned optimization to the realizable solution: which is why PINNs earn their keep on ASSIMILATION/inverse (sparse/noisy data, parametric surrogates, high-dimensional / mesh-impractical domains), not on the forward solve."}{" "}
           <a href="https://doi.org/10.48550/arXiv.2302.04107" target="_blank" rel="noreferrer noopener">Grossmann 2024</a>{" · "}
           <a href="https://doi.org/10.48550/arXiv.2109.01050" target="_blank" rel="noreferrer noopener">Krishnapriyan 2021</a>{" · "}
           <a href="https://doi.org/10.1126/science.aaw4741" target="_blank" rel="noreferrer noopener">HFM (Raissi 2020)</a>
@@ -239,19 +239,19 @@ export function Methodology() {
 
       {METHODS.map((m) => (
         <section key={m.group} className="panel" style={{ marginBottom: 14 }}>
-          <h3 style={{ color: "var(--accent)", marginTop: 0 }}>{es ? m.es : m.en}</h3>
-          <p style={{ fontSize: 14 }}>{es ? m.bodyEs : m.bodyEn}</p>
+          <h3 style={{ color: "var(--accent)", marginTop: 0 }}>{es ? m.es: m.en}</h3>
+          <p style={{ fontSize: 14 }}>{es ? m.bodyEs: m.bodyEn}</p>
           {m.eq && <Eq tex={m.eq} />}
           <div className="row" style={{ gap: 16, marginTop: 6 }}>
             <span style={{ fontSize: 13 }}>
-              <strong className="muted">{es ? "Casos: " : "Cases: "}</strong>
+              <strong className="muted">{es ? "Casos: ": "Cases: "}</strong>
               <span className="mono">{m.cases}</span>
             </span>
           </div>
           {BEYOND[m.group] && (
             <div className="beyond-note">
-              <strong>{es ? "→ Frontera SOTA + propuesta" : "→ SOTA frontier + proposal"}:</strong>{" "}
-              {es ? BEYOND[m.group]!.es : BEYOND[m.group]!.en}
+              <strong>{es ? "→ Frontera SOTA + propuesta": "→ SOTA frontier + proposal"}:</strong>{" "}
+              {es ? BEYOND[m.group]!.es: BEYOND[m.group]!.en}
               {BEYOND[m.group]!.ref != null && (
                 <>{" "}
                   <a href={`https://doi.org/${REFS[BEYOND[m.group]!.ref! - 1]?.doi}`} target="_blank" rel="noreferrer noopener">
@@ -270,7 +270,7 @@ export function Methodology() {
         </section>
       ))}
 
-      <h2>{es ? "Referencias" : "References"}</h2>
+      <h2>{es ? "Referencias": "References"}</h2>
       <ol style={{ fontSize: 12.5 }}>
         {REFS.map((r, i) => (
           <li key={i} style={{ margin: "5px 0" }}>

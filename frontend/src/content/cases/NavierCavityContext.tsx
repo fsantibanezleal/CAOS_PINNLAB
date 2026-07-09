@@ -1,12 +1,12 @@
 import { Equation, InlineMath } from "../../components/Equation";
 
 /** Deep bilingual Context for bench-navier-cavity (2D lid-driven cavity, steady incompressible Navier-Stokes,
- *  coupled u-v-p primitive-variable PINN, validated against the Ghia 1982 Re=100 centerlines — single benchmark). */
+ *  coupled u-v-p primitive-variable PINN, validated against the Ghia 1982 Re=100 centerlines: single benchmark). */
 export function NavierCavityContext({ lang }: { lang: "en" | "es" }) {
   const es = lang === "es";
   return es ? (
     <>
-      <h2>El problema: la cavidad con tapa móvil — Navier-Stokes incompresible estacionario</h2>
+      <h2>El problema: la cavidad con tapa móvil: Navier-Stokes incompresible estacionario</h2>
       <p>
         <strong>El problema.</strong> La <em>cavidad con tapa móvil</em> (lid-driven cavity) es el banco de pruebas
         canónico de la dinámica de fluidos incompresible: un cuadrado de fluido <InlineMath tex={String.raw`(0,1)^2`} />
@@ -21,7 +21,7 @@ export function NavierCavityContext({ lang }: { lang: "en" | "es" }) {
         Aquí lo resolvemos con un <strong>PINN de variables primitivas</strong> acoplado: una sola red predice las tres
         incógnitas <InlineMath tex={String.raw`(u,v,p)`} /> a la vez, y la pérdida impone los <em>tres</em> residuos de
         Navier-Stokes más todas las condiciones de borde. Lo validamos contra el <strong>benchmark de Ghia, Ghia y Shin
-        (1982)</strong> a <InlineMath tex={String.raw`\mathrm{Re}=100`} /> — los perfiles de velocidad sobre las líneas
+        (1982)</strong> a <InlineMath tex={String.raw`\mathrm{Re}=100`} />: los perfiles de velocidad sobre las líneas
         centrales que toda solución de cavidad debe reproducir.
       </p>
 
@@ -74,12 +74,12 @@ u_x + v_y &= 0,
       <ul>
         <li><strong>Salidas acopladas:</strong> una sola FNN <InlineMath tex={String.raw`\mathcal N_\theta(x,y)\to(u,v,p)`} /> aprende los tres campos a la vez; la diferenciación automática entrega <InlineMath tex={String.raw`u_x,v_y,p_x,\dots`} /> para armar los residuos.</li>
         <li><strong>Tapa regularizada:</strong> el perfil <InlineMath tex={String.raw`16\,x^2(1-x)^2`} /> se anula con derivada nula en las esquinas, eliminando la discontinuidad <InlineMath tex={String.raw`u=1`} /> vs <InlineMath tex={String.raw`u=0`} /> que de otro modo arruinaría la convergencia.</li>
-        <li><strong>Pesos de pérdida (BC y gauge x10):</strong> las condiciones de borde y el calibre de presión se sobre-ponderan <InlineMath tex={String.raw`\lambda=10`} /> respecto a los residuos interiores, para que la red no los ignore — el truco práctico clave en PINNs multi-salida.</li>
+        <li><strong>Pesos de pérdida (BC y gauge x10):</strong> las condiciones de borde y el calibre de presión se sobre-ponderan <InlineMath tex={String.raw`\lambda=10`} /> respecto a los residuos interiores, para que la red no los ignore: el truco práctico clave en PINNs multi-salida.</li>
         <li><strong>Pulido L-BFGS:</strong> tras Adam, un paso de L-BFGS afina el mínimo.</li>
       </ul>
       <p>
         Cabe ser <strong>honesto</strong> sobre el techo de precisión: un PINN suave de variables primitivas en CPU
-        alcanza un error relativo de unos pocos por ciento frente a Ghia — competente y cualitativamente correcto, pero
+        alcanza un error relativo de unos pocos por ciento frente a Ghia: competente y cualitativamente correcto, pero
         no de precisión espectral. Formulaciones más fuertes (función de corriente-vorticidad, restricciones duras de
         incompresibilidad, o una pasada en GPU) reducen ese error; se <em>citan</em> como horizonte, no se reclaman aquí.
       </p>
@@ -92,14 +92,14 @@ u_x + v_y &= 0,
         experimental ni una referencia de fidelidad espectral.
       </p>
       <p>
-        <strong>Fuera de alcance — y por qué este caso es de variante única.</strong> Sería tentador barrer el número de
+        <strong>Fuera de alcance: y por qué este caso es de variante única.</strong> Sería tentador barrer el número de
         Reynolds como si fuera un parámetro de red (al estilo de los casos paramétricos del catálogo). No se hace, y la
         razón es de <em>honestidad</em>: la cavidad <strong>no tiene solución analítica para ningún
         <InlineMath tex={String.raw`\mathrm{Re}`} /></strong>, así que no existe un ancla en forma cerrada que pueda
         probarse por sustitución para toda una familia. La única referencia confiable es la tabla de Ghia, definida en un
         conjunto <em>discreto</em> de Reynolds (100, 400, 1000, …), y cada Reynolds más alto requiere su propia red y se
         vuelve marcadamente más difícil de entrenar en CPU. Inventar un barrido continuo de Reynolds sería fabricar
-        regímenes sin ancla verificable — exactamente el modo de fallo "de juguete" que evitamos. Por eso este caso se
+        regímenes sin ancla verificable: exactamente el modo de fallo "de juguete" que evitamos. Por eso este caso se
         publica como un <strong>benchmark único, riguroso, a <InlineMath tex={String.raw`\mathrm{Re}=100`} /></strong>.
         También queda fuera: turbulencia (3D / Reynolds altos), flujo transitorio (este es estacionario), y geometrías
         distintas del cuadrado.
@@ -124,15 +124,15 @@ u_x + v_y &= 0,
         <InlineMath tex={String.raw`v`} /> (sube por la pared derecha, baja por la izquierda) y la presión
         <InlineMath tex={String.raw`p`} /> (núcleo de baja presión = centro del vórtice). Pasa el cursor para leer el
         valor exacto en cualquier punto. Usa el <strong>corte de línea</strong> sobre <InlineMath tex={String.raw`x=0.5`} />
-        para ver el perfil <InlineMath tex={String.raw`u(0.5,y)`} /> en forma de S — el signo cambia donde la corriente
-        de retorno se cruza con el flujo arrastrado por la tapa — y compáralo mentalmente con la curva de Ghia. Como es
+        para ver el perfil <InlineMath tex={String.raw`u(0.5,y)`} /> en forma de S: el signo cambia donde la corriente
+        de retorno se cruza con el flujo arrastrado por la tapa: y compáralo mentalmente con la curva de Ghia. Como es
         un benchmark de parámetro fijo, el tab <strong>Live</strong> re-evalúa la red entrenada (la misma física a
         <InlineMath tex={String.raw`\mathrm{Re}=100`} />), sin deslizador de parámetro.
       </p>
     </>
-  ) : (
+  ): (
     <>
-      <h2>The problem: the lid-driven cavity — steady incompressible Navier-Stokes</h2>
+      <h2>The problem: the lid-driven cavity: steady incompressible Navier-Stokes</h2>
       <p>
         <strong>The problem.</strong> The <em>lid-driven cavity</em> is the canonical test bed of incompressible fluid
         dynamics: a square of fluid <InlineMath tex={String.raw`(0,1)^2`} /> whose three walls are fixed and whose
@@ -146,7 +146,7 @@ u_x + v_y &= 0,
         Here we solve it with a coupled <strong>primitive-variable PINN</strong>: a single network predicts the three
         unknowns <InlineMath tex={String.raw`(u,v,p)`} /> at once, and the loss enforces <em>all three</em> Navier-Stokes
         residuals plus every boundary condition. We validate against the <strong>Ghia, Ghia &amp; Shin (1982)</strong>
-        benchmark at <InlineMath tex={String.raw`\mathrm{Re}=100`} /> — the centerline velocity profiles that any cavity
+        benchmark at <InlineMath tex={String.raw`\mathrm{Re}=100`} />: the centerline velocity profiles that any cavity
         solution must reproduce.
       </p>
 
@@ -175,7 +175,7 @@ u_x + v_y &= 0,
         on <InlineMath tex={String.raw`(0,1)^2`} />. The first two are the momentum balance (advection
         <InlineMath tex={String.raw`(\mathbf{u}\cdot\nabla)\mathbf{u}`} /> = pressure gradient + viscous diffusion); the
         third, <strong>continuity</strong> <InlineMath tex={String.raw`\nabla\cdot\mathbf{u}=0`} />, is what makes the
-        problem truly coupled: the pressure <InlineMath tex={String.raw`p`} /> has no equation of its own — it acts as the
+        problem truly coupled: the pressure <InlineMath tex={String.raw`p`} /> has no equation of its own: it acts as the
         <em> Lagrange multiplier</em> that enforces zero divergence. The boundary conditions are
       </p>
       <Equation tex={String.raw`\mathbf{u}\big|_{y=1}=\big(16\,x^2(1-x)^2,\,0\big),\qquad \mathbf{u}\big|_{\text{other walls}}=\mathbf 0,\qquad p(0,0)=0.`} />
@@ -197,12 +197,12 @@ u_x + v_y &= 0,
       <ul>
         <li><strong>Coupled outputs:</strong> a single FNN <InlineMath tex={String.raw`\mathcal N_\theta(x,y)\to(u,v,p)`} /> learns all three fields at once; automatic differentiation supplies <InlineMath tex={String.raw`u_x,v_y,p_x,\dots`} /> to assemble the residuals.</li>
         <li><strong>Regularized lid:</strong> the profile <InlineMath tex={String.raw`16\,x^2(1-x)^2`} /> vanishes with zero derivative at the corners, removing the <InlineMath tex={String.raw`u=1`} /> vs <InlineMath tex={String.raw`u=0`} /> discontinuity that would otherwise wreck convergence.</li>
-        <li><strong>Loss weighting (BC and gauge x10):</strong> the boundary conditions and the pressure gauge are up-weighted <InlineMath tex={String.raw`\lambda=10`} /> relative to the interior residuals, so the network does not ignore them — the key practical trick in multi-output PINNs.</li>
+        <li><strong>Loss weighting (BC and gauge x10):</strong> the boundary conditions and the pressure gauge are up-weighted <InlineMath tex={String.raw`\lambda=10`} /> relative to the interior residuals, so the network does not ignore them: the key practical trick in multi-output PINNs.</li>
         <li><strong>L-BFGS polish:</strong> after Adam, an L-BFGS step sharpens the minimum.</li>
       </ul>
       <p>
         It is worth being <strong>honest</strong> about the accuracy ceiling: a soft primitive-variable PINN on CPU
-        reaches a relative error of a few percent against Ghia — competent and qualitatively correct, but not of spectral
+        reaches a relative error of a few percent against Ghia: competent and qualitatively correct, but not of spectral
         accuracy. Stronger formulations (stream-function-vorticity, hard incompressibility constraints, or a GPU pass)
         lower that error; they are <em>cited</em> as the horizon, not claimed here.
       </p>
@@ -215,14 +215,14 @@ u_x + v_y &= 0,
         data nor a spectral-fidelity reference.
       </p>
       <p>
-        <strong>Out of scope — and why this case is single-variant.</strong> It would be tempting to sweep the Reynolds
+        <strong>Out of scope: and why this case is single-variant.</strong> It would be tempting to sweep the Reynolds
         number as if it were a network parameter (in the style of the catalogue's parametric cases). We do not, and the
         reason is one of <em>honesty</em>: the cavity <strong>has no analytic solution for any
         <InlineMath tex={String.raw`\mathrm{Re}`} /></strong>, so there is no closed-form anchor that can be proven by
         substitution for an entire family. The only reliable reference is the Ghia table, defined on a <em>discrete</em>
         set of Reynolds numbers (100, 400, 1000, …), and each higher Reynolds needs its own network and becomes markedly
         harder to train on CPU. Inventing a continuous Reynolds sweep would be fabricating regimes with no verifiable
-        anchor — exactly the "toy" failure mode we avoid. That is why this case ships as a <strong>single, rigorous
+        anchor: exactly the "toy" failure mode we avoid. That is why this case ships as a <strong>single, rigorous
         benchmark at <InlineMath tex={String.raw`\mathrm{Re}=100`} /></strong>. Also out of scope: turbulence (3D / high
         Reynolds), transient flow (this is steady), and geometries other than the square.
       </p>
@@ -245,7 +245,7 @@ u_x + v_y &= 0,
         <InlineMath tex={String.raw`v`} /> (rising along the right wall, falling on the left) and pressure
         <InlineMath tex={String.raw`p`} /> (low-pressure core = vortex center). Hover to read the exact value at any point.
         Use the <strong>line-cut</strong> at <InlineMath tex={String.raw`x=0.5`} /> to see the S-shaped profile
-        <InlineMath tex={String.raw`u(0.5,y)`} /> — the sign changes where the return flow meets the lid-driven stream —
+        <InlineMath tex={String.raw`u(0.5,y)`} />: the sign changes where the return flow meets the lid-driven stream: 
         and compare it mentally with the Ghia curve. Since it is a fixed-parameter benchmark, the <strong>Live</strong>
         tab re-evaluates the trained network (the same physics at <InlineMath tex={String.raw`\mathrm{Re}=100`} />), with
         no parameter slider.

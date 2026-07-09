@@ -1,7 +1,7 @@
 import { useEffect, useRef } from "react";
 
 /** The animated double-pendulum linkage. Draws, at the current frame: the RK45 reference linkage (solid) with the
- *  lower bob's traced path, overlaid by the PINN linkage (dashed ghost) — which turns red once the trajectory has
+ *  lower bob's traced path, overlaid by the PINN linkage (dashed ghost): which turns red once the trajectory has
  *  passed the leave-time, making the chaotic divergence literal. Angles are measured from the downward vertical:
  *  a bob at angle θ sits at (ℓ sinθ, ℓ cosθ) with y pointing down. */
 export function PendulumCanvas({
@@ -58,7 +58,7 @@ export function PendulumCanvas({
       ctx.strokeStyle = color;
       ctx.fillStyle = color;
       ctx.lineWidth = w;
-      ctx.setLineDash(dashed ? [5, 4] : []);
+      ctx.setLineDash(dashed ? [5, 4]: []);
       ctx.beginPath();
       ctx.moveTo(cx, cy);
       ctx.lineTo(p1[0], p1[1]);
@@ -74,9 +74,9 @@ export function PendulumCanvas({
 
     // RK45 reference (solid, accent)
     drawLinkage(th1Ref[f], th2Ref[f], "#4ea1ff", false, 3, 6);
-    // PINN ghost (dashed) — red once it has left the anchor
+    // PINN ghost (dashed): red once it has left the anchor
     const left = f >= leaveIdx;
-    drawLinkage(th1Pinn[f], th2Pinn[f], left ? "#ff5d5d" : "rgba(120,220,170,0.85)", true, 2, 4.5);
+    drawLinkage(th1Pinn[f], th2Pinn[f], left ? "#ff5d5d": "rgba(120,220,170,0.85)", true, 2, 4.5);
 
     // pivot
     ctx.fillStyle = "var(--muted)";

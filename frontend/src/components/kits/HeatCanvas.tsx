@@ -4,7 +4,7 @@ import { fieldRange, viridis } from "../../lib/colormap";
 
 /** A reusable viridis heatmap canvas. `field[iH][iV]` with iH on the horizontal axis and larger iV drawn
  *  at the TOP (math convention, same as FieldView). Optional horizontal cursor at `vCursor` (0..1 from the
- *  bottom) and click-to-seek along the vertical axis — used to make the x–t carpet a seek-bar. A fixed
+ *  bottom) and click-to-seek along the vertical axis: used to make the x-t carpet a seek-bar. A fixed
  *  `range` keeps the color scale stable across animation frames (no per-frame flicker). */
 export function HeatCanvas({
   field,
@@ -58,7 +58,7 @@ export function HeatCanvas({
       <canvas
         ref={ref}
         className="field-canvas"
-        style={{ aspectRatio: `${nH} / ${nV || 1}`, cursor: onSeekV ? "pointer" : "default" }}
+        style={{ aspectRatio: `${nH} / ${nV || 1}`, cursor: onSeekV ? "pointer": "default" }}
       />
       {vCursor != null && <div className="carpet-cursor" style={{ top: `${(1 - vCursor) * 100}%` }} />}
     </div>

@@ -1,1 +1,182 @@
-{"schema":"pinnlab.manifest/v2","case_id":"poll-ocean-transport","category":"pollution-environmental","title":"Ocean pollutant transport — 2D advection-diffusion PINN (time-scrubber)","governing_equations":"c_t + \\mathbf{v}\\cdot\\nabla c = D\\nabla^2 c,\\ \\mathbf{v}=(0.45,0.35),\\ D=0.01,\\ c^*=\\tfrac{s_0^2}{s_0^2+2Dt}\\,e^{-\\|\\mathbf{x}-\\mathbf{x}_0-\\mathbf{v}t\\|^2/(2(s_0^2+2Dt))}","method":"advection-diffusion","real_or_synthetic":"synthetic-illustrative","expected_band":"a Gaussian patch drifting with the current and spreading by diffusion; relative-L2 vs exact < 1e-2","validation_anchor":"analytic","inputs":["x","y","t"],"outputs":["c"],"field_axes":["x","y"],"param_specs":[{"key":"t","label_en":"Time t","label_es":"Tiempo t","default":0.5,"min":0.0,"max":1.0,"step":0.02,"unit":""}],"engine":{"package":"pinnlab","version":"0.07.000","framework":"deepxde"},"seed":42,"trace_schema":"pinnlab.field/v1","onnx":{"path":"poll-ocean-transport.onnx","bytes":55867,"parity_max_abs":4.77e-07,"opset":18,"input_dim":3},"lane":"live","gate":{"lane":"live","onnx_bytes":55867,"infer_ms":2.28,"trace_bytes":52918,"reasons":[]},"flags":[],"inverse":{},"run_ms":1387505.43,"variants":[{"id":"t00","label_en":"t=0","label_es":"t=0","note_en":"Release (t=0) — the patch at its source, compact and intense.","note_es":"Vertido (t=0) — el parche en su origen, compacto e intenso.","params":{"t":0.0},"trace":{"path":"poll-ocean-transport/t00.json","bytes":48056},"metrics":{"onnx_parity_max_abs":4.77e-07,"validation_anchor":"analytic","l2_relative":0.0006,"max_abs_error":0.000426}},{"id":"t02","label_en":"t=0.2","label_es":"t=0.2","note_en":"t=0.2 — drifting with the current, starting to spread.","note_es":"t=0.2 — derivando con la corriente, empezando a esparcirse.","params":{"t":0.2},"trace":{"path":"poll-ocean-transport/t02.json","bytes":51001},"metrics":{"onnx_parity_max_abs":4.77e-07,"validation_anchor":"analytic","l2_relative":0.000944,"max_abs_error":0.00054}},{"id":"t04","label_en":"t=0.4","label_es":"t=0.4","note_en":"t=0.4 — clearly advected and broader.","note_es":"t=0.4 — claramente advectado y más ancho.","params":{"t":0.4},"trace":{"path":"poll-ocean-transport/t04.json","bytes":51935},"metrics":{"onnx_parity_max_abs":4.77e-07,"validation_anchor":"analytic","l2_relative":0.001086,"max_abs_error":0.000381}},{"id":"t06","label_en":"t=0.6","label_es":"t=0.6","note_en":"t=0.6 — past the domain center, diluting.","note_es":"t=0.6 — pasado el centro del dominio, diluyéndose.","params":{"t":0.6},"trace":{"path":"poll-ocean-transport/t06.json","bytes":52489},"metrics":{"onnx_parity_max_abs":4.77e-07,"validation_anchor":"analytic","l2_relative":0.00118,"max_abs_error":0.000404}},{"id":"t08","label_en":"t=0.8","label_es":"t=0.8","note_en":"t=0.8 — broad and faint, nearing the far corner.","note_es":"t=0.8 — ancho y tenue, cerca de la esquina lejana.","params":{"t":0.8},"trace":{"path":"poll-ocean-transport/t08.json","bytes":52560},"metrics":{"onnx_parity_max_abs":4.77e-07,"validation_anchor":"analytic","l2_relative":0.001291,"max_abs_error":0.0005}},{"id":"t10","label_en":"t=1","label_es":"t=1","note_en":"t=1.0 — maximally spread and diluted.","note_es":"t=1.0 — máxima dispersión y dilución.","params":{"t":1.0},"trace":{"path":"poll-ocean-transport/t10.json","bytes":52918},"metrics":{"onnx_parity_max_abs":4.77e-07,"validation_anchor":"analytic","l2_relative":0.001868,"max_abs_error":0.001089}}]}
+{
+ "schema": "pinnlab.manifest/v2",
+ "case_id": "poll-ocean-transport",
+ "category": "pollution-environmental",
+ "title": "Ocean pollutant transport: 2D advection-diffusion PINN (time-scrubber)",
+ "governing_equations": "c_t + \\mathbf{v}\\cdot\\nabla c = D\\nabla^2 c,\\ \\mathbf{v}=(0.45,0.35),\\ D=0.01,\\ c^*=\\tfrac{s_0^2}{s_0^2+2Dt}\\,e^{-\\|\\mathbf{x}-\\mathbf{x}_0-\\mathbf{v}t\\|^2/(2(s_0^2+2Dt))}",
+ "method": "advection-diffusion",
+ "real_or_synthetic": "synthetic-illustrative",
+ "expected_band": "a Gaussian patch drifting with the current and spreading by diffusion; relative-L2 vs exact < 1e-2",
+ "validation_anchor": "analytic",
+ "inputs": [
+  "x",
+  "y",
+  "t"
+ ],
+ "outputs": [
+  "c"
+ ],
+ "field_axes": [
+  "x",
+  "y"
+ ],
+ "param_specs": [
+  {
+   "key": "t",
+   "label_en": "Time t",
+   "label_es": "Tiempo t",
+   "default": 0.5,
+   "min": 0.0,
+   "max": 1.0,
+   "step": 0.02,
+   "unit": ""
+  }
+ ],
+ "engine": {
+  "package": "pinnlab",
+  "version": "0.07.000",
+  "framework": "deepxde"
+ },
+ "seed": 42,
+ "trace_schema": "pinnlab.field/v1",
+ "onnx": {
+  "path": "poll-ocean-transport.onnx",
+  "bytes": 55867,
+  "parity_max_abs": 4.77e-07,
+  "opset": 18,
+  "input_dim": 3
+ },
+ "lane": "live",
+ "gate": {
+  "lane": "live",
+  "onnx_bytes": 55867,
+  "infer_ms": 2.28,
+  "trace_bytes": 52918,
+  "reasons": []
+ },
+ "flags": [],
+ "inverse": {},
+ "run_ms": 1387505.43,
+ "variants": [
+  {
+   "id": "t00",
+   "label_en": "t=0",
+   "label_es": "t=0",
+   "note_en": "Release (t=0): the patch at its source, compact and intense.",
+   "note_es": "Vertido (t=0): el parche en su origen, compacto e intenso.",
+   "params": {
+    "t": 0.0
+   },
+   "trace": {
+    "path": "poll-ocean-transport/t00.json",
+    "bytes": 48056
+   },
+   "metrics": {
+    "onnx_parity_max_abs": 4.77e-07,
+    "validation_anchor": "analytic",
+    "l2_relative": 0.0006,
+    "max_abs_error": 0.000426
+   }
+  },
+  {
+   "id": "t02",
+   "label_en": "t=0.2",
+   "label_es": "t=0.2",
+   "note_en": "t=0.2: drifting with the current, starting to spread.",
+   "note_es": "t=0.2: derivando con la corriente, empezando a esparcirse.",
+   "params": {
+    "t": 0.2
+   },
+   "trace": {
+    "path": "poll-ocean-transport/t02.json",
+    "bytes": 51001
+   },
+   "metrics": {
+    "onnx_parity_max_abs": 4.77e-07,
+    "validation_anchor": "analytic",
+    "l2_relative": 0.000944,
+    "max_abs_error": 0.00054
+   }
+  },
+  {
+   "id": "t04",
+   "label_en": "t=0.4",
+   "label_es": "t=0.4",
+   "note_en": "t=0.4: clearly advected and broader.",
+   "note_es": "t=0.4: claramente advectado y más ancho.",
+   "params": {
+    "t": 0.4
+   },
+   "trace": {
+    "path": "poll-ocean-transport/t04.json",
+    "bytes": 51935
+   },
+   "metrics": {
+    "onnx_parity_max_abs": 4.77e-07,
+    "validation_anchor": "analytic",
+    "l2_relative": 0.001086,
+    "max_abs_error": 0.000381
+   }
+  },
+  {
+   "id": "t06",
+   "label_en": "t=0.6",
+   "label_es": "t=0.6",
+   "note_en": "t=0.6: past the domain center, diluting.",
+   "note_es": "t=0.6: pasado el centro del dominio, diluyéndose.",
+   "params": {
+    "t": 0.6
+   },
+   "trace": {
+    "path": "poll-ocean-transport/t06.json",
+    "bytes": 52489
+   },
+   "metrics": {
+    "onnx_parity_max_abs": 4.77e-07,
+    "validation_anchor": "analytic",
+    "l2_relative": 0.00118,
+    "max_abs_error": 0.000404
+   }
+  },
+  {
+   "id": "t08",
+   "label_en": "t=0.8",
+   "label_es": "t=0.8",
+   "note_en": "t=0.8: broad and faint, nearing the far corner.",
+   "note_es": "t=0.8: ancho y tenue, cerca de la esquina lejana.",
+   "params": {
+    "t": 0.8
+   },
+   "trace": {
+    "path": "poll-ocean-transport/t08.json",
+    "bytes": 52560
+   },
+   "metrics": {
+    "onnx_parity_max_abs": 4.77e-07,
+    "validation_anchor": "analytic",
+    "l2_relative": 0.001291,
+    "max_abs_error": 0.0005
+   }
+  },
+  {
+   "id": "t10",
+   "label_en": "t=1",
+   "label_es": "t=1",
+   "note_en": "t=1.0: maximally spread and diluted.",
+   "note_es": "t=1.0: máxima dispersión y dilución.",
+   "params": {
+    "t": 1.0
+   },
+   "trace": {
+    "path": "poll-ocean-transport/t10.json",
+    "bytes": 52918
+   },
+   "metrics": {
+    "onnx_parity_max_abs": 4.77e-07,
+    "validation_anchor": "analytic",
+    "l2_relative": 0.001868,
+    "max_abs_error": 0.001089
+   }
+  }
+ ]
+}

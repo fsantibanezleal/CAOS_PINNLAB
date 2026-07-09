@@ -1,19 +1,19 @@
 import { Equation, InlineMath } from "../../components/Equation";
 
-/** Deep bilingual Context for ctrl-zero-source — the control case, baked as a parametric
+/** Deep bilingual Context for ctrl-zero-source: the control case, baked as a parametric
  *  manufactured-solution (MMS) verification sweep that contains the degenerate zero field at a=0. */
 export function ZeroSourceContext({ lang }: { lang: "en" | "es" }) {
   const es = lang === "es";
   return es ? (
     <>
-      <h2>El problema: el caso de control — ¿el solver recupera una respuesta conocida?</h2>
+      <h2>El problema: el caso de control: ¿el solver recupera una respuesta conocida?</h2>
       <p>
         <strong>El problema.</strong> Todo solver de EDP necesita un <strong>caso de control</strong>: un problema
         cuya solución exacta conocemos de antemano, para medir el error real del método en lugar de confiar a ciegas
         en él. El control canónico es la ecuación de <strong>Poisson</strong> sobre el cuadrado unitario con borde
         cero, <InlineMath tex={String.raw`-\nabla^2 u = f`} /> en <InlineMath tex={String.raw`(0,1)^2`} />,
-        <InlineMath tex={String.raw`\,u|_{\partial\Omega}=0`} />. Su miembro degenerado —
-        <strong> fuente cero, campo cero</strong> (<InlineMath tex={String.raw`f\equiv0\Rightarrow u\equiv0`} />) — es
+        <InlineMath tex={String.raw`\,u|_{\partial\Omega}=0`} />. Su miembro degenerado: 
+        <strong> fuente cero, campo cero</strong> (<InlineMath tex={String.raw`f\equiv0\Rightarrow u\equiv0`} />): es
         la prueba de cordura mínima: el motor debe correr sin caer y devolver un campo plano en cero. Aquí lo
         extendemos a una <strong>familia paramétrica verificada</strong> por el <em>método de soluciones manufacturadas</em>
         (MMS): elegimos una solución exacta <InlineMath tex={String.raw`u^*`} />, derivamos la fuente
@@ -26,8 +26,8 @@ export function ZeroSourceContext({ lang }: { lang: "en" | "es" }) {
       <ul>
         <li><strong>Ejes del campo:</strong> espacio <InlineMath tex={String.raw`x\in[0,1]`} /> × <InlineMath tex={String.raw`y\in[0,1]`} />, grilla <InlineMath tex={String.raw`41\times41`} />.</li>
         <li><strong>Incógnita:</strong> el potencial <InlineMath tex={String.raw`u(x,y)`} /> que satisface Poisson con borde cero.</li>
-        <li><strong>Perilla de amplitud:</strong> <InlineMath tex={String.raw`a\in[0,1]`} /> — input de la red. En <InlineMath tex={String.raw`a=0`} /> recupera el <em>control degenerado</em> exacto (fuente y campo nulos); al crecer, "enciende" la solución manufacturada.</li>
-        <li><strong>Fuente impuesta:</strong> <InlineMath tex={String.raw`f(x,y;a)=-\nabla^2 u^*`} /> — derivada en forma cerrada de la solución elegida (abajo).</li>
+        <li><strong>Perilla de amplitud:</strong> <InlineMath tex={String.raw`a\in[0,1]`} />: input de la red. En <InlineMath tex={String.raw`a=0`} /> recupera el <em>control degenerado</em> exacto (fuente y campo nulos); al crecer, "enciende" la solución manufacturada.</li>
+        <li><strong>Fuente impuesta:</strong> <InlineMath tex={String.raw`f(x,y;a)=-\nabla^2 u^*`} />: derivada en forma cerrada de la solución elegida (abajo).</li>
         <li><strong>Borde:</strong> <InlineMath tex={String.raw`u=0`} /> en <InlineMath tex={String.raw`\partial\Omega`} />, impuesto de forma <strong>dura</strong> (exacta) para todo <InlineMath tex={String.raw`a`} />.</li>
       </ul>
 
@@ -54,7 +54,7 @@ export function ZeroSourceContext({ lang }: { lang: "en" | "es" }) {
 
       <h3>El método: restricción dura de borde, una sola red paramétrica</h3>
       <p>
-        El borde cero se hornea de forma <strong>exacta</strong> en el ansatz — no hay término de pérdida de borde que
+        El borde cero se hornea de forma <strong>exacta</strong> en el ansatz: no hay término de pérdida de borde que
         compita:
       </p>
       <Equation tex={String.raw`u_\theta(x,y;a)=\underbrace{x(1-x)\,y(1-y)}_{=\,0\ \text{en }\partial\Omega}\;\mathcal{N}_\theta(x,y,a).`} />
@@ -72,17 +72,17 @@ export function ZeroSourceContext({ lang }: { lang: "en" | "es" }) {
         de amplitud que contiene el control degenerado en <InlineMath tex={String.raw`a=0`} />. Es
         <em> sintético</em> por naturaleza: un caso de control no representa datos físicos, su trabajo es <strong>medir
         la corrección del pipeline</strong> contra una verdad exacta. <strong>Fuera de alcance:</strong> dominios no
-        cuadrados, bordes no homogéneos, coeficientes variables y fuentes no manufacturadas — todo eso vive en los casos
+        cuadrados, bordes no homogéneos, coeficientes variables y fuentes no manufacturadas: todo eso vive en los casos
         de física propiamente tales. La forma <InlineMath tex={String.raw`g`} /> es fija; solo se barre su amplitud, así
         que la variedad es de <em>magnitud</em> (incluyendo el cero exacto), no de geometría.
       </p>
 
       <h3>Qué muestra cada variante</h3>
       <p>
-        El barrido va de <InlineMath tex={String.raw`a=0`} /> (campo idénticamente cero — el control degenerado, un
+        El barrido va de <InlineMath tex={String.raw`a=0`} /> (campo idénticamente cero: el control degenerado, un
         heatmap plano) subiendo hasta <InlineMath tex={String.raw`a=1`} />, donde aparece la estructura de dos modos:
         un lóbulo central dominante (modo fundamental) con una ondulación más fina superpuesta (segundo modo). Cada
-        variante reporta su relative-L2 frente a la solución manufacturada exacta — el error <em>real</em> del solver
+        variante reporta su relative-L2 frente a la solución manufacturada exacta: el error <em>real</em> del solver
         en esa amplitud. Que el error se mantenga diminuto a lo largo de toda la familia (y que el campo sea
         exactamente plano en <InlineMath tex={String.raw`a=0`} />) es justo lo que un caso de control debe certificar.
       </p>
@@ -93,20 +93,20 @@ export function ZeroSourceContext({ lang }: { lang: "en" | "es" }) {
         en <InlineMath tex={String.raw`x`} /> e <InlineMath tex={String.raw`y`} /> deben trazar senos suaves anclados a
         cero en los bordes. En <strong>Live</strong>, arrastra el deslizador de amplitud
         <InlineMath tex={String.raw`a`} /> hacia <InlineMath tex={String.raw`0`} /> y verás el campo desvanecerse a
-        cero plano — el control degenerado emergiendo como límite de la familia, re-evaluado en tu navegador
+        cero plano: el control degenerado emergiendo como límite de la familia, re-evaluado en tu navegador
         (onnxruntime-web).
       </p>
     </>
-  ) : (
+  ): (
     <>
-      <h2>The problem: the control case — does the solver recover a known answer?</h2>
+      <h2>The problem: the control case: does the solver recover a known answer?</h2>
       <p>
         <strong>The problem.</strong> Every PDE solver needs a <strong>control case</strong>: a problem whose exact
         solution we know in advance, so we can measure the method's true error instead of trusting it blindly. The
         canonical control is the <strong>Poisson</strong> equation on the unit square with zero boundary,
         <InlineMath tex={String.raw`-\nabla^2 u = f`} /> on <InlineMath tex={String.raw`(0,1)^2`} />,
-        <InlineMath tex={String.raw`\,u|_{\partial\Omega}=0`} />. Its degenerate member —
-        <strong> zero source, zero field</strong> (<InlineMath tex={String.raw`f\equiv0\Rightarrow u\equiv0`} />) — is
+        <InlineMath tex={String.raw`\,u|_{\partial\Omega}=0`} />. Its degenerate member: 
+        <strong> zero source, zero field</strong> (<InlineMath tex={String.raw`f\equiv0\Rightarrow u\equiv0`} />): is
         the minimal sanity check: the engine must run without crashing and return a flat-zero field. Here we extend it
         into a <strong>verified parametric family</strong> via the <em>method of manufactured solutions</em> (MMS): we
         pick an exact solution <InlineMath tex={String.raw`u^*`} />, derive the source
@@ -119,8 +119,8 @@ export function ZeroSourceContext({ lang }: { lang: "en" | "es" }) {
       <ul>
         <li><strong>Field axes:</strong> space <InlineMath tex={String.raw`x\in[0,1]`} /> × <InlineMath tex={String.raw`y\in[0,1]`} />, a <InlineMath tex={String.raw`41\times41`} /> grid.</li>
         <li><strong>Unknown:</strong> the potential <InlineMath tex={String.raw`u(x,y)`} /> satisfying Poisson with zero boundary.</li>
-        <li><strong>Amplitude knob:</strong> <InlineMath tex={String.raw`a\in[0,1]`} /> — a network input. At <InlineMath tex={String.raw`a=0`} /> it recovers the exact <em>degenerate control</em> (null source and field); as it grows it "switches on" the manufactured solution.</li>
-        <li><strong>Imposed source:</strong> <InlineMath tex={String.raw`f(x,y;a)=-\nabla^2 u^*`} /> — the closed-form derivative of the chosen solution (below).</li>
+        <li><strong>Amplitude knob:</strong> <InlineMath tex={String.raw`a\in[0,1]`} />: a network input. At <InlineMath tex={String.raw`a=0`} /> it recovers the exact <em>degenerate control</em> (null source and field); as it grows it "switches on" the manufactured solution.</li>
+        <li><strong>Imposed source:</strong> <InlineMath tex={String.raw`f(x,y;a)=-\nabla^2 u^*`} />: the closed-form derivative of the chosen solution (below).</li>
         <li><strong>Boundary:</strong> <InlineMath tex={String.raw`u=0`} /> on <InlineMath tex={String.raw`\partial\Omega`} />, imposed as a <strong>hard</strong> (exact) constraint for every <InlineMath tex={String.raw`a`} />.</li>
       </ul>
 
@@ -147,7 +147,7 @@ export function ZeroSourceContext({ lang }: { lang: "en" | "es" }) {
 
       <h3>The method: hard boundary constraint, one parametric network</h3>
       <p>
-        The zero boundary is baked <strong>exactly</strong> into the ansatz — there is no competing boundary loss term:
+        The zero boundary is baked <strong>exactly</strong> into the ansatz: there is no competing boundary loss term:
       </p>
       <Equation tex={String.raw`u_\theta(x,y;a)=\underbrace{x(1-x)\,y(1-y)}_{=\,0\ \text{on }\partial\Omega}\;\mathcal{N}_\theta(x,y,a).`} />
       <p>
@@ -162,19 +162,19 @@ export function ZeroSourceContext({ lang }: { lang: "en" | "es" }) {
       <p>
         <strong>Modeled:</strong> an MMS verification of the Poisson operator with a hard zero boundary, over an
         amplitude family that contains the degenerate control at <InlineMath tex={String.raw`a=0`} />. It is
-        <em> synthetic</em> by nature: a control case represents no physical data — its job is to <strong>measure the
+        <em> synthetic</em> by nature: a control case represents no physical data: its job is to <strong>measure the
         pipeline's correctness</strong> against an exact truth. <strong>Out of scope:</strong> non-square domains,
-        inhomogeneous boundaries, variable coefficients, and non-manufactured sources — those live in the physics cases
+        inhomogeneous boundaries, variable coefficients, and non-manufactured sources: those live in the physics cases
         proper. The shape <InlineMath tex={String.raw`g`} /> is fixed; only its amplitude is swept, so the variety is in
         <em> magnitude</em> (including the exact zero), not geometry.
       </p>
 
       <h3>What each variant shows</h3>
       <p>
-        The sweep runs from <InlineMath tex={String.raw`a=0`} /> (an identically-zero field — the degenerate control, a
+        The sweep runs from <InlineMath tex={String.raw`a=0`} /> (an identically-zero field: the degenerate control, a
         flat heatmap) up to <InlineMath tex={String.raw`a=1`} />, where the two-mode structure appears: a dominant
         central lobe (the fundamental mode) with a finer ripple superimposed (the second mode). Each variant reports its
-        relative-L2 against the exact manufactured solution — the solver's <em>real</em> error at that amplitude. That
+        relative-L2 against the exact manufactured solution: the solver's <em>real</em> error at that amplitude. That
         the error stays tiny across the whole family (and that the field is exactly flat at
         <InlineMath tex={String.raw`a=0`} />) is precisely what a control case must certify.
       </p>
@@ -185,7 +185,7 @@ export function ZeroSourceContext({ lang }: { lang: "en" | "es" }) {
         <InlineMath tex={String.raw`x`} /> and <InlineMath tex={String.raw`y`} /> should trace smooth sines pinned to
         zero at the edges. In <strong>Live</strong>, drag the amplitude slider
         <InlineMath tex={String.raw`a`} /> toward <InlineMath tex={String.raw`0`} /> and watch the field fade to flat
-        zero — the degenerate control emerging as the limit of the family, re-evaluated in your browser
+        zero: the degenerate control emerging as the limit of the family, re-evaluated in your browser
         (onnxruntime-web).
       </p>
     </>

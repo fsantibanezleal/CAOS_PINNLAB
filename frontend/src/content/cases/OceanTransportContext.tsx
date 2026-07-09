@@ -5,7 +5,7 @@ export function OceanTransportContext({ lang }: { lang: "en" | "es" }) {
   const es = lang === "es";
   return es ? (
     <>
-      <h2>El problema: una mancha de contaminante que deriva y se dispersa — advección-difusión 2D</h2>
+      <h2>El problema: una mancha de contaminante que deriva y se dispersa: advección-difusión 2D</h2>
       <p>
         <strong>El problema.</strong> Se vierte un contaminante pasivo (plástico, hidrocarburo) en una zona costera. La
         corriente lo <em>arrastra</em> (advección) mientras la turbulencia de remolinos lo <em>dispersa</em> (difusión
@@ -13,22 +13,22 @@ export function OceanTransportContext({ lang }: { lang: "en" | "es" }) {
         gobierna la concentración <InlineMath tex={String.raw`c(x,y,t)`} />. Aquí el <strong>tiempo</strong> es el
         parámetro que se barre: una sola red aprende todo el historial <InlineMath tex={String.raw`c(x,y;t)`} />, y en
         el tab <strong>Live</strong> el deslizador de <InlineMath tex={String.raw`t`} /> actúa como un
-        <strong> scrubber temporal</strong> — ves la mancha derivar y diluirse cuadro a cuadro.
+        <strong> scrubber temporal</strong>: ves la mancha derivar y diluirse cuadro a cuadro.
       </p>
 
       <h3>Componentes y variables</h3>
       <ul>
         <li><strong>Dominio:</strong> mar <InlineMath tex={String.raw`(x,y)\in[0,1]^2`} /> × tiempo <InlineMath tex={String.raw`t\in[0,1]`} />, grilla del campo <InlineMath tex={String.raw`81\times81`} /> por instante.</li>
         <li><strong>Incógnita:</strong> la concentración <InlineMath tex={String.raw`c(x,y,t)`} /> del contaminante.</li>
-        <li><strong>Parámetro barrido:</strong> el <em>tiempo</em> <InlineMath tex={String.raw`t\in[0,1]`} /> — un input de la red; cada instante es un campo 2D distinto.</li>
-        <li><strong>Corriente:</strong> uniforme <InlineMath tex={String.raw`\mathbf{v}=(0.45,0.35)`} /> — arrastra el centro de la mancha.</li>
-        <li><strong>Difusividad de remolinos:</strong> <InlineMath tex={String.raw`D=0.01`} /> — fija cuán rápido se ensancha (Péclet <InlineMath tex={String.raw`\mathrm{Pe}=|\mathbf{v}|L/D\approx45`} />, advección-dominado).</li>
+        <li><strong>Parámetro barrido:</strong> el <em>tiempo</em> <InlineMath tex={String.raw`t\in[0,1]`} />: un input de la red; cada instante es un campo 2D distinto.</li>
+        <li><strong>Corriente:</strong> uniforme <InlineMath tex={String.raw`\mathbf{v}=(0.45,0.35)`} />: arrastra el centro de la mancha.</li>
+        <li><strong>Difusividad de remolinos:</strong> <InlineMath tex={String.raw`D=0.01`} />: fija cuán rápido se ensancha (Péclet <InlineMath tex={String.raw`\mathrm{Pe}=|\mathbf{v}|L/D\approx45`} />, advección-dominado).</li>
       </ul>
 
       <h3>Formalización</h3>
       <p>
         Para un vertido puntual gaussiano, la ecuación de advección-difusión tiene <strong>solución exacta</strong> (la
-        función de Green 2D trasladada por la corriente) — es nuestra <strong>ancla de validación</strong>, no una
+        función de Green 2D trasladada por la corriente): es nuestra <strong>ancla de validación</strong>, no una
         fuente manufacturada:
       </p>
       <Equation tex={String.raw`c^*(x,y,t)=\frac{s_0^2}{s_0^2+2Dt}\,\exp\!\Big(-\frac{(x-x_0-v_x t)^2+(y-y_0-v_y t)^2}{2\,(s_0^2+2Dt)}\Big).`} />
@@ -38,7 +38,7 @@ export function OceanTransportContext({ lang }: { lang: "en" | "es" }) {
         el <em>pico</em> decae como <InlineMath tex={String.raw`s_0^2/s^2`} /> porque la masa total se conserva. La PINN
         <InlineMath tex={String.raw`c_\theta(x,y,t)`} /> minimiza el residual de transporte en puntos de colocación, con
         la IC (el vertido) y las BC (<InlineMath tex={String.raw`c^*`} /> en el borde) impuestas de forma blanda y
-        ponderada — así la red aprende de verdad el campo interior y el L2 reportado es el error real del PINN.
+        ponderada: así la red aprende de verdad el campo interior y el L2 reportado es el error real del PINN.
       </p>
 
       <h3>Alcances y supuestos</h3>
@@ -67,16 +67,16 @@ export function OceanTransportContext({ lang }: { lang: "en" | "es" }) {
         navegador (onnxruntime-web).
       </p>
     </>
-  ) : (
+  ): (
     <>
-      <h2>The problem: a pollutant patch that drifts and disperses — 2D advection-diffusion</h2>
+      <h2>The problem: a pollutant patch that drifts and disperses: 2D advection-diffusion</h2>
       <p>
         <strong>The problem.</strong> A passive pollutant (plastic, oil) is released in a coastal zone. The current
         <em> carries</em> it (advection) while eddy turbulence <em>disperses</em> it (Fickian diffusion). The transport
         equation <InlineMath tex={String.raw`c_t + \mathbf{v}\cdot\nabla c = D\nabla^2 c`} /> governs the concentration
         <InlineMath tex={String.raw`c(x,y,t)`} />. Here <strong>time</strong> is the swept parameter: a single network
         learns the whole history <InlineMath tex={String.raw`c(x,y;t)`} />, and in the <strong>Live</strong> tab the
-        <InlineMath tex={String.raw`t`} /> slider acts as a <strong>time scrubber</strong> — you watch the patch drift
+        <InlineMath tex={String.raw`t`} /> slider acts as a <strong>time scrubber</strong>: you watch the patch drift
         and dilute frame by frame.
       </p>
 
@@ -84,15 +84,15 @@ export function OceanTransportContext({ lang }: { lang: "en" | "es" }) {
       <ul>
         <li><strong>Domain:</strong> sea <InlineMath tex={String.raw`(x,y)\in[0,1]^2`} /> × time <InlineMath tex={String.raw`t\in[0,1]`} />, an <InlineMath tex={String.raw`81\times81`} /> field grid per instant.</li>
         <li><strong>Unknown:</strong> the pollutant concentration <InlineMath tex={String.raw`c(x,y,t)`} />.</li>
-        <li><strong>Swept parameter:</strong> <em>time</em> <InlineMath tex={String.raw`t\in[0,1]`} /> — a network input; each instant is a different 2D field.</li>
-        <li><strong>Current:</strong> uniform <InlineMath tex={String.raw`\mathbf{v}=(0.45,0.35)`} /> — carries the patch center.</li>
-        <li><strong>Eddy diffusivity:</strong> <InlineMath tex={String.raw`D=0.01`} /> — sets how fast it widens (Péclet <InlineMath tex={String.raw`\mathrm{Pe}=|\mathbf{v}|L/D\approx45`} />, advection-dominated).</li>
+        <li><strong>Swept parameter:</strong> <em>time</em> <InlineMath tex={String.raw`t\in[0,1]`} />: a network input; each instant is a different 2D field.</li>
+        <li><strong>Current:</strong> uniform <InlineMath tex={String.raw`\mathbf{v}=(0.45,0.35)`} />: carries the patch center.</li>
+        <li><strong>Eddy diffusivity:</strong> <InlineMath tex={String.raw`D=0.01`} />: sets how fast it widens (Péclet <InlineMath tex={String.raw`\mathrm{Pe}=|\mathbf{v}|L/D\approx45`} />, advection-dominated).</li>
       </ul>
 
       <h3>Formalization</h3>
       <p>
         For a Gaussian point release, the advection-diffusion equation has an <strong>exact solution</strong> (the 2D
-        Green's function translated by the current) — it is our <strong>validation anchor</strong>, not a manufactured
+        Green's function translated by the current): it is our <strong>validation anchor</strong>, not a manufactured
         source:
       </p>
       <Equation tex={String.raw`c^*(x,y,t)=\frac{s_0^2}{s_0^2+2Dt}\,\exp\!\Big(-\frac{(x-x_0-v_x t)^2+(y-y_0-v_y t)^2}{2\,(s_0^2+2Dt)}\Big).`} />
@@ -101,7 +101,7 @@ export function OceanTransportContext({ lang }: { lang: "en" | "es" }) {
         <em> variance</em> grows linearly (<InlineMath tex={String.raw`s^2=s_0^2+2Dt`} />, the diffusion signature) and
         the <em>peak</em> decays as <InlineMath tex={String.raw`s_0^2/s^2`} /> because total mass is conserved. The PINN
         <InlineMath tex={String.raw`c_\theta(x,y,t)`} /> minimises the transport residual at collocation points, with the
-        IC (the release) and BCs (<InlineMath tex={String.raw`c^*`} /> on the boundary) imposed softly and weighted — so
+        IC (the release) and BCs (<InlineMath tex={String.raw`c^*`} /> on the boundary) imposed softly and weighted: so
         the network genuinely learns the interior field and the reported L2 is the true PINN error.
       </p>
 

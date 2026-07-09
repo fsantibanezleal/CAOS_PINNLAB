@@ -32,7 +32,7 @@ def _k(nu):
 CASE = CaseSpec(
     id="bench-burgers1d",
     category="canonical-benchmark",
-    title="1D viscous Burgers, parametric viscosity — hard-constraint PINN + RAR (traveling shock)",
+    title="1D viscous Burgers, parametric viscosity: hard-constraint PINN + RAR (traveling shock)",
     governing_equations=(
         r"u_t + u\,u_x = \nu\,u_{xx}\ \text{on}\ (-1,1)\times(0,1],\ "
         r"u^*=s-\tfrac{\Delta}{2}\tanh\!\big(\tfrac{\Delta}{4\nu}(x-x_0-st)\big),\ \Delta=1,\ s=\tfrac12"

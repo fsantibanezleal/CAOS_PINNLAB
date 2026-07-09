@@ -25,7 +25,7 @@ C_MIN, C_MAX = 0.5, 2.0
 CASE = CaseSpec(
     id="bench-wave1d",
     category="canonical-benchmark",
-    title="1D wave equation, parametric speed — SIREN + hard-constraint PINN",
+    title="1D wave equation, parametric speed: SIREN + hard-constraint PINN",
     governing_equations=(
         r"u_{tt} = c^2 u_{xx}\ \text{on}\ (0,1)\times(0,1],\ "
         r"u(x,0)=\sin(\pi x),\ u_t(x,0)=0,\ u(0,t)=u(1,t)=0;\ u^*=\sin(\pi x)\cos(c\pi t)"

@@ -16,17 +16,17 @@ export function HeapLeachContext({ lang }: { lang: "en" | "es" }) {
         <InlineMath tex={String.raw`c_i(x,z,t)`} />. Aquí el <strong>tiempo</strong> es el parámetro que se barre: una
         sola red aprende todo el historial <InlineMath tex={String.raw`c(x,z;t)`} /> y, en el tab
         <strong> Live</strong>, el deslizador de <InlineMath tex={String.raw`t`} /> actúa como un
-        <strong> scrubber temporal</strong> — ves los frentes percolar, reaccionar y relajarse cuadro a cuadro.
+        <strong> scrubber temporal</strong>: ves los frentes percolar, reaccionar y relajarse cuadro a cuadro.
       </p>
 
       <h3>Componentes y variables</h3>
       <ul>
         <li><strong>Dominio:</strong> una sección vertical de la pila <InlineMath tex={String.raw`(x,z)\in[0,1]^2`} /> × tiempo <InlineMath tex={String.raw`t\in[0,1]`} />, grilla del campo <InlineMath tex={String.raw`41\times41`} /> por instante (<InlineMath tex={String.raw`z`} /> apunta hacia abajo, en el sentido de la percolación).</li>
         <li><strong>Incógnitas:</strong> las concentraciones de los dos reactivos <InlineMath tex={String.raw`c_A(x,z,t)`} /> y <InlineMath tex={String.raw`c_B(x,z,t)`} />.</li>
-        <li><strong>Parámetro barrido:</strong> el <em>tiempo</em> <InlineMath tex={String.raw`t\in[0,1]`} /> — un input de la red; cada instante es un par de campos 2D distinto.</li>
-        <li><strong>Percolación (Darcy):</strong> velocidad descendente <InlineMath tex={String.raw`\mathbf{v}=(0,1)`} /> — arrastra ambas especies hacia abajo.</li>
-        <li><strong>Dispersión:</strong> <InlineMath tex={String.raw`D=0.05`} /> — isótropa; ensancha los frentes.</li>
-        <li><strong>Reacción:</strong> <InlineMath tex={String.raw`k_f=1`} /> — el sumidero bimolecular <InlineMath tex={String.raw`k_f c_A c_B`} /> acopla las dos ecuaciones.</li>
+        <li><strong>Parámetro barrido:</strong> el <em>tiempo</em> <InlineMath tex={String.raw`t\in[0,1]`} />: un input de la red; cada instante es un par de campos 2D distinto.</li>
+        <li><strong>Percolación (Darcy):</strong> velocidad descendente <InlineMath tex={String.raw`\mathbf{v}=(0,1)`} />: arrastra ambas especies hacia abajo.</li>
+        <li><strong>Dispersión:</strong> <InlineMath tex={String.raw`D=0.05`} />: isótropa; ensancha los frentes.</li>
+        <li><strong>Reacción:</strong> <InlineMath tex={String.raw`k_f=1`} />: el sumidero bimolecular <InlineMath tex={String.raw`k_f c_A c_B`} /> acopla las dos ecuaciones.</li>
       </ul>
 
       <h3>Formalización</h3>
@@ -68,7 +68,7 @@ export function HeapLeachContext({ lang }: { lang: "en" | "es" }) {
         sobre un parámetro físico (Péclet <InlineMath tex={String.raw`\mathrm{Pe}=v_z L/D`} /> o Damköhler
         <InlineMath tex={String.raw`\mathrm{Da}=k_f L/v_z`} />): cambiar <InlineMath tex={String.raw`D`} />,
         <InlineMath tex={String.raw`v_z`} /> o <InlineMath tex={String.raw`k_f`} /> exigiría re-derivar <em>otra</em>
-        fuente para el <em>mismo</em> campo, y el campo no cambiaría — sería un régimen <em>fabricado</em>. Lo que sí es
+        fuente para el <em>mismo</em> campo, y el campo no cambiaría: sería un régimen <em>fabricado</em>. Lo que sí es
         exacto en toda la historia es la <strong>dinámica temporal</strong>; por eso el eje barrido honesto es
         <InlineMath tex={String.raw`t`} />, no un Péclet inventado.
       </p>
@@ -106,7 +106,7 @@ export function HeapLeachContext({ lang }: { lang: "en" | "es" }) {
         MMS se reporta junto al de <InlineMath tex={String.raw`c_A`} />.
       </p>
     </>
-  ) : (
+  ): (
     <>
       <h2>The problem: two reactants that percolate, disperse and react in a leach heap</h2>
       <p>
@@ -118,17 +118,17 @@ export function HeapLeachContext({ lang }: { lang: "en" | "es" }) {
         Each species' concentration evolves as <InlineMath tex={String.raw`c_i(x,z,t)`} />. Here <strong>time</strong> is
         the swept parameter: a single network learns the whole history <InlineMath tex={String.raw`c(x,z;t)`} />, and in
         the <strong>Live</strong> tab the <InlineMath tex={String.raw`t`} /> slider acts as a
-        <strong> time scrubber</strong> — you watch the fronts percolate, react and relax frame by frame.
+        <strong> time scrubber</strong>: you watch the fronts percolate, react and relax frame by frame.
       </p>
 
       <h3>Components &amp; variables</h3>
       <ul>
         <li><strong>Domain:</strong> a vertical heap section <InlineMath tex={String.raw`(x,z)\in[0,1]^2`} /> × time <InlineMath tex={String.raw`t\in[0,1]`} />, a <InlineMath tex={String.raw`41\times41`} /> field grid per instant (<InlineMath tex={String.raw`z`} /> points downward, along the percolation).</li>
         <li><strong>Unknowns:</strong> the two reactant concentrations <InlineMath tex={String.raw`c_A(x,z,t)`} /> and <InlineMath tex={String.raw`c_B(x,z,t)`} />.</li>
-        <li><strong>Swept parameter:</strong> <em>time</em> <InlineMath tex={String.raw`t\in[0,1]`} /> — a network input; each instant is a different pair of 2D fields.</li>
-        <li><strong>Percolation (Darcy):</strong> downward velocity <InlineMath tex={String.raw`\mathbf{v}=(0,1)`} /> — carries both species down.</li>
-        <li><strong>Dispersion:</strong> <InlineMath tex={String.raw`D=0.05`} /> — isotropic; broadens the fronts.</li>
-        <li><strong>Reaction:</strong> <InlineMath tex={String.raw`k_f=1`} /> — the bimolecular sink <InlineMath tex={String.raw`k_f c_A c_B`} /> couples the two equations.</li>
+        <li><strong>Swept parameter:</strong> <em>time</em> <InlineMath tex={String.raw`t\in[0,1]`} />: a network input; each instant is a different pair of 2D fields.</li>
+        <li><strong>Percolation (Darcy):</strong> downward velocity <InlineMath tex={String.raw`\mathbf{v}=(0,1)`} />: carries both species down.</li>
+        <li><strong>Dispersion:</strong> <InlineMath tex={String.raw`D=0.05`} />: isotropic; broadens the fronts.</li>
+        <li><strong>Reaction:</strong> <InlineMath tex={String.raw`k_f=1`} />: the bimolecular sink <InlineMath tex={String.raw`k_f c_A c_B`} /> couples the two equations.</li>
       </ul>
 
       <h3>Formalization</h3>
@@ -170,7 +170,7 @@ export function HeapLeachContext({ lang }: { lang: "en" | "es" }) {
         parameter (Péclet <InlineMath tex={String.raw`\mathrm{Pe}=v_z L/D`} /> or Damköhler
         <InlineMath tex={String.raw`\mathrm{Da}=k_f L/v_z`} />): changing <InlineMath tex={String.raw`D`} />,
         <InlineMath tex={String.raw`v_z`} /> or <InlineMath tex={String.raw`k_f`} /> would require re-deriving
-        <em> another</em> source for the <em>same</em> field, and the field would not change — that would be a
+        <em> another</em> source for the <em>same</em> field, and the field would not change: that would be a
         <em> fabricated</em> regime. What <em>is</em> exact across the whole history is the <strong>time
         dynamics</strong>; that is why the honest swept axis is <InlineMath tex={String.raw`t`} />, not an invented
         Péclet.

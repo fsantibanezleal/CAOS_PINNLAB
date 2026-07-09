@@ -1,1 +1,68 @@
-{"schema":"pinnlab.manifest/v2","case_id":"poll-soil-barrier","category":"pollution-environmental","title":"Contaminated-site barrier — domain-decomposition (FBPINN) PINN","governing_equations":"c_t = D(x)\\,c_{xx} + f,\\ D=D_{soil}\\ \\text{outside}\\ [0.45,0.55],\\ D_{barrier}=0.1\\ \\text{inside};\\ c^*=(1-e^{-t})\\,\\Psi(x)","method":"domain-decomposition","real_or_synthetic":"synthetic-illustrative","expected_band":"plume slowed by the low-D barrier (kink in c at each face); relative-L2 ~2e-1 on the CPU 2-channel lane (the coefficient-jump kink is the hard part; the strict per-subdomain-normalized FBPINN + GPU tighten it)","validation_anchor":"analytic","inputs":["x","t"],"outputs":["c"],"field_axes":["x","t"],"param_specs":[],"engine":{"package":"pinnlab","version":"0.07.000","framework":"deepxde"},"seed":42,"trace_schema":"pinnlab.field/v1","onnx":{"path":"poll-soil-barrier.onnx","bytes":57935,"parity_max_abs":8.9e-08,"opset":18,"input_dim":2},"lane":"live","gate":{"lane":"live","onnx_bytes":57935,"infer_ms":1.86,"trace_bytes":33094,"reasons":[]},"flags":[],"inverse":{},"run_ms":378268.85,"variants":[{"id":"barrier10x","label_en":"Barrier (10× contrast)","label_es":"Barrera (contraste 10×)","note_en":"10× low-D barrier in [0.45,0.55]: the plume is slowed and c develops a kink at each barrier face.","note_es":"Barrera de baja D (10×) en [0.45,0.55]: el plume se frena y c desarrolla un quiebre en cada cara.","params":{},"trace":{"path":"poll-soil-barrier/barrier10x.json","bytes":33094},"metrics":{"onnx_parity_max_abs":8.9e-08,"validation_anchor":"analytic","l2_relative":0.191872,"max_abs_error":0.134161}}]}
+{
+ "schema": "pinnlab.manifest/v2",
+ "case_id": "poll-soil-barrier",
+ "category": "pollution-environmental",
+ "title": "Contaminated-site barrier: domain-decomposition (FBPINN) PINN",
+ "governing_equations": "c_t = D(x)\\,c_{xx} + f,\\ D=D_{soil}\\ \\text{outside}\\ [0.45,0.55],\\ D_{barrier}=0.1\\ \\text{inside};\\ c^*=(1-e^{-t})\\,\\Psi(x)",
+ "method": "domain-decomposition",
+ "real_or_synthetic": "synthetic-illustrative",
+ "expected_band": "plume slowed by the low-D barrier (kink in c at each face); relative-L2 ~2e-1 on the CPU 2-channel lane (the coefficient-jump kink is the hard part; the strict per-subdomain-normalized FBPINN + GPU tighten it)",
+ "validation_anchor": "analytic",
+ "inputs": [
+  "x",
+  "t"
+ ],
+ "outputs": [
+  "c"
+ ],
+ "field_axes": [
+  "x",
+  "t"
+ ],
+ "param_specs": [],
+ "engine": {
+  "package": "pinnlab",
+  "version": "0.07.000",
+  "framework": "deepxde"
+ },
+ "seed": 42,
+ "trace_schema": "pinnlab.field/v1",
+ "onnx": {
+  "path": "poll-soil-barrier.onnx",
+  "bytes": 57935,
+  "parity_max_abs": 8.9e-08,
+  "opset": 18,
+  "input_dim": 2
+ },
+ "lane": "live",
+ "gate": {
+  "lane": "live",
+  "onnx_bytes": 57935,
+  "infer_ms": 1.86,
+  "trace_bytes": 33094,
+  "reasons": []
+ },
+ "flags": [],
+ "inverse": {},
+ "run_ms": 378268.85,
+ "variants": [
+  {
+   "id": "barrier10x",
+   "label_en": "Barrier (10× contrast)",
+   "label_es": "Barrera (contraste 10×)",
+   "note_en": "10× low-D barrier in [0.45,0.55]: the plume is slowed and c develops a kink at each barrier face.",
+   "note_es": "Barrera de baja D (10×) en [0.45,0.55]: el plume se frena y c desarrolla un quiebre en cada cara.",
+   "params": {},
+   "trace": {
+    "path": "poll-soil-barrier/barrier10x.json",
+    "bytes": 33094
+   },
+   "metrics": {
+    "onnx_parity_max_abs": 8.9e-08,
+    "validation_anchor": "analytic",
+    "l2_relative": 0.191872,
+    "max_abs_error": 0.134161
+   }
+  }
+ ]
+}

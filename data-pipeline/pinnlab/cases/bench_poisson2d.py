@@ -23,7 +23,7 @@ K_MIN, K_MAX = 1.0, 3.0
 CASE = CaseSpec(
     id="bench-poisson2d",
     category="canonical-benchmark",
-    title="2D Poisson (Dirichlet), parametric source mode — hard-constraint PINN",
+    title="2D Poisson (Dirichlet), parametric source mode: hard-constraint PINN",
     governing_equations=(
         r"-\nabla^2 u = f(x,y;k)\ \text{on}\ (0,1)^2,\ u|_{\partial\Omega}=0;\quad "
         r"u^*=g(x)g(y),\ g(t)=t(1-t)\sin(k\pi t)"

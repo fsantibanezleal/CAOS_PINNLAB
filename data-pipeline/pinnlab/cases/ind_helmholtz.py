@@ -24,7 +24,7 @@ SIGMAS = (1.0, float(N_WAVES))
 CASE = CaseSpec(
     id="ind-helmholtz",
     category="industrial-fluids-heat",
-    title="2D Helmholtz (high-wavenumber) — Fourier-feature PINN",
+    title="2D Helmholtz (high-wavenumber): Fourier-feature PINN",
     governing_equations=(
         r"\nabla^2 u + k_0^2 u = -f,\ k_0=2\pi n,\ n=3,\ \text{on}\ (0,1)^2,\ u|_{\partial\Omega}=0,\ "
         r"u^*=\sin(k_0 x)\sin(k_0 y)"

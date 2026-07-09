@@ -32,7 +32,7 @@ _STATE: dict[str, float] = {}  # build() stashes test/sample L2 for extra_metric
 CASE = CaseSpec(
     id="bench-darcy-operator",
     category="canonical-benchmark",
-    title="Darcy-flow operator learning — Fourier Neural Operator G: a(x) -> u(x)",
+    title="Darcy-flow operator learning: Fourier Neural Operator G: a(x) -> u(x)",
     governing_equations=(
         r"-\nabla\!\cdot(a(\mathbf{x})\nabla u)=1,\ u|_{\partial\Omega}=0\ \text{on}\ (0,1)^2;\ "
         r"\text{learn the operator}\ \mathcal{G}_\theta: a\mapsto u\ \text{(FNO)}"

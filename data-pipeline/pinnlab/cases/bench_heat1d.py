@@ -24,7 +24,7 @@ A_MIN, A_MAX = 0.1, 1.0
 CASE = CaseSpec(
     id="bench-heat1d",
     category="canonical-benchmark",
-    title="1D transient heat/diffusion, parametric diffusivity — time-dependent hard-constraint PINN",
+    title="1D transient heat/diffusion, parametric diffusivity: time-dependent hard-constraint PINN",
     governing_equations=(
         r"\partial_t u = \alpha\,\partial_{xx} u\ \text{on}\ (0,1)\times(0,1],\ "
         r"u(x,0)=\sin(\pi x),\ u(0,t)=u(1,t)=0;\ u^*=e^{-\alpha\pi^2 t}\sin(\pi x)"
