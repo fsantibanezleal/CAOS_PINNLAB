@@ -1,113 +1,87 @@
-# PINN-Lab App UX redesign proposal (2026-07-09)
+# PINN-Lab GLOBAL review + fix (2026-07-09) — the offline pipeline must COMPUTE the demonstrations
 
-Designed FOR PINN-Lab (not cloned from another app). Lidar3D only signalled "use full width, do not waste
-space". This proposal is driven by the actual content and the owner's direction. Validate before implementing.
+## 0. Root cause (owner-identified, my failure)
 
-## 1. Content + menu inventory (what actually exists)
+The **offline pipeline is the product**; the web app is only a viewer of what it computes. Today every case's
+pipeline bakes ONE thin result (Helmholtz bakes only the Fourier-feature field; Allen-Cahn one "Default" run), so
+there is nothing rich to show. I treated the symptom (UI layout) instead of the origin: the pipeline does not
+CALCULATE the comparative science that makes a PINN catalogue worth looking at. I did not understand that the
+repo's relevance is the deep offline computation. This document reframes everything around that.
 
-**Global menus**
-- Top nav: App + 5 doc pages (Introduction, Methodology, Implementation, Experiments, Benchmark).
-- Header actions: GitHub, personal, portfolio, architecture modal (ⓘ), language, theme.
+**Principle:** for every case the offline pipeline computes the METHOD LADDER and its DEMONSTRATION — the naive
+baseline that fails, the fix that works, the ablations, the diagnostics, and (where relevant) the data-driven vs
+pure-physics contrast — as comparable baked artifacts. The web app then SHOWS the contrast; it invents nothing.
 
-**App navigation (today)**
-- 20 cases across 5 domains; a Highlights list (featured + the REAL-data case); domain chips; a case list;
-  per-case regime/variant chips; a 4-way view switch (Field / Live / Charts / Context).
+## 1. What each pipeline must now COMPUTE (per case), not just one field
 
-**Per-case content**
-- Governing equation (KaTeX, variable width; Navier-Stokes is wide), method, engine, L2, ONNX parity,
-  expected band, regime notes.
+For every case, bake a small set of comparable runs + diagnostics so the science is visible. The core artifact is
+the **head-to-head comparison: STANDARD PDE solution vs naive PINN vs adapted PINN vs data-driven PINN**, all on
+the same grid, each with its error against the standard.
+- **Standard PDE solution (the classical rung)** — a real classical numerical solver run offline (finite-difference
+  / finite-element / spectral, per problem) plus the analytic MMS where it exists. This is the GROUND TRUTH the PINN
+  variants are measured against. This does not exist today and is the single biggest missing artifact.
+- **Naive PINN run** — the plain PINN the docs say FAILS, actually run, so its failure is visible next to the standard.
+- **Adapted PINN run (the fix / SOTA)** — the real method (Fourier features, hard constraints, FBPINN, ...).
+- **Data-driven PINN run (where it applies)** — physics + observed data (inverse / assimilation / operator).
+- **(Where it applies) a novel/beyond-SOTA run** — per the product bar.
+- **Difference + error maps** — each PINN variant minus the standard solution; where each is wrong.
+- **Diagnostics** — the curve that explains WHY: convergence (loss vs epochs), spectral-bias energy vs frequency,
+  the parameter sweep where the baseline breaks (e.g. wavenumber for Helmholtz), sampling/RAR point maps.
+- **Data-driven contrast (where relevant)** — pure-physics vs data+physics, the sensor/data points, and how the
+  result and its uncertainty change as data is added/removed.
 
-**The 8 visualization types (the heart of the app)**
-| View kit | What it shows | Interactivity today |
-|---|---|---|
-| Field / Heatmap | space-time heatmap + colorbar + 2 side line-cuts + play | probe (crosshair+readout), play; side graphs are STATIC SVG |
-| Vector (navier) | RK4 streamlines + quiver + scalar background | hover readout; background chips |
-| Inverse (heat2d) | recovered k + true k* + error + measured T + sensor dots | hover readout |
-| UQ (bpinn) | mean +- sigma band | sigma slider |
-| Trajectory (pendulum) | pendulum canvas + phase portrait + butterfly + angles-vs-t | play; the 3 plots are STATIC SVG |
-| Live | onnx re-eval + param/zoom/resolution sliders | live compute, zoom/pan |
-| Charts | regime comparison bars (relative-L2) | click a row to load that regime |
-| Context | deep bilingual prose + equations + refs | scroll |
+## 2. Per-case demonstration ladder (the design)
 
-## 2. What is wrong now (owner-reported + my QA)
+| Case | The fix (method) | Naive baseline that FAILS (to bake) | Diagnostics to compute | Data-driven contrast |
+|---|---|---|---|---|
+| helmholtz | Fourier features | plain tanh MLP -> spectral bias, high-k blurred/flat | naive vs Fourier field + error; spectral-energy vs freq; wavenumber sweep n=1..6 where naive collapses | — |
+| allencahn | hard-constraints + RAR | soft-BC uniform-sampling -> smears the sharp layers | error map at the transition layer; RAR point density; loss curve | — |
+| burgers1d | hard-constraints + RAR | naive -> oscillates/smears the shock | shock front naive vs fix; error at the front; RAR points | — |
+| wave1d | SIREN + hard constraints | tanh -> dispersion/spectral bias at large c | SIREN vs tanh dispersion error vs c | — |
+| poisson2d | hard constraints | soft BC -> boundary error | boundary error naive vs fix vs k | — |
+| navier-cavity | multi-output loss weighting | equal weights -> v-centerline off | Ghia centerline overlay; weighting ablation | — |
+| darcy-operator | FNO operator | per-instance PINN (retrain per a(x)) | one-pass FNO vs retrain-per-instance; held-out L2 | learns from a(x)->u(x) data pairs |
+| heat2d-inverse | inverse field (data+physics) | pure physics, NO data -> k unrecoverable | recovered k vs #sensors sweep; pure-vs-hybrid; residual | THE data-driven showcase |
+| soil-heat-real | inverse parameter (REAL) | assumed alpha vs recovered-from-real-data | fit to REAL USCRN temps; recovered alpha vs assumed | REAL data |
+| source-uq-bpinn | Bayesian ensemble UQ | single deterministic PINN (no uncertainty) | mean +- sigma; sigma grows in data-sparse regions; calibration | data + uncertainty |
+| double-pendulum | PINN vs RK45 | (contrast IS PINN vs integrator) | leave-time; phase-error growth; twin divergence | — |
+| soil-barrier | domain decomposition (FBPINN) | single-domain PINN -> fails at the barrier kink | single vs FBPINN; interface error | — |
+| poisson/heat/ocean/heap-leach/thickener/comminution/flotation/tailings | the stated scheme | a plain-PINN / no-scheme baseline where meaningful | vs analytic/MMS error; conservation; parameter sweep | — |
 
-1. Content was boxed in a narrow centred column while header/footer were full width (fixed in 0.19.000, but...).
-2. The 0.19.000 3-column shell put the equation in a 320px right rail -> **the equation is cut off (ugly)**.
-3. Highlights + Domain are expanded lists -> **waste vertical space**.
-4. The field probe was regressed to **pin-only**; it lost the follow-the-cursor mode.
-5. The side/trace graphs are **static plain SVG**: no rich hover, no snapshot, no focus/zoom, no detail popup.
+(The 6-variant cases already sweep a parameter; the missing axis is the naive-vs-fix METHOD comparison + diagnostics.)
 
-## 3. Proposed design (fluid, viz-first, full-width)
+## 3. Pipeline re-architecture
 
-Three stacked full-width zones, no side rails. The visualization is the star; everything else is compact context.
+- Each `cases/<case>.py` gains a **method axis** (e.g. `baseline` | `method` | `novel`) alongside the existing
+  parameter regimes: `build(seed, method)` trains each; export each to ONNX; bake each field + the difference.
+- Compute + persist the **diagnostics** (spectral energy, loss history, error maps, sweeps) as small JSON traces.
+- Manifests gain a `comparisons` block (which runs are contrastable) and a `diagnostics` block.
+- Keep the local `.venv` (3.13) precompute discipline; runs are heavy -> phase it (Section 5).
 
-```
-+-------------------------------------------------------------------------------+
-| HEADER (full width)                                                           |
-+-------------------------------------------------------------------------------+
-| COMMAND BAR:  [Domain v][Case v (grouped, * featured)]  [Regime: chip chip]   |
-|               [View: Field | Live | Charts | Context]      ...  [snapshot][focus][detail] |
-+-------------------------------------------------------------------------------+
-| CONTEXT STRIP:  f: u_t = d u_xx + 5(u - u^3)     method - L2 - ONNX     [band v]|
-+-------------------------------------------------------------------------------+
-| STAGE (dominant, fills remaining height, FULL WIDTH):                         |
-|    the active view - big, interactive                                        |
-+-------------------------------------------------------------------------------+
-| FOOTER (full width)                                                          |
-+-------------------------------------------------------------------------------+
-```
+## 4. Web app (the VIEWER of the computed richness)
 
-### 3a. Navigation (fluid)
-- **Case = one compact dropdown, grouped by domain (optgroups)**, featured/REAL cases starred. Replaces the
-  Highlights list + Domain chips + Case list (all the space-hungry parts) with 1 (or 2) dropdowns.
-  Option: keep a small separate **Domain dropdown** to filter, then a **Case dropdown** of that domain. (Owner asked
-  for Domain-as-dropdown; both work, pick in validation.)
-- **Regime** = inline chips (few per case).
-- **View** = a segmented control (Field | Live | Charts | Context).
-- Switching a case/regime/view updates only the context strip + stage; the command bar stays put (no reflow).
-- Deep-linkable hash (`#/case/regime/view`) so a state is shareable (nice-to-have).
+Only after the pipeline computes the above:
+- **Compare mode**: naive vs fix side-by-side (or A/B swipe) + the difference map; the "regime" selector becomes a
+  METHOD selector (baseline / fix / novel) crossed with the parameter regimes.
+- **Diagnostics panel**: the spectral-bias curve, the convergence curve, the sweep where naive breaks — the WHY.
+- **Live** demonstrates the mechanism: toggle Fourier features on/off and watch the field go wrong->right; raise the
+  wavenumber and watch the naive lane collapse; add/remove data on the inverse case and watch k + sigma change.
+- Layout that serves this: compact command bar (Domain+Case dropdowns, method+regime, view) + a full-width stage;
+  equation/metrics in a top strip (never cut); interactive graphs (rich hover, snapshot, focus, detail popup);
+  the both-mode field probe (follow / click-pin / double-click-release). Paused-by-default, no compute bombs.
 
-### 3b. Context strip (equation NEVER cut)
-- The governing equation renders in a **full-width** strip, so even Navier-Stokes fits; if a future equation is
-  huge, its own box scrolls horizontally rather than clipping.
-- method - engine - L2 - ONNX parity inline; the expected-band sentence is a click-to-expand disclosure.
+## 5. Phased rollout (each phase = a validated, screenshot-QA'd, issue-tracked patch)
+1. **Helmholtz as the reference**: bake naive tanh vs Fourier + error + spectral curve + wavenumber sweep; build the
+   compare + diagnostics views; Live toggles Fourier on/off. Prove the pattern end-to-end on ONE case.
+2. Propagate the baseline-vs-fix bake + diagnostics to the other canonical benchmarks (allencahn, burgers, wave,
+   poisson, navier).
+3. Data-driven cases (heat2d-inverse sensor sweep + pure-vs-hybrid; soil-heat-real; source-uq-bpinn).
+4. Remaining mining/pollution cases + the FBPINN barrier.
+5. Global layout + interactive-plot polish across all.
 
-### 3c. Interactive visualizations (the big one: "no static plain graphs")
-A shared, reusable interactive-plot component used by every kit, so all graphs get the same power:
-- **Rich hover tooltip**: value + coordinates + relevant derived info per plot type, e.g.
-  - Field side-cut: `u = ...`, `(x,t) = ...`, `|u - u0| = ...` (deviation from the initial state).
-  - Phase portrait: `(θ1, θ2)` at the hovered t, plus the time.
-  - Charts: variant label + L2 + rank + delta vs best.
-- **Snapshot button** (per viz): export the current canvas/SVG to PNG (for slides/papers).
-- **Change focus**: click a sub-plot to promote it to the focus (enlarge), or zoom/pan on the plot; the field map
-  already zooms in Live, extend the pattern to the replay plots.
-- **Detail popup**: click a graph -> a modal with the enlarged plot, full axes/ticks, extra series, and export.
-- **Both-mode probe (field)**: released = the two side graphs FOLLOW the cursor live; single click = pin/fix;
-  double click = release back to follow. (Restores the mode I regressed.)
-- Everything stays paused-by-default / no compute bombs (existing rule).
-
-### 3d. Per-kit application
-- Field/Heatmap: both-mode probe + interactive side-cuts (hover/snapshot/detail) + play.
-- Trajectory: the phase portrait + butterfly + angles-vs-t become interactive (hover the curves, snapshot, focus).
-- Vector: hover already rich; add snapshot + a detail popup with a larger streamline plot.
-- Inverse: hover shows k, k*, |k-k*| at the point across all four panels at once; snapshot; detail popup.
-- UQ: hover shows mean and +-sigma and the sample; snapshot.
-- Charts: interactive bars (hover = full metrics; click = load regime); snapshot.
-
-### 3e. Fluidity + responsiveness
-- Command bar wraps on narrow screens; the stage stacks graphs vertically < 900px.
-- Smooth view/regime transitions (no full remount flfor the shell; only the stage swaps).
-- Keyboard: left/right to step cases, up/down to step regimes (nice-to-have).
-
-## 4. Suggested implementation phases (each a patch, screenshot-QA'd, issue-tracked)
-1. Layout: 3 stacked zones (command bar + context strip + full-width stage); equation uncut; dropdown nav.
-2. Field probe both-modes.
-3. Shared InteractivePlot (rich hover + snapshot) applied to the field side-cuts + trajectory plots.
-4. Detail popup + focus/zoom on all plots.
-5. Charts + Inverse + UQ + Vector enrichments.
-
-## 5. Open choices for validation
-- **A.** Case nav: one grouped dropdown, OR Domain dropdown + Case dropdown? (leaning: Domain + Case dropdowns.)
-- **B.** Snapshot scope: per-graph PNG only, or also a "copy the whole view" button?
-- **C.** Detail popup: a modal, or an expand-in-place (the plot grows and pushes the others)?
-- **D.** Phase 1 (layout) first and deploy, then enrich graphs incrementally? (leaning: yes, one phase per patch.)
+## 6. To validate before I compute anything
+- **A.** Is "the pipeline must compute the naive-vs-fix ladder + diagnostics per case" the correct framing of the fix?
+- **B.** Start with Helmholtz end-to-end as the reference template, then propagate (recommended), or design all 20
+  ladders on paper first, then compute?
+- **C.** Compute budget: these are real training runs on the local machine; OK to run them incrementally (phase by
+  phase), committing baked artifacts as each case is proven?
