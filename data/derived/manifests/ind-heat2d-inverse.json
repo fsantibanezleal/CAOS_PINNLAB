@@ -79,14 +79,22 @@
     "role": "reference"
    },
    {
+    "key": "naive",
+    "label_en": "pure physics (NO data)",
+    "label_es": "física pura (SIN datos)",
+    "role": "baseline",
+    "err": "err_naive"
+   },
+   {
     "key": "adapted",
-    "label_en": "inverse-field PINN",
-    "label_es": "PINN inverse-field",
+    "label_en": "physics + data (100 sensors)",
+    "label_es": "física + datos (100 sensores)",
     "role": "fix",
     "err": "err_adapted"
    }
   ],
-  "note_en": "The PINN (inverse-field) field vs the closed-form standard solution, and their pointwise error. Relative-L2 = 4.0%.",
-  "note_es": "El campo de la PINN (inverse-field) frente a la solución estándar de forma cerrada, y su error puntual. L2 relativa = 4.0%."
+  "note_en": "INVERSE problem: recover the conductivity k(x,y). PURE PHYSICS with no sensor data leaves k underdetermined - the recovered field is nowhere near k* (L2 = 356% vs the analytic standard). Add the ~100 sparse T sensors and physics+data recovers it (L2 = 4.0%). The DATA is what makes the inverse solvable.",
+  "note_es": "Problema INVERSO: recuperar la conductividad k(x,y). La FISICA PURA sin datos de sensores deja k indeterminada: el campo recuperado no se parece a k* (L2 = 356% vs el estandar analitico). Con ~100 sensores T dispersos, fisica+datos lo recupera (L2 = 4.0%). Los DATOS son los que hacen soluble el inverso.",
+  "onnx_naive": "ind-heat2d-inverse-naive.onnx"
  }
 }
