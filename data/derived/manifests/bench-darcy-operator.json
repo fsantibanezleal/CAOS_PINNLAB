@@ -182,5 +182,25 @@
     "ensemble_K": 0
    }
   }
- ]
+ ],
+ "comparison": {
+  "trace": "bench-darcy-operator/comparison.json",
+  "lanes": [
+   {
+    "key": "standard",
+    "label_en": "finite-difference reference",
+    "label_es": "referencia diferencias finitas",
+    "role": "reference"
+   },
+   {
+    "key": "adapted",
+    "label_en": "FNO operator (one pass)",
+    "label_es": "operador FNO (un paso)",
+    "role": "fix",
+    "err": "err_adapted"
+   }
+  ],
+  "note_en": "The Fourier Neural Operator maps a NEW (held-out) permeability field to its pressure field in ONE forward pass - no per-instance retraining. vs the classical finite-difference solution: relative-L2 = 2.5%.",
+  "note_es": "El Operador Neural de Fourier mapea un campo de permeabilidad NUEVO a su campo de presión en UN paso - sin reentrenar por instancia. vs la solucion clasica de diferencias finitas: L2 relativa = 2.5%."
+ }
 }

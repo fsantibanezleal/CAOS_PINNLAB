@@ -102,3 +102,34 @@ def build(seed: int) -> dict:
     model = dde.Model(data, net)
     model.compile("adam", lr=t["lr"], metrics=["l2 relative error"])
     return {"model": model, "input_dim": 3}
+
+
+def build_naive(seed: int) -> dict:
+    """NAIVE lane: the SAME hard-constraint setup but a plain TANH activation instead of SIREN. This isolates the
+    spectral-bias remedy: a tanh MLP disperses/damps the fast (high-c) standing wave, while SIREN resolves it. Same
+    net size + same hard IC/BC, so the contrast is the ACTIVATION (the method), not capacity."""
+    import deepxde as dde
+    import torch
+
+    dde.config.set_random_seed(int(seed))
+    geom = dde.geometry.Hypercube([0.0, 0.0, C_MIN], [1.0, 1.0, C_MAX])
+
+    def pde(x, u):
+        u_tt = dde.grad.hessian(u, x, i=1, j=1)
+        u_xx = dde.grad.hessian(u, x, i=0, j=0)
+        c = x[:, 2:3]
+        return u_tt - c ** 2 * u_xx
+
+    t = CASE.train
+    data = dde.data.PDE(geom, pde, [], num_domain=t["num_domain"], num_boundary=0, solution=analytic, num_test=t["num_test"])
+    net = dde.nn.FNN(t["layers"], "tanh", "Glorot normal")  # TANH, not SIREN
+
+    def output_transform(x, u):
+        xs = x[:, 0:1]
+        ts = x[:, 1:2]
+        return torch.sin(np.pi * xs) + ts ** 2 * xs * (1.0 - xs) * u
+
+    net.apply_output_transform(output_transform)
+    model = dde.Model(data, net)
+    model.compile("adam", lr=t["lr"], metrics=["l2 relative error"])
+    return {"model": model, "input_dim": 3}
