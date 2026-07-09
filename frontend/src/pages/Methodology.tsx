@@ -130,8 +130,8 @@ const METHODS: Method[] = [
   },
   {
     group: "inverse-uq",
-    en: "Inverse problems & UQ",
-    es: "Problemas inversos y UQ",
+    en: "Hybrid data + physics: inverse problems & UQ (where PINNs win)",
+    es: "Híbrido datos + física: problemas inversos y UQ (donde las PINN ganan)",
     bodyEn:
       "PINNs shine where classical solvers struggle: recovering an unknown field or parameter from sparse, noisy observations by adding a data term to the PDE residual. Uncertainty is then essential — a deep ensemble (a cheap Bayesian approximation) returns a predictive mean AND a calibrated error bar that grows where data is sparse. PINN-Lab does both, including one inverse case on REAL measured data.",
     bodyEs:
@@ -161,6 +161,10 @@ const REFS: Ref[] = [
   { cite: "Toscano et al. (2024). From PINNs to PIKANs: recent advances in physics-informed machine learning (physics-informed Kolmogorov-Arnold networks).", doi: "10.48550/arXiv.2410.13228" },
   { cite: "Cho, Nam, Yang, Yun, Hong & Park (2023). Separable physics-informed neural networks (SPINN). NeurIPS 36.", doi: "10.48550/arXiv.2306.15969" },
   { cite: "Krishnapriyan, Gholami, Zhe, Kirby & Mahoney (2021). Characterizing possible failure modes in physics-informed neural networks. NeurIPS 34.", doi: "10.48550/arXiv.2109.01050" },
+  { cite: "Raissi, Yazdani & Karniadakis (2020). Hidden fluid mechanics: learning velocity and pressure fields from flow visualizations. Science 367(6481):1026-1030.", doi: "10.1126/science.aaw4741" },
+  { cite: "Cai, Mao, Wang, Yin & Karniadakis (2021). Physics-informed neural networks (PINNs) for fluid mechanics: a review. Acta Mech. Sinica 37:1727-1738.", doi: "10.1007/s10409-021-01148-1" },
+  { cite: "Grossmann, Komorowska, Latz & Schönlieb (2024). Can physics-informed neural networks beat the finite element method? IMA J. Appl. Math.", doi: "10.48550/arXiv.2302.04107" },
+  { cite: "Wang, Wang & Perdikaris (2021). Learning the solution operator of parametric PDEs with physics-informed DeepONets. Science Advances 7(40):eabi8605.", doi: "10.1126/sciadv.abi8605" },
 ];
 
 /** The classical → SOTA → candidate-novel LADDER per family (transcribed from the verified deep-research report,
@@ -197,6 +201,16 @@ const BEYOND: Record<string, { en: string; es: string; ref?: number }> = {
     es: "Frontera: las PINN Separables (SPINN) factorizan la red en subredes 1D por eje combinadas por un producto tensorial, reduciendo el costo forward/backward lo suficiente para alcanzar >10^7 puntos de colocación [Cho 2023]. Candidato para PINN-Lab: SPINN para un caso de alta resolución o 3-D. Límite honesto: la estructura de producto tensorial encaja mejor en dominios tipo grilla/separables.",
     ref: 13,
   },
+  "inverse-uq": {
+    en: "This is where PINNs genuinely win: the HYBRID data+physics PINN. Adding a data term is not a hack — it is a fix for an OPTIMIZATION pathology: the PDE-residual gradients dominate (NTK K_rr ≫ K_uu), so a pure-physics net can settle on a low-residual but WRONG solution among the infinitely many satisfying the PDE; the data term supplies the missing gradient that anchors it to the realizable one. The seminal example is Hidden Fluid Mechanics [Raissi 2020], which reconstructs full velocity+pressure fields from sparse noisy visualizations + the Navier-Stokes residual — geometry/BC-agnostic, robust to noise. PINN-Lab's heat2d-inverse (sparse T sensors), soil-heat-real (REAL data) and uq-bpinn are exactly this rung. Honest scope: this is data ASSIMILATION / reconstruction (it needs data; it does not predict from nothing, and extrapolation beyond the data is unreliable) — the strong claim that a hybrid PINN beats classical CFD on a general forward solve is NOT supported.",
+    es: "Aquí es donde las PINN sí ganan: la PINN HÍBRIDA datos+física. Sumar un término de datos no es un truco — arregla una patología de OPTIMIZACIÓN: los gradientes del residual EDP dominan (NTK K_rr ≫ K_uu), así que una red física-pura puede quedarse en una solución de bajo residual pero INCORRECTA entre las infinitas que satisfacen la EDP; el término de datos aporta el gradiente que la ancla a la realizable. El ejemplo seminal es Hidden Fluid Mechanics [Raissi 2020], que reconstruye campos completos de velocidad+presión desde visualizaciones dispersas y ruidosas + el residual de Navier-Stokes — agnóstico a geometría/BC, robusto al ruido. heat2d-inverse (sensores T dispersos), soil-heat-real (datos REALES) y uq-bpinn son justo este peldaño. Alcance honesto: es ASIMILACIÓN / reconstrucción de datos (necesita datos; no predice desde la nada, y extrapolar más allá de los datos no es confiable) — la afirmación fuerte de que una PINN híbrida gana a la CFD clásica en un problema directo general NO está respaldada.",
+    ref: 16,
+  },
+  "operator-learning": {
+    en: "Frontier: physics-informed DeepONet learns the solution OPERATOR (a whole family a↦u), and the physics penalty cuts its data demand — a trainable surrogate that answers a new instance in one forward pass [Wang 2021]. Candidate for PINN-Lab: a physics-informed DeepONet over the parametric families. Honest limit: operators are distribution-bounded — accuracy degrades out-of-distribution, so validate OOD against a classical reference (as the Darcy case does).",
+    es: "Frontera: el DeepONet físico aprende el OPERADOR solución (toda una familia a↦u), y la penalización física reduce su demanda de datos — un surrogate entrenable que responde una instancia nueva en una pasada [Wang 2021]. Candidato para PINN-Lab: un DeepONet físico sobre las familias paramétricas. Límite honesto: los operadores están acotados por la distribución — la precisión cae fuera de distribución, así que valida OOD contra una referencia clásica (como hace el caso Darcy).",
+    ref: 19,
+  },
 };
 
 export function Methodology() {
@@ -215,10 +229,11 @@ export function Methodology() {
         <h3 style={{ marginTop: 0 }}>{es ? "Alcance honesto: dónde ganan (y no) las PINN" : "Honest scope: where PINNs win (and don't)"}</h3>
         <p style={{ fontSize: 13.5 }}>
           {es
-            ? "Para un problema DIRECTO bien planteado, un solver clásico FEM/FVM/espectral bien afinado suele ser más rápido y preciso — esto es el consenso de la comunidad, no un fallo de las PINN. La frontera verificada confirma dos límites duros: las PINN estándar FALLAN en regímenes caóticos/turbulentos (solo el entrenamiento causal logró por primera vez Lorenz/KS/NS, y solo en una ventana finita pre-Lyapunov) y SUFREN en dominios grandes/multi-escala (la motivación explícita de la descomposición de dominio). Donde las PINN sí ganan es, según la visión de la comunidad: problemas inversos, asimilación de datos escasos/ruidosos, surrogates paramétricos de muchas consultas y dominios de alta dimensión o de malla impráctica — justo los casos industriales/ambientales de aquí. Los modos de fallo están bien caracterizados."
-            : "For a single well-posed FORWARD solve, a tuned classical FEM/FVM/spectral solver is usually faster and more accurate — this is the community consensus, not a failure of PINNs. The verified frontier confirms two hard limits: standard PINNs FAIL on chaotic/turbulent regimes (only causal training first cracked Lorenz/KS/NS, and only over a finite pre-Lyapunov window) and STRUGGLE on large/multi-scale domains (the explicit motivation for domain decomposition). Where PINNs genuinely earn their place is, per the community view: inverse problems, sparse/noisy data assimilation, parametric many-query surrogates, and mesh-impractical / high-dimensional domains — exactly the industrial / environmental cases here. The failure modes are well characterized."}{" "}
+            ? "Para un problema DIRECTO bien planteado, un solver clásico FEM/FVM/espectral bien afinado suele ser más rápido y preciso — de hecho, la generación actual de PINN AÚN NO supera al método de elementos finitos [Grossmann 2024]; esto es el consenso, no un fallo. La frontera verificada confirma dos límites duros: las PINN física-pura FALLAN al endurecerse el régimen (error ~100% en convección-dominada [Krishnapriyan 2021]) y en geometrías CFD complejas (el escalón hacia atrás estanca). El arreglo práctico es la PINN HÍBRIDA datos+física (ver 'Problemas inversos y UQ' abajo): un término de datos ancla la optimización mal condicionada a la solución realizable — por eso las PINN ganan en ASIMILACIÓN/inversión (datos escasos/ruidosos, surrogates paramétricos, alta dimensión), no en el problema directo."
+            : "For a single well-posed FORWARD solve, a tuned classical FEM/FVM/spectral solver is usually faster and more accurate — in fact the current generation of PINNs has NOT beaten the finite element method [Grossmann 2024]; this is the consensus, not a failure. The verified frontier confirms two hard limits: pure-physics PINNs FAIL as the regime hardens (~100% error on convection-dominated problems [Krishnapriyan 2021]) and on complex CFD geometry (the backward-facing step stalls). The practical fix is the HYBRID data+physics PINN (see 'Inverse problems & UQ' below): a data term anchors the ill-conditioned optimization to the realizable solution — which is why PINNs earn their keep on ASSIMILATION/inverse (sparse/noisy data, parametric surrogates, high-dimensional / mesh-impractical domains), not on the forward solve."}{" "}
+          <a href="https://doi.org/10.48550/arXiv.2302.04107" target="_blank" rel="noreferrer noopener">Grossmann 2024</a>{" · "}
           <a href="https://doi.org/10.48550/arXiv.2109.01050" target="_blank" rel="noreferrer noopener">Krishnapriyan 2021</a>{" · "}
-          <a href="https://doi.org/10.1016/j.cma.2024.116813" target="_blank" rel="noreferrer noopener">Wang 2024 (causal)</a>
+          <a href="https://doi.org/10.1126/science.aaw4741" target="_blank" rel="noreferrer noopener">HFM (Raissi 2020)</a>
         </p>
       </section>
 

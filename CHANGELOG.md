@@ -3,6 +3,25 @@
 All notable changes to **PINN-Lab**. Format: `X.XX.XXX` (display) — see `pinnlab.__version__`. Keep `0.x` while on
 synthetic/benchmark data. Tag every release.
 
+## [0.18.000] — 2026-07-09 — the HYBRID data+physics rung (the practical winner), cited + honestly scoped
+
+Answering "why aren't we featuring the data-driven PINN?" — from a verified deep-research pass on hybrid CFD PINNs
+(`wip/web-review/hybrid-pinn-research-2026-07-09.md`). The Methodology ladder now foregrounds the data-hybrid rung:
+
+- **Honest-scope panel** updated with the verified facts: the current generation of PINNs has NOT beaten the finite
+  element method [Grossmann 2024]; pure-physics PINNs hit ~100% error as the regime hardens [Krishnapriyan 2021] and
+  stall on complex CFD geometry — and the practical fix is the HYBRID data+physics PINN. Cites Grossmann 2024,
+  Krishnapriyan 2021, Hidden Fluid Mechanics (Raissi 2020).
+- **"Inverse & UQ" reframed to "Hybrid data + physics … (where PINNs win)"** with the SCAFFOLD mechanism (the
+  data term fixes an optimization pathology — PDE-residual gradients dominate, NTK K_rr ≫ K_uu — anchoring the net to
+  the realizable solution among the infinitely many satisfying the PDE), the seminal HFM example, and the honest
+  scope (data ASSIMILATION / reconstruction, not prediction from nothing; the "beats classical CFD" claim is NOT
+  supported). heat2d-inverse / soil-heat-real / uq-bpinn named as exactly this rung.
+- **New operator rung** — physics-informed DeepONet [Wang 2021], with the OOD-distribution-bound limit. 4 new refs.
+
+Next: a dedicated hybrid-CFD flow-reconstruction case (sparse sensors + NS residual) with a pure-physics baseline
+that visibly stalls (the S-bend contrast), ONNX-exported.
+
 ## [0.17.000] — 2026-07-09 — Highlights strip: the REAL-data + data-hybrid cases stop being lost
 
 The one case trained on REAL measured data (`env-soil-heat-real`) was buried as one card among 20. The App now
