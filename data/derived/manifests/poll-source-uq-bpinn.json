@@ -71,5 +71,25 @@
     "ensemble_K": 5
    }
   }
- ]
+ ],
+ "comparison": {
+  "trace": "poll-source-uq-bpinn/comparison.json",
+  "lanes": [
+   {
+    "key": "standard",
+    "label_en": "standard (analytic)",
+    "label_es": "estándar (analítica)",
+    "role": "reference"
+   },
+   {
+    "key": "adapted",
+    "label_en": "bayesian-ensemble-uq PINN",
+    "label_es": "PINN bayesian-ensemble-uq",
+    "role": "fix",
+    "err": "err_adapted"
+   }
+  ],
+  "note_en": "The PINN (bayesian-ensemble-uq) field vs the closed-form standard solution, and their pointwise error. Relative-L2 = 1.2%.",
+  "note_es": "El campo de la PINN (bayesian-ensemble-uq) frente a la solución estándar de forma cerrada, y su error puntual. L2 relativa = 1.2%."
+ }
 }

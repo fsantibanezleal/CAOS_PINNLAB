@@ -178,5 +178,25 @@
     "max_abs_error": 0.001089
    }
   }
- ]
+ ],
+ "comparison": {
+  "trace": "poll-ocean-transport/comparison.json",
+  "lanes": [
+   {
+    "key": "standard",
+    "label_en": "standard (analytic)",
+    "label_es": "estándar (analítica)",
+    "role": "reference"
+   },
+   {
+    "key": "adapted",
+    "label_en": "advection-diffusion PINN",
+    "label_es": "PINN advection-diffusion",
+    "role": "fix",
+    "err": "err_adapted"
+   }
+  ],
+  "note_en": "The PINN (advection-diffusion) field vs the closed-form standard solution, and their pointwise error. Relative-L2 = 0.1%.",
+  "note_es": "El campo de la PINN (advection-diffusion) frente a la solución estándar de forma cerrada, y su error puntual. L2 relativa = 0.1%."
+ }
 }

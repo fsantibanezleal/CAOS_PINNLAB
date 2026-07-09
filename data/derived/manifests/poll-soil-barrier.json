@@ -64,5 +64,25 @@
     "max_abs_error": 0.134161
    }
   }
- ]
+ ],
+ "comparison": {
+  "trace": "poll-soil-barrier/comparison.json",
+  "lanes": [
+   {
+    "key": "standard",
+    "label_en": "standard (analytic)",
+    "label_es": "estándar (analítica)",
+    "role": "reference"
+   },
+   {
+    "key": "adapted",
+    "label_en": "domain-decomposition PINN",
+    "label_es": "PINN domain-decomposition",
+    "role": "fix",
+    "err": "err_adapted"
+   }
+  ],
+  "note_en": "The PINN (domain-decomposition) field vs the closed-form standard solution, and their pointwise error. Relative-L2 = 19.1%.",
+  "note_es": "El campo de la PINN (domain-decomposition) frente a la solución estándar de forma cerrada, y su error puntual. L2 relativa = 19.1%."
+ }
 }

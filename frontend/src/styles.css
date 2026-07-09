@@ -194,6 +194,36 @@ ol li, ul li { margin: 4px 0; }
 .pl-metrics { display: grid; grid-template-columns: auto 1fr; gap: 6px 12px; font-size: 12.5px; align-items: baseline; }
 .pl-metrics .k { color: var(--muted); }
 .pl-metrics .v { text-align: right; }
+
+/* ── CompareKit (issue #25): standard vs naive vs adapted method ladder ─────────────────── */
+.cmp-kit { display: flex; flex-direction: column; gap: 12px; }
+.cmp-headline { display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: center; }
+.cmp-num { font-size: 13px; padding: 4px 10px; border-radius: 8px; border: 1px solid var(--border); background: var(--panel-2); }
+.cmp-num.cmp-bad { color: var(--bad); border-color: color-mix(in srgb, var(--bad) 45%, transparent); }
+.cmp-num.cmp-good { color: var(--good); border-color: color-mix(in srgb, var(--good) 45%, transparent); }
+.cmp-panels { display: flex; gap: 12px; flex-wrap: wrap; align-items: flex-start; }
+.cmp-errrow { margin-top: 2px; }
+.cmp-panel { margin: 0; display: flex; flex-direction: column; gap: 4px; flex: 0 1 210px; }
+.cmp-cap { font-size: 11.5px; text-align: center; font-weight: 600; }
+.cmp-cap.cmp-ref { color: var(--muted); }
+.cmp-cap.cmp-exact { color: var(--accent); }
+.cmp-cap.cmp-bad { color: var(--bad); }
+.cmp-cap.cmp-good { color: var(--good); }
+.cmp-cap.cmp-data { color: var(--accent-2); }
+.cmp-map { position: relative; cursor: crosshair; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
+.cmp-val { font-size: 11px; text-align: center; color: var(--muted); min-height: 14px; }
+.cmp-readout { font-size: 12.5px; padding: 6px 10px; background: var(--panel-2); border: 1px solid var(--border); border-radius: 8px; min-height: 18px; }
+
+/* ── DiagnosticsKit (issue #25): the WHY (sweep + spectrum) ─────────────────────────────── */
+.diag-kit { display: flex; flex-direction: column; gap: 20px; }
+.diag-block h4 { font-size: 13px; margin: 0 0 8px; }
+.diag-chart { max-width: 720px; }
+.diag-svg { width: 100%; height: auto; background: var(--panel-2); border: 1px solid var(--border); border-radius: 10px; }
+.diag-tick { font-size: 9px; fill: var(--muted); }
+.diag-xlab, .diag-ylab { font-size: 11px; fill: var(--muted); }
+.diag-legend { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 6px; font-size: 12px; }
+.diag-leg { display: inline-flex; align-items: center; gap: 5px; }
+.diag-swatch { width: 12px; height: 3px; border-radius: 2px; display: inline-block; }
 @media (max-width: 1080px) {
   .pl-work { grid-template-columns: 1fr; height: auto; min-height: 0; }
   .pl-rail, .pl-stage { overflow: visible; }

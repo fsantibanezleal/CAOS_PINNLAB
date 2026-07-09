@@ -31,3 +31,13 @@ export function loadTrace(artifactPath: string): Promise<FieldTrace> {
 export function onnxUrl(onnxName: string): string {
   return `${DATA}/models/${onnxName}${V}`;
 }
+
+/** Load a case's method-ladder comparison trace (standard / naive / adapted / errors on one grid). */
+export function loadComparison(tracePath: string): Promise<import("./contract").CompareTrace> {
+  return getJson(`${DATA}/derived/${tracePath}`);
+}
+
+/** Load a case's diagnostics (wavenumber sweep, radial spectrum, per-lane L2). */
+export function loadDiagnostics(path: string): Promise<import("./contract").Diagnostics> {
+  return getJson(`${DATA}/derived/${path}`);
+}
