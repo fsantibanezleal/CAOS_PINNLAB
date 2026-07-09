@@ -335,3 +335,10 @@ ol li, ul li { margin: 4px 0; }
 .case-workbench { border-top: 1px solid var(--border); padding-top: 16px; }
 
 @media (max-width: 560px) { .case-grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); } }
+
+/* ── Methodology: SOTA-frontier ladder note + honest-scope panel ────────────────────────── */
+.beyond-note { font-size: 13px; line-height: 1.55; margin-top: 10px; padding: 9px 12px; border-radius: 8px;
+  background: color-mix(in srgb, var(--accent) 8%, transparent); border-left: 3px solid var(--accent); }
+.beyond-note strong { color: var(--accent); }
+.scope-panel { border-left: 3px solid #ff8a3d; }
+.scope-panel h3 { color: #ff8a3d; }

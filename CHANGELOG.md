@@ -3,6 +3,22 @@
 All notable changes to **PINN-Lab**. Format: `X.XX.XXX` (display) — see `pinnlab.__version__`. Keep `0.x` while on
 synthetic/benchmark data. Tag every release.
 
+## [0.16.000] — 2026-07-09 — Methodology as a classical → SOTA → beyond-SOTA ladder (cited)
+
+Driven by a verified deep-research pass (117 agents, 21 adversarially-verified claims;
+`wip/web-review/sota-research-2026-06-26.md`). The Methodology page becomes an explicit ladder, honestly framed:
+
+- **Honest-scope panel** — for a single well-posed FORWARD solve a tuned classical FEM/FVM/spectral solver is
+  usually faster/more accurate (community consensus, NOT overclaimed — the exact "PINNs win at X" framing was
+  refuted against its cited source, so it is stated as the community view). The two VERIFIED hard limits: standard
+  PINNs fail on chaotic/turbulent regimes (only causal training cracked Lorenz/KS/NS, over a finite pre-Lyapunov
+  window) and struggle on large/multi-scale domains. Cites Krishnapriyan 2021 + Wang 2024.
+- **Per-family "→ SOTA frontier + candidate-novel proposal + honest limit"** notes with DOIs: RAD/RAR-D, causal
+  weighting (+ PINN-Lab's Lyapunov-horizon leave-time as the candidate discipline), Residual-Based Attention (RBA),
+  PirateNets + PIKANs, XPINN/FBPINN, SPINN.
+- **New method entry: Dynamical systems & chaos (the Lyapunov horizon)** — the double pendulum's ode-residual +
+  soft-IC + RK45 anchor + leave-time. 15 references, all with DOIs. Persisted research reports committed.
+
 ## [0.15.000] — 2026-06-26 — App reorganized: domain groups + functionality cards (not 20 flat tabs)
 
 The App section is restructured from a single flat 20-tab strip into a legible three-level navigation:

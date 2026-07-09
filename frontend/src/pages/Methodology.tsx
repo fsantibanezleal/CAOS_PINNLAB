@@ -117,6 +117,18 @@ const METHODS: Method[] = [
     ref: 8,
   },
   {
+    group: "dynamical-systems",
+    en: "Dynamical systems & chaos (the Lyapunov horizon)",
+    es: "Sistemas dinámicos y caos (el horizonte de Lyapunov)",
+    bodyEn:
+      "An ODE case has no spatial field: the network maps time t to the STATE (a double pendulum's angles). The physics loss is the ODE residual at collocation times, with the initial condition enforced softly (a t² hard-constraint kills the gradient near t=0 and fails). For a CHAOTIC system no fixed network can track the true trajectory past a finite horizon — so the honest metric is the leave-time, not a long-term match: PINN-Lab bakes a high-accuracy RK45 anchor beside the PINN and reports where they first separate.",
+    bodyEs:
+      "Un caso EDO no tiene campo espacial: la red mapea el tiempo t al ESTADO (los ángulos de un péndulo doble). La pérdida física es el residual de la EDO en puntos de colocación, con la condición inicial impuesta de forma blanda (una restricción dura t² anula el gradiente cerca de t=0 y falla). Para un sistema CAÓTICO ninguna red fija puede seguir la trayectoria verdadera más allá de un horizonte finito — así que la métrica honesta es el leave-time, no un calce a largo plazo: PINN-Lab hornea un ancla RK45 de alta precisión junto a la PINN y reporta dónde se separan.",
+    eq: String.raw`\mathcal{L}=\tfrac1N\sum_t\big(r_1^2+r_2^2\big),\quad r_i=\ddot{\theta}_i^{\,\theta}-f_i;\qquad t_{\text{leave}}\sim \tfrac{1}{\lambda_{\max}}\ln\tfrac{1}{\varepsilon_0}`,
+    cases: "dyn-double-pendulum (chaotic; leave-time 1.99 s, RK45 anchor)",
+    ref: 2,
+  },
+  {
     group: "inverse-uq",
     en: "Inverse problems & UQ",
     es: "Problemas inversos y UQ",
@@ -144,7 +156,48 @@ const REFS: Ref[] = [
   { cite: "Lu, Meng, Mao & Karniadakis (2021). DeepXDE: a deep learning library for solving differential equations. SIAM Review 63(1):208-228.", doi: "10.1137/19M1274067" },
   { cite: "Li et al. (2021). Fourier Neural Operator for parametric partial differential equations. ICLR 2021. / Lu et al. (2021), DeepONet, Nat. Mach. Intell. 3:218-229.", doi: "10.48550/arXiv.2010.08895" },
   { cite: "Raissi, Perdikaris & Karniadakis (2019). Physics-informed neural networks. JCP 378:686-707. / Yang, Meng & Karniadakis (2021), B-PINNs, JCP 425:109913. / Lakshminarayanan et al. (2017), deep ensembles, NeurIPS 30.", doi: "10.1016/j.jcp.2018.10.045" },
+  { cite: "Anagnostopoulos, Toscano, Stergiopulos & Karniadakis (2024). Residual-based attention in physics-informed neural networks. CMAME 421:116805.", doi: "10.48550/arXiv.2307.00379" },
+  { cite: "Wang, Li, Chen & Perdikaris (2024). PirateNets: physics-informed deep learning with residual adaptive networks. JMLR 25.", doi: "10.48550/arXiv.2402.00326" },
+  { cite: "Toscano et al. (2024). From PINNs to PIKANs: recent advances in physics-informed machine learning (physics-informed Kolmogorov-Arnold networks).", doi: "10.48550/arXiv.2410.13228" },
+  { cite: "Cho, Nam, Yang, Yun, Hong & Park (2023). Separable physics-informed neural networks (SPINN). NeurIPS 36.", doi: "10.48550/arXiv.2306.15969" },
+  { cite: "Krishnapriyan, Gholami, Zhe, Kirby & Mahoney (2021). Characterizing possible failure modes in physics-informed neural networks. NeurIPS 34.", doi: "10.48550/arXiv.2109.01050" },
 ];
+
+/** The classical → SOTA → candidate-novel LADDER per family (transcribed from the verified deep-research report,
+ *  wip/web-review/sota-research-2026-06-26.md). Kept honest: the frontier method + a concrete PINN-Lab proposal +
+ *  the confirmed limit. `ref` cites the frontier claim. */
+const BEYOND: Record<string, { en: string; es: string; ref?: number }> = {
+  "adaptive-sampling": {
+    en: "Frontier: RAD/RAR-D (residual-based adaptive distribution) beat uniform + RAR-G at equal budget on stiff/steep problems [Wu 2023]. Candidate for PINN-Lab: couple RAD with causal weighting on Allen-Cahn. Honest limit: better sampling alone does not fix loss-conditioning or causality.",
+    es: "Frontera: RAD/RAR-D (distribución adaptativa por residual) superan a uniforme + RAR-G a igual presupuesto en problemas rígidos/abruptos [Wu 2023]. Candidato para PINN-Lab: combinar RAD con pesado causal en Allen-Cahn. Límite honesto: mejor muestreo por sí solo no arregla el condicionamiento ni la causalidad.",
+    ref: 1,
+  },
+  "causal-curriculum": {
+    en: "Frontier: causal weighting was the FIRST method to make PINNs succeed on chaotic/turbulent systems (Lorenz, Kuramoto-Sivashinsky, 2D NS) [Wang 2024] — but only over a finite PRE-LYAPUNOV window (Lorenz shown t∈[0,20]; KS exceeds 10% error after t≈0.8). PINN-Lab's candidate-novel contribution is exactly this discipline: a Lyapunov-horizon-aware LEAVE-TIME metric (see the double pendulum) so the app never overclaims beyond the predictability window.",
+    es: "Frontera: el pesado causal fue el PRIMER método en hacer que las PINN tengan éxito en sistemas caóticos/turbulentos (Lorenz, Kuramoto-Sivashinsky, NS 2D) [Wang 2024] — pero solo en una ventana finita PRE-LYAPUNOV (Lorenz mostrado t∈[0,20]; KS supera 10% de error tras t≈0.8). La contribución candidata-novel de PINN-Lab es exactamente esa disciplina: una métrica LEAVE-TIME consciente del horizonte de Lyapunov (ver el péndulo doble) para no sobre-prometer más allá de la ventana de predecibilidad.",
+    ref: 2,
+  },
+  "loss-weighting": {
+    en: "Frontier: Residual-Based Attention (RBA) — a gradient-LESS per-point weighting (EMA of the residuals) that improves on adversarial Self-Adaptive PINNs at O(N) cost, no min-max [Anagnostopoulos 2024]. Candidate for PINN-Lab: RBA per-point weights + causal temporal weights together. Honest limit: NTK is a diagnosis, not THE single root cause — an ill-conditioned loss landscape is also implicated [Krishnapriyan 2021]; RBA can saturate.",
+    es: "Frontera: Atención Basada en Residual (RBA) — pesado por punto SIN gradiente (EMA de los residuales) que mejora a las Self-Adaptive PINN adversariales a costo O(N), sin min-max [Anagnostopoulos 2024]. Candidato para PINN-Lab: pesos RBA por punto + pesos causales temporales juntos. Límite honesto: NTK es un diagnóstico, no LA única causa raíz — también influye un paisaje de pérdida mal condicionado [Krishnapriyan 2021]; RBA puede saturar.",
+    ref: 10,
+  },
+  architectures: {
+    en: "Frontier: PirateNets — a gated residual MLP whose skip connections fix the pathological initialization that makes DEEP PINNs train worse than shallow ones, unlocking depth [Wang 2024]. Also physics-informed Kolmogorov-Arnold networks (PIKANs), learnable-activation networks with promising accuracy/interpretability [Toscano 2024]. Candidate for PINN-Lab: PirateNets or cheb-PIKAN as a drop-in for the oscillatory/stiff cases. Honest limit: PIKANs are heavier and not universally better yet.",
+    es: "Frontera: PirateNets — un MLP residual con compuertas cuyas conexiones de salto arreglan la inicialización patológica que hace que las PINN PROFUNDAS entrenen peor que las someras, habilitando la profundidad [Wang 2024]. También las redes de Kolmogorov-Arnold físicas (PIKAN), con activaciones aprendibles y precisión/interpretabilidad prometedoras [Toscano 2024]. Candidato para PINN-Lab: PirateNets o cheb-PIKAN como reemplazo directo en los casos oscilatorios/rígidos. Límite honesto: las PIKAN son más pesadas y aún no universalmente mejores.",
+    ref: 11,
+  },
+  "domain-decomposition": {
+    en: "Frontier: XPINN generalized space-time decomposition [Jagtap 2020] and FBPINNs, which express the solution in an overlapping partition of unity of sub-networks and scale to large/multi-scale domains [Moseley 2023]. Candidate for PINN-Lab: FBPINN on a larger multi-scale barrier. Honest limit: the overhead pays off only when the domain is large or multi-scale.",
+    es: "Frontera: la descomposición espacio-temporal generalizada XPINN [Jagtap 2020] y las FBPINN, que expresan la solución en una partición de la unidad solapada de sub-redes y escalan a dominios grandes/multi-escala [Moseley 2023]. Candidato para PINN-Lab: FBPINN en una barrera multi-escala mayor. Límite honesto: el sobrecosto rinde solo cuando el dominio es grande o multi-escala.",
+    ref: 5,
+  },
+  "variational-scalable": {
+    en: "Frontier: Separable PINNs (SPINN) factor the network into per-axis 1D subnets combined by a tensor product, cutting the forward/backward cost enough to reach >10^7 collocation points [Cho 2023]. Candidate for PINN-Lab: SPINN for a high-resolution or 3-D case. Honest limit: the tensor-product structure suits grid-like/separable domains best.",
+    es: "Frontera: las PINN Separables (SPINN) factorizan la red en subredes 1D por eje combinadas por un producto tensorial, reduciendo el costo forward/backward lo suficiente para alcanzar >10^7 puntos de colocación [Cho 2023]. Candidato para PINN-Lab: SPINN para un caso de alta resolución o 3-D. Límite honesto: la estructura de producto tensorial encaja mejor en dominios tipo grilla/separables.",
+    ref: 13,
+  },
+};
 
 export function Methodology() {
   const lang = useUI((s) => s.lang);
@@ -155,8 +208,19 @@ export function Methodology() {
       <p className="muted">
         {es
           ? "Cada familia de métodos del estado del arte se EJERCE en al menos un caso de PINN-Lab (no solo se nombra). Abajo: la idea, su formulación, los casos que la ejercitan y la referencia primaria revisada por pares. La receta base Adam→L-BFGS se usa en todos."
-          : "Each state-of-the-art method family is EXERCISED in at least one PINN-Lab case (not merely named). Below: the idea, its formulation, the cases that exercise it, and the primary peer-reviewed reference. The Adam→L-BFGS base recipe is used everywhere."}
+          : "Each state-of-the-art method family is EXERCISED in at least one PINN-Lab case (not merely named). Below, each family is a ladder — the idea + its formulation, the cases that exercise it, the primary peer-reviewed reference, and the SOTA frontier + a candidate-novel proposal with its honest limit. The Adam→L-BFGS base recipe is used everywhere."}
       </p>
+
+      <section className="panel scope-panel" style={{ marginBottom: 16 }}>
+        <h3 style={{ marginTop: 0 }}>{es ? "Alcance honesto: dónde ganan (y no) las PINN" : "Honest scope: where PINNs win (and don't)"}</h3>
+        <p style={{ fontSize: 13.5 }}>
+          {es
+            ? "Para un problema DIRECTO bien planteado, un solver clásico FEM/FVM/espectral bien afinado suele ser más rápido y preciso — esto es el consenso de la comunidad, no un fallo de las PINN. La frontera verificada confirma dos límites duros: las PINN estándar FALLAN en regímenes caóticos/turbulentos (solo el entrenamiento causal logró por primera vez Lorenz/KS/NS, y solo en una ventana finita pre-Lyapunov) y SUFREN en dominios grandes/multi-escala (la motivación explícita de la descomposición de dominio). Donde las PINN sí ganan es, según la visión de la comunidad: problemas inversos, asimilación de datos escasos/ruidosos, surrogates paramétricos de muchas consultas y dominios de alta dimensión o de malla impráctica — justo los casos industriales/ambientales de aquí. Los modos de fallo están bien caracterizados."
+            : "For a single well-posed FORWARD solve, a tuned classical FEM/FVM/spectral solver is usually faster and more accurate — this is the community consensus, not a failure of PINNs. The verified frontier confirms two hard limits: standard PINNs FAIL on chaotic/turbulent regimes (only causal training first cracked Lorenz/KS/NS, and only over a finite pre-Lyapunov window) and STRUGGLE on large/multi-scale domains (the explicit motivation for domain decomposition). Where PINNs genuinely earn their place is, per the community view: inverse problems, sparse/noisy data assimilation, parametric many-query surrogates, and mesh-impractical / high-dimensional domains — exactly the industrial / environmental cases here. The failure modes are well characterized."}{" "}
+          <a href="https://doi.org/10.48550/arXiv.2109.01050" target="_blank" rel="noreferrer noopener">Krishnapriyan 2021</a>{" · "}
+          <a href="https://doi.org/10.1016/j.cma.2024.116813" target="_blank" rel="noreferrer noopener">Wang 2024 (causal)</a>
+        </p>
+      </section>
 
       {METHODS.map((m) => (
         <section key={m.group} className="panel" style={{ marginBottom: 14 }}>
@@ -169,6 +233,19 @@ export function Methodology() {
               <span className="mono">{m.cases}</span>
             </span>
           </div>
+          {BEYOND[m.group] && (
+            <div className="beyond-note">
+              <strong>{es ? "→ Frontera SOTA + propuesta" : "→ SOTA frontier + proposal"}:</strong>{" "}
+              {es ? BEYOND[m.group]!.es : BEYOND[m.group]!.en}
+              {BEYOND[m.group]!.ref != null && (
+                <>{" "}
+                  <a href={`https://doi.org/${REFS[BEYOND[m.group]!.ref! - 1]?.doi}`} target="_blank" rel="noreferrer noopener">
+                    doi:{REFS[BEYOND[m.group]!.ref! - 1]?.doi}
+                  </a>
+                </>
+              )}
+            </div>
+          )}
           <p className="muted" style={{ fontSize: 12, marginTop: 6 }}>
             {REFS[m.ref - 1]?.cite}{" "}
             <a href={`https://doi.org/${REFS[m.ref - 1]?.doi}`} target="_blank" rel="noreferrer noopener">
