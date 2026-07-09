@@ -80,6 +80,12 @@ export function FieldView({
   // line-cut profiles at the cursor
   const rowProfile = cur ? field.map((col) => col[cur.iy]) : [];
   const colProfile = cur ? field[cur.ix] : [];
+  // initial-state overlay: for a space-time field, show the profile at t=0 (dashed) under the selected-time one,
+  // so you compare the INITIAL state vs the SELECTED state. (Index 0 on whichever axis is time.)
+  const timeIsX = TIME_NAMES.has(axisX.label);
+  const timeIsY = TIME_NAMES.has(axisY.label);
+  const ref1 = cur && timeIsY ? field.map((col) => col[0]) : undefined; // u vs x at t=0
+  const ref2 = cur && timeIsX ? field[0] : undefined; // u vs y-axis at t=0 (when x is time)
 
   return (
     <div className="fieldview">
@@ -116,8 +122,8 @@ export function FieldView({
         </div>
 
         <div className="profiles">
-          <Profile title={`${outputLabel} vs ${axisX.label}`} n={nx} values={rowProfile} cursorIdx={cur?.ix ?? -1} />
-          <Profile title={`${outputLabel} vs ${axisY.label}`} n={ny} values={colProfile} cursorIdx={cur?.iy ?? -1} />
+          <Profile title={`${outputLabel} vs ${axisX.label}`} n={nx} values={rowProfile} cursorIdx={cur?.ix ?? -1} reference={ref1} />
+          <Profile title={`${outputLabel} vs ${axisY.label}`} n={ny} values={colProfile} cursorIdx={cur?.iy ?? -1} reference={ref2} />
         </div>
       </div>
     </div>
@@ -149,32 +155,41 @@ function Profile({
   n,
   values,
   cursorIdx,
+  reference,
 }: {
   title: string;
   n: number;
   values: number[];
   cursorIdx: number;
+  reference?: number[];
 }) {
   const W = 280;
   const H = 96;
   const pad = 6;
-  const lo = Math.min(...(values.length ? values : [0]));
-  const hi = Math.max(...(values.length ? values : [1]));
+  const hasRef = !!reference && reference.length > 1;
+  const all = hasRef ? values.concat(reference!) : values;
+  const lo = Math.min(...(all.length ? all : [0]));
+  const hi = Math.max(...(all.length ? all : [1]));
   const span = hi - lo || 1;
-  const pts = values
-    .map((v, i) => {
-      const x = pad + (i / Math.max(1, n - 1)) * (W - 2 * pad);
-      const y = H - pad - ((v - lo) / span) * (H - 2 * pad);
-      return `${x.toFixed(1)},${y.toFixed(1)}`;
-    })
-    .join(" ");
+  const toPts = (arr: number[]) =>
+    arr
+      .map((v, i) => {
+        const x = pad + (i / Math.max(1, n - 1)) * (W - 2 * pad);
+        const y = H - pad - ((v - lo) / span) * (H - 2 * pad);
+        return `${x.toFixed(1)},${y.toFixed(1)}`;
+      })
+      .join(" ");
   const cxFrac = cursorIdx >= 0 ? cursorIdx / Math.max(1, n - 1) : null;
   return (
     <div className="profile">
-      <div className="profile-title muted">{title}</div>
+      <div className="profile-title muted">
+        {title}
+        {hasRef && <span className="profile-legend"> · <span className="pl-sel">selected</span> vs <span className="pl-ref">initial (t=0)</span></span>}
+      </div>
       <svg viewBox={`0 0 ${W} ${H}`} className="profile-svg" preserveAspectRatio="none">
         <line x1={pad} y1={H - pad} x2={W - pad} y2={H - pad} stroke="var(--border)" strokeWidth="0.8" />
-        {values.length > 1 && <polyline points={pts} fill="none" stroke="var(--accent)" strokeWidth="1.6" />}
+        {hasRef && <polyline points={toPts(reference!)} fill="none" stroke="var(--muted)" strokeWidth="1.2" strokeDasharray="4 3" />}
+        {values.length > 1 && <polyline points={toPts(values)} fill="none" stroke="var(--accent)" strokeWidth="1.6" />}
         {cxFrac !== null && (
           <line
             x1={pad + cxFrac * (W - 2 * pad)}
