@@ -50,7 +50,7 @@ function streamline(u: number[][], v: number[][], xs: number[], ys: number[], x0
 
 type Bg = "speed" | "p" | "vort";
 
-/** VectorFieldKit — a 2-D VELOCITY field (e.g. the lid-driven cavity u,v,p) shown as RK4 streamlines + quiver over
+/** VectorFieldKit: a 2-D VELOCITY field (e.g. the lid-driven cavity u,v,p) shown as RK4 streamlines + quiver over
  *  a scalar background (speed / pressure / vorticity), with a hover read-out of (u,v,|U|,p). Static: streamlines are
  *  computed once from the baked field (no animation, no autoplay). Reveals the recirculating vortex that a per-scalar
  *  heatmap hides. (ADR-0063.) */
@@ -115,7 +115,7 @@ export function VectorFieldKit({ manifest, trace, lang }: KitProps) {
         lines.push(bwd.reverse().concat(fwd.slice(1)));
       }
     }
-    return { u, v, p, xs, ys, nx, ny, scal, lo: lo === hi ? lo - 1 : lo, hi: hi === lo ? hi + 1 : hi, lines };
+    return { u, v, p, xs, ys, nx, ny, scal, lo: lo === hi ? lo - 1: lo, hi: hi === lo ? hi + 1: hi, lines };
   }, [trace, bg, fa, hasUV]);
 
   useEffect(() => {
@@ -199,8 +199,8 @@ export function VectorFieldKit({ manifest, trace, lang }: KitProps) {
     }
   }, [d, showQuiver]);
 
-  if (!hasUV) return <div className="banner warn">{es ? "VectorFieldKit requiere salidas u,v." : "VectorFieldKit needs u,v outputs."}</div>;
-  if (!d) return <div className="loading">{es ? "Cargando campo…" : "Loading field…"}</div>;
+  if (!hasUV) return <div className="banner warn">{es ? "VectorFieldKit requiere salidas u,v.": "VectorFieldKit needs u,v outputs."}</div>;
+  if (!d) return <div className="loading">{es ? "Cargando campo…": "Loading field…"}</div>;
 
   const { xs, ys, nx, ny, u, v, p } = d;
   function onMove(e: React.MouseEvent) {
@@ -212,18 +212,18 @@ export function VectorFieldKit({ manifest, trace, lang }: KitProps) {
     setHover({ x: xs[ix] ?? ix, y: ys[iy] ?? iy, u: u[ix][iy], v: v[ix][iy], p: p[ix][iy] });
   }
 
-  const bgLabel = { speed: es ? "rapidez |U|" : "speed |U|", p: es ? "presión p" : "pressure p", vort: es ? "vorticidad" : "vorticity" };
+  const bgLabel = { speed: es ? "rapidez |U|": "speed |U|", p: es ? "presión p": "pressure p", vort: es ? "vorticidad": "vorticity" };
 
   return (
     <div className="vf-kit">
       <div className="vf-controls">
-        <span className="muted" style={{ fontSize: 13 }}>{es ? "Fondo" : "Background"}</span>
+        <span className="muted" style={{ fontSize: 13 }}>{es ? "Fondo": "Background"}</span>
         <div className="variant-chips">
           {(["speed", "p", "vort"] as Bg[]).map((k) => (
-            <button key={k} type="button" className={"variant-chip" + (bg === k ? " active" : "")} onClick={() => setBg(k)}>{bgLabel[k]}</button>
+            <button key={k} type="button" className={"variant-chip" + (bg === k ? " active": "")} onClick={() => setBg(k)}>{bgLabel[k]}</button>
           ))}
         </div>
-        <label className="t-ctl"><input type="checkbox" checked={showQuiver} onChange={(e) => setShowQuiver(e.target.checked)} /> {es ? "Flechas" : "Quiver"}</label>
+        <label className="t-ctl"><input type="checkbox" checked={showQuiver} onChange={(e) => setShowQuiver(e.target.checked)} /> {es ? "Flechas": "Quiver"}</label>
       </div>
       <div className="vf-map" onMouseMove={onMove} onMouseLeave={() => setHover(null)} style={{ width: W, maxWidth: "100%" }}>
         <canvas ref={canvasRef} style={{ width: "100%", aspectRatio: "1 / 1", display: "block", borderRadius: 8, border: "1px solid var(--border)" }} />
@@ -231,12 +231,12 @@ export function VectorFieldKit({ manifest, trace, lang }: KitProps) {
       <div className="vf-readout mono">
         {hover
           ? <>{fa[0]}={hover.x.toFixed(3)} {fa[1]}={hover.y.toFixed(3)} → <strong>u={hover.u.toFixed(3)} v={hover.v.toFixed(3)} |U|={Math.hypot(hover.u, hover.v).toFixed(3)} p={hover.p.toFixed(3)}</strong></>
-          : <span className="muted">{es ? "pasa el cursor para leer (u, v, |U|, p) · líneas blancas = streamlines del flujo" : "hover to read (u, v, |U|, p) · white lines = flow streamlines"}</span>}
+         : <span className="muted">{es ? "pasa el cursor para leer (u, v, |U|, p) · líneas blancas = streamlines del flujo": "hover to read (u, v, |U|, p) · white lines = flow streamlines"}</span>}
       </div>
       <p className="hint">
         {es
-          ? "Streamlines (RK4) del campo de velocidad horneado — revelan el vórtice recirculante de la cavidad que un heatmap escalar esconde. Estático (sin animación). La pestaña Live re-evalúa el ONNX."
-          : "RK4 streamlines of the baked velocity field — they reveal the recirculating cavity vortex that a per-scalar heatmap hides. Static (no animation). The Live tab re-evaluates the ONNX."}
+          ? "Streamlines (RK4) del campo de velocidad horneado: revelan el vórtice recirculante de la cavidad que un heatmap escalar esconde. Estático (sin animación). La pestaña Live re-evalúa el ONNX."
+         : "RK4 streamlines of the baked velocity field: they reveal the recirculating cavity vortex that a per-scalar heatmap hides. Static (no animation). The Live tab re-evaluates the ONNX."}
       </p>
     </div>
   );

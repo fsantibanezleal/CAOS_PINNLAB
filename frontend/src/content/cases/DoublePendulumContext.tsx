@@ -5,7 +5,7 @@ export function DoublePendulumContext({ lang }: { lang: "en" | "es" }) {
   const es = lang === "es";
   return es ? (
     <>
-      <h2>El problema: el péndulo doble — un sistema dinámico caótico, y la PINN como mapa t → estado</h2>
+      <h2>El problema: el péndulo doble: un sistema dinámico caótico, y la PINN como mapa t → estado</h2>
       <p>
         <strong>El problema.</strong> Dos brazos rígidos articulados, el segundo colgando del primero, soltados desde
         el reposo. Es uno de los sistemas <em>caóticos</em> más simples de la mecánica clásica: dos condiciones
@@ -20,9 +20,9 @@ export function DoublePendulumContext({ lang }: { lang: "en" | "es" }) {
       <ul>
         <li><strong>Estado:</strong> los ángulos desde la vertical <InlineMath tex={String.raw`\theta_1(t),\theta_2(t)`} /> y sus velocidades <InlineMath tex={String.raw`\dot\theta_1,\dot\theta_2`} />.</li>
         <li><strong>Constantes:</strong> masas <InlineMath tex={String.raw`m_1=m_2=1`} />, longitudes <InlineMath tex={String.raw`\ell_1=\ell_2=1`} />, gravedad <InlineMath tex={String.raw`g=9.81`} />.</li>
-        <li><strong>Condición inicial:</strong> <InlineMath tex={String.raw`\theta_1(0)=\theta_2(0)=120^\circ`} />, soltado del reposo <InlineMath tex={String.raw`\dot\theta_i(0)=0`} /> — un régimen claramente caótico.</li>
+        <li><strong>Condición inicial:</strong> <InlineMath tex={String.raw`\theta_1(0)=\theta_2(0)=120^\circ`} />, soltado del reposo <InlineMath tex={String.raw`\dot\theta_i(0)=0`} />: un régimen claramente caótico.</li>
         <li><strong>Dominio:</strong> tiempo <InlineMath tex={String.raw`t\in[0,3]`} /> s, 601 muestras horneadas.</li>
-        <li><strong>Ancla:</strong> un integrador <strong>RK45</strong> de alta precisión (<InlineMath tex={String.raw`\text{rtol}=\text{atol}=10^{-10}`} />) — la verdad numérica contra la que se mide la PINN.</li>
+        <li><strong>Ancla:</strong> un integrador <strong>RK45</strong> de alta precisión (<InlineMath tex={String.raw`\text{rtol}=\text{atol}=10^{-10}`} />): la verdad numérica contra la que se mide la PINN.</li>
       </ul>
 
       <h3>Formalización</h3>
@@ -49,7 +49,7 @@ export function DoublePendulumContext({ lang }: { lang: "en" | "es" }) {
         un horizonte finito (el <em>horizonte de Lyapunov</em>). Por eso la métrica principal NO es un calce a largo
         plazo, sino el <strong>leave-time</strong>: el primer instante en que la PINN se separa del RK45 por más de
         <InlineMath tex={String.raw`0.30`} /> rad. La App muestra la PINN (fantasma) sobre el RK45 (sólido): la sigue un
-        rato y luego la pierde — y el brazo de la PINN se pone <span style={{ color: "#ff5d5d" }}>rojo</span> tras el
+        rato y luego la pierde: y el brazo de la PINN se pone <span style={{ color: "#ff5d5d" }}>rojo</span> tras el
         leave-time. Las dos curvas naranjas (dos inicios separados <InlineMath tex={String.raw`10^{-2}`} /> rad)
         divergen exponencialmente: ese es el límite, mostrado honestamente, no escondido.
       </p>
@@ -65,15 +65,15 @@ export function DoublePendulumContext({ lang }: { lang: "en" | "es" }) {
       <p>
         <strong>Cómo leer la viz.</strong> El <strong>péndulo animado</strong> es el héroe: RK45 sólido (azul) + PINN
         fantasma (discontinua) + la estela del brazo inferior. El <strong>retrato de fase</strong>
-        <InlineMath tex={String.raw`\theta_1`} />–<InlineMath tex={String.raw`\theta_2`} /> traza el camino en el espacio
+        <InlineMath tex={String.raw`\theta_1`} />-<InlineMath tex={String.raw`\theta_2`} /> traza el camino en el espacio
         de estados. El panel <strong>mariposa</strong> muestra <InlineMath tex={String.raw`|\Delta\theta|`} /> de dos
         inicios vecinos creciendo (escala log). Las <strong>series temporales</strong> comparan los ángulos PINN vs RK45
         con la línea de leave-time. Usa Play / la barra para recorrer el tiempo.
       </p>
     </>
-  ) : (
+  ): (
     <>
-      <h2>The problem: the double pendulum — a chaotic dynamical system, and the PINN as a t → state map</h2>
+      <h2>The problem: the double pendulum: a chaotic dynamical system, and the PINN as a t → state map</h2>
       <p>
         <strong>The problem.</strong> Two rigid arms hinged in series, the second hanging off the first, released from
         rest. It is one of the simplest <em>chaotic</em> systems in classical mechanics: two almost-identical initial
@@ -88,9 +88,9 @@ export function DoublePendulumContext({ lang }: { lang: "en" | "es" }) {
       <ul>
         <li><strong>State:</strong> the angles from vertical <InlineMath tex={String.raw`\theta_1(t),\theta_2(t)`} /> and their rates <InlineMath tex={String.raw`\dot\theta_1,\dot\theta_2`} />.</li>
         <li><strong>Constants:</strong> masses <InlineMath tex={String.raw`m_1=m_2=1`} />, lengths <InlineMath tex={String.raw`\ell_1=\ell_2=1`} />, gravity <InlineMath tex={String.raw`g=9.81`} />.</li>
-        <li><strong>Initial condition:</strong> <InlineMath tex={String.raw`\theta_1(0)=\theta_2(0)=120^\circ`} />, released from rest <InlineMath tex={String.raw`\dot\theta_i(0)=0`} /> — a firmly chaotic regime.</li>
+        <li><strong>Initial condition:</strong> <InlineMath tex={String.raw`\theta_1(0)=\theta_2(0)=120^\circ`} />, released from rest <InlineMath tex={String.raw`\dot\theta_i(0)=0`} />: a firmly chaotic regime.</li>
         <li><strong>Domain:</strong> time <InlineMath tex={String.raw`t\in[0,3]`} /> s, 601 baked samples.</li>
-        <li><strong>Anchor:</strong> a high-accuracy <strong>RK45</strong> integrator (<InlineMath tex={String.raw`\text{rtol}=\text{atol}=10^{-10}`} />) — the numerical truth the PINN is measured against.</li>
+        <li><strong>Anchor:</strong> a high-accuracy <strong>RK45</strong> integrator (<InlineMath tex={String.raw`\text{rtol}=\text{atol}=10^{-10}`} />): the numerical truth the PINN is measured against.</li>
       </ul>
 
       <h3>Formalization</h3>
@@ -115,7 +115,7 @@ export function DoublePendulumContext({ lang }: { lang: "en" | "es" }) {
         horizon (the <em>Lyapunov horizon</em>). So the headline metric is NOT a long-term match but the
         <strong>leave-time</strong>: the first instant the PINN departs RK45 by more than
         <InlineMath tex={String.raw`0.30`} /> rad. The App shows the PINN (ghost) over RK45 (solid): it tracks for a
-        while then loses it — and the PINN arm turns <span style={{ color: "#ff5d5d" }}>red</span> after the leave-time.
+        while then loses it: and the PINN arm turns <span style={{ color: "#ff5d5d" }}>red</span> after the leave-time.
         The two orange curves (two starts <InlineMath tex={String.raw`10^{-2}`} /> rad apart) diverge exponentially:
         that is the limit, shown honestly, not hidden.
       </p>
@@ -131,7 +131,7 @@ export function DoublePendulumContext({ lang }: { lang: "en" | "es" }) {
       <p>
         <strong>How to read the viz.</strong> The <strong>animated pendulum</strong> is the hero: RK45 solid (blue) +
         PINN ghost (dashed) + the lower-arm trail. The <strong>phase portrait</strong>
-        <InlineMath tex={String.raw`\theta_1`} />–<InlineMath tex={String.raw`\theta_2`} /> traces the state-space path.
+        <InlineMath tex={String.raw`\theta_1`} />-<InlineMath tex={String.raw`\theta_2`} /> traces the state-space path.
         The <strong>butterfly</strong> panel shows <InlineMath tex={String.raw`|\Delta\theta|`} /> of two nearby starts
         growing (log scale). The <strong>time-series</strong> compares PINN vs RK45 angles with the leave-time line.
         Use Play / the bar to scrub through time.

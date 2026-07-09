@@ -5,13 +5,13 @@ export function Heat2dInverseContext({ lang }: { lang: "en" | "es" }) {
   const es = lang === "es";
   return es ? (
     <>
-      <h2>El problema: recuperar un campo de conductividad oculto desde unos pocos sensores — conducción inversa 2D</h2>
+      <h2>El problema: recuperar un campo de conductividad oculto desde unos pocos sensores: conducción inversa 2D</h2>
       <p>
         <strong>El problema.</strong> Una placa conduce calor con una conductividad térmica <InlineMath tex={String.raw`k(x,y)`} />
         que <em>no conocemos</em> y que varía punto a punto. Conocemos la fuente de calor <InlineMath tex={String.raw`q(x,y)`} />
         y medimos la temperatura <InlineMath tex={String.raw`T`} /> en apenas <strong>un centenar de sensores dispersos</strong>
         (con ruido). La pregunta inversa es: ¿se puede reconstruir el <strong>campo completo</strong>
-        <InlineMath tex={String.raw`k(x,y)`} /> en toda la placa — incluso donde no hay ningún sensor? Aquí
+        <InlineMath tex={String.raw`k(x,y)`} /> en toda la placa: incluso donde no hay ningún sensor? Aquí
         <InlineMath tex={String.raw`k`} /> no es un escalar a ajustar, sino un <em>campo desconocido</em>; ese es el caso
         canónico donde un PINN aventaja a los métodos clásicos FEM/FVM: la <strong>física</strong> (la EDP) rellena los
         huecos entre sensores y regulariza la reconstrucción.
@@ -20,10 +20,10 @@ export function Heat2dInverseContext({ lang }: { lang: "en" | "es" }) {
       <h3>Componentes y variables</h3>
       <ul>
         <li><strong>Dominio:</strong> la placa <InlineMath tex={String.raw`(x,y)\in[0,1]^2`} />, grilla del campo <InlineMath tex={String.raw`81\times81`} />.</li>
-        <li><strong>Incógnita (objetivo inverso):</strong> el campo de conductividad <InlineMath tex={String.raw`k(x,y)>0`} /> — lo que se recupera y se puntúa.</li>
+        <li><strong>Incógnita (objetivo inverso):</strong> el campo de conductividad <InlineMath tex={String.raw`k(x,y)>0`} />: lo que se recupera y se puntúa.</li>
         <li><strong>Estado auxiliar:</strong> la temperatura <InlineMath tex={String.raw`T(x,y)`} />, también salida de la red, con <InlineMath tex={String.raw`T=0`} /> en el borde.</li>
         <li><strong>Datos conocidos:</strong> la fuente <InlineMath tex={String.raw`q(x,y)`} /> (entra en la EDP) y <InlineMath tex={String.raw`\sim100`} /> observaciones ruidosas <InlineMath tex={String.raw`T(x_i,y_i)`} />.</li>
-        <li><strong>Ruido de sensor:</strong> <InlineMath tex={String.raw`\sigma=0.01`} /> gaussiano sobre las lecturas de <InlineMath tex={String.raw`T`} /> — los datos no son perfectos.</li>
+        <li><strong>Ruido de sensor:</strong> <InlineMath tex={String.raw`\sigma=0.01`} /> gaussiano sobre las lecturas de <InlineMath tex={String.raw`T`} />: los datos no son perfectos.</li>
       </ul>
 
       <h3>Formalización</h3>
@@ -35,7 +35,7 @@ export function Heat2dInverseContext({ lang }: { lang: "en" | "es" }) {
       <p>
         Para tener una <strong>verdad de terreno exacta</strong> usamos una solución manufacturada (MMS): se fija el par
         <InlineMath tex={String.raw`(T^*,k^*)`} /> y se <em>deriva</em> la fuente <InlineMath tex={String.raw`q`} /> que lo hace
-        cumplir la EDP por construcción —
+        cumplir la EDP por construcción: 
       </p>
       <Equation tex={String.raw`T^*=\sin\pi x\,\sin\pi y,\qquad k^*=1+\tfrac12\sin\pi x\,\sin\pi y,\qquad q=\nabla\!\cdot\!\big(k^*\nabla T^*\big).`} />
       <p>
@@ -56,13 +56,13 @@ export function Heat2dInverseContext({ lang }: { lang: "en" | "es" }) {
       <Equation tex={String.raw`\mathcal{R}=k\,(T_{xx}+T_{yy})+k_x\,T_x+k_y\,T_y-q,\qquad \mathcal{L}=\|\mathcal{R}\|^2+\lambda\!\!\sum_{i}\big(T_\theta(x_i,y_i)-T_i^{\text{obs}}\big)^2.`} />
       <ul>
         <li><strong>Dos salidas, no un escalar:</strong> una red de ramas separadas (PFNN) emite <InlineMath tex={String.raw`(k,T)`} />; el gradiente de <InlineMath tex={String.raw`k`} /> entra en el residual, así que la EDP <em>conecta</em> ambos campos.</li>
-        <li><strong>Positividad dura:</strong> la conductividad física es positiva, así que <InlineMath tex={String.raw`k=\mathrm{softplus}(\cdot)+\varepsilon>0`} /> por construcción — nunca un <InlineMath tex={String.raw`k`} /> negativo sin sentido físico.</li>
-        <li><strong>Borde exacto:</strong> <InlineMath tex={String.raw`T_\theta=x(1-x)\,y(1-y)\,\tilde T`} /> se anula en <InlineMath tex={String.raw`\partial\Omega`} /> por construcción — la condición de borde es exacta, sin término de pérdida que compita.</li>
+        <li><strong>Positividad dura:</strong> la conductividad física es positiva, así que <InlineMath tex={String.raw`k=\mathrm{softplus}(\cdot)+\varepsilon>0`} /> por construcción: nunca un <InlineMath tex={String.raw`k`} /> negativo sin sentido físico.</li>
+        <li><strong>Borde exacto:</strong> <InlineMath tex={String.raw`T_\theta=x(1-x)\,y(1-y)\,\tilde T`} /> se anula en <InlineMath tex={String.raw`\partial\Omega`} /> por construcción: la condición de borde es exacta, sin término de pérdida que compita.</li>
         <li><strong>Datos dispersos:</strong> las <InlineMath tex={String.raw`\sim100`} /> lecturas ruidosas entran como una pérdida de observación ponderada (<InlineMath tex={String.raw`\lambda=100`} />); la EDP <strong>regulariza</strong> y propaga la información de los sensores a todo el dominio.</li>
       </ul>
       <p>
         Sin el prior físico, un centenar de puntos no determinaría un campo 2D completo (problema mal puesto). Con él, la
-        red rellena los huecos de forma consistente con la conducción — la razón de fondo por la que &ldquo;los PINN son
+        red rellena los huecos de forma consistente con la conducción: la razón de fondo por la que &ldquo;los PINN son
         para problemas inversos&rdquo;.
       </p>
 
@@ -75,7 +75,7 @@ export function Heat2dInverseContext({ lang }: { lang: "en" | "es" }) {
         dependiente de la temperatura, fuentes desconocidas, y geometrías complejas. El error es naturalmente más alto
         donde <InlineMath tex={String.raw`|\nabla T|`} /> es pequeño (cerca del borde y en los extremos de
         <InlineMath tex={String.raw`T`} />): ahí la EDP es poco sensible a <InlineMath tex={String.raw`k`} />, así que los
-        datos informan menos sobre la conductividad — una limitación honesta, no un defecto del método.
+        datos informan menos sobre la conductividad: una limitación honesta, no un defecto del método.
       </p>
 
       <p>
@@ -83,8 +83,8 @@ export function Heat2dInverseContext({ lang }: { lang: "en" | "es" }) {
         <em> domo</em> central de <InlineMath tex={String.raw`k^*`} /> (máximo en el centro, donde
         <InlineMath tex={String.raw`\sin\pi x\sin\pi y=1`} />, y <InlineMath tex={String.raw`k\to1`} /> hacia los bordes),
         a partir de solo <InlineMath tex={String.raw`\sim100`} /> sensores de temperatura ruidosos. Como la conductividad
-        es <em>estacionaria</em> y la verdad MMS es un par fijo <InlineMath tex={String.raw`(T^*,k^*)`} /> — sin un mando
-        físico que admita una familia paramétrica de inversiones bien puestas con el mismo conjunto de sensores — este
+        es <em>estacionaria</em> y la verdad MMS es un par fijo <InlineMath tex={String.raw`(T^*,k^*)`} />: sin un mando
+        físico que admita una familia paramétrica de inversiones bien puestas con el mismo conjunto de sensores: este
         caso se publica como un <strong>benchmark de una sola variante</strong>, no como un barrido (nunca fabricamos
         regímenes para inflar un contador).
       </p>
@@ -100,15 +100,15 @@ export function Heat2dInverseContext({ lang }: { lang: "en" | "es" }) {
         navegador (onnxruntime-web), sin deslizador de parámetro.
       </p>
     </>
-  ) : (
+  ): (
     <>
-      <h2>The problem: recover a hidden conductivity field from a handful of sensors — 2D inverse conduction</h2>
+      <h2>The problem: recover a hidden conductivity field from a handful of sensors: 2D inverse conduction</h2>
       <p>
         <strong>The problem.</strong> A plate conducts heat with a thermal conductivity <InlineMath tex={String.raw`k(x,y)`} />
         that we <em>do not know</em> and that varies point to point. We know the heat source
         <InlineMath tex={String.raw`q(x,y)`} /> and we measure the temperature <InlineMath tex={String.raw`T`} /> at just
         <strong> a hundred or so scattered sensors</strong> (noisy). The inverse question is: can we reconstruct the
-        <strong> whole field</strong> <InlineMath tex={String.raw`k(x,y)`} /> across the plate — even where there is no
+        <strong> whole field</strong> <InlineMath tex={String.raw`k(x,y)`} /> across the plate: even where there is no
         sensor at all? Here <InlineMath tex={String.raw`k`} /> is not a scalar to fit but an <em>unknown field</em>; this is
         the canonical case where a PINN beats classical FEM/FVM: the <strong>physics</strong> (the PDE) fills the gaps
         between sensors and regularises the reconstruction.
@@ -117,10 +117,10 @@ export function Heat2dInverseContext({ lang }: { lang: "en" | "es" }) {
       <h3>Components &amp; variables</h3>
       <ul>
         <li><strong>Domain:</strong> the plate <InlineMath tex={String.raw`(x,y)\in[0,1]^2`} />, an <InlineMath tex={String.raw`81\times81`} /> field grid.</li>
-        <li><strong>Unknown (the inverse target):</strong> the conductivity field <InlineMath tex={String.raw`k(x,y)>0`} /> — what is recovered and scored.</li>
+        <li><strong>Unknown (the inverse target):</strong> the conductivity field <InlineMath tex={String.raw`k(x,y)>0`} />: what is recovered and scored.</li>
         <li><strong>Auxiliary state:</strong> the temperature <InlineMath tex={String.raw`T(x,y)`} />, also a network output, with <InlineMath tex={String.raw`T=0`} /> on the boundary.</li>
         <li><strong>Known data:</strong> the source <InlineMath tex={String.raw`q(x,y)`} /> (enters the PDE) and <InlineMath tex={String.raw`\sim100`} /> noisy observations <InlineMath tex={String.raw`T(x_i,y_i)`} />.</li>
-        <li><strong>Sensor noise:</strong> <InlineMath tex={String.raw`\sigma=0.01`} /> Gaussian on the <InlineMath tex={String.raw`T`} /> readings — the data is not perfect.</li>
+        <li><strong>Sensor noise:</strong> <InlineMath tex={String.raw`\sigma=0.01`} /> Gaussian on the <InlineMath tex={String.raw`T`} /> readings: the data is not perfect.</li>
       </ul>
 
       <h3>Formalization</h3>
@@ -132,7 +132,7 @@ export function Heat2dInverseContext({ lang }: { lang: "en" | "es" }) {
       <p>
         To get an <strong>exact ground truth</strong> we use a manufactured solution (MMS): fix the pair
         <InlineMath tex={String.raw`(T^*,k^*)`} /> and <em>derive</em> the source <InlineMath tex={String.raw`q`} /> that makes
-        it satisfy the PDE by construction —
+        it satisfy the PDE by construction: 
       </p>
       <Equation tex={String.raw`T^*=\sin\pi x\,\sin\pi y,\qquad k^*=1+\tfrac12\sin\pi x\,\sin\pi y,\qquad q=\nabla\!\cdot\!\big(k^*\nabla T^*\big).`} />
       <p>
@@ -153,13 +153,13 @@ export function Heat2dInverseContext({ lang }: { lang: "en" | "es" }) {
       <Equation tex={String.raw`\mathcal{R}=k\,(T_{xx}+T_{yy})+k_x\,T_x+k_y\,T_y-q,\qquad \mathcal{L}=\|\mathcal{R}\|^2+\lambda\!\!\sum_{i}\big(T_\theta(x_i,y_i)-T_i^{\text{obs}}\big)^2.`} />
       <ul>
         <li><strong>Two outputs, not a scalar:</strong> a parallel-branch network (PFNN) emits <InlineMath tex={String.raw`(k,T)`} />; the gradient of <InlineMath tex={String.raw`k`} /> enters the residual, so the PDE <em>couples</em> both fields.</li>
-        <li><strong>Hard positivity:</strong> physical conductivity is positive, so <InlineMath tex={String.raw`k=\mathrm{softplus}(\cdot)+\varepsilon>0`} /> by construction — never a physically meaningless negative <InlineMath tex={String.raw`k`} />.</li>
-        <li><strong>Exact boundary:</strong> <InlineMath tex={String.raw`T_\theta=x(1-x)\,y(1-y)\,\tilde T`} /> vanishes on <InlineMath tex={String.raw`\partial\Omega`} /> by construction — the boundary condition is exact, with no competing loss term.</li>
+        <li><strong>Hard positivity:</strong> physical conductivity is positive, so <InlineMath tex={String.raw`k=\mathrm{softplus}(\cdot)+\varepsilon>0`} /> by construction: never a physically meaningless negative <InlineMath tex={String.raw`k`} />.</li>
+        <li><strong>Exact boundary:</strong> <InlineMath tex={String.raw`T_\theta=x(1-x)\,y(1-y)\,\tilde T`} /> vanishes on <InlineMath tex={String.raw`\partial\Omega`} /> by construction: the boundary condition is exact, with no competing loss term.</li>
         <li><strong>Sparse data:</strong> the <InlineMath tex={String.raw`\sim100`} /> noisy readings enter as a weighted observation loss (<InlineMath tex={String.raw`\lambda=100`} />); the PDE <strong>regularises</strong> and propagates the sensor information across the whole domain.</li>
       </ul>
       <p>
         Without the physics prior, a hundred points would not determine a full 2D field (an ill-posed problem). With it,
-        the network fills the gaps consistently with conduction — the underlying reason &ldquo;PINNs are for inverse
+        the network fills the gaps consistently with conduction: the underlying reason &ldquo;PINNs are for inverse
         problems&rdquo;.
       </p>
 
@@ -171,7 +171,7 @@ export function Heat2dInverseContext({ lang }: { lang: "en" | "es" }) {
         anisotropic or temperature-dependent conductivity, unknown sources, and complex geometries. The error is naturally
         larger where <InlineMath tex={String.raw`|\nabla T|`} /> is small (near the boundary and at the extrema of
         <InlineMath tex={String.raw`T`} />): there the PDE is weakly sensitive to <InlineMath tex={String.raw`k`} />, so the
-        data inform conductivity less — an honest limitation, not a flaw of the method.
+        data inform conductivity less: an honest limitation, not a flaw of the method.
       </p>
 
       <p>
@@ -179,8 +179,8 @@ export function Heat2dInverseContext({ lang }: { lang: "en" | "es" }) {
         central <em>dome</em> of <InlineMath tex={String.raw`k^*`} /> (peak at the center, where
         <InlineMath tex={String.raw`\sin\pi x\sin\pi y=1`} />, and <InlineMath tex={String.raw`k\to1`} /> toward the edges),
         from only <InlineMath tex={String.raw`\sim100`} /> noisy temperature sensors. Because the conductivity is
-        <em> stationary</em> and the MMS truth is a fixed pair <InlineMath tex={String.raw`(T^*,k^*)`} /> — with no physical
-        knob that admits a parametric family of well-posed inversions sharing the same sensor set — this case ships as a
+        <em> stationary</em> and the MMS truth is a fixed pair <InlineMath tex={String.raw`(T^*,k^*)`} />: with no physical
+        knob that admits a parametric family of well-posed inversions sharing the same sensor set: this case ships as a
         <strong> single-variant benchmark</strong>, not a sweep (we never fabricate regimes to inflate a count).
       </p>
       <p>

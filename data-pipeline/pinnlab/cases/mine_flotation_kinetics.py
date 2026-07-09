@@ -22,7 +22,7 @@ K_MIN, K_MAX = 0.5, 5.0
 CASE = CaseSpec(
     id="mine-flotation-kinetics",
     category="mining-mineral-processing",
-    title="Froth-flotation kinetics — parametric first-order PINN C(k,t)",
+    title="Froth-flotation kinetics: parametric first-order PINN C(k,t)",
     governing_equations=(
         r"\partial_t C = -k\,C,\ C(k,0)=1\ \Rightarrow\ C^*=e^{-k t},\ R=1-C;\ k\in[0.5,5]\ (\text{rate constant})"
     ),

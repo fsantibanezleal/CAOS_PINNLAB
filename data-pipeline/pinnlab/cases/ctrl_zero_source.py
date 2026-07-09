@@ -33,7 +33,7 @@ def _g(x: np.ndarray, y: np.ndarray) -> np.ndarray:
 CASE = CaseSpec(
     id="ctrl-zero-source",
     category="control",
-    title="Manufactured-solution control — parametric source amplitude (Poisson, hard-zero boundary)",
+    title="Manufactured-solution control: parametric source amplitude (Poisson, hard-zero boundary)",
     governing_equations=(
         r"-\nabla^2 u = f(x,y;a)\ \text{on}\ (0,1)^2,\ u|_{\partial\Omega}=0,\ "
         r"u^*=a\big(\sin\pi x\sin\pi y+\tfrac12\sin 2\pi x\sin 2\pi y\big)"

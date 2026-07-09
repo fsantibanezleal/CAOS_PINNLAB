@@ -11,7 +11,7 @@ export const INDEX_SCHEMA = "pinnlab.index/v1";
 export type Lane = "live" | "precompute";
 export type NestedNumberArray = number[] | NestedNumberArray[];
 
-/** A tunable physical parameter (a network input on a parametric case) — the `Live` slider. */
+/** A tunable physical parameter (a network input on a parametric case): the `Live` slider. */
 export interface ParamSpec {
   key: string;
   label_en: string;
@@ -57,7 +57,7 @@ export interface EngineRef {
   framework: string;
 }
 
-/** One baked case manifest (core/manifest.py::build_case_manifest, schema v2). */
+/** One baked case manifest (core/manifest.py:build_case_manifest, schema v2). */
 export interface CaseManifest {
   schema: string;
   case_id: string;
@@ -73,7 +73,7 @@ export interface CaseManifest {
   field_axes: string[]; // the 2-D heatmap axes
   // ADR-0063: an orthogonal "what kind of system is this" axis that SELECTS the render kit.
   // `category` stays the physics-domain bucket (Experiments/Benchmark grouping); `system_type`
-  // drives `view_kit`. Optional so pre-kit manifests still validate — the app falls back to HeatmapKit.
+  // drives `view_kit`. Optional so pre-kit manifests still validate: the app falls back to HeatmapKit.
   system_type?: string; // ode-dynamical | time-evol-1d | time-evol-2d | steady-elliptic | vector-flow | inverse-assim | eigen-modal | uq-bayesian | operator-surrogate
   view_kit?: string; // HeatmapKit | TimeEvolutionKit | SpatioTemporalKit | VectorFieldKit | TrajectoryAnimationKit | PhasePortraitKit | ModeShapeKit | UQBandKit | InverseOverlayKit
   param_specs: ParamSpec[];
@@ -89,7 +89,7 @@ export interface CaseManifest {
   variants: VariantEntry[];
 }
 
-/** The compact replay artifact = a decimated solution field (core/trace.py::build_trace). */
+/** The compact replay artifact = a decimated solution field (core/trace.py:build_trace). */
 export interface FieldTrace {
   schema?: string;
   case_id: string;
@@ -128,27 +128,27 @@ export const CATEGORY_LABELS: Record<string, { en: string; es: string }> = {
   control: { en: "Controls", es: "Controles" },
 };
 
-/** One-line "what this scenario domain is" — the group intro on the App page. */
+/** One-line "what this scenario domain is": the group intro on the App page. */
 export const CATEGORY_INTRO: Record<string, { en: string; es: string }> = {
   "canonical-benchmark": {
     en: "The reference PDEs and one chaotic ODE that harden the engine + the train→ONNX→web contract: elliptic, parabolic, hyperbolic, advection, an operator, and a dynamical system.",
     es: "Las PDEs de referencia y una EDO caótica que endurecen el motor + el contrato train→ONNX→web: elíptica, parabólica, hiperbólica, advección, un operador y un sistema dinámico.",
   },
   "mining-mineral-processing": {
-    en: "Reduced-model processes from mineral processing — comminution, flotation, thickening, heap leaching — each a standard engineering closure, honestly labelled synthetic-illustrative.",
-    es: "Procesos de modelo reducido del procesamiento mineral — conminución, flotación, espesamiento, lixiviación en pilas — cada uno un cierre de ingeniería estándar, etiquetado con honestidad como sintético-ilustrativo.",
+    en: "Reduced-model processes from mineral processing: comminution, flotation, thickening, heap leaching: each a standard engineering closure, honestly labelled synthetic-illustrative.",
+    es: "Procesos de modelo reducido del procesamiento mineral: conminución, flotación, espesamiento, lixiviación en pilas: cada uno un cierre de ingeniería estándar, etiquetado con honestidad como sintético-ilustrativo.",
   },
   "pollution-environmental": {
-    en: "Transport, seepage and uncertainty in environmental settings — an advecting plume, a barrier, unsaturated seepage, a Bayesian source, and the one case trained on REAL data (NOAA soil temperatures).",
-    es: "Transporte, filtración e incertidumbre en entornos ambientales — una pluma que se advecta, una barrera, filtración no saturada, una fuente bayesiana, y el único caso entrenado con datos REALES (temperaturas de suelo NOAA).",
+    en: "Transport, seepage and uncertainty in environmental settings: an advecting plume, a barrier, unsaturated seepage, a Bayesian source, and the one case trained on REAL data (NOAA soil temperatures).",
+    es: "Transporte, filtración e incertidumbre en entornos ambientales: una pluma que se advecta, una barrera, filtración no saturada, una fuente bayesiana, y el único caso entrenado con datos REALES (temperaturas de suelo NOAA).",
   },
   "industrial-fluids-heat": {
     en: "Where PINNs genuinely win: an inverse conductivity recovery from sparse sensors, and a Helmholtz field with Fourier-feature inputs.",
     es: "Donde las PINNs ganan de verdad: una recuperación inversa de conductividad desde sensores dispersos, y un campo de Helmholtz con entradas de Fourier features.",
   },
   control: {
-    en: "Degenerate sanity anchors — the engine must not crash on a trivial (zero-source) case.",
-    es: "Anclas de sanidad degeneradas — el motor no debe fallar en un caso trivial (fuente cero).",
+    en: "Degenerate sanity anchors: the engine must not crash on a trivial (zero-source) case.",
+    es: "Anclas de sanidad degeneradas: el motor no debe fallar en un caso trivial (fuente cero).",
   },
 };
 

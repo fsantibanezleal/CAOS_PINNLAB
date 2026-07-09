@@ -21,7 +21,7 @@ const CATEGORY_ORDER = [
   "control",
 ];
 
-/** Cross-cutting HIGHLIGHTS so the standout cases are not lost in the sea of 20 — surfaced above the domain groups.
+/** Cross-cutting HIGHLIGHTS so the standout cases are not lost in the sea of 20: surfaced above the domain groups.
  *  REAL data first + starred; then chaotic dynamics; then the hybrid data+physics cases (where PINNs genuinely win). */
 const FEATURED: { id: string; star?: boolean; en: string; es: string; subEn: string; subEs: string }[] = [
   { id: "env-soil-heat-real", star: true, en: "Trained on REAL data", es: "Entrenado con datos REALES", subEn: "NOAA soil temperatures", subEs: "temperaturas de suelo NOAA" },
@@ -61,7 +61,7 @@ export function AppPage() {
   }, [index, group, caseId, groups]);
 
   if (err) return <div className="page-body"><div className="banner error">⚠ {err}</div></div>;
-  if (!index) return <div className="page-body"><div className="loading">{es ? "Cargando…" : "Loading…"}</div></div>;
+  if (!index) return <div className="page-body"><div className="loading">{es ? "Cargando…": "Loading…"}</div></div>;
 
   const present = CATEGORY_ORDER.filter((c) => groups[c]?.length);
   const activeCases = groups[group] ?? [];
@@ -81,17 +81,17 @@ export function AppPage() {
   return (
     <div className="page-body">
       <div className="page-head">
-        <h1>{es ? "Catálogo de PINNs" : "PINN catalogue"}</h1>
+        <h1>{es ? "Catálogo de PINNs": "PINN catalogue"}</h1>
         <p className="lede">
           {es
-            ? "20 casos en cinco dominios. Elige un dominio, luego un caso: cada uno es un banco de trabajo — un campo interactivo, inferencia en vivo en tu navegador, una comparación de regímenes y el contexto detallado con sus ecuaciones. Las etiquetas de cada tarjeta dicen qué funcionalidad ejercita (la visualización y el método)."
-            : "20 cases across five domains. Pick a domain, then a case: each is a workbench — an interactive field, live in-browser inference, a regime comparison, and the detailed context with its equations. Each card's badges say what functionality it exercises (the visualization and the method)."}
+            ? "20 casos en cinco dominios. Elige un dominio, luego un caso: cada uno es un banco de trabajo: un campo interactivo, inferencia en vivo en tu navegador, una comparación de regímenes y el contexto detallado con sus ecuaciones. Las etiquetas de cada tarjeta dicen qué funcionalidad ejercita (la visualización y el método)."
+           : "20 cases across five domains. Pick a domain, then a case: each is a workbench: an interactive field, live in-browser inference, a regime comparison, and the detailed context with its equations. Each card's badges say what functionality it exercises (the visualization and the method)."}
         </p>
       </div>
 
-      {/* Highlights — surface the standout cases (REAL data first) so they are not lost in the 20 */}
+      {/* Highlights: surface the standout cases (REAL data first) so they are not lost in the 20 */}
       <div className="highlights">
-        <span className="highlights-label">{es ? "Destacados" : "Highlights"}</span>
+        <span className="highlights-label">{es ? "Destacados": "Highlights"}</span>
         <div className="highlights-row">
           {FEATURED.map((f) => {
             const c = index.cases.find((x) => x.case_id === f.id);
@@ -100,27 +100,27 @@ export function AppPage() {
               <button
                 key={f.id}
                 type="button"
-                className={"highlight-card" + (f.star ? " star" : "") + (f.id === caseId ? " active" : "")}
+                className={"highlight-card" + (f.star ? " star": "") + (f.id === caseId ? " active": "")}
                 onClick={() => selectCase(c.category, f.id)}
               >
-                <span className="hl-tag">{f.star ? "★ " : ""}{es ? f.es : f.en}</span>
+                <span className="hl-tag">{f.star ? "★ ": ""}{es ? f.es: f.en}</span>
                 <span className="hl-name">{caseLabel(f.id)}</span>
-                <span className="hl-sub">{es ? f.subEs : f.subEn}</span>
+                <span className="hl-sub">{es ? f.subEs: f.subEn}</span>
               </button>
             );
           })}
         </div>
       </div>
 
-      {/* Level 1 — scenario domains */}
-      <div className="group-nav" role="tablist" aria-label={es ? "Dominios" : "Domains"}>
+      {/* Level 1: scenario domains */}
+      <div className="group-nav" role="tablist" aria-label={es ? "Dominios": "Domains"}>
         {present.map((cat) => (
           <button
             key={cat}
             role="tab"
             type="button"
             aria-selected={cat === group}
-            className={"group-tab" + (cat === group ? " active" : "")}
+            className={"group-tab" + (cat === group ? " active": "")}
             onClick={() => selectGroup(cat)}
           >
             {CATEGORY_LABELS[cat]?.[lang] ?? cat}
@@ -130,7 +130,7 @@ export function AppPage() {
       </div>
       {CATEGORY_INTRO[group] && <p className="group-intro">{CATEGORY_INTRO[group][lang]}</p>}
 
-      {/* Level 2 — case cards (groupings of functionalities) */}
+      {/* Level 2: case cards (groupings of functionalities) */}
       <div className="case-grid">
         {activeCases.map((c) => {
           const kit = VIEW_KIT_LABELS[c.view_kit ?? "HeatmapKit"]?.[lang] ?? c.view_kit ?? "";
@@ -140,14 +140,15 @@ export function AppPage() {
             <button
               key={c.case_id}
               type="button"
-              className={"case-card" + (c.case_id === caseId ? " active" : "")}
+              data-case={c.case_id}
+              className={"case-card" + (c.case_id === caseId ? " active": "")}
               onClick={() => setCaseId(c.case_id)}
               aria-pressed={c.case_id === caseId}
             >
               <span className="case-card-title">{caseLabel(c.case_id)}</span>
               <span className="case-card-badges">
                 <span className="cc-badge kit">{kit}</span>
-                <span className={"cc-badge data" + (real ? " real" : "")}>{data}</span>
+                <span className={"cc-badge data" + (real ? " real": "")}>{data}</span>
               </span>
               <span className="case-card-method mono">{c.method}</span>
             </button>
@@ -155,7 +156,7 @@ export function AppPage() {
         })}
       </div>
 
-      {/* Level 3 — the workbench */}
+      {/* Level 3: the workbench */}
       {active && (
         <div className="case-workbench">
           <CaseExperiment key={active.case_id} manifestId={active.case_id} description={ContextFor(active.case_id, lang)} lang={lang} />

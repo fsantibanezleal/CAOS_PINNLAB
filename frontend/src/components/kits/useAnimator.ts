@@ -20,7 +20,7 @@ export function useAnimator(nFrames: number, opts?: { fps?: number; startPlaying
   const baseFps = opts?.fps ?? 12;
   const [frame, setFrameState] = useState(0);
   // DEFAULT PAUSED + NON-LOOPING (no autoplay): nothing computes until the user presses Play, and a Play runs ONCE
-  // through and stops — never an unbounded replay that pins a CPU core. The user opts into looping per case.
+  // through and stops: never an unbounded replay that pins a CPU core. The user opts into looping per case.
   const [playing, setPlaying] = useState(opts?.startPlaying ?? false);
   const [speed, setSpeed] = useState(1);
   const [loop, setLoop] = useState(false);

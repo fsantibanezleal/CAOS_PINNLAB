@@ -46,7 +46,7 @@ CASE = CaseSpec(
     system_type="ode-dynamical",
     view_kit="TrajectoryAnimationKit",
     category="canonical-benchmark",
-    title="Double pendulum (chaotic) — a PINN as a t → state map, vs a high-accuracy integrator",
+    title="Double pendulum (chaotic): a PINN as a t to state map, vs a high-accuracy integrator",
     governing_equations=(
         r"\ddot{\theta}_1 = f_1(\theta_1,\theta_2,\dot\theta_1,\dot\theta_2),\quad "
         r"\ddot{\theta}_2 = f_2(\cdot);\ \ \theta_i(0)=120^\circ,\ \dot\theta_i(0)=0;\ "

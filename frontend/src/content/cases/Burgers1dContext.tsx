@@ -5,13 +5,13 @@ export function Burgers1dContext({ lang }: { lang: "en" | "es" }) {
   const es = lang === "es";
   return es ? (
     <>
-      <h2>El problema: un frente de choque que se mueve — Burgers viscoso 1D con viscosidad ajustable</h2>
+      <h2>El problema: un frente de choque que se mueve: Burgers viscoso 1D con viscosidad ajustable</h2>
       <p>
         <strong>El problema.</strong> La ecuación de Burgers <InlineMath tex={String.raw`u_t + u\,u_x = \nu\,u_{xx}`} />
         es el modelo no lineal más simple que combina <em>advección</em> (el término <InlineMath tex={String.raw`u\,u_x`} />,
         que empina los perfiles hasta formar choques) con <em>difusión</em> (el término <InlineMath tex={String.raw`\nu\,u_{xx}`} />,
         que los suaviza). Es el banco de pruebas canónico de la dinámica de fluidos y del tráfico: la competencia
-        advección–difusión produce un <strong>frente de choque viscoso</strong> de grosor finito. Aquí la
+        advección-difusión produce un <strong>frente de choque viscoso</strong> de grosor finito. Aquí la
         <strong> viscosidad</strong> <InlineMath tex={String.raw`\nu`} /> es ajustable: una sola red aprende toda la
         familia <InlineMath tex={String.raw`u(x,t;\nu)`} />, y en el tab <strong>Live</strong> mover el deslizador de
         <InlineMath tex={String.raw`\nu`} /> hace que el choque se afile (poca viscosidad) o se difumine (mucha).
@@ -21,8 +21,8 @@ export function Burgers1dContext({ lang }: { lang: "en" | "es" }) {
       <ul>
         <li><strong>Dominio:</strong> espacio <InlineMath tex={String.raw`x\in[-1,1]`} /> × tiempo <InlineMath tex={String.raw`t\in[0,1]`} />, grilla del campo <InlineMath tex={String.raw`241\times121`} />.</li>
         <li><strong>Incógnita:</strong> el campo <InlineMath tex={String.raw`u(x,t)`} /> (p. ej. velocidad).</li>
-        <li><strong>Parámetro de control:</strong> la <em>viscosidad</em> <InlineMath tex={String.raw`\nu\in[0.02,0.08]`} /> — un input de la red. Fija el <em>grosor</em> del frente (<InlineMath tex={String.raw`\sim 4\nu`} />).</li>
-        <li><strong>Estados izquierdo/derecho:</strong> <InlineMath tex={String.raw`u_L=1`} /> y <InlineMath tex={String.raw`u_R=0`} />, de modo que <InlineMath tex={String.raw`\Delta=u_L-u_R=1`} /> y la velocidad del choque es <InlineMath tex={String.raw`s=\tfrac{u_L+u_R}{2}=\tfrac12`} /> (Rankine–Hugoniot).</li>
+        <li><strong>Parámetro de control:</strong> la <em>viscosidad</em> <InlineMath tex={String.raw`\nu\in[0.02,0.08]`} />: un input de la red. Fija el <em>grosor</em> del frente (<InlineMath tex={String.raw`\sim 4\nu`} />).</li>
+        <li><strong>Estados izquierdo/derecho:</strong> <InlineMath tex={String.raw`u_L=1`} /> y <InlineMath tex={String.raw`u_R=0`} />, de modo que <InlineMath tex={String.raw`\Delta=u_L-u_R=1`} /> y la velocidad del choque es <InlineMath tex={String.raw`s=\tfrac{u_L+u_R}{2}=\tfrac12`} /> (Rankine-Hugoniot).</li>
         <li><strong>Condiciones:</strong> el perfil inicial es el frente <InlineMath tex={String.raw`\tanh`} /> centrado en <InlineMath tex={String.raw`x_0=-0.4`} />; los bordes quedan fijos en <InlineMath tex={String.raw`u_L,u_R`} />.</li>
       </ul>
 
@@ -52,7 +52,7 @@ export function Burgers1dContext({ lang }: { lang: "en" | "es" }) {
         El reto numérico es el <em>frente afilado</em>: con poca viscosidad el residual se concentra en una banda
         delgada que una grilla uniforme resuelve mal. Sobre la base anterior aplicamos <strong>RAR</strong>
         (<em>residual-based adaptive refinement</em>, Wu et al., CMAME 2023): tras el ajuste base, se evalúa el residual
-        en un gran pozo de puntos y se <strong>añaden</strong> los de mayor error — que caen sobre el frente móvil —
+        en un gran pozo de puntos y se <strong>añaden</strong> los de mayor error: que caen sobre el frente móvil: 
         repitiendo varias rondas. Así el choque se resuelve sin densificar todo el dominio.
       </p>
 
@@ -68,8 +68,8 @@ export function Burgers1dContext({ lang }: { lang: "en" | "es" }) {
       </p>
 
       <p>
-        <strong>Qué muestra cada variante.</strong> El barrido de viscosidad recorre la competencia advección–difusión:
-        <em>ν=0.02</em> (agudo) — el frente es una capa finísima (ancho <InlineMath tex={String.raw`\sim0.08`} />);
+        <strong>Qué muestra cada variante.</strong> El barrido de viscosidad recorre la competencia advección-difusión:
+        <em>ν=0.02</em> (agudo): el frente es una capa finísima (ancho <InlineMath tex={String.raw`\sim0.08`} />);
         <em>ν=0.03/0.04/0.05</em> lo ensanchan progresivamente; <em>ν=0.06</em> y <em>ν=0.08</em> (difuso) dan una
         rampa ancha (ancho <InlineMath tex={String.raw`\sim0.32`} />). En todas, el frente <strong>viaja a la misma
         velocidad</strong> <InlineMath tex={String.raw`s=\tfrac12`} /> (la viscosidad cambia el grosor, no la
@@ -77,7 +77,7 @@ export function Burgers1dContext({ lang }: { lang: "en" | "es" }) {
       </p>
       <p>
         <strong>Cómo leer y usar la viz.</strong> El <strong>heatmap</strong> de <InlineMath tex={String.raw`u(x,t)`} />
-        (x horizontal, t vertical) muestra una <em>banda diagonal</em> — el frente que avanza hacia la derecha; su
+        (x horizontal, t vertical) muestra una <em>banda diagonal</em>: el frente que avanza hacia la derecha; su
         <em>inclinación</em> es la velocidad <InlineMath tex={String.raw`s`} /> y su <em>nitidez</em> es la viscosidad.
         Pasa el cursor para leer el valor exacto y mira el <strong>perfil de corte</strong> en
         <InlineMath tex={String.raw`x`} /> (la forma <InlineMath tex={String.raw`\tanh`} /> del frente) y en
@@ -86,15 +86,15 @@ export function Burgers1dContext({ lang }: { lang: "en" | "es" }) {
         o difuminarse en vivo en tu navegador (onnxruntime-web).
       </p>
     </>
-  ) : (
+  ): (
     <>
-      <h2>The problem: a moving shock front — 1D viscous Burgers with a tunable viscosity</h2>
+      <h2>The problem: a moving shock front: 1D viscous Burgers with a tunable viscosity</h2>
       <p>
         <strong>The problem.</strong> The Burgers equation <InlineMath tex={String.raw`u_t + u\,u_x = \nu\,u_{xx}`} />
         is the simplest nonlinear model that pits <em>advection</em> (the <InlineMath tex={String.raw`u\,u_x`} /> term,
         which steepens profiles into shocks) against <em>diffusion</em> (the <InlineMath tex={String.raw`\nu\,u_{xx}`} />
         term, which smooths them). It is the canonical test bed of fluid dynamics and traffic flow: the
-        advection–diffusion balance produces a <strong>viscous shock front</strong> of finite thickness. Here the
+        advection-diffusion balance produces a <strong>viscous shock front</strong> of finite thickness. Here the
         <strong> viscosity</strong> <InlineMath tex={String.raw`\nu`} /> is tunable: a single network learns the whole
         family <InlineMath tex={String.raw`u(x,t;\nu)`} />, and in the <strong>Live</strong> tab moving the
         <InlineMath tex={String.raw`\nu`} /> slider makes the shock sharpen (small viscosity) or smear (large).
@@ -104,8 +104,8 @@ export function Burgers1dContext({ lang }: { lang: "en" | "es" }) {
       <ul>
         <li><strong>Domain:</strong> space <InlineMath tex={String.raw`x\in[-1,1]`} /> × time <InlineMath tex={String.raw`t\in[0,1]`} />, a <InlineMath tex={String.raw`241\times121`} /> field grid.</li>
         <li><strong>Unknown:</strong> the field <InlineMath tex={String.raw`u(x,t)`} /> (e.g. velocity).</li>
-        <li><strong>Control parameter:</strong> the <em>viscosity</em> <InlineMath tex={String.raw`\nu\in[0.02,0.08]`} /> — a network input. It sets the front <em>thickness</em> (<InlineMath tex={String.raw`\sim 4\nu`} />).</li>
-        <li><strong>Left/right states:</strong> <InlineMath tex={String.raw`u_L=1`} /> and <InlineMath tex={String.raw`u_R=0`} />, so <InlineMath tex={String.raw`\Delta=u_L-u_R=1`} /> and the shock speed is <InlineMath tex={String.raw`s=\tfrac{u_L+u_R}{2}=\tfrac12`} /> (Rankine–Hugoniot).</li>
+        <li><strong>Control parameter:</strong> the <em>viscosity</em> <InlineMath tex={String.raw`\nu\in[0.02,0.08]`} />: a network input. It sets the front <em>thickness</em> (<InlineMath tex={String.raw`\sim 4\nu`} />).</li>
+        <li><strong>Left/right states:</strong> <InlineMath tex={String.raw`u_L=1`} /> and <InlineMath tex={String.raw`u_R=0`} />, so <InlineMath tex={String.raw`\Delta=u_L-u_R=1`} /> and the shock speed is <InlineMath tex={String.raw`s=\tfrac{u_L+u_R}{2}=\tfrac12`} /> (Rankine-Hugoniot).</li>
         <li><strong>Conditions:</strong> the initial profile is the <InlineMath tex={String.raw`\tanh`} /> front centred at <InlineMath tex={String.raw`x_0=-0.4`} />; the ends are held at <InlineMath tex={String.raw`u_L,u_R`} />.</li>
       </ul>
 
@@ -135,7 +135,7 @@ export function Burgers1dContext({ lang }: { lang: "en" | "es" }) {
         The numerical challenge is the <em>sharp front</em>: at low viscosity the residual concentrates in a thin band
         that a uniform grid resolves poorly. On top of the baseline above we apply <strong>RAR</strong>
         (<em>residual-based adaptive refinement</em>, Wu et al., CMAME 2023): after the base fit, the residual is
-        evaluated over a large pool of points and the highest-error ones — which land on the moving front — are
+        evaluated over a large pool of points and the highest-error ones: which land on the moving front: are
         <strong>added</strong>, over several rounds. The shock is resolved without densifying the whole domain.
       </p>
 
@@ -151,15 +151,15 @@ export function Burgers1dContext({ lang }: { lang: "en" | "es" }) {
       </p>
 
       <p>
-        <strong>What each variant shows.</strong> The viscosity sweep walks the advection–diffusion balance:
-        <em>ν=0.02</em> (sharp) — the front is a razor-thin layer (width <InlineMath tex={String.raw`\sim0.08`} />);
+        <strong>What each variant shows.</strong> The viscosity sweep walks the advection-diffusion balance:
+        <em>ν=0.02</em> (sharp): the front is a razor-thin layer (width <InlineMath tex={String.raw`\sim0.08`} />);
         <em>ν=0.03/0.04/0.05</em> broaden it progressively; <em>ν=0.06</em> and <em>ν=0.08</em> (diffuse) give a wide
         ramp (width <InlineMath tex={String.raw`\sim0.32`} />). In all of them the front <strong>travels at the same
         speed</strong> <InlineMath tex={String.raw`s=\tfrac12`} /> (viscosity changes the thickness, not the speed).
       </p>
       <p>
         <strong>How to read &amp; use the viz.</strong> The <strong>heatmap</strong> of
-        <InlineMath tex={String.raw`u(x,t)`} /> (x horizontal, t vertical) shows a <em>diagonal band</em> — the front
+        <InlineMath tex={String.raw`u(x,t)`} /> (x horizontal, t vertical) shows a <em>diagonal band</em>: the front
         advancing to the right; its <em>slope</em> is the speed <InlineMath tex={String.raw`s`} /> and its
         <em> sharpness</em> is the viscosity. Hover to read the exact value and watch the <strong>line-cut profile</strong>
         in <InlineMath tex={String.raw`x`} /> (the <InlineMath tex={String.raw`\tanh`} /> front shape) and in

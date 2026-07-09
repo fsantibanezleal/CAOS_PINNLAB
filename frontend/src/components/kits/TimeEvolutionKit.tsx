@@ -9,16 +9,16 @@ import { useAnimator } from "./useAnimator";
 
 const TIME_NAMES = new Set(["t", "time", "tau", "tt", "τ"]);
 
-/** TimeEvolutionKit — a 1-D field that EVOLVES in time. The baked trace is a 2-D `[space, t]` grid; this kit
+/** TimeEvolutionKit: a 1-D field that EVOLVES in time. The baked trace is a 2-D `[space, t]` grid; this kit
  *  animates the profile `u(space)` forward over t (with a faint ghost of the initial frame and a y-scale
- *  locked to the whole run), and shows the `[space, t]` carpet as a click-to-seek bar. No retraining — the
+ *  locked to the whole run), and shows the `[space, t]` carpet as a click-to-seek bar. No retraining: the
  *  trace already holds every frame; the kit just walks the time columns. The Live tab still re-evals the ONNX. */
 export function TimeEvolutionKit({ manifest, trace, lang }: KitProps) {
   const es = lang === "es";
   const [outIdx, setOutIdx] = useState(0);
   const outName = manifest.outputs[outIdx] ?? manifest.outputs[0];
   const fa = manifest.field_axes;
-  const tIdx = TIME_NAMES.has(fa[1]) ? 1 : TIME_NAMES.has(fa[0]) ? 0 : 1;
+  const tIdx = TIME_NAMES.has(fa[1]) ? 1: TIME_NAMES.has(fa[0]) ? 0: 1;
   const tAxis = fa[tIdx];
   const spaceAxis = fa[1 - tIdx];
 
@@ -29,8 +29,8 @@ export function TimeEvolutionKit({ manifest, trace, lang }: KitProps) {
     const tArr = trace.axes[tAxis] ?? [];
     const sArr = trace.axes[spaceAxis] ?? [];
     const yRange = fieldRange(field);
-    const nT = tArr.length || (tIdx === 1 ? (field[0]?.length ?? 0) : field.length);
-    const nS = sArr.length || (tIdx === 1 ? field.length : (field[0]?.length ?? 0));
+    const nT = tArr.length || (tIdx === 1 ? (field[0]?.length ?? 0): field.length);
+    const nS = sArr.length || (tIdx === 1 ? field.length: (field[0]?.length ?? 0));
     // carpet indexed [space][t]
     let carpet: number[][];
     if (tIdx === 1) {
@@ -50,20 +50,20 @@ export function TimeEvolutionKit({ manifest, trace, lang }: KitProps) {
   const anim = useAnimator(nT, { fps: 12 });
   const it = Math.min(anim.frame, nT - 1);
 
-  if (!data) return <div className="loading">{es ? "Cargando campo…" : "Loading field…"}</div>;
+  if (!data) return <div className="loading">{es ? "Cargando campo…": "Loading field…"}</div>;
   const { field, tArr, sArr, yRange, carpet } = data;
-  const profile = tIdx === 1 ? field.map((col) => col[it]) : field[it];
-  const ghost = tIdx === 1 ? field.map((col) => col[0]) : field[0];
+  const profile = tIdx === 1 ? field.map((col) => col[it]): field[it];
+  const ghost = tIdx === 1 ? field.map((col) => col[0]): field[0];
   const tVal = tArr[it] ?? 0;
 
   return (
     <div className="te-kit">
       {manifest.outputs.length > 1 && (
         <div className="row" style={{ gap: 8, marginBottom: 8 }}>
-          <span className="muted" style={{ fontSize: 13 }}>{es ? "Campo" : "Field"}</span>
+          <span className="muted" style={{ fontSize: 13 }}>{es ? "Campo": "Field"}</span>
           <div className="variant-chips">
             {manifest.outputs.map((o, i) => (
-              <button key={o} type="button" className={"variant-chip" + (i === outIdx ? " active" : "")} onClick={() => setOutIdx(i)}>{o}</button>
+              <button key={o} type="button" className={"variant-chip" + (i === outIdx ? " active": "")} onClick={() => setOutIdx(i)}>{o}</button>
             ))}
           </div>
         </div>
@@ -75,11 +75,11 @@ export function TimeEvolutionKit({ manifest, trace, lang }: KitProps) {
         </div>
         <div className="te-carpet">
           <div className="te-carpet-label muted">
-            {outName}({spaceAxis},{tAxis}) — {es ? "clic para saltar en el tiempo" : "click to seek in time"}
+            {outName}({spaceAxis},{tAxis}): {es ? "clic para saltar en el tiempo": "click to seek in time"}
           </div>
           <HeatCanvas
             field={carpet}
-            vCursor={nT > 1 ? it / (nT - 1) : 0}
+            vCursor={nT > 1 ? it / (nT - 1): 0}
             onSeekV={(f) => { anim.setPlaying(false); anim.setFrame(f * (nT - 1)); }}
             ariaLabel={`${outName} ${spaceAxis}-${tAxis} carpet`}
           />
@@ -87,8 +87,8 @@ export function TimeEvolutionKit({ manifest, trace, lang }: KitProps) {
       </div>
       <p className="hint">
         {es
-          ? "Pulsa ▶ para ver cómo evoluciona el perfil en el tiempo (o arrastra la barra). El mapa de abajo es el espacio–tiempo completo — haz clic para saltar a un instante. (La pestaña Live re-evalúa el ONNX en vivo.)"
-          : "Press ▶ to watch the profile evolve over time (or drag the bar). The map below is the full space–time field — click it to jump to an instant. (The Live tab re-evaluates the ONNX live.)"}
+          ? "Pulsa ▶ para ver cómo evoluciona el perfil en el tiempo (o arrastra la barra). El mapa de abajo es el espacio-tiempo completo: haz clic para saltar a un instante. (La pestaña Live re-evalúa el ONNX en vivo.)"
+         : "Press ▶ to watch the profile evolve over time (or drag the bar). The map below is the full space-time field: click it to jump to an instant. (The Live tab re-evaluates the ONNX live.)"}
       </p>
     </div>
   );

@@ -6,7 +6,7 @@ export function SoilBarrierContext({ lang }: { lang: "en" | "es" }) {
   const es = lang === "es";
   return es ? (
     <>
-      <h2>El problema: un contaminante frente a una barrera de baja permeabilidad — y el quiebre que deja</h2>
+      <h2>El problema: un contaminante frente a una barrera de baja permeabilidad: y el quiebre que deja</h2>
       <p>
         <strong>El problema.</strong> En un sitio contaminado se instala una <em>barrera vertical</em> de baja
         permeabilidad (un muro de lodo bentonítico o una pantalla de arcilla) para frenar el avance de un contaminante
@@ -19,7 +19,7 @@ export function SoilBarrierContext({ lang }: { lang: "en" | "es" }) {
       <p>
         El <em>salto</em> de coeficiente es la dificultad central: la concentración <InlineMath tex={String.raw`c`} />
         sigue siendo continua y el flujo difusivo <InlineMath tex={String.raw`D\,c_x`} /> también, pero la derivada
-        <InlineMath tex={String.raw`c_x`} /> se vuelve <strong>discontinua</strong> en cada cara de la barrera — el
+        <InlineMath tex={String.raw`c_x`} /> se vuelve <strong>discontinua</strong> en cada cara de la barrera: el
         perfil desarrolla un <strong>quiebre</strong> (un &laquo;kink&raquo;) justo ahí. Reproducir ese quiebre con una
         única red suave que pelea contra el salto es el reto que motiva el método de este caso.
       </p>
@@ -28,7 +28,7 @@ export function SoilBarrierContext({ lang }: { lang: "en" | "es" }) {
       <ul>
         <li><strong>Dominio:</strong> profundidad/transecto <InlineMath tex={String.raw`x\in[0,1]`} /> × tiempo <InlineMath tex={String.raw`t\in[0,1]`} />, grilla del campo <InlineMath tex={String.raw`101\times51`} />.</li>
         <li><strong>Incógnita:</strong> la concentración normalizada <InlineMath tex={String.raw`c(x,t)\in[0,1]`} /> del contaminante.</li>
-        <li><strong>Difusividad por tramos:</strong> <InlineMath tex={String.raw`D_{\text{suelo}}=1`} /> fuera de <InlineMath tex={String.raw`[a,b]=[0.45,0.55]`} /> y <InlineMath tex={String.raw`D_{\text{barrera}}=0.1`} /> dentro — un contraste de 10×.</li>
+        <li><strong>Difusividad por tramos:</strong> <InlineMath tex={String.raw`D_{\text{suelo}}=1`} /> fuera de <InlineMath tex={String.raw`[a,b]=[0.45,0.55]`} /> y <InlineMath tex={String.raw`D_{\text{barrera}}=0.1`} /> dentro: un contraste de 10×.</li>
         <li><strong>Barrera:</strong> una franja delgada centrada en <InlineMath tex={String.raw`x_c=0.5`} />; su baja difusividad es la resistencia dominante.</li>
         <li><strong>Condiciones:</strong> entrada <InlineMath tex={String.raw`c(0,t)=1-e^{-t}`} /> (la fuente que sube), salida <InlineMath tex={String.raw`c(1,t)=0`} /> (extracción) e inicio limpio <InlineMath tex={String.raw`c(x,0)=0`} />.</li>
       </ul>
@@ -94,7 +94,7 @@ export function SoilBarrierContext({ lang }: { lang: "en" | "es" }) {
         cuesta <InlineMath tex={String.raw`\sim2\times10^{-1}`} /> de L2 relativo en este lane de CPU con dos canales: su
         nitidez crece como <InlineMath tex={String.raw`1/(D_{\text{barrera}}/D_{\text{suelo}})`} />, de modo que barrer
         el contraste obligaría a una sola red a cubrir desde quiebres suaves hasta muy severos, y el régimen más severo
-        <em> domina</em> el error — la familia paramétrica <em>empeoraría</em> la precisión y difuminaría justo el rasgo
+        <em> domina</em> el error: la familia paramétrica <em>empeoraría</em> la precisión y difuminaría justo el rasgo
         que el caso busca mostrar. Por honestidad (ADR-0016 §9.A: nunca fabricar regímenes para inflar un contador de
         chips) se publica como un <strong>benchmark de parámetro fijo</strong> (una variante), no como un barrido.
       </p>
@@ -102,7 +102,7 @@ export function SoilBarrierContext({ lang }: { lang: "en" | "es" }) {
       <p>
         <strong>Qué muestra el benchmark.</strong> El plume entra por la izquierda y avanza, pero la barrera lo
         <strong> frena</strong>: aguas abajo de ella la concentración es notablemente menor. En el perfil espacial se ve
-        el sello del problema — tres tramos casi-lineales con <strong>dos quiebres</strong> (uno en cada cara de la
+        el sello del problema: tres tramos casi-lineales con <strong>dos quiebres</strong> (uno en cada cara de la
         barrera): la pendiente se empina dentro de la barrera (poco <InlineMath tex={String.raw`D`} /> ⇒ mucho
         <InlineMath tex={String.raw`c_x`} /> para el mismo flujo) y se relaja fuera. El heatmap muestra ese contraste
         como una franja de gradiente intenso a la altura de la barrera.
@@ -113,15 +113,15 @@ export function SoilBarrierContext({ lang }: { lang: "en" | "es" }) {
         su derecha. Pasa el cursor para leer el valor exacto y localizar la caída a través de la barrera. El
         <strong> perfil de corte</strong> en <InlineMath tex={String.raw`x`} /> es lo más informativo: busca los
         <strong> dos quiebres</strong> en <InlineMath tex={String.raw`x=0.45`} /> y <InlineMath tex={String.raw`x=0.55`} />
-        (cambio brusco de pendiente) — son la firma de la barrera. El corte en <InlineMath tex={String.raw`t`} /> muestra
+        (cambio brusco de pendiente): son la firma de la barrera. El corte en <InlineMath tex={String.raw`t`} /> muestra
         la subida <InlineMath tex={String.raw`1-e^{-t}`} /> hacia el estado estacionario. Como es un benchmark de
         parámetro fijo, el tab <strong>Live</strong> re-evalúa la red entrenada (la misma física) en tu navegador
         (onnxruntime-web), sin deslizador de parámetro.
       </p>
     </>
-  ) : (
+  ): (
     <>
-      <h2>The problem: a contaminant facing a low-permeability barrier — and the kink it leaves</h2>
+      <h2>The problem: a contaminant facing a low-permeability barrier: and the kink it leaves</h2>
       <p>
         <strong>The problem.</strong> At a contaminated site a <em>vertical barrier</em> of low permeability (a
         bentonite slurry wall or a clay cutoff) is installed to slow the advance of a dissolved contaminant. The
@@ -133,7 +133,7 @@ export function SoilBarrierContext({ lang }: { lang: "en" | "es" }) {
       <p>
         The coefficient <em>jump</em> is the central difficulty: the concentration <InlineMath tex={String.raw`c`} />
         stays continuous and so does the diffusive flux <InlineMath tex={String.raw`D\,c_x`} />, but the derivative
-        <InlineMath tex={String.raw`c_x`} /> becomes <strong>discontinuous</strong> at each barrier face — the profile
+        <InlineMath tex={String.raw`c_x`} /> becomes <strong>discontinuous</strong> at each barrier face: the profile
         develops a <strong>kink</strong> there. Reproducing that kink with a single smooth network fighting the jump is
         the challenge that motivates this case's method.
       </p>
@@ -142,7 +142,7 @@ export function SoilBarrierContext({ lang }: { lang: "en" | "es" }) {
       <ul>
         <li><strong>Domain:</strong> depth/transect <InlineMath tex={String.raw`x\in[0,1]`} /> × time <InlineMath tex={String.raw`t\in[0,1]`} />, a <InlineMath tex={String.raw`101\times51`} /> field grid.</li>
         <li><strong>Unknown:</strong> the normalised concentration <InlineMath tex={String.raw`c(x,t)\in[0,1]`} /> of the contaminant.</li>
-        <li><strong>Piecewise diffusivity:</strong> <InlineMath tex={String.raw`D_{\text{soil}}=1`} /> outside <InlineMath tex={String.raw`[a,b]=[0.45,0.55]`} /> and <InlineMath tex={String.raw`D_{\text{barrier}}=0.1`} /> inside — a 10× contrast.</li>
+        <li><strong>Piecewise diffusivity:</strong> <InlineMath tex={String.raw`D_{\text{soil}}=1`} /> outside <InlineMath tex={String.raw`[a,b]=[0.45,0.55]`} /> and <InlineMath tex={String.raw`D_{\text{barrier}}=0.1`} /> inside: a 10× contrast.</li>
         <li><strong>Barrier:</strong> a thin slab centred at <InlineMath tex={String.raw`x_c=0.5`} />; its low diffusivity is the dominant resistance.</li>
         <li><strong>Conditions:</strong> inlet <InlineMath tex={String.raw`c(0,t)=1-e^{-t}`} /> (a rising source), outlet <InlineMath tex={String.raw`c(1,t)=0`} /> (extraction) and a clean start <InlineMath tex={String.raw`c(x,0)=0`} />.</li>
       </ul>
@@ -207,7 +207,7 @@ export function SoilBarrierContext({ lang }: { lang: "en" | "es" }) {
         closed-form anchor for every value (the proof above holds for any contrast). But the kink already costs
         <InlineMath tex={String.raw`\sim2\times10^{-1}`} /> relative L2 on this CPU two-channel lane: its sharpness grows
         as <InlineMath tex={String.raw`1/(D_{\text{barrier}}/D_{\text{soil}})`} />, so sweeping the contrast would force a
-        single network to span from mild to very severe kinks, and the most severe regime <em>dominates</em> the error —
+        single network to span from mild to very severe kinks, and the most severe regime <em>dominates</em> the error: 
         the parametric family would <em>worsen</em> accuracy and blur the very feature the case exists to show. For
         honesty (ADR-0016 §9.A: never fabricate regimes to inflate a chip count) it ships as a <strong>fixed-parameter
         benchmark</strong> (one variant), not a sweep.
@@ -216,7 +216,7 @@ export function SoilBarrierContext({ lang }: { lang: "en" | "es" }) {
       <p>
         <strong>What the benchmark shows.</strong> The plume enters from the left and advances, but the barrier
         <strong> slows it</strong>: downstream of the barrier the concentration is markedly lower. The spatial profile
-        shows the problem's signature — three nearly-linear segments with <strong>two kinks</strong> (one at each barrier
+        shows the problem's signature: three nearly-linear segments with <strong>two kinks</strong> (one at each barrier
         face): the slope steepens inside the barrier (low <InlineMath tex={String.raw`D`} /> ⇒ large
         <InlineMath tex={String.raw`c_x`} /> for the same flux) and relaxes outside. The heatmap shows that contrast as a
         band of steep gradient at the barrier.
@@ -227,7 +227,7 @@ export function SoilBarrierContext({ lang }: { lang: "en" | "es" }) {
         and how the barrier depresses the region to its right. Hover to read the exact value and locate the drop across
         the barrier. The <strong>line-cut profile</strong> in <InlineMath tex={String.raw`x`} /> is the most
         informative: look for the <strong>two kinks</strong> at <InlineMath tex={String.raw`x=0.45`} /> and
-        <InlineMath tex={String.raw`x=0.55`} /> (abrupt slope change) — they are the barrier's fingerprint. The cut in
+        <InlineMath tex={String.raw`x=0.55`} /> (abrupt slope change): they are the barrier's fingerprint. The cut in
         <InlineMath tex={String.raw`t`} /> shows the <InlineMath tex={String.raw`1-e^{-t}`} /> rise toward steady state.
         Since it is a fixed-parameter benchmark, the <strong>Live</strong> tab re-evaluates the trained network (the
         same physics) in your browser (onnxruntime-web), with no parameter slider.

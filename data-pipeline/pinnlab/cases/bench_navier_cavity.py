@@ -35,7 +35,7 @@ CASE = CaseSpec(
     id="bench-navier-cavity",
     system_type="vector-flow",
     category="canonical-benchmark",
-    title="2D lid-driven cavity — steady Navier-Stokes PINN (u, v, p)",
+    title="2D lid-driven cavity: steady Navier-Stokes PINN (u, v, p)",
     governing_equations=(
         r"(\mathbf{u}\cdot\nabla)\mathbf{u} = -\tfrac1\rho\nabla p + \nu\nabla^2\mathbf{u},\ \nabla\cdot\mathbf{u}=0,"
         r"\ \text{Re}=100\ \text{on}\ (0,1)^2"

@@ -7,7 +7,7 @@ import { FieldView } from "./FieldView";
 
 /** A zoomed/panned sub-window of an axis range. zoom>=1 (1 = full domain); pan in [-1,1] shifts the window center
  *  within the domain (no effect at zoom 1). The window always stays inside the trained domain, so every probe is a
- *  valid in-domain evaluation — zooming/panning genuinely re-runs the net on a different sub-grid (it visibly moves,
+ *  valid in-domain evaluation: zooming/panning genuinely re-runs the net on a different sub-grid (it visibly moves,
  *  which is the point: it proves the browser is computing, not replaying). */
 function windowRange([lo, hi]: [number, number], zoom: number, pan: number): [number, number] {
   const span = hi - lo;
@@ -77,7 +77,7 @@ export function LivePanel({ manifest, lang }: { manifest: CaseManifest; lang: "e
           const yv = y0 + ((y1 - y0) * iy) / (ny - 1);
           for (let j = 0; j < d; j++) {
             const ax = manifest.inputs[j];
-            coords[k * d + j] = ax === a0 ? xv : ax === a1 ? yv : (params[ax] ?? 0);
+            coords[k * d + j] = ax === a0 ? xv: ax === a1 ? yv: (params[ax] ?? 0);
           }
           k++;
         }
@@ -113,31 +113,31 @@ export function LivePanel({ manifest, lang }: { manifest: CaseManifest; lang: "e
         <p className="banner warn">
           {es
             ? "Caso precompute (operador campo→campo): el motor corre OFFLINE; el navegador reproduce un resultado representativo horneado. No hay inferencia en vivo por coordenadas para este lane."
-            : "Precompute case (field→field operator): the engine runs OFFLINE; the browser replays a representative baked result. There is no coordinate-driven live inference for this lane."}
+           : "Precompute case (field→field operator): the engine runs OFFLINE; the browser replays a representative baked result. There is no coordinate-driven live inference for this lane."}
         </p>
       </div>
     );
   }
 
-  const wx: [number, number] = ranges ? windowRange(ranges[fieldAxes[0]], view.zoom, view.panX) : [0, 1];
-  const wy: [number, number] = ranges ? windowRange(ranges[fieldAxes[1]], view.zoom, view.panY) : [0, 1];
+  const wx: [number, number] = ranges ? windowRange(ranges[fieldAxes[0]], view.zoom, view.panX): [0, 1];
+  const wy: [number, number] = ranges ? windowRange(ranges[fieldAxes[1]], view.zoom, view.panY): [0, 1];
   const zoomed = view.zoom > 1.0001;
 
   return (
     <div className="live-panel">
       <p className="muted" style={{ marginTop: 0 }}>
         {es
-          ? "Inferencia EN VIVO en tu navegador (onnxruntime-web) del .onnx exportado — la misma red entrenada offline. Mueve los controles y el campo se re-evalúa."
-          : "LIVE inference in your browser (onnxruntime-web) of the exported .onnx — the same network trained offline. Move the controls and the field re-evaluates."}
+          ? "Inferencia EN VIVO en tu navegador (onnxruntime-web) del .onnx exportado: la misma red entrenada offline. Mueve los controles y el campo se re-evalúa."
+         : "LIVE inference in your browser (onnxruntime-web) of the exported .onnx: the same network trained offline. Move the controls and the field re-evaluates."}
       </p>
 
       <div className="live-controls">
         {manifest.outputs.length > 1 && (
           <label className="ctl">
-            <span>{es ? "Campo" : "Field"}</span>
+            <span>{es ? "Campo": "Field"}</span>
             <div className="variant-chips">
               {manifest.outputs.map((o, i) => (
-                <button key={o} type="button" className={"variant-chip" + (i === oIdx ? " active" : "")} onClick={() => setOIdx(i)}>{o}</button>
+                <button key={o} type="button" className={"variant-chip" + (i === oIdx ? " active": "")} onClick={() => setOIdx(i)}>{o}</button>
               ))}
             </div>
           </label>
@@ -145,8 +145,8 @@ export function LivePanel({ manifest, lang }: { manifest: CaseManifest; lang: "e
         {manifest.param_specs.map((p) => (
           <label key={p.key} className="ctl">
             <span>
-              {(es ? p.label_es : p.label_en)}
-              {p.unit ? ` (${p.unit})` : ""}: <strong className="mono">{(params[p.key] ?? p.default).toFixed(2)}</strong>
+              {(es ? p.label_es: p.label_en)}
+              {p.unit ? ` (${p.unit})`: ""}: <strong className="mono">{(params[p.key] ?? p.default).toFixed(2)}</strong>
             </span>
             <input
               className="scrub"
@@ -160,32 +160,32 @@ export function LivePanel({ manifest, lang }: { manifest: CaseManifest; lang: "e
           </label>
         ))}
         <label className="ctl">
-          <span>{es ? "Zoom (explorar)" : "Zoom (explore)"}: <strong className="mono">{view.zoom.toFixed(2)}×</strong></span>
+          <span>{es ? "Zoom (explorar)": "Zoom (explore)"}: <strong className="mono">{view.zoom.toFixed(2)}×</strong></span>
           <input className="scrub" type="range" min={1} max={5} step={0.25} value={view.zoom}
             onChange={(e) => setView((v) => ({ ...v, zoom: Number(e.target.value) }))} />
         </label>
         {zoomed && (
           <>
             <label className="ctl">
-              <span>{es ? "Desplazar X" : "Pan X"}: <strong className="mono">{view.panX.toFixed(2)}</strong></span>
+              <span>{es ? "Desplazar X": "Pan X"}: <strong className="mono">{view.panX.toFixed(2)}</strong></span>
               <input className="scrub" type="range" min={-1} max={1} step={0.05} value={view.panX}
                 onChange={(e) => setView((v) => ({ ...v, panX: Number(e.target.value) }))} />
             </label>
             <label className="ctl">
-              <span>{es ? "Desplazar Y" : "Pan Y"}: <strong className="mono">{view.panY.toFixed(2)}</strong></span>
+              <span>{es ? "Desplazar Y": "Pan Y"}: <strong className="mono">{view.panY.toFixed(2)}</strong></span>
               <input className="scrub" type="range" min={-1} max={1} step={0.05} value={view.panY}
                 onChange={(e) => setView((v) => ({ ...v, panY: Number(e.target.value) }))} />
             </label>
           </>
         )}
         <label className="ctl">
-          <span>{es ? "Resolución" : "Resolution"}: <strong className="mono">{res}×{res}</strong></span>
+          <span>{es ? "Resolución": "Resolution"}: <strong className="mono">{res}×{res}</strong></span>
           <input className="scrub" type="range" min={33} max={161} step={4} value={res} onChange={(e) => setRes(Number(e.target.value))} />
         </label>
       </div>
 
       {err && <div className="banner error">{err}</div>}
-      {!field && !err && <div className="loading">{es ? "Cargando runtime…" : "Loading runtime…"}</div>}
+      {!field && !err && <div className="loading">{es ? "Cargando runtime…": "Loading runtime…"}</div>}
       {field && (
         <>
           <FieldView
@@ -193,16 +193,17 @@ export function LivePanel({ manifest, lang }: { manifest: CaseManifest; lang: "e
             axisX={{ label: fieldAxes[0], lo: wx[0], hi: wx[1] }}
             axisY={{ label: fieldAxes[1], lo: wy[0], hi: wy[1] }}
             outputLabel={manifest.outputs[oIdx]}
+            lang={lang}
           />
           {ms !== null && (
             <p className="hint">
               {isParam
                 ? es
-                  ? `Re-evaluado en vivo en ${ms.toFixed(1)} ms para el régimen seleccionado — un solo ONNX cubre toda la familia de parámetros.`
-                  : `Re-evaluated live in ${ms.toFixed(1)} ms at the selected regime — one ONNX covers the whole parameter family.`
-                : es
+                  ? `Re-evaluado en vivo en ${ms.toFixed(1)} ms para el régimen seleccionado: un solo ONNX cubre toda la familia de parámetros.`
+                 : `Re-evaluated live in ${ms.toFixed(1)} ms at the selected regime: one ONNX covers the whole parameter family.`
+               : es
                   ? `Re-evaluado en vivo en ${ms.toFixed(1)} ms a ${res}×${res}.`
-                  : `Re-evaluated live in ${ms.toFixed(1)} ms at ${res}×${res}.`}
+                 : `Re-evaluated live in ${ms.toFixed(1)} ms at ${res}×${res}.`}
             </p>
           )}
         </>

@@ -37,7 +37,7 @@ def _lam(alpha):
 CASE = CaseSpec(
     id="poll-tailings-seepage",
     category="pollution-environmental",
-    title="Tailings-dam unsaturated seepage — Richards (Gardner), parametric sorptive number α",
+    title="Tailings-dam unsaturated seepage: Richards (Gardner), parametric sorptive number α",
     governing_equations=(
         r"C(\psi)\psi_t=\partial_z[K(\psi)(\psi_z+1)],\ K=K_s e^{\alpha\psi},\ "
         r"\psi^*=\tfrac1\alpha\ln\!\big(M_0+A\,e^{-\lambda(\alpha)t}e^{-\kappa z}\big),\ "

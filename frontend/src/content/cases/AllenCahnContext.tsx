@@ -5,7 +5,7 @@ export function AllenCahnContext({ lang }: { lang: "en" | "es" }) {
   const es = lang === "es";
   return es ? (
     <>
-      <h2>El problema: separación de fases con interfaces afiladas — la ecuación de Allen-Cahn</h2>
+      <h2>El problema: separación de fases con interfaces afiladas: la ecuación de Allen-Cahn</h2>
       <p>
         <strong>El problema.</strong> La ecuación de Allen-Cahn
         <InlineMath tex={String.raw`u_t = d\,u_{xx} + 5\,(u-u^3)`} /> modela la <em>separación de fases</em>: el campo
@@ -22,8 +22,8 @@ export function AllenCahnContext({ lang }: { lang: "en" | "es" }) {
       <ul>
         <li><strong>Dominio:</strong> espacio <InlineMath tex={String.raw`x\in[-1,1]`} /> × tiempo <InlineMath tex={String.raw`t\in[0,1]`} />, grilla del campo <InlineMath tex={String.raw`201\times101`} />.</li>
         <li><strong>Incógnita:</strong> el parámetro de orden <InlineMath tex={String.raw`u(x,t)\in[-1,1]`} /> (qué fase, y cuán cerca de saturar).</li>
-        <li><strong>Difusión:</strong> <InlineMath tex={String.raw`d=0.001`} /> — muy pequeña, así las interfaces son delgadas (<InlineMath tex={String.raw`\sim\sqrt{d}`} />).</li>
-        <li><strong>Reacción bistable:</strong> <InlineMath tex={String.raw`5(u-u^3)`} /> — empuja hacia <InlineMath tex={String.raw`\pm1`} /> y desestabiliza <InlineMath tex={String.raw`u=0`} />.</li>
+        <li><strong>Difusión:</strong> <InlineMath tex={String.raw`d=0.001`} />: muy pequeña, así las interfaces son delgadas (<InlineMath tex={String.raw`\sim\sqrt{d}`} />).</li>
+        <li><strong>Reacción bistable:</strong> <InlineMath tex={String.raw`5(u-u^3)`} />: empuja hacia <InlineMath tex={String.raw`\pm1`} /> y desestabiliza <InlineMath tex={String.raw`u=0`} />.</li>
         <li><strong>Condición inicial:</strong> <InlineMath tex={String.raw`u(x,0)=x^2\cos(\pi x)`} />, con bordes acoplados (periódicos).</li>
       </ul>
 
@@ -36,7 +36,7 @@ export function AllenCahnContext({ lang }: { lang: "en" | "es" }) {
       <p>
         El ancho de interfaz de equilibrio sale de balancear los dos términos:
         <InlineMath tex={String.raw`\ell\sim\sqrt{d/5}`} />. Con <InlineMath tex={String.raw`d=0.001`} /> eso es
-        <InlineMath tex={String.raw`\ell\approx0.014`} /> — una capa finísima frente al dominio de ancho 2. No hay
+        <InlineMath tex={String.raw`\ell\approx0.014`} />: una capa finísima frente al dominio de ancho 2. No hay
         solución en forma cerrada para esta IC; la <strong>ancla de validación</strong> es una referencia espectral de
         alta precisión <InlineMath tex={String.raw`u_{\mathrm{ref}}(x,t)`} /> (DeepXDE/Raissi).
       </p>
@@ -49,8 +49,8 @@ export function AllenCahnContext({ lang }: { lang: "en" | "es" }) {
       </p>
       <Equation tex={String.raw`u_\theta = \underbrace{x^2\cos(\pi x)}_{=\,u(x,0)} + \underbrace{t\,(1-x^2)}_{\text{se anula en }t=0,\ x=\pm1}\,\mathcal{N}_\theta(x,t).`} />
       <ul>
-        <li><strong>Restricción dura (hard constraint):</strong> la IC se hornea en el ansatz, así <InlineMath tex={String.raw`u_\theta(x,0)=u(x,0)`} /> <em>exactamente</em> y los bordes quedan acoplados — sin términos de pérdida de IC/BC que compitan.</li>
-        <li><strong>RAR (refinamiento adaptativo por residual):</strong> tras el ajuste base, se añaden puntos de colocación donde el residual es mayor — justo sobre las interfaces móviles — varias rondas, persiguiendo el frente.</li>
+        <li><strong>Restricción dura (hard constraint):</strong> la IC se hornea en el ansatz, así <InlineMath tex={String.raw`u_\theta(x,0)=u(x,0)`} /> <em>exactamente</em> y los bordes quedan acoplados: sin términos de pérdida de IC/BC que compitan.</li>
+        <li><strong>RAR (refinamiento adaptativo por residual):</strong> tras el ajuste base, se añaden puntos de colocación donde el residual es mayor: justo sobre las interfaces móviles: varias rondas, persiguiendo el frente.</li>
       </ul>
       <p>
         El techo SOTA (PirateNets, <InlineMath tex={String.raw`\sim2\times10^{-5}`} />, jaxpi) se <em>cita</em>, no se
@@ -61,7 +61,7 @@ export function AllenCahnContext({ lang }: { lang: "en" | "es" }) {
       <p>
         <strong>Se modela:</strong> Allen-Cahn 1D rígido con difusión y reacción fijas, IC suave única, referencia
         espectral como ancla. <strong>Fuera de alcance:</strong> Allen-Cahn 2-D/3-D (curvatura de interfaz), conservación
-        de masa (eso es Cahn-Hilliard, 4º orden), y la familia paramétrica en <InlineMath tex={String.raw`d`} /> — el
+        de masa (eso es Cahn-Hilliard, 4º orden), y la familia paramétrica en <InlineMath tex={String.raw`d`} />: el
         frente simétrico de Allen-Cahn es <em>estacionario</em>, así que no admite una familia viajera en forma cerrada
         como Burgers; por eso este caso se publica como un <strong>benchmark de parámetro fijo</strong> (una variante),
         no como un barrido.
@@ -84,9 +84,9 @@ export function AllenCahnContext({ lang }: { lang: "en" | "es" }) {
         deslizador de parámetro.
       </p>
     </>
-  ) : (
+  ): (
     <>
-      <h2>The problem: phase separation with sharp interfaces — the Allen-Cahn equation</h2>
+      <h2>The problem: phase separation with sharp interfaces: the Allen-Cahn equation</h2>
       <p>
         <strong>The problem.</strong> The Allen-Cahn equation
         <InlineMath tex={String.raw`u_t = d\,u_{xx} + 5\,(u-u^3)`} /> models <em>phase separation</em>: the field
@@ -103,8 +103,8 @@ export function AllenCahnContext({ lang }: { lang: "en" | "es" }) {
       <ul>
         <li><strong>Domain:</strong> space <InlineMath tex={String.raw`x\in[-1,1]`} /> × time <InlineMath tex={String.raw`t\in[0,1]`} />, a <InlineMath tex={String.raw`201\times101`} /> field grid.</li>
         <li><strong>Unknown:</strong> the order parameter <InlineMath tex={String.raw`u(x,t)\in[-1,1]`} /> (which phase, and how saturated).</li>
-        <li><strong>Diffusion:</strong> <InlineMath tex={String.raw`d=0.001`} /> — very small, so interfaces are thin (<InlineMath tex={String.raw`\sim\sqrt{d}`} />).</li>
-        <li><strong>Bistable reaction:</strong> <InlineMath tex={String.raw`5(u-u^3)`} /> — pushes toward <InlineMath tex={String.raw`\pm1`} /> and destabilises <InlineMath tex={String.raw`u=0`} />.</li>
+        <li><strong>Diffusion:</strong> <InlineMath tex={String.raw`d=0.001`} />: very small, so interfaces are thin (<InlineMath tex={String.raw`\sim\sqrt{d}`} />).</li>
+        <li><strong>Bistable reaction:</strong> <InlineMath tex={String.raw`5(u-u^3)`} />: pushes toward <InlineMath tex={String.raw`\pm1`} /> and destabilises <InlineMath tex={String.raw`u=0`} />.</li>
         <li><strong>Initial condition:</strong> <InlineMath tex={String.raw`u(x,0)=x^2\cos(\pi x)`} />, with endpoint-coupled (periodic) ends.</li>
       </ul>
 
@@ -117,7 +117,7 @@ export function AllenCahnContext({ lang }: { lang: "en" | "es" }) {
       <p>
         The equilibrium interface width follows from balancing the two terms:
         <InlineMath tex={String.raw`\ell\sim\sqrt{d/5}`} />. With <InlineMath tex={String.raw`d=0.001`} /> that is
-        <InlineMath tex={String.raw`\ell\approx0.014`} /> — a razor-thin layer against a domain of width 2. There is no
+        <InlineMath tex={String.raw`\ell\approx0.014`} />: a razor-thin layer against a domain of width 2. There is no
         closed-form solution for this IC; the <strong>validation anchor</strong> is a high-accuracy spectral reference
         <InlineMath tex={String.raw`u_{\mathrm{ref}}(x,t)`} /> (DeepXDE/Raissi).
       </p>
@@ -130,8 +130,8 @@ export function AllenCahnContext({ lang }: { lang: "en" | "es" }) {
       </p>
       <Equation tex={String.raw`u_\theta = \underbrace{x^2\cos(\pi x)}_{=\,u(x,0)} + \underbrace{t\,(1-x^2)}_{\text{vanishes at }t=0,\ x=\pm1}\,\mathcal{N}_\theta(x,t).`} />
       <ul>
-        <li><strong>Hard constraint:</strong> the IC is baked into the ansatz, so <InlineMath tex={String.raw`u_\theta(x,0)=u(x,0)`} /> <em>exactly</em> and the ends are coupled — no competing IC/BC loss terms.</li>
-        <li><strong>RAR (residual-based adaptive refinement):</strong> after the base fit, collocation points are added where the residual is largest — right on the moving interfaces — over several rounds, chasing the front.</li>
+        <li><strong>Hard constraint:</strong> the IC is baked into the ansatz, so <InlineMath tex={String.raw`u_\theta(x,0)=u(x,0)`} /> <em>exactly</em> and the ends are coupled: no competing IC/BC loss terms.</li>
+        <li><strong>RAR (residual-based adaptive refinement):</strong> after the base fit, collocation points are added where the residual is largest: right on the moving interfaces: over several rounds, chasing the front.</li>
       </ul>
       <p>
         The SOTA ceiling (PirateNets, <InlineMath tex={String.raw`\sim2\times10^{-5}`} />, jaxpi) is <em>cited</em>, not
@@ -142,7 +142,7 @@ export function AllenCahnContext({ lang }: { lang: "en" | "es" }) {
       <p>
         <strong>Modeled:</strong> stiff 1D Allen-Cahn with fixed diffusion and reaction, a single smooth IC, a spectral
         reference as anchor. <strong>Out of scope:</strong> 2-D/3-D Allen-Cahn (interface curvature), mass conservation
-        (that is Cahn-Hilliard, 4th order), and the parametric-in-<InlineMath tex={String.raw`d`} /> family — the
+        (that is Cahn-Hilliard, 4th order), and the parametric-in-<InlineMath tex={String.raw`d`} /> family: the
         symmetric Allen-Cahn front is <em>stationary</em>, so it admits no closed-form traveling family like Burgers;
         that is why this case ships as a <strong>fixed-parameter benchmark</strong> (one variant), not a sweep.
       </p>

@@ -6,13 +6,13 @@ export function DarcyOperatorContext({ lang }: { lang: "en" | "es" }) {
   const es = lang === "es";
   return es ? (
     <>
-      <h2>El problema: aprender el OPERADOR de Darcy — un FNO que resuelve toda una familia</h2>
+      <h2>El problema: aprender el OPERADOR de Darcy: un FNO que resuelve toda una familia</h2>
       <p>
         <strong>El problema.</strong> El flujo de Darcy en un medio poroso (un acuífero, un lecho de roca) cumple
         <InlineMath tex={String.raw`-\nabla\!\cdot\big(a(\mathbf{x})\,\nabla u\big)=1`} />, con presión
         <InlineMath tex={String.raw`u=0`} /> en el borde. El <strong>campo de permeabilidad</strong>
         <InlineMath tex={String.raw`a(\mathbf{x})`} /> es heterogéneo y distinto en cada sitio. Resolver una sola
-        instancia con un PINN o un método numérico es rutinario; lo difícil — y lo valioso — es resolver la
+        instancia con un PINN o un método numérico es rutinario; lo difícil: y lo valioso: es resolver la
         <em> familia entera</em>. Aquí <strong>no</strong> entrenamos una red por instancia: aprendemos el
         <strong> operador solución</strong> <InlineMath tex={String.raw`\mathcal{G}:a\mapsto u`} /> con un
         <strong> Operador Neuronal de Fourier (FNO)</strong>. Un único FNO entrenado mapea <em>cualquier</em> campo de
@@ -22,10 +22,10 @@ export function DarcyOperatorContext({ lang }: { lang: "en" | "es" }) {
       <h3>Componentes y variables</h3>
       <ul>
         <li><strong>Dominio:</strong> el cuadrado unitario <InlineMath tex={String.raw`(x,y)\in[0,1]^2`} />, grilla del campo <InlineMath tex={String.raw`32\times32`} />.</li>
-        <li><strong>Entrada (la función de coeficiente):</strong> el campo de permeabilidad <InlineMath tex={String.raw`a(\mathbf{x})`} />, un campo aleatorio gaussiano umbralizado a dos valores <InlineMath tex={String.raw`\{3,12\}`} /> — interfaces de material afiladas (canales).</li>
+        <li><strong>Entrada (la función de coeficiente):</strong> el campo de permeabilidad <InlineMath tex={String.raw`a(\mathbf{x})`} />, un campo aleatorio gaussiano umbralizado a dos valores <InlineMath tex={String.raw`\{3,12\}`} />: interfaces de material afiladas (canales).</li>
         <li><strong>Salida (la solución):</strong> la presión <InlineMath tex={String.raw`u(\mathbf{x})`} /> de la ecuación de Darcy, con <InlineMath tex={String.raw`u=0`} /> en <InlineMath tex={String.raw`\partial\Omega`} />.</li>
-        <li><strong>El operador:</strong> <InlineMath tex={String.raw`\mathcal{G}_\theta:a\mapsto u`} /> — NO una función de coordenadas, sino un mapa de <em>campo a campo</em> aprendido sobre muchos pares <InlineMath tex={String.raw`(a,u)`} />.</li>
-        <li><strong>Variantes (chips):</strong> seis campos <InlineMath tex={String.raw`a`} /> <em>fuera de muestra</em> (held-out) que el FNO nunca vio al entrenar — cada chip es una instancia nueva.</li>
+        <li><strong>El operador:</strong> <InlineMath tex={String.raw`\mathcal{G}_\theta:a\mapsto u`} />: NO una función de coordenadas, sino un mapa de <em>campo a campo</em> aprendido sobre muchos pares <InlineMath tex={String.raw`(a,u)`} />.</li>
+        <li><strong>Variantes (chips):</strong> seis campos <InlineMath tex={String.raw`a`} /> <em>fuera de muestra</em> (held-out) que el FNO nunca vio al entrenar: cada chip es una instancia nueva.</li>
       </ul>
 
       <h3>Formalización</h3>
@@ -39,7 +39,7 @@ export function DarcyOperatorContext({ lang }: { lang: "en" | "es" }) {
         espacios de funciones. El FNO aprende <InlineMath tex={String.raw`\mathcal{G}`} /> directamente: lo levanta a un
         canal ancho, aplica varias <strong>capas de Fourier</strong> (convolución espectral sobre los modos de baja
         frecuencia más una conexión <InlineMath tex={String.raw`1\times1`} />) y lo proyecta de vuelta. Por trabajar en
-        el espacio de Fourier, una sola capa acopla todo el dominio de golpe — eso es lo que le da el carácter
+        el espacio de Fourier, una sola capa acopla todo el dominio de golpe: eso es lo que le da el carácter
         <em> global, no local</em> de un operador de Green discreto.
       </p>
       <p>
@@ -48,7 +48,7 @@ export function DarcyOperatorContext({ lang }: { lang: "en" | "es" }) {
         <InlineMath tex={String.raw`u_{\mathrm{ref}}`} />: un esquema de diferencias finitas de 5 puntos con
         <em> conductividades de cara por media armónica</em> y resolución directa dispersa. La media armónica es la
         conductancia exacta en serie de dos celdas, así que el flujo <InlineMath tex={String.raw`q=-a\,u_x`} /> queda
-        continuo a través de las interfaces de material aunque <InlineMath tex={String.raw`a`} /> salte — el balance de
+        continuo a través de las interfaces de material aunque <InlineMath tex={String.raw`a`} /> salte: el balance de
         volumen finito es el teorema de la divergencia discreto, y la matriz es definida positiva, así que
         <InlineMath tex={String.raw`u_{\mathrm{ref}}`} /> es una verdad numérica fiel para cada <InlineMath tex={String.raw`a`} />.
       </p>
@@ -69,7 +69,7 @@ export function DarcyOperatorContext({ lang }: { lang: "en" | "es" }) {
         complejos aprendidos que multiplican solo los <strong>modos de Fourier más bajos</strong> (el resto se trunca) y
         <InlineMath tex={String.raw`W_\ell`} /> es la conexión local <InlineMath tex={String.raw`1\times1`} />. Se entrena
         minimizando la <strong>L2 relativa</strong> en pares <InlineMath tex={String.raw`(a,u_{\mathrm{ref}})`} /> de
-        entrenamiento; la métrica titular es la L2 relativa sobre el conjunto de <strong>prueba retenido</strong> — el
+        entrenamiento; la métrica titular es la L2 relativa sobre el conjunto de <strong>prueba retenido</strong>: el
         número real de <em>generalización del operador</em>.
       </p>
 
@@ -82,17 +82,17 @@ export function DarcyOperatorContext({ lang }: { lang: "en" | "es" }) {
         numérica (diferencias finitas), no datos de campo reales. <strong>Fuera de alcance:</strong> permeabilidad
         continua/log-normal, anisotropía o tensores de permeabilidad, fuentes no unitarias, 3D, transitorios, y
         cuantificación de incertidumbre del operador. Los números son de <strong>generalización de operador</strong>
-        (L2 ~5-12%), NO los <InlineMath tex={String.raw`10^{-2}`} /> de un PINN ajustado a una instancia — etiquetados
+        (L2 ~5-12%), NO los <InlineMath tex={String.raw`10^{-2}`} /> de un PINN ajustado a una instancia: etiquetados
         como tales, sin inflar.
       </p>
 
       <p>
         <strong>Qué muestra cada variante.</strong> Cada chip es un campo de permeabilidad <strong>fuera de muestra</strong>
-        distinto — el FNO nunca lo vio. Verás tres campos: la <em>entrada</em> <InlineMath tex={String.raw`a`} /> (los
+        distinto: el FNO nunca lo vio. Verás tres campos: la <em>entrada</em> <InlineMath tex={String.raw`a`} /> (los
         canales de alta/baja permeabilidad), la <em>predicción</em> del FNO <InlineMath tex={String.raw`u_{\mathrm{pred}}`} />
         y la <em>referencia</em> <InlineMath tex={String.raw`u_{\mathrm{true}}`} /> de diferencias finitas. La presión es
         alta donde la fuente se acumula contra zonas poco permeables y baja a cero en el borde. Lo importante: es
-        <strong> el mismo operador congelado</strong> el que resuelve cada instancia nueva — esa es la promesa del
+        <strong> el mismo operador congelado</strong> el que resuelve cada instancia nueva: esa es la promesa del
         aprendizaje de operadores. Las seis geometrías (canales tortuosos, bloques gruesos, vetas delgadas) muestran
         que generaliza sobre <em>toda</em> la familia.
       </p>
@@ -105,19 +105,19 @@ export function DarcyOperatorContext({ lang }: { lang: "en" | "es" }) {
         leer valores exactos y mira los <strong>perfiles de corte</strong>. Los <strong>chips</strong> saltan entre
         instancias retenidas; cada uno reporta su propia L2 además de la L2 del conjunto de prueba (la métrica titular,
         igual en todos los chips). Como el FNO es un mapa <strong>campo→campo</strong> (no de coordenadas), el tab
-        <strong> Live</strong> reproduce los campos horneados — no hay deslizador de coordenadas, y eso es correcto para
+        <strong> Live</strong> reproduce los campos horneados: no hay deslizador de coordenadas, y eso es correcto para
         un operador: el ONNX horneado es el propio grafo del FNO, verificado por paridad.
       </p>
     </>
-  ) : (
+  ): (
     <>
-      <h2>The problem: learning the Darcy OPERATOR — one FNO that solves a whole family</h2>
+      <h2>The problem: learning the Darcy OPERATOR: one FNO that solves a whole family</h2>
       <p>
         <strong>The problem.</strong> Darcy flow in a porous medium (an aquifer, a rock bed) satisfies
         <InlineMath tex={String.raw`-\nabla\!\cdot\big(a(\mathbf{x})\,\nabla u\big)=1`} />, with pressure
         <InlineMath tex={String.raw`u=0`} /> on the boundary. The <strong>permeability field</strong>
         <InlineMath tex={String.raw`a(\mathbf{x})`} /> is heterogeneous and different at every site. Solving a single
-        instance with a PINN or a numerical method is routine; the hard — and valuable — task is to solve the
+        instance with a PINN or a numerical method is routine; the hard: and valuable: task is to solve the
         <em> whole family</em>. Here we do <strong>not</strong> train one network per instance: we learn the
         <strong> solution operator</strong> <InlineMath tex={String.raw`\mathcal{G}:a\mapsto u`} /> with a
         <strong> Fourier Neural Operator (FNO)</strong>. A single trained FNO maps <em>any</em> new permeability field to
@@ -127,10 +127,10 @@ export function DarcyOperatorContext({ lang }: { lang: "en" | "es" }) {
       <h3>Components &amp; variables</h3>
       <ul>
         <li><strong>Domain:</strong> the unit square <InlineMath tex={String.raw`(x,y)\in[0,1]^2`} />, a <InlineMath tex={String.raw`32\times32`} /> field grid.</li>
-        <li><strong>Input (the coefficient function):</strong> the permeability field <InlineMath tex={String.raw`a(\mathbf{x})`} />, a Gaussian random field thresholded to two values <InlineMath tex={String.raw`\{3,12\}`} /> — sharp material interfaces (channels).</li>
+        <li><strong>Input (the coefficient function):</strong> the permeability field <InlineMath tex={String.raw`a(\mathbf{x})`} />, a Gaussian random field thresholded to two values <InlineMath tex={String.raw`\{3,12\}`} />: sharp material interfaces (channels).</li>
         <li><strong>Output (the solution):</strong> the Darcy pressure <InlineMath tex={String.raw`u(\mathbf{x})`} />, with <InlineMath tex={String.raw`u=0`} /> on <InlineMath tex={String.raw`\partial\Omega`} />.</li>
-        <li><strong>The operator:</strong> <InlineMath tex={String.raw`\mathcal{G}_\theta:a\mapsto u`} /> — NOT a function of coordinates, but a learned <em>field-to-field</em> map fit on many <InlineMath tex={String.raw`(a,u)`} /> pairs.</li>
-        <li><strong>Variants (chips):</strong> six <em>held-out</em> permeability fields <InlineMath tex={String.raw`a`} /> the FNO never saw at training — each chip is a new instance.</li>
+        <li><strong>The operator:</strong> <InlineMath tex={String.raw`\mathcal{G}_\theta:a\mapsto u`} />: NOT a function of coordinates, but a learned <em>field-to-field</em> map fit on many <InlineMath tex={String.raw`(a,u)`} /> pairs.</li>
+        <li><strong>Variants (chips):</strong> six <em>held-out</em> permeability fields <InlineMath tex={String.raw`a`} /> the FNO never saw at training: each chip is a new instance.</li>
       </ul>
 
       <h3>Formalization</h3>
@@ -144,7 +144,7 @@ export function DarcyOperatorContext({ lang }: { lang: "en" | "es" }) {
         function spaces. The FNO learns <InlineMath tex={String.raw`\mathcal{G}`} /> directly: it lifts the input to a
         wide channel, applies several <strong>Fourier layers</strong> (a spectral convolution over the low-frequency
         modes plus a <InlineMath tex={String.raw`1\times1`} /> skip), and projects back. Because it works in Fourier
-        space, a single layer couples the whole domain at once — that is what gives it the <em>global, non-local</em>
+        space, a single layer couples the whole domain at once: that is what gives it the <em>global, non-local</em>
         character of a discrete Green's operator.
       </p>
       <p>
@@ -153,7 +153,7 @@ export function DarcyOperatorContext({ lang }: { lang: "en" | "es" }) {
         <InlineMath tex={String.raw`u_{\mathrm{ref}}`} />: a 5-point finite-difference scheme with
         <em> harmonic-mean face conductivities</em> and a sparse direct solve. The harmonic mean is the exact
         series-conductance of two cells, so the flux <InlineMath tex={String.raw`q=-a\,u_x`} /> stays continuous across
-        material interfaces even when <InlineMath tex={String.raw`a`} /> jumps — the finite-volume balance is the
+        material interfaces even when <InlineMath tex={String.raw`a`} /> jumps: the finite-volume balance is the
         discrete divergence theorem, and the matrix is positive-definite, so <InlineMath tex={String.raw`u_{\mathrm{ref}}`} />
         is a faithful numerical truth for each <InlineMath tex={String.raw`a`} />.
       </p>
@@ -174,7 +174,7 @@ export function DarcyOperatorContext({ lang }: { lang: "en" | "es" }) {
         complex weights that multiply only the <strong>lowest Fourier modes</strong> (the rest are truncated) and
         <InlineMath tex={String.raw`W_\ell`} /> is the local <InlineMath tex={String.raw`1\times1`} /> skip. It is trained
         by minimising the <strong>relative L2</strong> on training <InlineMath tex={String.raw`(a,u_{\mathrm{ref}})`} />
-        pairs; the headline metric is the relative L2 on the <strong>held-out test set</strong> — the true
+        pairs; the headline metric is the relative L2 on the <strong>held-out test set</strong>: the true
         <em> operator-generalization</em> number.
       </p>
 
@@ -187,16 +187,16 @@ export function DarcyOperatorContext({ lang }: { lang: "en" | "es" }) {
         <strong> Out of scope:</strong> continuous / log-normal permeability, anisotropy or permeability tensors,
         non-unit sources, 3D, transients, and operator uncertainty quantification. The numbers are
         <strong> operator-generalization</strong> figures (L2 ~5-12%), NOT the <InlineMath tex={String.raw`10^{-2}`} /> of
-        a PINN fit to one instance — labeled as such, not inflated.
+        a PINN fit to one instance: labeled as such, not inflated.
       </p>
 
       <p>
         <strong>What each variant shows.</strong> Each chip is a different <strong>held-out</strong> permeability field
-        — the FNO never saw it. You get three fields: the <em>input</em> <InlineMath tex={String.raw`a`} /> (the high/low
+      : the FNO never saw it. You get three fields: the <em>input</em> <InlineMath tex={String.raw`a`} /> (the high/low
         permeability channels), the FNO's <em>prediction</em> <InlineMath tex={String.raw`u_{\mathrm{pred}}`} />, and the
         finite-difference <em>reference</em> <InlineMath tex={String.raw`u_{\mathrm{true}}`} />. The pressure is high
         where the source piles up against low-permeability zones and drops to zero on the boundary. The key point: it is
-        <strong> the same frozen operator</strong> solving every new instance — that is the promise of operator learning.
+        <strong> the same frozen operator</strong> solving every new instance: that is the promise of operator learning.
         The six geometries (tortuous channels, coarse blocks, thin veins) show it generalises across the <em>whole</em>
         family.
       </p>
@@ -209,7 +209,7 @@ export function DarcyOperatorContext({ lang }: { lang: "en" | "es" }) {
         values and watch the <strong>line-cut profiles</strong>. The <strong>chips</strong> jump between held-out
         instances; each reports its own L2 alongside the test-set L2 (the headline metric, the same on every chip).
         Because the FNO is a <strong>field→field</strong> map (not a coordinate map), the <strong>Live</strong> tab
-        replays the baked fields — there is no coordinate slider, and that is correct for an operator: the baked ONNX is
+        replays the baked fields: there is no coordinate slider, and that is correct for an operator: the baked ONNX is
         the FNO's own graph, parity-checked.
       </p>
     </>

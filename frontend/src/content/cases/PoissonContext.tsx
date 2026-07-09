@@ -23,7 +23,7 @@ export function PoissonContext({ lang }: { lang: "en" | "es" }) {
       <ul>
         <li><strong>Dominio:</strong> el cuadrado unitario <InlineMath tex={String.raw`\Omega=(0,1)^2`} />, con la grilla del campo de <InlineMath tex={String.raw`101\times101`} />.</li>
         <li><strong>Incógnita:</strong> el campo escalar <InlineMath tex={String.raw`u(x,y)`} /> (potencial / deflexión / presión), nulo en todo el borde.</li>
-        <li><strong>Parámetro de control:</strong> el <em>modo de fuente</em> <InlineMath tex={String.raw`k\in[1,3]`} /> — un input de la red, no una constante. Controla cuántos lóbulos tiene el campo.</li>
+        <li><strong>Parámetro de control:</strong> el <em>modo de fuente</em> <InlineMath tex={String.raw`k\in[1,3]`} />: un input de la red, no una constante. Controla cuántos lóbulos tiene el campo.</li>
         <li><strong>Fuente:</strong> <InlineMath tex={String.raw`f(x,y;k)=-\nabla^2 u^*`} />, la forzante de la solución manufacturada de abajo (forma cerrada).</li>
         <li><strong>Métrica:</strong> el error relativo-L2 del campo de la PINN contra la solución exacta, por régimen.</li>
       </ul>
@@ -56,7 +56,7 @@ export function PoissonContext({ lang }: { lang: "en" | "es" }) {
         sobrevive intacta a la exportación a ONNX (es álgebra tensorial pura), por eso el tab Live re-evalúa el campo
         exacto en el navegador. <strong>Fuera de alcance:</strong> coeficientes variables/anisótropos, bordes no
         rectangulares, Neumann/Robin, y modos <InlineMath tex={String.raw`k>3`} /> (el sesgo espectral de una red suave
-        encarece las frecuencias altas — el régimen <InlineMath tex={String.raw`k=3`} /> ya es el test de estrés).
+        encarece las frecuencias altas: el régimen <InlineMath tex={String.raw`k=3`} /> ya es el test de estrés).
       </p>
 
       <p>
@@ -73,10 +73,10 @@ export function PoissonContext({ lang }: { lang: "en" | "es" }) {
         por el cursor). Los <strong>chips de régimen</strong> cargan cada modo pre-horneado; el tab <strong>Charts</strong>
         compara el L2 de todos (clic para cargar). En el tab <strong>Live</strong>, mueve el deslizador de
         <InlineMath tex={String.raw`k`} /> y el campo se <em>recalcula en vivo</em> en tu navegador vía onnxruntime-web
-        — la misma red entrenada offline, ahora paramétrica.
+      : la misma red entrenada offline, ahora paramétrica.
       </p>
     </>
-  ) : (
+  ): (
     <>
       <h2>The problem: the Poisson equation with a tunable source mode</h2>
       <p>
@@ -94,7 +94,7 @@ export function PoissonContext({ lang }: { lang: "en" | "es" }) {
       <ul>
         <li><strong>Domain:</strong> the unit square <InlineMath tex={String.raw`\Omega=(0,1)^2`} />, with a <InlineMath tex={String.raw`101\times101`} /> field grid.</li>
         <li><strong>Unknown:</strong> the scalar field <InlineMath tex={String.raw`u(x,y)`} /> (potential / deflection / pressure), zero on the whole boundary.</li>
-        <li><strong>Control parameter:</strong> the <em>source mode</em> <InlineMath tex={String.raw`k\in[1,3]`} /> — a network input, not a constant. It sets how many lobes the field has.</li>
+        <li><strong>Control parameter:</strong> the <em>source mode</em> <InlineMath tex={String.raw`k\in[1,3]`} />: a network input, not a constant. It sets how many lobes the field has.</li>
         <li><strong>Source:</strong> <InlineMath tex={String.raw`f(x,y;k)=-\nabla^2 u^*`} />, the forcing of the manufactured solution below (closed form).</li>
         <li><strong>Metric:</strong> the relative-L2 error of the PINN field vs the exact solution, per regime.</li>
       </ul>
@@ -127,7 +127,7 @@ export function PoissonContext({ lang }: { lang: "en" | "es" }) {
         ONNX export intact (it is pure tensor algebra), which is why the Live tab re-evaluates the exact field in the
         browser. <strong>Out of scope:</strong> variable/anisotropic coefficients, non-rectangular domains, Neumann/Robin
         conditions, and modes <InlineMath tex={String.raw`k>3`} /> (a smooth network's spectral bias makes high
-        frequencies costly — the <InlineMath tex={String.raw`k=3`} /> regime is already the stress test).
+        frequencies costly: the <InlineMath tex={String.raw`k=3`} /> regime is already the stress test).
       </p>
 
       <p>
@@ -144,7 +144,7 @@ export function PoissonContext({ lang }: { lang: "en" | "es" }) {
         along y through the cursor). The <strong>regime chips</strong> load each pre-baked mode; the <strong>Charts</strong>
         tab compares everyone's L2 (click to load). In the <strong>Live</strong> tab, move the
         <InlineMath tex={String.raw`k`} /> slider and the field <em>recomputes live</em> in your browser via
-        onnxruntime-web — the same network trained offline, now parametric.
+        onnxruntime-web: the same network trained offline, now parametric.
       </p>
     </>
   );

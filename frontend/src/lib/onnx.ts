@@ -1,5 +1,5 @@
 // The LIVE lane: onnxruntime-web inference of the exported PINN. The browser feeds an [n, d] coordinate batch to the
-// baked .onnx and gets the field back — re-evaluable at arbitrary resolution / cursor probes in real time. This is
+// baked .onnx and gets the field back: re-evaluable at arbitrary resolution / cursor probes in real time. This is
 // the live counterpart of the Python pipeline; the replay lane (committed field traces) is the fallback.
 import * as ort from "onnxruntime-web";
 

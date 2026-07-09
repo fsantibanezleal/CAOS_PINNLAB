@@ -5,11 +5,11 @@ export function Wave1dContext({ lang }: { lang: "en" | "es" }) {
   const es = lang === "es";
   return es ? (
     <>
-      <h2>El problema: una onda estacionaria en una cuerda — la ecuación de onda 1D con velocidad ajustable</h2>
+      <h2>El problema: una onda estacionaria en una cuerda: la ecuación de onda 1D con velocidad ajustable</h2>
       <p>
         <strong>El problema.</strong> Una cuerda fija en ambos extremos se suelta desde un perfil senoidal en reposo.
         Oscila para siempre (sin amortiguamiento) como una <em>onda estacionaria</em>. La ecuación de onda
-        <InlineMath tex={String.raw`u_{tt}=c^2 u_{xx}`} /> es la EDP <em>hiperbólica</em> canónica — gobierna cuerdas
+        <InlineMath tex={String.raw`u_{tt}=c^2 u_{xx}`} /> es la EDP <em>hiperbólica</em> canónica: gobierna cuerdas
         vibrantes, acústica, ondas electromagnéticas y sísmicas. A diferencia del calor (que olvida su condición
         inicial), la onda la <strong>recuerda</strong> y la recorre. Aquí la <strong>velocidad de onda</strong>
         <InlineMath tex={String.raw`c`} /> es ajustable: una sola red aprende toda la familia
@@ -21,7 +21,7 @@ export function Wave1dContext({ lang }: { lang: "en" | "es" }) {
       <ul>
         <li><strong>Dominio:</strong> espacio <InlineMath tex={String.raw`x\in[0,1]`} /> × tiempo <InlineMath tex={String.raw`t\in[0,1]`} />, grilla del campo <InlineMath tex={String.raw`161\times161`} />.</li>
         <li><strong>Incógnita:</strong> el desplazamiento <InlineMath tex={String.raw`u(x,t)`} />.</li>
-        <li><strong>Parámetro de control:</strong> la <em>velocidad de onda</em> <InlineMath tex={String.raw`c\in[0.5,2]`} /> — un input de la red; fija la frecuencia de oscilación.</li>
+        <li><strong>Parámetro de control:</strong> la <em>velocidad de onda</em> <InlineMath tex={String.raw`c\in[0.5,2]`} />: un input de la red; fija la frecuencia de oscilación.</li>
         <li><strong>Condiciones iniciales (dos, por ser 2º orden en t):</strong> <InlineMath tex={String.raw`u(x,0)=\sin(\pi x)`} /> (forma) y <InlineMath tex={String.raw`u_t(x,0)=0`} /> (parte del reposo).</li>
         <li><strong>Condiciones de borde:</strong> extremos fijos <InlineMath tex={String.raw`u(0,t)=u(1,t)=0`} />.</li>
       </ul>
@@ -64,20 +64,20 @@ export function Wave1dContext({ lang }: { lang: "en" | "es" }) {
       <p>
         <strong>Cómo leer y usar la viz.</strong> El <strong>heatmap</strong> de
         <InlineMath tex={String.raw`u(x,t)`} /> (x horizontal, t vertical) muestra <em>franjas diagonales/onduladas</em>
-        — el patrón espacio-tiempo de la onda, alternando crestas (claro) y valles (oscuro). Pasa el cursor para leer
+      : el patrón espacio-tiempo de la onda, alternando crestas (claro) y valles (oscuro). Pasa el cursor para leer
         el desplazamiento exacto y mira el <strong>perfil de corte</strong> en <InlineMath tex={String.raw`t`} /> (un
         coseno) y en <InlineMath tex={String.raw`x`} /> (la forma senoidal). Los <strong>chips</strong> cargan cada
         velocidad; en <strong>Live</strong>, desliza <InlineMath tex={String.raw`c`} /> y ve la onda recalcularse en
         vivo en tu navegador (onnxruntime-web).
       </p>
     </>
-  ) : (
+  ): (
     <>
-      <h2>The problem: a standing wave on a string — the 1D wave equation with a tunable speed</h2>
+      <h2>The problem: a standing wave on a string: the 1D wave equation with a tunable speed</h2>
       <p>
         <strong>The problem.</strong> A string fixed at both ends is released from a sinusoidal profile at rest. It
         oscillates forever (no damping) as a <em>standing wave</em>. The wave equation
-        <InlineMath tex={String.raw`u_{tt}=c^2 u_{xx}`} /> is the canonical <em>hyperbolic</em> PDE — it governs
+        <InlineMath tex={String.raw`u_{tt}=c^2 u_{xx}`} /> is the canonical <em>hyperbolic</em> PDE: it governs
         vibrating strings, acoustics, electromagnetic and seismic waves. Unlike heat (which forgets its initial
         condition), a wave <strong>remembers</strong> and carries it. Here the <strong>wave speed</strong>
         <InlineMath tex={String.raw`c`} /> is tunable: a single network learns the whole family
@@ -89,7 +89,7 @@ export function Wave1dContext({ lang }: { lang: "en" | "es" }) {
       <ul>
         <li><strong>Domain:</strong> space <InlineMath tex={String.raw`x\in[0,1]`} /> × time <InlineMath tex={String.raw`t\in[0,1]`} />, a <InlineMath tex={String.raw`161\times161`} /> field grid.</li>
         <li><strong>Unknown:</strong> the displacement <InlineMath tex={String.raw`u(x,t)`} />.</li>
-        <li><strong>Control parameter:</strong> the <em>wave speed</em> <InlineMath tex={String.raw`c\in[0.5,2]`} /> — a network input; it sets the oscillation frequency.</li>
+        <li><strong>Control parameter:</strong> the <em>wave speed</em> <InlineMath tex={String.raw`c\in[0.5,2]`} />: a network input; it sets the oscillation frequency.</li>
         <li><strong>Initial conditions (two, since 2nd order in t):</strong> <InlineMath tex={String.raw`u(x,0)=\sin(\pi x)`} /> (shape) and <InlineMath tex={String.raw`u_t(x,0)=0`} /> (released from rest).</li>
         <li><strong>Boundary conditions:</strong> fixed ends <InlineMath tex={String.raw`u(0,t)=u(1,t)=0`} />.</li>
       </ul>
@@ -130,7 +130,7 @@ export function Wave1dContext({ lang }: { lang: "en" | "es" }) {
       </p>
       <p>
         <strong>How to read &amp; use the viz.</strong> The <strong>heatmap</strong> of
-        <InlineMath tex={String.raw`u(x,t)`} /> (x horizontal, t vertical) shows <em>wavy diagonal bands</em> — the
+        <InlineMath tex={String.raw`u(x,t)`} /> (x horizontal, t vertical) shows <em>wavy diagonal bands</em>: the
         space-time pattern of the wave, alternating crests (light) and troughs (dark). Hover to read the exact
         displacement and watch the <strong>line-cut profile</strong> in <InlineMath tex={String.raw`t`} /> (a cosine)
         and in <InlineMath tex={String.raw`x`} /> (the sine shape). The <strong>chips</strong> load each speed; in

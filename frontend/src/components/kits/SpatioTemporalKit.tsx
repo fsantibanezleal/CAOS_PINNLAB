@@ -8,10 +8,10 @@ import { Transport } from "./Transport";
 import type { KitProps } from "./types";
 import { useAnimator } from "./useAnimator";
 
-/** SpatioTemporalKit — a 2-D spatial field that EVOLVES in time, where time is the swept parameter and each
+/** SpatioTemporalKit: a 2-D spatial field that EVOLVES in time, where time is the swept parameter and each
  *  variant is a time snapshot (e.g. ocean-transport, heap-leach). It loads ALL variant traces and animates the
  *  2-D heatmap forward over t, with a color scale fixed across every frame (so the motion is real, not a
- *  per-frame autoscale) and a hover value read-out. No retraining — every snapshot is already baked. */
+ *  per-frame autoscale) and a hover value read-out. No retraining: every snapshot is already baked. */
 export function SpatioTemporalKit({ manifest, lang }: KitProps) {
   const es = lang === "es";
   const [outIdx, setOutIdx] = useState(0);
@@ -41,7 +41,7 @@ export function SpatioTemporalKit({ manifest, lang }: KitProps) {
       if (a < lo) lo = a;
       if (b > hi) hi = b;
     }
-    const range: [number, number] = [lo, hi > lo ? hi : lo + 1];
+    const range: [number, number] = [lo, hi > lo ? hi: lo + 1];
     const ax0 = traces[0]?.axes[fa[0]] ?? [0, 1];
     const ax1 = traces[0]?.axes[fa[1]] ?? [0, 1];
     const tVals = manifest.variants.map((v) => v.params[tKey] ?? 0);
@@ -54,7 +54,7 @@ export function SpatioTemporalKit({ manifest, lang }: KitProps) {
   const [hover, setHover] = useState<{ x: number; y: number; v: number } | null>(null);
 
   if (err) return <div className="banner error">{err}</div>;
-  if (!data) return <div className="loading">{es ? "Cargando fotogramas…" : "Loading frames…"}</div>;
+  if (!data) return <div className="loading">{es ? "Cargando fotogramas…": "Loading frames…"}</div>;
 
   const { frames, range, ax0, ax1, tVals } = data;
   const frame = frames[f];
@@ -74,10 +74,10 @@ export function SpatioTemporalKit({ manifest, lang }: KitProps) {
     <div className="st-kit">
       {manifest.outputs.length > 1 && (
         <div className="row" style={{ gap: 8, marginBottom: 8 }}>
-          <span className="muted" style={{ fontSize: 13 }}>{es ? "Campo" : "Field"}</span>
+          <span className="muted" style={{ fontSize: 13 }}>{es ? "Campo": "Field"}</span>
           <div className="variant-chips">
             {manifest.outputs.map((o, i) => (
-              <button key={o} type="button" className={"variant-chip" + (i === outIdx ? " active" : "")} onClick={() => setOutIdx(i)}>{o}</button>
+              <button key={o} type="button" className={"variant-chip" + (i === outIdx ? " active": "")} onClick={() => setOutIdx(i)}>{o}</button>
             ))}
           </div>
         </div>
@@ -103,12 +103,12 @@ export function SpatioTemporalKit({ manifest, lang }: KitProps) {
       <div className="st-readout mono">
         {hover
           ? <>{fa[0]}={hover.x.toFixed(3)} &nbsp; {fa[1]}={hover.y.toFixed(3)} &nbsp;→&nbsp; <strong>{outName}={hover.v.toExponential(3)}</strong></>
-          : <span className="muted">{`hover the field · ${outName} scale fixed across frames [${range[0].toExponential(1)}, ${range[1].toExponential(1)}]`}</span>}
+         : <span className="muted">{`hover the field · ${outName} scale fixed across frames [${range[0].toExponential(1)}, ${range[1].toExponential(1)}]`}</span>}
       </div>
       <p className="hint">
         {es
           ? `Pulsa ▶ para ver el campo 2-D evolucionar en ${tKey} (o arrastra la barra). Cada fotograma es un instante. (La pestaña Live re-evalúa el ONNX en cualquier ${tKey}.)`
-          : `Press ▶ to watch the 2-D field evolve in ${tKey} (or drag the bar). Each frame is one instant. (The Live tab re-evaluates the ONNX at any ${tKey}.)`}
+         : `Press ▶ to watch the 2-D field evolve in ${tKey} (or drag the bar). Each frame is one instant. (The Live tab re-evaluates the ONNX at any ${tKey}.)`}
       </p>
     </div>
   );

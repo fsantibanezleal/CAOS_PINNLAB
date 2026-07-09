@@ -6,7 +6,7 @@ import { loadIndex, loadManifest } from "../lib/data";
 import { useUI } from "../store";
 
 function honestyClass(flag: string): string {
-  return flag.startsWith("validated") ? "validated" : "synthetic";
+  return flag.startsWith("validated") ? "validated": "synthetic";
 }
 
 export function Benchmark() {
@@ -24,7 +24,7 @@ export function Benchmark() {
       <p className="muted">
         {lang === "es"
           ? "Honestidad: error relativo vs la referencia (analítica/dataset/numérica), paridad ONNX-vs-modelo, y etiqueta de datos sintéticos vs reales. Sin números maquillados."
-          : "Honesty: relative error vs the reference (analytic/dataset/numerical), ONNX-vs-model parity, and the synthetic-vs-real data label. No dressed-up numbers."}
+         : "Honesty: relative error vs the reference (analytic/dataset/numerical), ONNX-vs-model parity, and the synthetic-vs-real data label. No dressed-up numbers."}
       </p>
       <div className="panel">
         <table className="tbl">
@@ -43,7 +43,7 @@ export function Benchmark() {
                 <td className="mono">{m.case_id}</td>
                 <td>{m.validation_anchor}</td>
                 <td className="mono">
-                  {m.variants[0]?.metrics?.l2_relative !== undefined ? Number(m.variants[0].metrics.l2_relative).toExponential(2) : "—"}
+                  {m.variants[0]?.metrics?.l2_relative !== undefined ? Number(m.variants[0].metrics.l2_relative).toExponential(2): ": "}
                 </td>
                 <td className="mono">{Number(m.onnx.parity_max_abs).toExponential(2)}</td>
                 <td>

@@ -24,7 +24,7 @@ D_COEF = 0.001
 CASE = CaseSpec(
     id="bench-allencahn",
     category="canonical-benchmark",
-    title="Allen-Cahn (stiff reaction-diffusion) — hard-constraint + RAR PINN",
+    title="Allen-Cahn (stiff reaction-diffusion): hard-constraint + RAR PINN",
     governing_equations=(
         r"u_t = d\,u_{xx} + 5(u-u^3),\ d=0.001,\ x\in[-1,1],\ t\in[0,1],\quad u(x,0)=x^2\cos(\pi x)"
     ),

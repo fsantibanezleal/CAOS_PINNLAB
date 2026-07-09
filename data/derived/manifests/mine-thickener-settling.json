@@ -1,1 +1,182 @@
-{"schema":"pinnlab.manifest/v2","case_id":"mine-thickener-settling","category":"mining-mineral-processing","title":"Thickener / tailings settling — Bürger-Concha degenerate conservation law (parametric descent rate)","governing_equations":"\\phi_t + \\partial_z f_{bk}(\\phi) = \\partial_z(D(\\phi)\\phi_z),\\ f_{bk}=v_0\\phi(1-\\phi/\\phi_{max})^C,\\ D\\ \\text{degenerate above}\\ \\phi_c","method":"nonlinear-settling","real_or_synthetic":"synthetic-illustrative","expected_band":"descending settling front (faster for larger R) + rising consolidated bed; relative-L2 vs MMS analytic < 2e-2","validation_anchor":"analytic","inputs":["z","t","R"],"outputs":["phi"],"field_axes":["z","t"],"param_specs":[{"key":"R","label_en":"Front descent rate R","label_es":"Tasa de descenso del frente R","default":0.8,"min":0.3,"max":0.9,"step":0.02,"unit":""}],"engine":{"package":"pinnlab","version":"0.07.000","framework":"deepxde"},"seed":42,"trace_schema":"pinnlab.field/v1","onnx":{"path":"mine-thickener-settling.onnx","bytes":55867,"parity_max_abs":5.07e-07,"opset":18,"input_dim":3},"lane":"live","gate":{"lane":"live","onnx_bytes":55867,"infer_ms":1.12,"trace_bytes":33640,"reasons":[]},"flags":[],"inverse":{},"run_ms":923140.58,"variants":[{"id":"r030","label_en":"R=0.3","label_es":"R=0.3","note_en":"Slow settle (R=0.30) — a gently descending mud-line; the bed barely forms.","note_es":"Sedimentación lenta (R=0.30) — la interfase desciende suavemente; el lecho apenas se forma.","params":{"R":0.3},"trace":{"path":"mine-thickener-settling/r030.json","bytes":33640},"metrics":{"onnx_parity_max_abs":5.07e-07,"validation_anchor":"analytic","l2_relative":0.002205,"max_abs_error":0.006026}},{"id":"r042","label_en":"R=0.42","label_es":"R=0.42","note_en":"R=0.42 — moderate descent.","note_es":"R=0.42 — descenso moderado.","params":{"R":0.42},"trace":{"path":"mine-thickener-settling/r042.json","bytes":33555},"metrics":{"onnx_parity_max_abs":5.07e-07,"validation_anchor":"analytic","l2_relative":0.001961,"max_abs_error":0.003446}},{"id":"r054","label_en":"R=0.54","label_es":"R=0.54","note_en":"R=0.54 — clear settling, bed building.","note_es":"R=0.54 — sedimentación clara, el lecho crece.","params":{"R":0.54},"trace":{"path":"mine-thickener-settling/r054.json","bytes":33568},"metrics":{"onnx_parity_max_abs":5.07e-07,"validation_anchor":"analytic","l2_relative":0.003107,"max_abs_error":0.004896}},{"id":"r066","label_en":"R=0.66","label_es":"R=0.66","note_en":"R=0.66 — fast front, well-defined bed.","note_es":"R=0.66 — frente rápido, lecho bien definido.","params":{"R":0.66},"trace":{"path":"mine-thickener-settling/r066.json","bytes":33611},"metrics":{"onnx_parity_max_abs":5.07e-07,"validation_anchor":"analytic","l2_relative":0.003725,"max_abs_error":0.004073}},{"id":"r078","label_en":"R=0.78","label_es":"R=0.78","note_en":"R=0.78 — rapid settle (near the legacy case).","note_es":"R=0.78 — sedimentación rápida (cerca del caso original).","params":{"R":0.78},"trace":{"path":"mine-thickener-settling/r078.json","bytes":33598},"metrics":{"onnx_parity_max_abs":5.07e-07,"validation_anchor":"analytic","l2_relative":0.00271,"max_abs_error":0.00314}},{"id":"r090","label_en":"R=0.9","label_es":"R=0.9","note_en":"Fast settle (R=0.90) — the mud-line drops to the column bottom by t=1.","note_es":"Sedimentación rápida (R=0.90) — la interfase llega al fondo de la columna en t=1.","params":{"R":0.9},"trace":{"path":"mine-thickener-settling/r090.json","bytes":33624},"metrics":{"onnx_parity_max_abs":5.07e-07,"validation_anchor":"analytic","l2_relative":0.004071,"max_abs_error":0.007198}}]}
+{
+ "schema": "pinnlab.manifest/v2",
+ "case_id": "mine-thickener-settling",
+ "category": "mining-mineral-processing",
+ "title": "Thickener / tailings settling: Bürger-Concha degenerate conservation law (parametric descent rate)",
+ "governing_equations": "\\phi_t + \\partial_z f_{bk}(\\phi) = \\partial_z(D(\\phi)\\phi_z),\\ f_{bk}=v_0\\phi(1-\\phi/\\phi_{max})^C,\\ D\\ \\text{degenerate above}\\ \\phi_c",
+ "method": "nonlinear-settling",
+ "real_or_synthetic": "synthetic-illustrative",
+ "expected_band": "descending settling front (faster for larger R) + rising consolidated bed; relative-L2 vs MMS analytic < 2e-2",
+ "validation_anchor": "analytic",
+ "inputs": [
+  "z",
+  "t",
+  "R"
+ ],
+ "outputs": [
+  "phi"
+ ],
+ "field_axes": [
+  "z",
+  "t"
+ ],
+ "param_specs": [
+  {
+   "key": "R",
+   "label_en": "Front descent rate R",
+   "label_es": "Tasa de descenso del frente R",
+   "default": 0.8,
+   "min": 0.3,
+   "max": 0.9,
+   "step": 0.02,
+   "unit": ""
+  }
+ ],
+ "engine": {
+  "package": "pinnlab",
+  "version": "0.07.000",
+  "framework": "deepxde"
+ },
+ "seed": 42,
+ "trace_schema": "pinnlab.field/v1",
+ "onnx": {
+  "path": "mine-thickener-settling.onnx",
+  "bytes": 55867,
+  "parity_max_abs": 5.07e-07,
+  "opset": 18,
+  "input_dim": 3
+ },
+ "lane": "live",
+ "gate": {
+  "lane": "live",
+  "onnx_bytes": 55867,
+  "infer_ms": 1.12,
+  "trace_bytes": 33640,
+  "reasons": []
+ },
+ "flags": [],
+ "inverse": {},
+ "run_ms": 923140.58,
+ "variants": [
+  {
+   "id": "r030",
+   "label_en": "R=0.3",
+   "label_es": "R=0.3",
+   "note_en": "Slow settle (R=0.30): a gently descending mud-line; the bed barely forms.",
+   "note_es": "Sedimentación lenta (R=0.30): la interfase desciende suavemente; el lecho apenas se forma.",
+   "params": {
+    "R": 0.3
+   },
+   "trace": {
+    "path": "mine-thickener-settling/r030.json",
+    "bytes": 33640
+   },
+   "metrics": {
+    "onnx_parity_max_abs": 5.07e-07,
+    "validation_anchor": "analytic",
+    "l2_relative": 0.002205,
+    "max_abs_error": 0.006026
+   }
+  },
+  {
+   "id": "r042",
+   "label_en": "R=0.42",
+   "label_es": "R=0.42",
+   "note_en": "R=0.42: moderate descent.",
+   "note_es": "R=0.42: descenso moderado.",
+   "params": {
+    "R": 0.42
+   },
+   "trace": {
+    "path": "mine-thickener-settling/r042.json",
+    "bytes": 33555
+   },
+   "metrics": {
+    "onnx_parity_max_abs": 5.07e-07,
+    "validation_anchor": "analytic",
+    "l2_relative": 0.001961,
+    "max_abs_error": 0.003446
+   }
+  },
+  {
+   "id": "r054",
+   "label_en": "R=0.54",
+   "label_es": "R=0.54",
+   "note_en": "R=0.54: clear settling, bed building.",
+   "note_es": "R=0.54: sedimentación clara, el lecho crece.",
+   "params": {
+    "R": 0.54
+   },
+   "trace": {
+    "path": "mine-thickener-settling/r054.json",
+    "bytes": 33568
+   },
+   "metrics": {
+    "onnx_parity_max_abs": 5.07e-07,
+    "validation_anchor": "analytic",
+    "l2_relative": 0.003107,
+    "max_abs_error": 0.004896
+   }
+  },
+  {
+   "id": "r066",
+   "label_en": "R=0.66",
+   "label_es": "R=0.66",
+   "note_en": "R=0.66: fast front, well-defined bed.",
+   "note_es": "R=0.66: frente rápido, lecho bien definido.",
+   "params": {
+    "R": 0.66
+   },
+   "trace": {
+    "path": "mine-thickener-settling/r066.json",
+    "bytes": 33611
+   },
+   "metrics": {
+    "onnx_parity_max_abs": 5.07e-07,
+    "validation_anchor": "analytic",
+    "l2_relative": 0.003725,
+    "max_abs_error": 0.004073
+   }
+  },
+  {
+   "id": "r078",
+   "label_en": "R=0.78",
+   "label_es": "R=0.78",
+   "note_en": "R=0.78: rapid settle (near the legacy case).",
+   "note_es": "R=0.78: sedimentación rápida (cerca del caso original).",
+   "params": {
+    "R": 0.78
+   },
+   "trace": {
+    "path": "mine-thickener-settling/r078.json",
+    "bytes": 33598
+   },
+   "metrics": {
+    "onnx_parity_max_abs": 5.07e-07,
+    "validation_anchor": "analytic",
+    "l2_relative": 0.00271,
+    "max_abs_error": 0.00314
+   }
+  },
+  {
+   "id": "r090",
+   "label_en": "R=0.9",
+   "label_es": "R=0.9",
+   "note_en": "Fast settle (R=0.90): the mud-line drops to the column bottom by t=1.",
+   "note_es": "Sedimentación rápida (R=0.90): la interfase llega al fondo de la columna en t=1.",
+   "params": {
+    "R": 0.9
+   },
+   "trace": {
+    "path": "mine-thickener-settling/r090.json",
+    "bytes": 33624
+   },
+   "metrics": {
+    "onnx_parity_max_abs": 5.07e-07,
+    "validation_anchor": "analytic",
+    "l2_relative": 0.004071,
+    "max_abs_error": 0.007198
+   }
+  }
+ ]
+}

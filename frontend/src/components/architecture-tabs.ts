@@ -1,7 +1,7 @@
-// Architecture-modal tab registry (the ⓘ "how it was built" panel — Veta/Circuita pattern). Each tab pairs ONE
+// Architecture-modal tab registry (the ⓘ "how it was built" panel: Veta/Circuita pattern). Each tab pairs ONE
 // hand-authored themed SVG (every colour a CSS variable, fetched from svg/tech/ and inlined so the active theme
 // paints it) with a compact bilingual explanation; the methods tab also renders text blocks BELOW the diagram.
-// This panel is what demonstrates the app is REAL — the actual modules, stages and data flow, not a demo facade.
+// This panel is what demonstrates the app is REAL: the actual modules, stages and data flow, not a demo facade.
 
 export interface TabBlockDef {
   titleKey: string;

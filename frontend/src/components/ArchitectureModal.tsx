@@ -1,6 +1,6 @@
-// Architecture / "how it was built" modal — opened by the ⓘ button in the header (Veta/Circuita pattern).
+// Architecture / "how it was built" modal: opened by the ⓘ button in the header (Veta/Circuita pattern).
 // Tabs, each pairing a hand-authored themed SVG (fetched + INLINED so its CSS-variable tokens resolve against the
-// active dark/light palette — an <img> would not inherit them) with a compact bilingual explanation. This panel is
+// active dark/light palette: an <img> would not inherit them) with a compact bilingual explanation. This panel is
 // the evidence that the app is real: it shows the actual modules, stages and data flow, not a demo facade.
 import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -62,7 +62,7 @@ export function ArchitectureModal({ onClose }: { onClose: () => void }) {
               key={x.id}
               role="tab"
               aria-selected={x.id === active}
-              className={`chip${x.id === active ? " on" : ""}`}
+              className={`chip${x.id === active ? " on": ""}`}
               onClick={() => setActive(x.id)}
             >
               {t(x.labelKey)}
@@ -82,7 +82,7 @@ export function ArchitectureModal({ onClose }: { onClose: () => void }) {
               {tab.blocks.map((bk, i) => {
                 const spanBoth = tab.blocks!.length % 2 === 1 && i === tab.blocks!.length - 1;
                 return (
-                  <section key={bk.titleKey} className="block" style={spanBoth ? { gridColumn: "1 / -1" } : undefined}>
+                  <section key={bk.titleKey} className="block" style={spanBoth ? { gridColumn: "1 / -1" }: undefined}>
                     <strong>{t(bk.titleKey)}</strong>
                     <p>{t(bk.textKey)}</p>
                   </section>

@@ -1,20 +1,20 @@
 import { Equation, InlineMath } from "../../components/Equation";
 
 /** Deep bilingual Context for poll-source-uq-bpinn (deep-ensemble Bayesian PINN: pollutant diffusion with epistemic
- *  uncertainty from sparse noisy sensors; single honest UQ benchmark — mean + std emitted as ONE [mean,std] graph). */
+ *  uncertainty from sparse noisy sensors; single honest UQ benchmark: mean + std emitted as ONE [mean,std] graph). */
 export function SourceUqBpinnContext({ lang }: { lang: "en" | "es" }) {
   const es = lang === "es";
   return es ? (
     <>
-      <h2>El problema: estimar un contaminante con pocos sensores ruidosos — y reportar la incertidumbre</h2>
+      <h2>El problema: estimar un contaminante con pocos sensores ruidosos: y reportar la incertidumbre</h2>
       <p>
         <strong>El problema.</strong> Un contaminante disuelto difunde en un canal 1D y se gobierna por la ecuación del
         calor <InlineMath tex={String.raw`c_t = D\,c_{xx}`} />, con paredes limpias <InlineMath tex={String.raw`c=0`} />.
         Pero <em>no</em> conocemos la condición inicial completa: solo disponemos de un <strong>puñado de lecturas de
         sensores dispersas y ruidosas</strong>. Una PINN normal entregaría <em>una</em> respuesta puntual, sin barras de
-        error — peligroso para una decisión ambiental. Aquí entrenamos un <strong>ensemble profundo</strong> de
+        error: peligroso para una decisión ambiental. Aquí entrenamos un <strong>ensemble profundo</strong> de
         <InlineMath tex={String.raw`K`} /> PINNs inicializadas de forma independiente: su <em>media</em> estima el campo
-        y su <em>desviación estándar</em> es la <strong>incertidumbre epistémica</strong> — pequeña donde hay datos o
+        y su <em>desviación estándar</em> es la <strong>incertidumbre epistémica</strong>: pequeña donde hay datos o
         física dura (las paredes), y <strong>creciente donde los datos escasean</strong>.
       </p>
 
@@ -22,15 +22,15 @@ export function SourceUqBpinnContext({ lang }: { lang: "en" | "es" }) {
       <ul>
         <li><strong>Dominio:</strong> canal <InlineMath tex={String.raw`x\in[0,1]`} /> × tiempo <InlineMath tex={String.raw`t\in[0,1]`} />, grilla del campo <InlineMath tex={String.raw`61\times61`} />.</li>
         <li><strong>Incógnita:</strong> la concentración <InlineMath tex={String.raw`c(x,t)`} /> del contaminante.</li>
-        <li><strong>Difusividad:</strong> <InlineMath tex={String.raw`D=0.1`} /> — fija; controla cuán rápido decae el modo.</li>
+        <li><strong>Difusividad:</strong> <InlineMath tex={String.raw`D=0.1`} />: fija; controla cuán rápido decae el modo.</li>
         <li><strong>Datos:</strong> <InlineMath tex={String.raw`N=24`} /> sensores dispersos con ruido gaussiano <InlineMath tex={String.raw`\sigma=0.02`} /> (no la condición inicial completa).</li>
-        <li><strong>Salidas de la red:</strong> dos campos — la <em>media</em> predictiva <InlineMath tex={String.raw`\mu(x,t)`} /> y la <em>desviación</em> del ensemble <InlineMath tex={String.raw`s(x,t)`} /> (la UQ).</li>
+        <li><strong>Salidas de la red:</strong> dos campos: la <em>media</em> predictiva <InlineMath tex={String.raw`\mu(x,t)`} /> y la <em>desviación</em> del ensemble <InlineMath tex={String.raw`s(x,t)`} /> (la UQ).</li>
         <li><strong>Miembros del ensemble:</strong> <InlineMath tex={String.raw`K=5`} /> redes con inicialización distinta y <em>bagging</em> de sensores.</li>
       </ul>
 
       <h3>Formalización</h3>
       <p>
-        El campo de referencia es el <strong>modo fundamental de difusión</strong> — solución exacta del problema con
+        El campo de referencia es el <strong>modo fundamental de difusión</strong>: solución exacta del problema con
         <InlineMath tex={String.raw`c(x,0)=\sin(\pi x)`} /> y paredes <InlineMath tex={String.raw`c=0`} />:
       </p>
       <Equation tex={String.raw`c^*(x,t)=e^{-D\pi^2 t}\,\sin(\pi x),\qquad c^*_t = -D\pi^2\,c^*,\quad c^*_{xx} = -\pi^2\,c^* \;\Rightarrow\; c^*_t = D\,c^*_{xx}.`} />
@@ -55,7 +55,7 @@ export function SourceUqBpinnContext({ lang }: { lang: "en" | "es" }) {
         doi:10.48550/arXiv.1612.01474) es la
         aproximación reconocida y barata: entrenar <InlineMath tex={String.raw`K`} /> redes con <em>inicializaciones
         distintas</em> y datos remuestreados (<em>bagging</em>) hace que <strong>discrepen más donde no hay datos que las
-        limiten</strong> — y esa discrepancia <em>es</em> la incertidumbre epistémica. Cada miembro ve un subconjunto
+        limiten</strong>: y esa discrepancia <em>es</em> la incertidumbre epistémica. Cada miembro ve un subconjunto
         bootstrap de los sensores con su propia realización de ruido; las paredes duras y la física compartida los
         anclan donde la teoría manda, y los liberan donde no.
       </p>
@@ -77,7 +77,7 @@ export function SourceUqBpinnContext({ lang }: { lang: "en" | "es" }) {
         (esto es un proxy de ensemble, no HMC/VI), difusividad <InlineMath tex={String.raw`D`} /> desconocida o un
         problema inverso, y geometría 2-D/3-D. Por eso el caso se publica como un <strong>benchmark único y honesto</strong>:
         no es una familia paramétrica con forma cerrada en un perilla física, sino una demostración de UQ a un nivel de
-        ruido y dispersión fijos — inventar regímenes para llenar chips sería deshonesto.
+        ruido y dispersión fijos: inventar regímenes para llenar chips sería deshonesto.
       </p>
 
       <p>
@@ -86,7 +86,7 @@ export function SourceUqBpinnContext({ lang }: { lang: "en" | "es" }) {
         <InlineMath tex={String.raw`t`} /> (factor <InlineMath tex={String.raw`e^{-D\pi^2 t}`} />). El campo de la
         <strong> incertidumbre</strong> cuenta la historia complementaria: es <em>casi cero en las paredes</em> (la
         física dura no deja margen) y <em>cerca de los sensores</em>, y <strong>crece en las regiones sin datos</strong>
-        — típicamente la franja interior a tiempos intermedios, lejos de cualquier lectura. Ese contraste es la lección:
+      : típicamente la franja interior a tiempos intermedios, lejos de cualquier lectura. Ese contraste es la lección:
         <em> dónde confiar</em> en la estimación y <em>dónde colocar el próximo sensor</em>.
       </p>
       <p>
@@ -102,17 +102,17 @@ export function SourceUqBpinnContext({ lang }: { lang: "en" | "es" }) {
         deslizador de parámetro.
       </p>
     </>
-  ) : (
+  ): (
     <>
-      <h2>The problem: estimate a pollutant from a few noisy sensors — and report the uncertainty</h2>
+      <h2>The problem: estimate a pollutant from a few noisy sensors: and report the uncertainty</h2>
       <p>
         <strong>The problem.</strong> A dissolved pollutant diffuses in a 1D channel, governed by the heat equation
         <InlineMath tex={String.raw`c_t = D\,c_{xx}`} />, with clean walls <InlineMath tex={String.raw`c=0`} />. But we
         do <em>not</em> know the full initial condition: we only have a <strong>handful of sparse, noisy sensor
-        readings</strong>. An ordinary PINN would return <em>one</em> point answer with no error bars — dangerous for an
+        readings</strong>. An ordinary PINN would return <em>one</em> point answer with no error bars: dangerous for an
         environmental decision. Here we train a <strong>deep ensemble</strong> of <InlineMath tex={String.raw`K`} />
         independently-initialised PINNs: their <em>mean</em> estimates the field and their <em>standard deviation</em> is
-        the <strong>epistemic uncertainty</strong> — small where there is data or hard physics (the walls), and
+        the <strong>epistemic uncertainty</strong>: small where there is data or hard physics (the walls), and
         <strong> growing where data is sparse</strong>.
       </p>
 
@@ -120,15 +120,15 @@ export function SourceUqBpinnContext({ lang }: { lang: "en" | "es" }) {
       <ul>
         <li><strong>Domain:</strong> channel <InlineMath tex={String.raw`x\in[0,1]`} /> × time <InlineMath tex={String.raw`t\in[0,1]`} />, a <InlineMath tex={String.raw`61\times61`} /> field grid.</li>
         <li><strong>Unknown:</strong> the pollutant concentration <InlineMath tex={String.raw`c(x,t)`} />.</li>
-        <li><strong>Diffusivity:</strong> <InlineMath tex={String.raw`D=0.1`} /> — fixed; sets how fast the mode decays.</li>
+        <li><strong>Diffusivity:</strong> <InlineMath tex={String.raw`D=0.1`} />: fixed; sets how fast the mode decays.</li>
         <li><strong>Data:</strong> <InlineMath tex={String.raw`N=24`} /> sparse sensors with Gaussian noise <InlineMath tex={String.raw`\sigma=0.02`} /> (not the full initial condition).</li>
-        <li><strong>Network outputs:</strong> two fields — the predictive <em>mean</em> <InlineMath tex={String.raw`\mu(x,t)`} /> and the ensemble <em>std</em> <InlineMath tex={String.raw`s(x,t)`} /> (the UQ).</li>
+        <li><strong>Network outputs:</strong> two fields: the predictive <em>mean</em> <InlineMath tex={String.raw`\mu(x,t)`} /> and the ensemble <em>std</em> <InlineMath tex={String.raw`s(x,t)`} /> (the UQ).</li>
         <li><strong>Ensemble members:</strong> <InlineMath tex={String.raw`K=5`} /> nets with distinct initialisation and sensor <em>bagging</em>.</li>
       </ul>
 
       <h3>Formalization</h3>
       <p>
-        The reference field is the <strong>fundamental diffusion mode</strong> — the exact solution for
+        The reference field is the <strong>fundamental diffusion mode</strong>: the exact solution for
         <InlineMath tex={String.raw`c(x,0)=\sin(\pi x)`} /> with walls <InlineMath tex={String.raw`c=0`} />:
       </p>
       <Equation tex={String.raw`c^*(x,t)=e^{-D\pi^2 t}\,\sin(\pi x),\qquad c^*_t = -D\pi^2\,c^*,\quad c^*_{xx} = -\pi^2\,c^* \;\Rightarrow\; c^*_t = D\,c^*_{xx}.`} />
@@ -153,7 +153,7 @@ export function SourceUqBpinnContext({ lang }: { lang: "en" | "es" }) {
         doi:10.48550/arXiv.1612.01474) is
         the recognised cheap approximation: training <InlineMath tex={String.raw`K`} /> nets from <em>distinct
         initialisations</em> on resampled data (<em>bagging</em>) makes them <strong>disagree most where no data
-        constrains them</strong> — and that disagreement <em>is</em> the epistemic uncertainty. Each member sees a
+        constrains them</strong>: and that disagreement <em>is</em> the epistemic uncertainty. Each member sees a
         bootstrap subset of the sensors with its own noise realisation; the hard walls and shared physics anchor them
         where theory dictates and free them where it does not.
       </p>
@@ -175,7 +175,7 @@ export function SourceUqBpinnContext({ lang }: { lang: "en" | "es" }) {
         full Bayesian posterior (this is an ensemble proxy, not HMC/VI), unknown diffusivity
         <InlineMath tex={String.raw`D`} /> or an inverse problem, and 2-D/3-D geometry. That is why this case ships as a
         <strong> single honest benchmark</strong>: it is not a closed-form parametric family in a physical knob, but a UQ
-        demonstration at one fixed noise and sparsity level — fabricating regimes to fill chips would be dishonest.
+        demonstration at one fixed noise and sparsity level: fabricating regimes to fill chips would be dishonest.
       </p>
 
       <p>
@@ -184,7 +184,7 @@ export function SourceUqBpinnContext({ lang }: { lang: "en" | "es" }) {
         <InlineMath tex={String.raw`t`} /> (factor <InlineMath tex={String.raw`e^{-D\pi^2 t}`} />). The
         <strong> uncertainty</strong> field tells the complementary story: it is <em>near zero at the walls</em> (the
         hard physics leaves no slack) and <em>near the sensors</em>, and it <strong>grows in the data-sparse
-        regions</strong> — typically the interior band at intermediate times, away from any reading. That contrast is the
+        regions</strong>: typically the interior band at intermediate times, away from any reading. That contrast is the
         lesson: <em>where to trust</em> the estimate and <em>where to place the next sensor</em>.
       </p>
       <p>

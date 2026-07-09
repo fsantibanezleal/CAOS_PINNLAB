@@ -2,7 +2,7 @@ import { Equation, InlineMath } from "../components/Equation";
 import { SubTabs } from "../components/SubTabs";
 import { useUI } from "../store";
 
-/** Implementation page — the architecture and the three flows (offline precompute, web replay/live, authoring),
+/** Implementation page: the architecture and the three flows (offline precompute, web replay/live, authoring),
  *  to ADR-0016 §9 depth: sub-tabs + KaTeX, and ZERO internal repo paths in the rendered UI. */
 export function Implementation() {
   const lang = useUI((s) => s.lang);
@@ -19,7 +19,7 @@ export function Implementation() {
       <p>Eso da <strong>tres carriles</strong> de ejecución:</p>
       <ul>
         <li><strong>Precómputo (offline):</strong> el entrenamiento real, una vez, determinista dado <InlineMath tex={String.raw`(\text{caso},\ \text{semilla})`} />.</li>
-        <li><strong>Replay (web):</strong> el SPA dibuja el campo horneado y decimado — siempre disponible, sin red neuronal en runtime.</li>
+        <li><strong>Replay (web):</strong> el SPA dibuja el campo horneado y decimado: siempre disponible, sin red neuronal en runtime.</li>
         <li><strong>Live (web):</strong> el SPA evalúa el ONNX exportado con onnxruntime-web para barrer el parámetro en vivo.</li>
       </ul>
       <p className="muted">
@@ -27,7 +27,7 @@ export function Implementation() {
         segunda implementación que pueda divergir.
       </p>
     </>
-  ) : (
+  ): (
     <>
       <p>
         PINN-Lab is split into <strong>two worlds</strong> joined by a data contract. The <em>offline world</em>
@@ -38,7 +38,7 @@ export function Implementation() {
       <p>That gives <strong>three execution lanes</strong>:</p>
       <ul>
         <li><strong>Precompute (offline):</strong> the real training, once, deterministic given <InlineMath tex={String.raw`(\text{case},\ \text{seed})`} />.</li>
-        <li><strong>Replay (web):</strong> the SPA draws the baked, decimated field — always available, no neural net at runtime.</li>
+        <li><strong>Replay (web):</strong> the SPA draws the baked, decimated field: always available, no neural net at runtime.</li>
         <li><strong>Live (web):</strong> the SPA evaluates the exported ONNX with onnxruntime-web to sweep the parameter live.</li>
       </ul>
       <p className="muted">
@@ -52,37 +52,37 @@ export function Implementation() {
     <>
       <p>El pipeline offline es una cadena determinista de etapas; cada caso pasa por todas:</p>
       <ol>
-        <li><strong>preprocess</strong> — valida la definición del caso e ingiere observaciones (problemas inversos).</li>
-        <li><strong>feature / sampling</strong> — arma el plan de colocación (muestreo del dominio y, si aplica, refinamiento).</li>
-        <li><strong>train</strong> — ajusta el PINN con el motor SOTA (Adam → L-BFGS, + RAR si el caso lo define), exporta a ONNX y verifica paridad.</li>
-        <li><strong>infer</strong> — evalúa el campo en la grilla de cada variante (régimen de parámetro).</li>
-        <li><strong>evaluate</strong> — calcula el <InlineMath tex={String.raw`L^2`} /> relativo contra la referencia analítica/numérica (la etapa de <em>test</em>).</li>
-        <li><strong>export</strong> — escribe el artefacto de replay decimado + el manifest por variante.</li>
+        <li><strong>preprocess</strong>: valida la definición del caso e ingiere observaciones (problemas inversos).</li>
+        <li><strong>feature / sampling</strong>: arma el plan de colocación (muestreo del dominio y, si aplica, refinamiento).</li>
+        <li><strong>train</strong>: ajusta el PINN con el motor SOTA (Adam → L-BFGS, + RAR si el caso lo define), exporta a ONNX y verifica paridad.</li>
+        <li><strong>infer</strong>: evalúa el campo en la grilla de cada variante (régimen de parámetro).</li>
+        <li><strong>evaluate</strong>: calcula el <InlineMath tex={String.raw`L^2`} /> relativo contra la referencia analítica/numérica (la etapa de <em>test</em>).</li>
+        <li><strong>export</strong>: escribe el artefacto de replay decimado + el manifest por variante.</li>
       </ol>
       <p>
         El error reportado es el <strong>L2 relativo</strong> contra el ancla de validación, sobre la grilla del campo:
       </p>
       <Equation tex={String.raw`\varepsilon_{\text{rel}}=\frac{\lVert u_\theta - u^*\rVert_2}{\lVert u^*\rVert_2},\qquad u^*=\text{referencia analítica/numérica}.`} />
       <p className="muted">
-        Determinismo: misma semilla, mismo resultado. El motor pesado (DeepXDE/PhysicsNeMo) se usa AQUÍ, de verdad — no
+        Determinismo: misma semilla, mismo resultado. El motor pesado (DeepXDE/PhysicsNeMo) se usa AQUÍ, de verdad: no
         es decorativo.
       </p>
     </>
-  ) : (
+  ): (
     <>
       <p>The offline pipeline is a deterministic chain of stages; every case passes through all of them:</p>
       <ol>
-        <li><strong>preprocess</strong> — validate the case definition and ingest observations (inverse problems).</li>
-        <li><strong>feature / sampling</strong> — build the collocation plan (domain sampling and, where applicable, refinement).</li>
-        <li><strong>train</strong> — fit the PINN with the SOTA engine (Adam → L-BFGS, + RAR if the case defines it), export to ONNX and verify parity.</li>
-        <li><strong>infer</strong> — evaluate the field on each variant's grid (parameter regime).</li>
-        <li><strong>evaluate</strong> — compute the relative <InlineMath tex={String.raw`L^2`} /> against the analytic/numerical reference (the <em>test</em> stage).</li>
-        <li><strong>export</strong> — write the decimated replay artifact + the per-variant manifest.</li>
+        <li><strong>preprocess</strong>: validate the case definition and ingest observations (inverse problems).</li>
+        <li><strong>feature / sampling</strong>: build the collocation plan (domain sampling and, where applicable, refinement).</li>
+        <li><strong>train</strong>: fit the PINN with the SOTA engine (Adam → L-BFGS, + RAR if the case defines it), export to ONNX and verify parity.</li>
+        <li><strong>infer</strong>: evaluate the field on each variant's grid (parameter regime).</li>
+        <li><strong>evaluate</strong>: compute the relative <InlineMath tex={String.raw`L^2`} /> against the analytic/numerical reference (the <em>test</em> stage).</li>
+        <li><strong>export</strong>: write the decimated replay artifact + the per-variant manifest.</li>
       </ol>
       <p>The reported error is the <strong>relative L2</strong> against the validation anchor, over the field grid:</p>
       <Equation tex={String.raw`\varepsilon_{\text{rel}}=\frac{\lVert u_\theta - u^*\rVert_2}{\lVert u^*\rVert_2},\qquad u^*=\text{analytic/numerical reference}.`} />
       <p className="muted">
-        Determinism: same seed, same result. The heavy engine (DeepXDE/PhysicsNeMo) is used HERE, for real — it is not
+        Determinism: same seed, same result. The heavy engine (DeepXDE/PhysicsNeMo) is used HERE, for real: it is not
         decorative.
       </p>
     </>
@@ -100,15 +100,15 @@ export function Implementation() {
         Lo clave: las <strong>transformaciones de salida</strong> que imponen las condiciones de borde/iniciales de forma
         exacta (hard constraints) y las <strong>codificaciones de entrada</strong> (Fourier features, SIREN) son
         operaciones tensoriales puras, así que quedan <em>capturadas dentro del grafo ONNX</em>. Por eso el tab Live
-        evalúa exactamente la misma función que se entrenó — no una aproximación.
+        evalúa exactamente la misma función que se entrenó: no una aproximación.
       </p>
       <p>
-        Un <strong>gate</strong> decide el carril por caso a partir de tres medidas — tamaño del ONNX, tiempo de
+        Un <strong>gate</strong> decide el carril por caso a partir de tres medidas: tamaño del ONNX, tiempo de
         inferencia en onnxruntime-web sobre la grilla completa, y bytes del artefacto de replay:
       </p>
       <Equation tex={String.raw`\text{lane}=\begin{cases}\textbf{live} & \text{onnx pequeño } \wedge\ t_{\text{infer}} \text{ bajo}\\[2pt]\textbf{precompute} & \text{en otro caso}\end{cases}`} />
     </>
-  ) : (
+  ): (
     <>
       <p>
         The bridge from training to the browser is the <strong>ONNX</strong> export. The trained net is exported (opset
@@ -120,10 +120,10 @@ export function Implementation() {
         The crux: the <strong>output transforms</strong> that impose the boundary/initial conditions exactly (hard
         constraints) and the <strong>input encodings</strong> (Fourier features, SIREN) are pure tensor ops, so they are
         <em> captured inside the ONNX graph</em>. That is why the Live tab evaluates exactly the function that was
-        trained — not an approximation.
+        trained: not an approximation.
       </p>
       <p>
-        A <strong>gate</strong> picks each case's lane from three measurements — ONNX size, onnxruntime-web inference
+        A <strong>gate</strong> picks each case's lane from three measurements: ONNX size, onnxruntime-web inference
         time over the full grid, and replay-artifact bytes:
       </p>
       <Equation tex={String.raw`\text{lane}=\begin{cases}\textbf{live} & \text{small onnx } \wedge\ t_{\text{infer}} \text{ low}\\[2pt]\textbf{precompute} & \text{otherwise}\end{cases}`} />
@@ -141,12 +141,12 @@ export function Implementation() {
       </ol>
       <p>
         Cada caso se presenta como un <strong>banco de trabajo</strong> idéntico: una barra de variantes (chips de
-        régimen + insignia del carril + nota bilingüe) y cuatro sub-tabs — <strong>Field</strong> (el campo +
+        régimen + insignia del carril + nota bilingüe) y cuatro sub-tabs: <strong>Field</strong> (el campo +
         ecuaciones + lectura al cursor), <strong>Live</strong> (re-evaluación del ONNX), <strong>Charts</strong>
         (comparación de L2 por variante) y <strong>Context</strong> (el texto profundo del caso).
       </p>
     </>
-  ) : (
+  ): (
     <>
       <p>The SPA loads the artifacts in a cascade, recomputing nothing:</p>
       <ol>
@@ -157,7 +157,7 @@ export function Implementation() {
       </ol>
       <p>
         Each case is presented as an identical <strong>workbench</strong>: a variant bar (regime chips + lane badge +
-        bilingual note) and four sub-tabs — <strong>Field</strong> (the field + equations + cursor read-out),
+        bilingual note) and four sub-tabs: <strong>Field</strong> (the field + equations + cursor read-out),
         <strong> Live</strong> (ONNX re-evaluation), <strong>Charts</strong> (per-variant L2 comparison) and
         <strong> Context</strong> (the case's deep write-up).
       </p>
@@ -179,7 +179,7 @@ export function Implementation() {
         ilustrativos-sintéticos o medidos. Nada se presenta como un gemelo digital calibrado si no lo es.
       </p>
     </>
-  ) : (
+  ): (
     <>
       <p>Authoring a new case follows a fixed design flow, from physics to web:</p>
       <ol>
@@ -198,20 +198,20 @@ export function Implementation() {
 
   return (
     <div className="prose" style={{ maxWidth: 1100 }}>
-      <h1>{es ? "Implementación — arquitectura y flujos" : "Implementation — architecture & flows"}</h1>
+      <h1>{es ? "Implementación: arquitectura y flujos": "Implementation: architecture & flows"}</h1>
       <p className="muted">
         {es
           ? "Cómo está construido PINN-Lab: dos mundos (offline pesado / web liviano) unidos por un contrato de datos, y los flujos de precómputo, web y diseño."
-          : "How PINN-Lab is built: two worlds (heavy offline / light web) joined by a data contract, and the precompute, web and design flows."}
+         : "How PINN-Lab is built: two worlds (heavy offline / light web) joined by a data contract, and the precompute, web and design flows."}
       </p>
       <SubTabs
-        ariaLabel={es ? "Flujos de implementación" : "Implementation flows"}
+        ariaLabel={es ? "Flujos de implementación": "Implementation flows"}
         tabs={[
-          { id: "overview", label: es ? "App y carriles" : "App & lanes", content: overview },
-          { id: "offline", label: es ? "Precómputo offline" : "Offline precompute", content: offline },
-          { id: "bridge", label: es ? "Puente → ONNX" : "Train → ONNX bridge", content: bridge },
-          { id: "web", label: es ? "Flujo web" : "Web flow", content: webflow },
-          { id: "design", label: es ? "Flujo de diseño" : "Design flow", content: design },
+          { id: "overview", label: es ? "App y carriles": "App & lanes", content: overview },
+          { id: "offline", label: es ? "Precómputo offline": "Offline precompute", content: offline },
+          { id: "bridge", label: es ? "Puente → ONNX": "Train → ONNX bridge", content: bridge },
+          { id: "web", label: es ? "Flujo web": "Web flow", content: webflow },
+          { id: "design", label: es ? "Flujo de diseño": "Design flow", content: design },
         ]}
       />
     </div>

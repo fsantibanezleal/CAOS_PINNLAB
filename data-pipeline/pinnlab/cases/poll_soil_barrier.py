@@ -30,7 +30,7 @@ BETA = 40.0  # partition-of-unity window sharpness
 CASE = CaseSpec(
     id="poll-soil-barrier",
     category="pollution-environmental",
-    title="Contaminated-site barrier — domain-decomposition (FBPINN) PINN",
+    title="Contaminated-site barrier: domain-decomposition (FBPINN) PINN",
     governing_equations=(
         r"c_t = D(x)\,c_{xx} + f,\ D=D_{soil}\ \text{outside}\ [0.45,0.55],\ D_{barrier}=0.1\ \text{inside};\ "
         r"c^*=(1-e^{-t})\,\Psi(x)"
