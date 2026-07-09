@@ -3,10 +3,7 @@ import { useEffect, useMemo, useState } from "react";
 import { CaseExperiment } from "../components/CaseExperiment";
 import { ContextFor, caseLabel } from "../content/cases/registry";
 import {
-  CATEGORY_INTRO,
   CATEGORY_LABELS,
-  DATA_LABELS,
-  VIEW_KIT_LABELS,
   type CaseIndex,
   type CaseIndexEntry,
 } from "../lib/contract";
@@ -21,19 +18,20 @@ const CATEGORY_ORDER = [
   "control",
 ];
 
-/** Cross-cutting HIGHLIGHTS so the standout cases are not lost in the sea of 20: surfaced above the domain groups.
- *  REAL data first + starred; then chaotic dynamics; then the hybrid data+physics cases (where PINNs genuinely win). */
-const FEATURED: { id: string; star?: boolean; en: string; es: string; subEn: string; subEs: string }[] = [
-  { id: "env-soil-heat-real", star: true, en: "Trained on REAL data", es: "Entrenado con datos REALES", subEn: "NOAA soil temperatures", subEs: "temperaturas de suelo NOAA" },
-  { id: "ind-heat2d-inverse", en: "Hybrid data + physics", es: "Híbrido datos + física", subEn: "recover a field from sparse sensors", subEs: "recupera un campo desde sensores dispersos" },
-  { id: "poll-source-uq-bpinn", en: "Data + uncertainty", es: "Datos + incertidumbre", subEn: "Bayesian mean ± σ band", subEs: "banda bayesiana media ± σ" },
-  { id: "dyn-double-pendulum", en: "Chaotic dynamics", es: "Dinámica caótica", subEn: "animated · honest leave-time", subEs: "animado · leave-time honesto" },
+/** Cross-cutting HIGHLIGHTS so the standout cases are not lost in the sea of 20: surfaced at the top of the rail.
+ *  REAL data first + starred; then hybrid data+physics; then uncertainty; then chaotic dynamics. */
+const FEATURED: { id: string; star?: boolean }[] = [
+  { id: "env-soil-heat-real", star: true },
+  { id: "ind-heat2d-inverse" },
+  { id: "poll-source-uq-bpinn" },
+  { id: "dyn-double-pendulum" },
 ];
+const isFeatured = (id: string) => FEATURED.some((f) => f.id === id);
 
-/** The App page (ADR-0016 §9 + ADR-0063). Lands directly in the tool, now with a THREE-level structure so the 20
- *  cases read as scenarios + groupings of functionalities: (1) a group nav by physics domain (scenario), (2) a grid
- *  of case cards showing each case's FUNCTIONALITY (its view-kit + method + honesty label), (3) the per-case
- *  four-sub-tab workbench (Field / Live / Charts / Context). */
+/** The App page (ADR-0016 §9 + ADR-0063), now a FULL-WIDTH workbench mirroring CAOS_RES_Lidar3D: the content
+ *  fills the whole viewport (header + footer are already full-width) instead of being boxed in the narrow reading
+ *  column. The left rail carries the case selection (highlights + domain + case list); `CaseExperiment` adds the
+ *  regime chips + the view switch, the full-width center stage, and the right stats rail. */
 export function AppPage() {
   const lang = useUI((s) => s.lang);
   const es = lang === "es";
@@ -60,108 +58,80 @@ export function AppPage() {
     }
   }, [index, group, caseId, groups]);
 
-  if (err) return <div className="page-body"><div className="banner error">⚠ {err}</div></div>;
-  if (!index) return <div className="page-body"><div className="loading">{es ? "Cargando…": "Loading…"}</div></div>;
+  if (err) return <div className="pl-app"><div className="pl-work"><aside className="pl-rail" /><section className="pl-stage"><div className="banner error">⚠ {err}</div></section><aside className="pl-rail" /></div></div>;
+  if (!index || !caseId) return <div className="pl-app"><div className="pl-work"><aside className="pl-rail" /><section className="pl-stage"><div className="loading">{es ? "Cargando…" : "Loading…"}</div></section><aside className="pl-rail" /></div></div>;
 
   const present = CATEGORY_ORDER.filter((c) => groups[c]?.length);
   const activeCases = groups[group] ?? [];
-  const active = index.cases.find((c) => c.case_id === caseId);
 
   function selectGroup(cat: string) {
     setGroup(cat);
     const first = (groups[cat] ?? [])[0];
     if (first) setCaseId(first.case_id);
   }
-
   function selectCase(cat: string, id: string) {
     setGroup(cat);
     setCaseId(id);
   }
 
-  return (
-    <div className="page-body">
-      <div className="page-head">
-        <h1>{es ? "Catálogo de PINNs": "PINN catalogue"}</h1>
-        <p className="lede">
-          {es
-            ? "20 casos en cinco dominios. Elige un dominio, luego un caso: cada uno es un banco de trabajo: un campo interactivo, inferencia en vivo en tu navegador, una comparación de regímenes y el contexto detallado con sus ecuaciones. Las etiquetas de cada tarjeta dicen qué funcionalidad ejercita (la visualización y el método)."
-           : "20 cases across five domains. Pick a domain, then a case: each is a workbench: an interactive field, live in-browser inference, a regime comparison, and the detailed context with its equations. Each card's badges say what functionality it exercises (the visualization and the method)."}
-        </p>
-      </div>
-
-      {/* Highlights: surface the standout cases (REAL data first) so they are not lost in the 20 */}
-      <div className="highlights">
-        <span className="highlights-label">{es ? "Destacados": "Highlights"}</span>
-        <div className="highlights-row">
-          {FEATURED.map((f) => {
-            const c = index.cases.find((x) => x.case_id === f.id);
-            if (!c) return null;
-            return (
-              <button
-                key={f.id}
-                type="button"
-                className={"highlight-card" + (f.star ? " star": "") + (f.id === caseId ? " active": "")}
-                onClick={() => selectCase(c.category, f.id)}
-              >
-                <span className="hl-tag">{f.star ? "★ ": ""}{es ? f.es: f.en}</span>
-                <span className="hl-name">{caseLabel(f.id)}</span>
-                <span className="hl-sub">{es ? f.subEs: f.subEn}</span>
-              </button>
-            );
-          })}
-        </div>
-      </div>
-
-      {/* Level 1: scenario domains */}
-      <div className="group-nav" role="tablist" aria-label={es ? "Dominios": "Domains"}>
-        {present.map((cat) => (
-          <button
-            key={cat}
-            role="tab"
-            type="button"
-            aria-selected={cat === group}
-            className={"group-tab" + (cat === group ? " active": "")}
-            onClick={() => selectGroup(cat)}
-          >
-            {CATEGORY_LABELS[cat]?.[lang] ?? cat}
-            <span className="group-count">{groups[cat].length}</span>
-          </button>
-        ))}
-      </div>
-      {CATEGORY_INTRO[group] && <p className="group-intro">{CATEGORY_INTRO[group][lang]}</p>}
-
-      {/* Level 2: case cards (groupings of functionalities) */}
-      <div className="case-grid">
-        {activeCases.map((c) => {
-          const kit = VIEW_KIT_LABELS[c.view_kit ?? "HeatmapKit"]?.[lang] ?? c.view_kit ?? "";
-          const real = c.real_or_synthetic === "validated-real";
-          const data = DATA_LABELS[c.real_or_synthetic ?? "synthetic"]?.[lang] ?? c.real_or_synthetic ?? "";
+  // the left-rail case selector (rendered by CaseExperiment at the top of the left column)
+  const selector = (
+    <div className="pl-selector">
+      <h4>{es ? "Destacados" : "Highlights"}</h4>
+      <div className="pl-caselist">
+        {FEATURED.map((f) => {
+          const c = index.cases.find((x) => x.case_id === f.id);
+          if (!c) return null;
           return (
             <button
-              key={c.case_id}
+              key={f.id}
               type="button"
-              data-case={c.case_id}
-              className={"case-card" + (c.case_id === caseId ? " active": "")}
-              onClick={() => setCaseId(c.case_id)}
-              aria-pressed={c.case_id === caseId}
+              className={"pl-caseitem" + (f.id === caseId ? " on" : "")}
+              onClick={() => selectCase(c.category, f.id)}
             >
-              <span className="case-card-title">{caseLabel(c.case_id)}</span>
-              <span className="case-card-badges">
-                <span className="cc-badge kit">{kit}</span>
-                <span className={"cc-badge data" + (real ? " real": "")}>{data}</span>
-              </span>
-              <span className="case-card-method mono">{c.method}</span>
+              <span className="pl-star">{f.star ? "★" : "•"}</span>
+              {caseLabel(f.id)}
             </button>
           );
         })}
       </div>
 
-      {/* Level 3: the workbench */}
-      {active && (
-        <div className="case-workbench">
-          <CaseExperiment key={active.case_id} manifestId={active.case_id} description={ContextFor(active.case_id, lang)} lang={lang} />
-        </div>
-      )}
+      <h4>{es ? "Dominio" : "Domain"}</h4>
+      <div className="pl-domainchips">
+        {present.map((cat) => (
+          <button
+            key={cat}
+            type="button"
+            className={"pl-domainchip" + (cat === group ? " on" : "")}
+            onClick={() => selectGroup(cat)}
+          >
+            {CATEGORY_LABELS[cat]?.[lang] ?? cat} ({groups[cat].length})
+          </button>
+        ))}
+      </div>
+
+      <h4>{es ? "Caso" : "Case"} ({activeCases.length})</h4>
+      <div className="pl-caselist pl-caselist-scroll">
+        {activeCases.map((c) => (
+          <button
+            key={c.case_id}
+            type="button"
+            data-case={c.case_id}
+            className={"pl-caseitem" + (c.case_id === caseId ? " on" : "")}
+            onClick={() => setCaseId(c.case_id)}
+            aria-pressed={c.case_id === caseId}
+          >
+            {isFeatured(c.case_id) && <span className="pl-star">★</span>}
+            {caseLabel(c.case_id)}
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+
+  return (
+    <div className="pl-app">
+      <CaseExperiment manifestId={caseId} selector={selector} description={ContextFor(caseId, lang)} lang={lang} />
     </div>
   );
 }

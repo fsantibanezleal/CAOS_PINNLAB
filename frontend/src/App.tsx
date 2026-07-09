@@ -1,7 +1,7 @@
 import { Briefcase, Github, Globe, Info, Languages, Moon, Sun, Waves } from "lucide-react";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { NavLink, Outlet } from "react-router-dom";
+import { NavLink, Outlet, useLocation } from "react-router-dom";
 
 import { ArchitectureModal } from "./components/ArchitectureModal";
 import { EXTERNAL_LINKS } from "./lib/links";
@@ -22,6 +22,9 @@ export function App() {
   const { t } = useTranslation();
   const { theme, toggleTheme, lang, setLang } = useUI();
   const [archOpen, setArchOpen] = useState(false);
+  const loc = useLocation();
+  // The App route ("/") is a full-width workbench; the doc routes stay in a centered reading column.
+  const isApp = loc.pathname === "/" || loc.pathname === "";
 
   const switchLang = (l: Lang) => {
     setLang(l);
@@ -68,7 +71,7 @@ export function App() {
         </div>
       </header>
 
-      <main className="content">
+      <main className={"content" + (isApp ? " content-app" : " content-doc")}>
         <Outlet />
       </main>
 
