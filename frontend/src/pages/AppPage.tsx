@@ -21,6 +21,15 @@ const CATEGORY_ORDER = [
   "control",
 ];
 
+/** Cross-cutting HIGHLIGHTS so the standout cases are not lost in the sea of 20 — surfaced above the domain groups.
+ *  REAL data first + starred; then chaotic dynamics; then the hybrid data+physics cases (where PINNs genuinely win). */
+const FEATURED: { id: string; star?: boolean; en: string; es: string; subEn: string; subEs: string }[] = [
+  { id: "env-soil-heat-real", star: true, en: "Trained on REAL data", es: "Entrenado con datos REALES", subEn: "NOAA soil temperatures", subEs: "temperaturas de suelo NOAA" },
+  { id: "ind-heat2d-inverse", en: "Hybrid data + physics", es: "Híbrido datos + física", subEn: "recover a field from sparse sensors", subEs: "recupera un campo desde sensores dispersos" },
+  { id: "poll-source-uq-bpinn", en: "Data + uncertainty", es: "Datos + incertidumbre", subEn: "Bayesian mean ± σ band", subEs: "banda bayesiana media ± σ" },
+  { id: "dyn-double-pendulum", en: "Chaotic dynamics", es: "Dinámica caótica", subEn: "animated · honest leave-time", subEs: "animado · leave-time honesto" },
+];
+
 /** The App page (ADR-0016 §9 + ADR-0063). Lands directly in the tool, now with a THREE-level structure so the 20
  *  cases read as scenarios + groupings of functionalities: (1) a group nav by physics domain (scenario), (2) a grid
  *  of case cards showing each case's FUNCTIONALITY (its view-kit + method + honesty label), (3) the per-case
@@ -64,6 +73,11 @@ export function AppPage() {
     if (first) setCaseId(first.case_id);
   }
 
+  function selectCase(cat: string, id: string) {
+    setGroup(cat);
+    setCaseId(id);
+  }
+
   return (
     <div className="page-body">
       <div className="page-head">
@@ -73,6 +87,29 @@ export function AppPage() {
             ? "20 casos en cinco dominios. Elige un dominio, luego un caso: cada uno es un banco de trabajo — un campo interactivo, inferencia en vivo en tu navegador, una comparación de regímenes y el contexto detallado con sus ecuaciones. Las etiquetas de cada tarjeta dicen qué funcionalidad ejercita (la visualización y el método)."
             : "20 cases across five domains. Pick a domain, then a case: each is a workbench — an interactive field, live in-browser inference, a regime comparison, and the detailed context with its equations. Each card's badges say what functionality it exercises (the visualization and the method)."}
         </p>
+      </div>
+
+      {/* Highlights — surface the standout cases (REAL data first) so they are not lost in the 20 */}
+      <div className="highlights">
+        <span className="highlights-label">{es ? "Destacados" : "Highlights"}</span>
+        <div className="highlights-row">
+          {FEATURED.map((f) => {
+            const c = index.cases.find((x) => x.case_id === f.id);
+            if (!c) return null;
+            return (
+              <button
+                key={f.id}
+                type="button"
+                className={"highlight-card" + (f.star ? " star" : "") + (f.id === caseId ? " active" : "")}
+                onClick={() => selectCase(c.category, f.id)}
+              >
+                <span className="hl-tag">{f.star ? "★ " : ""}{es ? f.es : f.en}</span>
+                <span className="hl-name">{caseLabel(f.id)}</span>
+                <span className="hl-sub">{es ? f.subEs : f.subEn}</span>
+              </button>
+            );
+          })}
+        </div>
       </div>
 
       {/* Level 1 — scenario domains */}

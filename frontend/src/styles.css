@@ -342,3 +342,18 @@ ol li, ul li { margin: 4px 0; }
 .beyond-note strong { color: var(--accent); }
 .scope-panel { border-left: 3px solid #ff8a3d; }
 .scope-panel h3 { color: #ff8a3d; }
+
+/* ── App Highlights strip (surface the standouts; REAL-data starred) ────────────────────── */
+.highlights { margin-bottom: 16px; }
+.highlights-label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); }
+.highlights-row { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 10px; margin-top: 6px; }
+.highlight-card { display: flex; flex-direction: column; gap: 3px; text-align: left; padding: 10px 12px; cursor: pointer;
+  border: 1px solid var(--border); border-radius: 10px; background: var(--panel); transition: border-color .12s, transform .12s; }
+.highlight-card:hover { border-color: var(--accent); transform: translateY(-1px); }
+.highlight-card.active { box-shadow: 0 0 0 1px var(--accent) inset; }
+.highlight-card .hl-tag { font-size: 12px; font-weight: 700; color: var(--accent); }
+.highlight-card .hl-name { font-size: 14px; font-weight: 600; color: var(--text); }
+.highlight-card .hl-sub { font-size: 11.5px; color: var(--muted); }
+.highlight-card.star { border-color: #2fae6b; background: color-mix(in srgb, #2fae6b 12%, var(--panel)); }
+.highlight-card.star .hl-tag { color: #2fae6b; }
+.highlight-card.star:hover { border-color: #2fae6b; }
