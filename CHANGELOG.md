@@ -3,6 +3,16 @@
 All notable changes to **PINN-Lab**. Format: `X.XX.XXX` (display), see `pinnlab.__version__`. Keep `0.x` while on
 synthetic/benchmark data. Tag every release.
 
+## [0.20.005] (2026-07-09) UI polish (#24): equation top-strip (never cut) + both-mode field probe
+
+Addressing the flagged UI issues:
+- **Right column -> top context strip**: the governing equation now lives in a full-width row above the stage, so
+  it is NEVER cut (the whole Navier-Stokes equation displays); method / engine / L2 / ONNX + the expected band sit
+  beside it. The visualization stage is wider (no 320px right rail).
+- **Both-mode field probe**: the two side graphs FOLLOW the cursor by default; a single click PINS them at a spot;
+  a double click RELEASES back to follow. Verified: follows-on-hover, pins-on-click, releases-on-double-click.
+- Full re-validation: all 20 cases, light + dark, 0 console errors.
+
 ## [0.20.004] (2026-07-09) darcy FNO-vs-FD comparison + full validation; honest call on wave1d (issue #25)
 
 - **darcy-operator**: a real comparison with ZERO training - the Fourier Neural Operator's one-pass prediction vs the

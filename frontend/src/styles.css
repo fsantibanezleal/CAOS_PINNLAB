@@ -167,9 +167,16 @@ ol li, ul li { margin: 4px 0; }
    (header + footer are already full-width); it is NOT boxed into the narrow reading column. ---- */
 .pl-app { width: 100%; }
 .pl-work {
-  display: grid; grid-template-columns: 300px minmax(0, 1fr) 320px; gap: 12px;
+  display: grid; grid-template-columns: 300px minmax(0, 1fr); gap: 12px;
   padding: 14px 16px 18px; height: calc(100vh - 118px); min-height: 560px; box-sizing: border-box;
 }
+.pl-main { display: flex; flex-direction: column; gap: 12px; min-width: 0; min-height: 0; }
+/* full-width context strip: the governing equation is never cut (it lives in a wide row, not a 320px rail) */
+.pl-context { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 22px; background: var(--panel); border: 1px solid var(--border); border-radius: 12px; padding: 10px 16px; box-shadow: var(--shadow); }
+.pl-ctx-eq { flex: 1 1 340px; min-width: 0; overflow-x: auto; }
+.pl-ctx-meta { display: flex; flex-wrap: wrap; gap: 6px 16px; font-size: 12.5px; }
+.pl-ctx-metric b { margin-right: 4px; }
+.pl-ctx-band { flex-basis: 100%; margin: 0; font-size: 12px; line-height: 1.45; }
 .pl-rail { background: var(--panel); border: 1px solid var(--border); border-radius: 12px; padding: 14px; overflow-y: auto; box-shadow: var(--shadow); }
 .pl-stage { background: var(--panel); border: 1px solid var(--border); border-radius: 12px; padding: 16px; overflow: auto; min-width: 0; position: relative; box-shadow: var(--shadow); }
 .pl-rail h4 { font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted); margin: 12px 0 7px; font-weight: 700; }
