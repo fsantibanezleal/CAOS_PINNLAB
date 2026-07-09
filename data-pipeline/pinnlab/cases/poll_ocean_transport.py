@@ -27,7 +27,6 @@ S0_SQ = 0.008  # initial Gaussian variance (sigma0 ~ 0.089)
 
 CASE = CaseSpec(
     id="poll-ocean-transport",
-    system_type="time-evol-2d",
     category="pollution-environmental",
     title="Ocean pollutant transport — 2D advection-diffusion PINN (time-scrubber)",
     governing_equations=(
