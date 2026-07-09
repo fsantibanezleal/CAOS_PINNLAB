@@ -1,11 +1,15 @@
 // Loaders for the committed artifacts (CONTRACT 2). All paths are under <BASE>/data, overlaid by copy-data.mjs.
 import type { CaseIndex, CaseManifest, FieldTrace } from "./contract";
+import { APP_VERSION } from "./version";
 
 const BASE = import.meta.env.BASE_URL || "/";
 const DATA = `${BASE.replace(/\/$/, "")}/data`;
+// Cache-bust every artifact fetch with the app version: the data files are NOT content-hashed, so a fresh deploy
+// would otherwise be served stale from the CDN/browser cache. Stamping the URL forces the current build's data.
+const V = `?v=${APP_VERSION}`;
 
 async function getJson<T>(url: string): Promise<T> {
-  const r = await fetch(url);
+  const r = await fetch(url + V);
   if (!r.ok) throw new Error(`fetch ${url} -> ${r.status}`);
   return (await r.json()) as T;
 }
@@ -25,5 +29,5 @@ export function loadTrace(artifactPath: string): Promise<FieldTrace> {
 
 /** URL of a case's exported ONNX, for onnxruntime-web. `onnxName` is the manifest's onnx.path (e.g. "bench-poisson2d.onnx"). */
 export function onnxUrl(onnxName: string): string {
-  return `${DATA}/models/${onnxName}`;
+  return `${DATA}/models/${onnxName}${V}`;
 }

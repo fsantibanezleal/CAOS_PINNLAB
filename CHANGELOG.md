@@ -3,6 +3,15 @@
 All notable changes to **PINN-Lab**. Format: `X.XX.XXX` (display) — see `pinnlab.__version__`. Keep `0.x` while on
 synthetic/benchmark data. Tag every release.
 
+## [0.18.002] — 2026-07-09 — initial-vs-selected overlay on the field probe + cache-busting
+
+- **Initial-vs-selected overlay:** in the space cross-section panel, the profile at the selected time (solid) is now
+  overlaid with the **initial state t=0 (dashed)** — the initial-vs-selected comparison — combined with the value
+  read-out + the two panels + the dimension labels, on every field case (`FieldView`).
+- **Cache-busting:** every artifact fetch (index / manifest / trace / onnx) is stamped `?v=APP_VERSION`, so a new
+  deploy never serves stale cached data (the data files are not content-hashed). Hard-refresh once to pick up the
+  new JS shell; after that, data stays in sync with the build.
+
 ## [0.18.001] — 2026-07-09 — consistent probe + labelled dimensions (the space-time heatmap is the EVOLUTION)
 
 Owner feedback: the play-button (animated) field cases had lost the value-at-cursor + the two cross-section graphs

@@ -365,3 +365,8 @@ ol li, ul li { margin: 4px 0; }
 /* dimension caption on the heatmap — states what the axes ARE (space-time evolution vs steady field) */
 .dim-caption { font-size: 12.5px; line-height: 1.5; color: var(--text); background: color-mix(in srgb, var(--accent) 8%, transparent);
   border-left: 3px solid var(--accent); padding: 8px 11px; border-radius: 7px; margin: 0 0 12px; max-width: 760px; }
+
+/* initial-vs-selected overlay legend in the cross-section profile */
+.profile-legend { font-size: 10px; }
+.profile-legend .pl-sel { color: var(--accent); font-weight: 600; }
+.profile-legend .pl-ref { color: var(--muted); }
