@@ -68,3 +68,11 @@ referenced for context and explicitly **not** claimed as this case's result.
 ```bash
 python -m pinnlab.pipeline bench-allencahn --seed 42
 ```
+
+
+## Comparison (the app's Compare view)
+
+The pipeline bakes the spectral-reference **standard** vs the **naive soft PINN** vs the **hard-constraint + RAR** PINN
+(see [the method ladder](../architecture/method-ladder-comparison.md)). The naive lane collapses to a metastable state and smears the sharp +/-1 transition
+layers (**95.4 %** relative-L2 vs the spectral standard); the hard-constraint + RAR fix tracks them (**0.4 %**). The
+textbook PINN failure, computed and shown side by side with the error maps.

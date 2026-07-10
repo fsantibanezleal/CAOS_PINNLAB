@@ -63,3 +63,13 @@ scattering dataset.
 ```bash
 python -m pinnlab.pipeline ind-helmholtz --seed 42
 ```
+
+
+## Comparison & diagnostics (the app's Compare + Diagnostics views)
+
+The pipeline bakes the full **method ladder** for this case (see [the method ladder](../architecture/method-ladder-comparison.md)): a classical
+**finite-difference** standard solve, the **naive** plain-tanh PINN, and the **Fourier-feature** PINN, all on one grid.
+- **Compare view**: standard | naive | adapted + the error maps. The naive lane reaches **120.8 %** relative-L2 vs the
+  standard (spectral bias blurs the high-wavenumber pattern); the Fourier-feature fix reaches **9.3 %**.
+- **Diagnostics view**: the **wavenumber sweep** (naive 3 % at n=1 rising to ~100 % at n>=2, while Fourier stays low)
+  and the **radial spectral energy** (the high-|k| band the naive lane cannot reach). Real numbers from real training runs.

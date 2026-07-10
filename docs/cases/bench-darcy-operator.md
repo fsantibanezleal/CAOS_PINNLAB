@@ -66,3 +66,10 @@ its generalization metric are genuine; nothing about the method is faked.
 ```bash
 python -m pinnlab.pipeline bench-darcy-operator --seed 42
 ```
+
+
+## Comparison (the app's Compare view)
+
+The FNO operator's one-pass prediction on a held-out permeability field vs the classical **finite-difference**
+reference (~**2.5 %** relative-L2) - the generalization of a learned operator to a NEW input in a single forward pass,
+not a per-instance retrain. See [the method ladder](../architecture/method-ladder-comparison.md).

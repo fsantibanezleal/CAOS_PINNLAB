@@ -12,6 +12,7 @@ app** (the showcase). Read in order, or jump to a theme.
 | 05 | [train → ONNX → web](train-export-onnx.md) | The bridge: training recipe, the modern dynamo ONNX export, and the parity check that guarantees the browser sees the same network. |
 | 06 | [deploy](deploy.md) | Build + GitHub Pages (Actions), the `copy-data` step, base-path and SPA-routing constraints. |
 | 07 | [determinism](determinism.md) | Why a run is a pure function of `(case, seed)`, and what would break replay. |
+| 08 | [the method ladder](method-ladder-comparison.md) | How the pipeline COMPUTES the comparison (standard PDE vs naive/adapted/data-driven PINN + diagnostics) and the app shows it — the CompareKit/DiagnosticsKit, the ladder tools, and the real per-case results. |
 
 This is the **product archetype** layer (ADR-0057). The PINN science — adaptive sampling, hard constraints, Fourier
 features, domain decomposition, inverse/UQ — lives in [`../methods/`](../methods/); the per-engine usage guides

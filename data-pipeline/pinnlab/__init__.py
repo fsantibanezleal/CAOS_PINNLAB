@@ -10,4 +10,4 @@ The two data contracts, the staged pipeline, the lane gate (extended to ONNX/ort
 the FROZEN base; the per-case PINN engines + analytic references + viz are the rework surface.
 """
 
-__version__ = "0.20.008"  # display X.XX.XXX; PEP 440 form in pyproject.toml
+__version__ = "0.20.009"  # display X.XX.XXX; PEP 440 form in pyproject.toml

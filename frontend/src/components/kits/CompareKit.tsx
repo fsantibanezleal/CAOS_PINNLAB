@@ -29,6 +29,7 @@ export function CompareKit({ manifest, lang }: { manifest: CaseManifest; lang: "
   const [trace, setTrace] = useState<CompareTrace | null>(null);
   const [err, setErr] = useState<string | null>(null);
   const [hov, setHov] = useState<{ ix: number; iy: number } | null>(null);
+  const [detail, setDetail] = useState<string | null>(null); // a lane key to show enlarged in a modal
 
   useEffect(() => {
     if (!cmp) return;
@@ -84,7 +85,7 @@ export function CompareKit({ manifest, lang }: { manifest: CaseManifest; lang: "
         {valueLanes.map((l) => (
           <figure key={l.key} className="cmp-panel">
             <figcaption className={"cmp-cap " + (roleClass[l.role] ?? "")}>{es ? l.label_es : l.label_en}<SnapBtn target=".cmp-panel" name={`${manifest.case_id}-${l.key}`} /></figcaption>
-            <div className="cmp-map" onMouseMove={onMove} onMouseLeave={() => setHov(null)}>
+            <div className="cmp-map cmp-clickable" onMouseMove={onMove} onMouseLeave={() => setHov(null)} onClick={() => setDetail(l.key)} title={es ? "Clic para ampliar" : "Click to enlarge"}>
               <HeatCanvas field={trace.fields[l.key]} range={vRange} ariaLabel={l.key} />
             </div>
             <div className="cmp-val mono">{hov ? fmtv(at(l.key)) : " "}</div>
@@ -115,6 +116,23 @@ export function CompareKit({ manifest, lang }: { manifest: CaseManifest; lang: "
         )}
       </div>
       <p className="hint">{es ? cmp.note_es : cmp.note_en}</p>
+
+      {detail && trace.fields[detail] && (
+        <div className="modal-backdrop" onClick={() => setDetail(null)}>
+          <div className="modal-card cmp-detail" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-head">
+              <strong>{(() => { const l = cmp.lanes.find((x) => x.key === detail); return l ? (es ? l.label_es : l.label_en) : detail; })()}</strong>
+              <span className="row" style={{ gap: 6 }}>
+                <SnapBtn target=".cmp-detail" name={`${manifest.case_id}-${detail}-detail`} />
+                <button type="button" className="iconbtn" onClick={() => setDetail(null)} aria-label="Close">✕</button>
+              </span>
+            </div>
+            <div className="modal-body">
+              <div className="cmp-detail-map"><HeatCanvas field={trace.fields[detail]} range={vRange} ariaLabel={detail} /></div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

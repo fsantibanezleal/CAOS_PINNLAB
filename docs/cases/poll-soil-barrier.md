@@ -69,3 +69,10 @@ to data.
 ```bash
 python -m pinnlab.pipeline poll-soil-barrier --seed 42
 ```
+
+
+## Comparison (the app's Compare view)
+
+standard (layered series-resistance MMS) | **single-domain naive** | **FBPINN** (see [the method ladder](../architecture/method-ladder-comparison.md)).
+On the CPU lane both land near **19 %**; the FBPINN's advantage at the barrier kink is subtle here and is shown
+honestly, with no fabricated gap.

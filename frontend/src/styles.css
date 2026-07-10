@@ -466,3 +466,8 @@ ol li, ul li { margin: 4px 0; }
 /* snapshot-to-PNG button on viz panels + charts */
 .snap-btn { margin-left: 6px; border: 1px solid var(--border); background: var(--panel-2); color: var(--muted); border-radius: 6px; padding: 0 6px; font-size: 12px; line-height: 1.5; cursor: pointer; vertical-align: middle; }
 .snap-btn:hover { color: var(--accent); border-color: var(--accent); }
+
+.cmp-clickable { cursor: pointer; }
+.cmp-detail .modal-body { display: flex; justify-content: center; }
+.cmp-detail-map { width: min(70vh, 100%); }
+.cmp-detail-map canvas { width: 100%; image-rendering: auto; border-radius: 8px; }

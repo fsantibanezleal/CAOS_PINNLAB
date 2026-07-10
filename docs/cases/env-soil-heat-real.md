@@ -61,3 +61,10 @@ hidden; it does not contaminate the held-out interior score, which is what the c
 python -m pinnlab.datasets.uscrn_soil            # re-vendor the real data (network, once)
 python -m pinnlab.pipeline env-soil-heat-real --seed 42   # train + validate + bake (deterministic)
 ```
+
+
+## Validation (the app's Diagnostics view: held-out REAL sensors)
+
+The out-of-sample real-data test: the reconstruction vs the REAL measured USCRN temperatures at the **held-out**
+10/20/50 cm depths (interior sensors never shown to the optimizer), over 2019-2021. Measured points vs the PINN curve,
+RMSE **1.24 / 1.05 / 0.75 degC** - matching the case's own held-out metrics. See [the method ladder](../architecture/method-ladder-comparison.md).
