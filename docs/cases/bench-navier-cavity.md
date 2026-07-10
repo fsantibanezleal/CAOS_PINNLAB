@@ -68,3 +68,11 @@ manufactured to look better than it is; the gap to Ghia is the headline number, 
 ```bash
 python -m pinnlab.pipeline bench-navier-cavity --seed 42
 ```
+
+
+## Validation (the app's Diagnostics view: the Ghia benchmark)
+
+The canonical lid-driven-cavity validation: the PINN velocity along both cavity centerlines vs the tabulated
+**Ghia-Ghia-Shin (1982)** Re=100 benchmark points (u RMSE **0.053**, v RMSE **0.029**). Robust: no finicky field
+solver (a rushed finite-difference cavity solve diverged and was rejected, per [the method ladder](../architecture/method-ladder-comparison.md)); the
+streamlines remain the Field view.

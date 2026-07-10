@@ -71,3 +71,10 @@ synthetic but realistic, so the recovery is not trivially exact.
 ```bash
 python -m pinnlab.pipeline ind-heat2d-inverse --seed 42
 ```
+
+
+## Comparison (the app's Compare view: the data-driven contrast)
+
+standard k* (MMS) | **pure physics, NO data** | **physics + ~100 sensors** (see [the method ladder](../architecture/method-ladder-comparison.md)). With no
+sensor data the conductivity field k is underdetermined and the recovery fails (**356 %** vs the analytic standard);
+with the sparse noisy sensors it is recovered (**4.0 %**). The DATA is what makes the inverse solvable.

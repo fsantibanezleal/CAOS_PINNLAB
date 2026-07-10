@@ -3,6 +3,19 @@
 All notable changes to **PINN-Lab**. Format: `X.XX.XXX` (display), see `pinnlab.__version__`. Keep `0.x` while on
 synthetic/benchmark data. Tag every release.
 
+## [0.20.009] (2026-07-10) persist the capability in docs + Experiments page + a click-to-enlarge detail popup
+
+Persisting all the deep-pass content and one more graph enrichment:
+- **docs/architecture/method-ladder-comparison.md** (new): the capability end to end - the lanes (standard / naive /
+  adapted / data-driven), the pipeline ladder tools, the CompareKit/DiagnosticsKit, the manifest schema, the fairness
+  rule, and the real per-case results. Linked from the architecture README.
+- **Per-case docs**: a Comparison/validation section added to the 7 ladder cases (helmholtz, allencahn, heat2d-inverse,
+  soil-barrier, navier, soil-heat-real, darcy) with the real numbers.
+- **Experiments page**: a new "method ladder" panel surfacing the standard-vs-naive-vs-fix results (it had none) +
+  the honesty note.
+- **Detail popup**: click any Compare panel to enlarge it in a modal (with its own snapshot button).
+- Full re-validation: all 20 cases, light + dark, 0 console errors.
+
 ## [0.20.008] (2026-07-10) snapshot-to-PNG on every comparison panel + diagnostics chart (issue #25)
 
 Interactive-graph enrichment: a ⤓ button on each Compare panel (the heatmaps) and each Diagnostics chart exports it

@@ -45,6 +45,31 @@ export function Experiments() {
           ? "Resumen por categoría de los casos horneados: método, motor, lane y error relativo vs la referencia."
          : "Per-category summary of the baked cases: method, engine, lane, and relative error vs the reference."}
       </p>
+      <div className="panel" style={{ marginBottom: 16, borderColor: "var(--accent)" }}>
+        <h3>{lang === "es" ? "La escalera de métodos: estándar vs PINN ingenua vs la corrección" : "The method ladder: standard vs naive vs adapted PINN"}</h3>
+        <p style={{ fontSize: 14 }}>
+          {lang === "es"
+            ? "La tubería offline COMPUTA la comparación que la teoría describe: la solución estándar (forma cerrada o solucionador clásico) frente a la PINN ingenua (sin la corrección) frente a la corrección, más diagnósticos. La vista Comparar / Diagnóstico de cada caso muestra resultados REALES horneados, no afirmaciones."
+            : "The offline pipeline COMPUTES the comparison the theory describes: the standard solution (closed-form or classical solver) vs the naive PINN (without the fix) vs the fix, plus diagnostics. Each case's Compare / Diagnostics view shows REAL baked results, not assertions."}
+        </p>
+        <table className="tbl">
+          <thead><tr><th>case</th><th>{lang === "es" ? "estándar" : "standard"}</th><th>{lang === "es" ? "PINN ingenua" : "naive PINN"}</th><th>{lang === "es" ? "la corrección" : "the fix"}</th></tr></thead>
+          <tbody>
+            <tr><td className="mono">ind-helmholtz</td><td>FDM / spectral</td><td className="mono" style={{ color: "var(--bad)" }}>120.8%</td><td className="mono" style={{ color: "var(--good)" }}>Fourier 9.3%</td></tr>
+            <tr><td className="mono">bench-allencahn</td><td>spectral ref</td><td className="mono" style={{ color: "var(--bad)" }}>95.4% (collapse)</td><td className="mono" style={{ color: "var(--good)" }}>hard+RAR 0.4%</td></tr>
+            <tr><td className="mono">ind-heat2d-inverse</td><td>MMS k*</td><td className="mono" style={{ color: "var(--bad)" }}>356% (no data)</td><td className="mono" style={{ color: "var(--good)" }}>data+physics 4.0%</td></tr>
+            <tr><td className="mono">poll-soil-barrier</td><td>MMS</td><td className="mono">single-domain ~19%</td><td className="mono">FBPINN ~19%</td></tr>
+            <tr><td className="mono">bench-darcy-operator</td><td>finite-difference</td><td className="mono">—</td><td className="mono" style={{ color: "var(--good)" }}>FNO 2.5% (one pass)</td></tr>
+            <tr><td className="mono">bench-navier-cavity</td><td>Ghia 1982</td><td className="mono">—</td><td className="mono" style={{ color: "var(--good)" }}>centerline RMSE 0.05</td></tr>
+            <tr><td className="mono">env-soil-heat-real</td><td>REAL sensors</td><td className="mono">—</td><td className="mono" style={{ color: "var(--good)" }}>held-out ~1&deg;C</td></tr>
+          </tbody>
+        </table>
+        <p className="muted" style={{ fontSize: 12.5 }}>
+          {lang === "es"
+            ? "Honesto: donde una prueba justa no muestra contraste real (wave1d) o un solucionador divergió (una cavidad FDM apresurada), no se muestra ningún resultado inventado. Abre la vista Comparar de un caso para ver los campos y los mapas de error."
+            : "Honest: where a fair test shows no real contrast (wave1d) or a solver diverged (a rushed FDM cavity), no fabricated result is shown. Open a case's Compare view for the fields + error maps."}
+        </p>
+      </div>
       {Object.entries(byCat).map(([cat, ms]) => (
         <div key={cat} className="panel" style={{ marginBottom: 16 }}>
           <h3>{CATEGORY_LABELS[cat]?.[lang] ?? cat}</h3>
