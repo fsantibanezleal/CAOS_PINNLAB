@@ -462,3 +462,7 @@ ol li, ul li { margin: 4px 0; }
 .profile-legend { font-size: 10px; }
 .profile-legend .pl-sel { color: var(--accent); font-weight: 600; }
 .profile-legend .pl-ref { color: var(--muted); }
+
+/* snapshot-to-PNG button on viz panels + charts */
+.snap-btn { margin-left: 6px; border: 1px solid var(--border); background: var(--panel-2); color: var(--muted); border-radius: 6px; padding: 0 6px; font-size: 12px; line-height: 1.5; cursor: pointer; vertical-align: middle; }
+.snap-btn:hover { color: var(--accent); border-color: var(--accent); }

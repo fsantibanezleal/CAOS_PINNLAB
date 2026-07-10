@@ -3,7 +3,21 @@ import { useEffect, useMemo, useState } from "react";
 import type { CaseManifest, CompareTrace } from "../../lib/contract";
 import { fieldRange } from "../../lib/colormap";
 import { loadComparison } from "../../lib/data";
+import { snapshotElement } from "../../lib/snapshot";
 import { HeatCanvas } from "./HeatCanvas";
+
+function SnapBtn({ target, name }: { target: string; name: string }) {
+  return (
+    <button
+      type="button"
+      className="snap-btn"
+      title="Save PNG"
+      onClick={(e) => snapshotElement((e.currentTarget as HTMLElement).closest(target) as HTMLElement, name)}
+    >
+      ⤓
+    </button>
+  );
+}
 
 /** CompareKit (issue #25) - the method-ladder demonstration: the STANDARD PDE solution vs the naive / adapted /
  *  data-driven PINN on ONE grid, plus the error maps, with a shared hover probe that reads EVERY lane at a point.
@@ -69,7 +83,7 @@ export function CompareKit({ manifest, lang }: { manifest: CaseManifest; lang: "
       <div className="cmp-panels">
         {valueLanes.map((l) => (
           <figure key={l.key} className="cmp-panel">
-            <figcaption className={"cmp-cap " + (roleClass[l.role] ?? "")}>{es ? l.label_es : l.label_en}</figcaption>
+            <figcaption className={"cmp-cap " + (roleClass[l.role] ?? "")}>{es ? l.label_es : l.label_en}<SnapBtn target=".cmp-panel" name={`${manifest.case_id}-${l.key}`} /></figcaption>
             <div className="cmp-map" onMouseMove={onMove} onMouseLeave={() => setHov(null)}>
               <HeatCanvas field={trace.fields[l.key]} range={vRange} ariaLabel={l.key} />
             </div>
