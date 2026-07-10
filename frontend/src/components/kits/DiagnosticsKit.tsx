@@ -2,6 +2,16 @@ import { useEffect, useMemo, useState } from "react";
 
 import type { CaseManifest, Diagnostics } from "../../lib/contract";
 import { loadDiagnostics } from "../../lib/data";
+import { snapshotElement } from "../../lib/snapshot";
+
+function SnapBtn({ name }: { name: string }) {
+  return (
+    <button type="button" className="snap-btn" title="Save PNG"
+      onClick={(e) => snapshotElement((e.currentTarget as HTMLElement).closest(".diag-block") as HTMLElement, name)}>
+      ⤓
+    </button>
+  );
+}
 
 /** DiagnosticsKit (issue #25) - the WHY behind the method contrast. For Helmholtz: the wavenumber sweep (the naive
  *  PINN's error climbs as the wavenumber grows while the Fourier lane stays low) and the radial spectral energy (the
@@ -27,7 +37,7 @@ export function DiagnosticsKit({ manifest, lang }: { manifest: CaseManifest; lan
     <div className="diag-kit">
       {d.wavenumber_sweep && (
         <div className="diag-block">
-          <h4>{es ? "Barrido de número de onda: dónde la PINN ingenua colapsa" : "Wavenumber sweep: where the naive PINN collapses"}</h4>
+          <h4>{es ? "Barrido de número de onda: dónde la PINN ingenua colapsa" : "Wavenumber sweep: where the naive PINN collapses"}<SnapBtn name={`${manifest.case_id}-sweep`} /></h4>
           <LineChart
             xs={d.wavenumber_sweep.n}
             series={[
@@ -44,7 +54,7 @@ export function DiagnosticsKit({ manifest, lang }: { manifest: CaseManifest; lan
       )}
       {d.radial_spectrum && (
         <div className="diag-block">
-          <h4>{es ? "Energía espectral radial: la banda de alta frecuencia que la ingenua no alcanza" : "Radial spectral energy: the high-frequency band the naive lane misses"}</h4>
+          <h4>{es ? "Energía espectral radial: la banda de alta frecuencia que la ingenua no alcanza" : "Radial spectral energy: the high-frequency band the naive lane misses"}<SnapBtn name={`${manifest.case_id}-spectrum`} /></h4>
           <LineChart
             xs={d.radial_spectrum.k}
             series={[
@@ -60,7 +70,7 @@ export function DiagnosticsKit({ manifest, lang }: { manifest: CaseManifest; lan
       )}
       {d.line_comparisons?.map((lc, i) => (
         <div key={i} className="diag-block">
-          <h4>{es ? lc.title_es : lc.title_en}</h4>
+          <h4>{es ? lc.title_es : lc.title_en}<SnapBtn name={`${manifest.case_id}-diag-${i}`} /></h4>
           <XYChart series={lc.series} xLabel={lc.xLabel} yLabel={lc.yLabel} />
         </div>
       ))}

@@ -3,6 +3,17 @@
 All notable changes to **PINN-Lab**. Format: `X.XX.XXX` (display), see `pinnlab.__version__`. Keep `0.x` while on
 synthetic/benchmark data. Tag every release.
 
+## [0.20.008] (2026-07-10) snapshot-to-PNG on every comparison panel + diagnostics chart (issue #25)
+
+Interactive-graph enrichment: a ⤓ button on each Compare panel (the heatmaps) and each Diagnostics chart exports it
+to a PNG (2x, on a solid background) for slides / papers. Self-contained (canvas.toDataURL / SVG serialization, no
+dependency). Verified: the button triggers a real download; full re-validation 0 errors, light + dark.
+
+This completes the deep pass: the offline pipeline computes real comparisons/validations, and ALL 20 cases show them
+(17 Compare views incl. 4 naive-vs-fix ladders + darcy FNO-vs-FD; navier Ghia-centerline + soil-heat-real held-out
+real-sensor Diagnostics; the double pendulum's PINN-vs-RK45 trajectory), with the full-width top-strip layout, the
+both-mode probe, dropdown nav, and per-panel snapshot. Nothing invented; honest numbers throughout.
+
 ## [0.20.007] (2026-07-10) navier Ghia validation + soil-heat-real held-out real-sensor validation (issue #25)
 
 The last two cases get real comparison/validation views (done PROPERLY, not the rushed FDM that diverged):
