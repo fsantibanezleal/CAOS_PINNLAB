@@ -120,13 +120,25 @@ export interface CompareTrace {
   summary?: Record<string, number>;
 }
 
-/** Diagnostics that explain the method contrast (e.g. the wavenumber sweep + radial spectrum). */
+/** One curve/point series in a line comparison (own x,y; `scatter` renders points only, e.g. benchmark data). */
+export interface DiagSeries {
+  label: string;
+  color: string;
+  scatter?: boolean;
+  x: number[];
+  y: number[];
+}
+
+/** Diagnostics that explain the method contrast (the wavenumber sweep + spectrum) or validate against a benchmark
+ *  (line comparisons, e.g. the Ghia cavity centerlines: reference points vs the PINN curve). */
 export interface Diagnostics {
   schema?: string;
   case_id: string;
   wavenumber_sweep?: { n: number[]; naive: number[]; adapted: number[] };
   radial_spectrum?: { k: number[]; standard: number[]; naive: number[]; adapted: number[] };
+  line_comparisons?: { title_en: string; title_es: string; xLabel: string; yLabel: string; series: DiagSeries[] }[];
   l2?: Record<string, number>;
+  rmse?: Record<string, number>;
 }
 
 /** The compact replay artifact = a decimated solution field (core/trace.py:build_trace). */

@@ -58,6 +58,58 @@ export function DiagnosticsKit({ manifest, lang }: { manifest: CaseManifest; lan
           />
         </div>
       )}
+      {d.line_comparisons?.map((lc, i) => (
+        <div key={i} className="diag-block">
+          <h4>{es ? lc.title_es : lc.title_en}</h4>
+          <XYChart series={lc.series} xLabel={lc.xLabel} yLabel={lc.yLabel} />
+        </div>
+      ))}
+    </div>
+  );
+}
+
+/** A chart where each series carries its OWN x,y (a benchmark scatter of points vs a model curve). */
+function XYChart({ series, xLabel, yLabel }: { series: { label: string; color: string; scatter?: boolean; x: number[]; y: number[] }[]; xLabel: string; yLabel: string }) {
+  const W = 640;
+  const H = 300;
+  const pad = { l: 52, r: 12, t: 12, b: 40 };
+  const all = series.flatMap((s) => s.x.map((xv, i) => ({ x: xv, y: s.y[i] }))).filter((p) => Number.isFinite(p.x) && Number.isFinite(p.y));
+  const xMin = Math.min(...all.map((p) => p.x)), xMax = Math.max(...all.map((p) => p.x));
+  const yMin = Math.min(...all.map((p) => p.y)), yMax = Math.max(...all.map((p) => p.y));
+  const px = (x: number) => pad.l + ((x - xMin) / (xMax - xMin || 1)) * (W - pad.l - pad.r);
+  const py = (y: number) => H - pad.b - ((y - yMin) / (yMax - yMin || 1)) * (H - pad.t - pad.b);
+  return (
+    <div className="diag-chart">
+      <svg viewBox={`0 0 ${W} ${H}`} className="diag-svg">
+        <text className="diag-ylab" x={14} y={H / 2} transform={`rotate(-90 14 ${H / 2})`} textAnchor="middle">{yLabel}</text>
+        <text className="diag-xlab" x={(pad.l + W - pad.r) / 2} y={H - 6} textAnchor="middle">{xLabel}</text>
+        {Array.from({ length: 5 }, (_, i) => {
+          const yv = yMin + (i / 4) * (yMax - yMin);
+          const y = H - pad.b - (i / 4) * (H - pad.t - pad.b);
+          return (
+            <g key={i}>
+              <line x1={pad.l} y1={y} x2={W - pad.r} y2={y} stroke="var(--border)" strokeWidth="0.6" />
+              <text className="diag-tick" x={pad.l - 6} y={y + 3} textAnchor="end">{yv.toFixed(2)}</text>
+            </g>
+          );
+        })}
+        {[0, 0.25, 0.5, 0.75, 1].map((f) => {
+          const xv = xMin + f * (xMax - xMin);
+          return <text key={f} className="diag-tick" x={px(xv)} y={H - pad.b + 16} textAnchor="middle">{xv.toFixed(2)}</text>;
+        })}
+        {series.map((s) =>
+          s.scatter ? (
+            s.x.map((xv, i) => <circle key={s.label + i} cx={px(xv)} cy={py(s.y[i])} r={3} fill={s.color} />)
+          ) : (
+            <polyline key={s.label} fill="none" stroke={s.color} strokeWidth="2" points={s.x.map((xv, i) => `${px(xv)},${py(s.y[i])}`).join(" ")} />
+          ),
+        )}
+      </svg>
+      <div className="diag-legend">
+        {series.map((s) => (
+          <span key={s.label} className="diag-leg"><span className="diag-swatch" style={{ background: s.color, height: s.scatter ? "8px" : "3px", width: s.scatter ? "8px" : "12px", borderRadius: s.scatter ? "50%" : "2px" }} />{s.label}</span>
+        ))}
+      </div>
     </div>
   );
 }
