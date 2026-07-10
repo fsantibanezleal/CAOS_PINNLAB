@@ -3,6 +3,20 @@
 All notable changes to **PINN-Lab**. Format: `X.XX.XXX` (display), see `pinnlab.__version__`. Keep `0.x` while on
 synthetic/benchmark data. Tag every release.
 
+## [0.20.007] (2026-07-10) navier Ghia validation + soil-heat-real held-out real-sensor validation (issue #25)
+
+The last two cases get real comparison/validation views (done PROPERLY, not the rushed FDM that diverged):
+- **navier-cavity**: a Diagnostics view with the canonical Ghia-Ghia-Shin (1982) Re=100 CENTERLINE validation - the
+  PINN velocity along both cavity centerlines vs Ghia's tabulated benchmark points (u RMSE 0.053, v RMSE 0.029).
+  Robust (no finicky field solver); the streamlines stay as the Field view.
+- **soil-heat-real**: a Diagnostics view validating the reconstruction against the REAL measured USCRN temperatures
+  at the HELD-OUT depths (10/20/50 cm, never shown to the optimizer) over 2019-2021 - measured points vs the PINN
+  out-of-sample curve, RMSE 1.24 / 1.05 / 0.75 degC (matching the case's own metrics).
+- A generic XY chart (benchmark points vs model curve) added to the DiagnosticsKit.
+
+**Every one of the 20 cases now has a real comparison/validation**: 17 Compare views (4 naive-vs-fix ladders),
+navier + soil-heat-real Diagnostics, and the double pendulum's PINN-vs-RK45 trajectory. Full validation: 0 errors, light + dark.
+
 ## [0.20.006] (2026-07-09) UI: Highlights + Domain as compact dropdowns (#24)
 
 The Highlights and Domain selectors in the left rail are now compact dropdowns instead of expanded chip/button lists,

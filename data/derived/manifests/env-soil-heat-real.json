@@ -70,5 +70,8 @@
     "recovered_alpha_mm2_s": 0.30448
    }
   }
- ]
+ ],
+ "diagnostics": {
+  "path": "env-soil-heat-real/diagnostics.json"
+ }
 }

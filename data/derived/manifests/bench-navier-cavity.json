@@ -69,5 +69,8 @@
     "l2_relative": 0.1675
    }
   }
- ]
+ ],
+ "diagnostics": {
+  "path": "bench-navier-cavity/diagnostics.json"
+ }
 }
