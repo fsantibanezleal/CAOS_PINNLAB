@@ -18,7 +18,7 @@ The tree is **one folder per theme**, each with its own landing `README.md` and 
 
 | Folder | What it answers | Start at |
 |--------|-----------------|----------|
-| **[architecture/](architecture/README.md)** | How is PINN-Lab built? The two worlds (offline/web), the staged pipeline, the data contracts, the train→ONNX bridge, the lane gate, determinism, deploy. | [architecture/README.md](architecture/README.md) |
+| **[architecture/](architecture/README.md)** | How is PINN-Lab built? The two worlds (offline/web), the staged pipeline, the data contracts, the train→ONNX bridge, the lane gate, determinism, deploy, and the **method ladder & dynamics** (how the standard-vs-naive-vs-adapted comparisons, training-dynamics and evolution animations are computed and shown). | [architecture/README.md](architecture/README.md) |
 | **[cases/](cases/README.md)** | What problems does it solve? One page per case: the PDE, the method, the validation anchor, the honesty label, the measured numbers. | [cases/README.md](cases/README.md) |
 | **[methods/](methods/adaptive-sampling.md)** | Which SOTA methods, and why? One page per method family — the idea, the formulation, the cases that exercise it, the primary reference. | [methods/](methods/) |
 | **[frameworks/](frameworks/deepxde/README.md)** | Which engines, and how to use them? One guide per framework (DeepXDE, PhysicsNeMo, neuraloperator, jaxpi, PINA, NeuralPDE.jl) with install, API surface and a runnable example. | [frameworks/deepxde/README.md](frameworks/deepxde/README.md) |
