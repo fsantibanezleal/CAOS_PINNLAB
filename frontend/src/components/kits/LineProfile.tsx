@@ -57,7 +57,7 @@ export function LineProfile({
     <div className="lineprofile">
       <svg
         viewBox={`0 0 ${W} ${H}`}
-        className="lineprofile-svg"
+        className="lineprofile-svg" aria-label={`${outLabel} over ${spaceLabel}`} role="img"
         onMouseMove={onMove}
         onMouseLeave={() => setHoverI(null)}
       >

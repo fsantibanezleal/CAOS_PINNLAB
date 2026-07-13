@@ -228,6 +228,10 @@ ol li, ul li { margin: 4px 0; }
 .cmp-cap.cmp-data { color: var(--accent-2); }
 .cmp-map { position: relative; cursor: crosshair; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
 .cmp-val { font-size: 11px; text-align: center; color: var(--muted); min-height: 14px; }
+.cmp-cbar { display: flex; gap: 5px; align-self: stretch; padding: 24px 0 18px; }
+.cmp-cbar-scale { width: 14px; border-radius: 4px; overflow: hidden; display: flex; flex-direction: column; }
+.cmp-cbar-scale > div { flex: 1; }
+.cmp-cbar-labels { display: flex; flex-direction: column; justify-content: space-between; font-size: 10px; color: var(--muted); }
 .cmp-readout { font-size: 12.5px; padding: 6px 10px; background: var(--panel-2); border: 1px solid var(--border); border-radius: 8px; min-height: 18px; }
 
 /* ── CompareEvolution (issue #36): watch the ladder evolve ──────────────────────────────── */
@@ -326,8 +330,8 @@ ol li, ul li { margin: 4px 0; }
 .fieldview-transport { flex: 1 1 100%; order: -1; }
 /* the ANIMATED EVOLUTION HERO (issue #36): the big moving profile is the star; the space-time map is the carpet */
 .fieldview-hero { flex: 1 1 100%; }
-.fieldview-hero .lineprofile { max-width: 780px; }
-.fieldview-hero .lineprofile-svg { max-width: 780px; }
+.fieldview-hero .lineprofile { max-width: 720px; }
+.fieldview-hero .lineprofile-svg { max-width: 720px; }
 .fv-hero-title { font-size: 12.5px; margin: 2px 0 6px; color: var(--text); }
 .fieldview-hint { font-size: 11.5px; margin: 2px 0 0; line-height: 1.45; }
 @media (max-width: 880px) { .fieldview { flex-direction: column; } .fieldview-side { width: 100%; } .field-wrap { width: 100%; } }
