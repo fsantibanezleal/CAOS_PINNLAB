@@ -176,6 +176,16 @@ ol li, ul li { margin: 4px 0; }
 /* the equation owns a FULL-WIDTH row so it is never clipped; a long one scrolls with a visible thin bar */
 .pl-ctx-eq { flex: 1 1 100%; min-width: 0; overflow-x: auto; scrollbar-width: thin; }
 .pl-ctx-eq .eq { padding: 8px 12px; }
+.pl-pins { flex: 1 1 100%; display: flex; flex-wrap: wrap; gap: 5px 6px; align-items: center; }
+.pl-pins-label { font-size: 10.5px; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); font-weight: 700; margin-right: 2px; }
+.pin { font-size: 11px; line-height: 1.35; padding: 2px 8px; border-radius: 999px; border: 1px solid var(--border); background: var(--panel-2); color: var(--text); }
+.pin b { font-size: 9.5px; letter-spacing: .04em; margin-right: 4px; opacity: .95; }
+.pin-bc { border-color: color-mix(in srgb, var(--accent) 55%, transparent); } .pin-bc b { color: var(--accent); }
+.pin-ic { border-color: color-mix(in srgb, var(--accent-2) 55%, transparent); } .pin-ic b { color: var(--accent-2); }
+.pin-param { border-color: color-mix(in srgb, var(--warn) 55%, transparent); } .pin-param b { color: var(--warn); }
+.pin-unknown { border-color: color-mix(in srgb, var(--bad) 55%, transparent); } .pin-unknown b { color: var(--bad); }
+.pin-data { border-color: color-mix(in srgb, var(--good) 55%, transparent); } .pin-data b { color: var(--good); }
+.pin-anchor { border-color: var(--border); } .pin-anchor b { color: var(--muted); }
 .pl-ctx-meta { display: flex; flex-wrap: wrap; gap: 6px 16px; font-size: 12.5px; }
 .pl-ctx-metric b { margin-right: 4px; }
 .pl-ctx-band { flex: 1 1 320px; margin: 0; font-size: 12px; line-height: 1.45; text-align: right; }

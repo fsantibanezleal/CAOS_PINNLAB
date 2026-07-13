@@ -78,3 +78,13 @@ python -m pinnlab.pipeline ind-heat2d-inverse --seed 42
 standard k* (MMS) | **pure physics, NO data** | **physics + ~100 sensors** (see [the method ladder](../architecture/method-ladder-comparison.md)). With no
 sensor data the conductivity field k is underdetermined and the recovery fails (**356 %** vs the analytic standard);
 with the sparse noisy sensors it is recovered (**4.0 %**). The DATA is what makes the inverse solvable.
+
+
+## Identifiability: the computed information budget (Diagnostics view)
+
+How much data does the inverse need? The sweep (one fixed fast training budget, seeded sensors, first-n subsets)
+answers with real runs: recovered-k relative-L2 vs number of sensors = **356 % at n=0** (pure physics: the field
+unknown is underdetermined), **17.3 % at n=10**, 16.3 % at n=25, 13.6 % at n=50, **12.6 % at n=100**. The cliff is
+between 0 and 10: ANY anchoring data restores identifiability, then returns diminish (the smooth k* is already
+pinned by few points; the fully-trained n=100 run reaches 4.0 %, see Compare). Baked by
+`build_identifiability_sweep.py`; shown as the log-y curve in the app's Diagnostics view.

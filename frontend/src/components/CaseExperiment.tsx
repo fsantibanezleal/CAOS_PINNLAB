@@ -1,6 +1,7 @@
 import { useEffect, useState, type ReactNode } from "react";
 
 import type { CaseManifest, FieldTrace } from "../lib/contract";
+import { CONSTRAINTS, PIN_LABELS } from "../content/constraints";
 import { loadManifest, loadTrace } from "../lib/data";
 import { Equation } from "./Equation";
 import { CompareKit } from "./kits/CompareKit";
@@ -173,6 +174,16 @@ export function CaseExperiment({
       <div className="pl-main">
         <div className="pl-context">
           <div className="pl-ctx-eq"><Equation tex={manifest.governing_equations} /></div>
+          {CONSTRAINTS[manifest.case_id] && (
+            <div className="pl-pins" title={es ? "Qué fija la solución: una EDP sola tiene infinitas soluciones" : "What pins the solution down: a PDE alone has infinitely many solutions"}>
+              <span className="pl-pins-label">{es ? "Qué fija la solución" : "What pins the solution"}</span>
+              {CONSTRAINTS[manifest.case_id].map((pin, i) => (
+                <span key={i} className={"pin pin-" + pin.kind}>
+                  <b>{PIN_LABELS[pin.kind][lang]}</b> {es ? pin.es : pin.en}
+                </span>
+              ))}
+            </div>
+          )}
           <div className="pl-ctx-meta">
             <span className="pl-ctx-metric"><b className="muted">{es ? "Método" : "Method"}</b> <span className="mono">{manifest.method}</span></span>
             <span className="pl-ctx-metric"><b className="muted">{es ? "Motor" : "Engine"}</b> <span className="mono">{manifest.engine.framework}</span></span>

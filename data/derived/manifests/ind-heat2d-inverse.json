@@ -100,5 +100,8 @@
    "adapted_vs_std": 0.0403,
    "naive_vs_std": 3.56416
   }
+ },
+ "diagnostics": {
+  "path": "ind-heat2d-inverse/diagnostics.json"
  }
 }

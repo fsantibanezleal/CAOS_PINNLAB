@@ -8,6 +8,12 @@ baked regime and the `Live` tab sweeps the parameter via the shared ONNX. A non-
 
     python -m pinnlab.pipeline                      # all cases
     python -m pinnlab.pipeline bench-poisson2d --seed 7
+
+The METHOD-LADDER + DYNAMICS artifacts (manifest `comparison` / `training` / `evolution` / `diagnostics` blocks) are
+baked by the dedicated tools next to this module (build_standard_comparisons.py, build_ladder.py,
+build_training_dynamics.py, build_evolution_frames.py, build_identifiability_sweep.py, ...) AFTER the base bake;
+re-running this pipeline rewrites the base manifest, so re-apply those tools afterwards (their outputs are
+contract-tested by tests/test_dynamics_artifacts.py).
 """
 from __future__ import annotations
 

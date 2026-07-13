@@ -39,6 +39,24 @@ PINN-Lab is split into a **heavy offline world** (Python) and a **light web worl
 2. **Artifact contract (`processing → web`).** The web app loads **only** the committed artifacts (index → manifest →
    trace → ONNX); a TypeScript type mirrors the manifest schema so a contract drift fails the build.
 
+## The method ladder & the dynamics (what makes the catalogue worth looking at)
+
+The pipeline does not bake one field per case: it **computes the comparison the docs describe**, and the app shows it
+([docs/architecture/method-ladder-comparison.md](docs/architecture/method-ladder-comparison.md)):
+
+- **Compare view** (default): the classical **standard** solution vs the **naive** PINN vs the **adapted** fix on one
+  grid + error maps + a shared labeled colorbar. Real headline numbers: Helmholtz naive **120.8%** vs Fourier **9.3%**;
+  Allen-Cahn soft **95.4%** (metastable collapse) vs hard-constraint+RAR **0.4%**; heat2d-inverse with no data
+  **356%** vs physics+data **4.0%**.
+- **Dynamics everywhere the content is motion**: an animated evolution hero on every time case, the ladder's lanes
+  animating together, 2-D frame sequences (ocean, heap-leach), and **Training — "watch it learn"**: the field at real
+  training checkpoints, naive vs adapted side by side (spectral bias made visible as a training pathology).
+- **The story**: an 8-chapter when-PINNs-win/lose selector, each chapter deep-linking (`#/?case=…&view=…`) to the
+  case + view that DEMONSTRATES it. Chapter 1 is honest: on the easy forward problem the classical solver wins.
+- Ladder tools live in `data-pipeline/` (`build_standard_comparisons.py`, `build_ladder.py`, `build_naive_lane.py`,
+  `build_training_dynamics.py`, `build_evolution_frames.py`, `build_identifiability_sweep.py`, …); artifacts are
+  contract-tested (`tests/test_dynamics_artifacts.py`).
+
 ## Quickstart
 
 ```powershell
@@ -77,6 +95,9 @@ physical parameter and watch the exported ONNX re-evaluate in your browser. See
 - **Reproducible.** Pinned requirements per lane; `scripts/setup`; deterministic given `(case, seed)`; the ONNX the
   browser runs is exactly the validated network.
 - **Versioned** (X.XX.XXX, CHANGELOG + tags from day 1) with license/attribution hygiene.
+- **Tests never write the canonical artifacts.** The whole pytest suite is sandboxed (an autouse `conftest.py`
+  fixture redirects every pipeline write target to a tmp dir) — a quick-mode smoke once clobbered committed bakes;
+  never remove that fixture.
 
 See [docs/architecture/01_overview.md](docs/architecture/01_overview.md) for the full rationale and
 [STRUCTURE.md](STRUCTURE.md) for the file-by-file map.

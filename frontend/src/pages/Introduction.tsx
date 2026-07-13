@@ -9,6 +9,13 @@ export function Introduction() {
     <div className="prose" style={{ maxWidth: 1000 }}>
       <h1>{es ? "Qué es PINN-Lab": "What PINN-Lab is"}</h1>
 
+      <h2>{es ? "Por qué importan las EDPs" : "Why PDEs matter"}</h2>
+      <p>
+        {es
+          ? "Una ecuación diferencial parcial es una ley física escrita en forma local: la tasa de cambio en un punto queda determinada por su vecindad inmediata (flujos, gradientes, curvaturas). La conservación de masa, momento y energía toma esta forma. Resolverlas compra las tres predicciones sobre las que corre la ingeniería: el FUTURO de un sistema (el calor decayendo, un parche contaminante a la deriva), el INTERIOR NO OBSERVADO entre mediciones (reconstruir 10/20/50 cm de suelo desde sensores a 5 y 100 cm), y la RESPUESTA a cambios de diseño (mover la viscosidad o la tasa de molienda y ver el régimen nuevo). Las formas cerradas existen solo para casos idealizados; los problemas reales exigen solucionadores numéricos, y solo por eso una nueva clase de solucionador como las PINN merece un catálogo."
+          : "A partial differential equation is a physical law written locally: the rate of change at a point is determined by its immediate neighbourhood (fluxes, gradients, curvatures). Conservation of mass, momentum and energy all take this form. Solving them buys the three predictions engineering runs on: the FUTURE of a system (heat decaying, a pollutant patch drifting), the UNSEEN INTERIOR between measurements (reconstructing the 10/20/50 cm soil depths from sensors at 5 and 100 cm), and the RESPONSE to design changes (move the viscosity or the grind rate and see the new regime). Closed forms exist only for idealized cases; real problems demand numerical solvers, and only that makes a new solver class like PINNs worth a catalogue."}
+      </p>
+
       <p>
         {es
           ? "Las Redes Neuronales Informadas por Física (PINNs) incrustan la ecuación diferencial que gobierna un sistema directamente en la función de pérdida de una red, vía diferenciación automática. En vez de ajustar datos, la red minimiza el RESIDUAL de la EDP en puntos de colocación del dominio, más las condiciones de borde/iniciales y los datos que haya:"
@@ -37,6 +44,24 @@ export function Introduction() {
           ? "Eso compra tres cosas que la numérica clásica no entrega juntas: solución sin malla de PDEs directas/inversas, descubrimiento de campos a partir de datos escasos/ruidosos (la PDE actúa como prior físico donde no hay sensores), y un único artefacto diferenciable que se exporta y corre en el navegador."
          : "That buys three things classical numerics can't give at once: mesh-free solution of forward/inverse PDEs, field discovery from sparse/noisy data (the PDE is a physics prior wherever there are no sensors), and a single differentiable artifact that exports and runs client-side."}
       </p>
+
+      <h2>{es ? "Qué intenta alcanzar una PINN" : "What a PINN attempts to reach"}</h2>
+      <p>
+        {es
+          ? "El punto que la optimización intenta alcanzar es la función donde TODOS los términos de la pérdida se anulan a la vez: residual de la EDP, condiciones de borde/iniciales y datos. Para un problema directo bien planteado, esa función de pérdida cero ES la solución clásica. El intento ocurre por optimización no convexa, y ahí viven las patologías: la vista Entrenamiento muestra al carril ingenuo de Helmholtz clavado en ~100% con información matemática COMPLETA (la falla es de entrenamiento, no de capacidad). En la práctica el objetivo no es ganarle a FEM en un problema directo (capítulo 1 de la historia: ahí gana el clásico), sino obtener la solución COMO OBJETO: sin malla, diferenciable en cualquier punto, paramétrica (una red = una familia entera), fusionable con datos dispersos, invertible para coeficientes ocultos y exportable (el ONNX corriendo en tu navegador)."
+          : "The point the optimization attempts to reach is the function where ALL loss terms vanish at once: the PDE residual, the boundary/initial conditions, and the data. For a well-posed forward problem, that zero-loss function IS the classical solution. The attempt happens through non-convex optimization, and that is where the pathologies live: the Training view shows the naive Helmholtz lane stuck at ~100% with mathematically COMPLETE information (the failure is a training problem, not a capacity problem). In practice the target is not to beat FEM on a forward problem (story chapter 1: the classical solver wins there), but to get the solution AS AN OBJECT: mesh-free, differentiable anywhere, parametric (one net = a whole family), fusable with sparse data, invertible for hidden coefficients, and exportable (the ONNX running in your browser)."}
+      </p>
+
+      <div className="panel" style={{ margin: "18px 0", borderColor: "var(--accent-2)" }}>
+        <h3>{es ? "El presupuesto de información: cuánto necesita una PINN para un resultado significativo" : "The information budget: how much a PINN needs for a significant result"}</h3>
+        <ul style={{ fontSize: 13.5, lineHeight: 1.65 }}>
+          <li>{es ? "DIRECTO bien planteado: física + condiciones de borde e iniciales son COMPLETAS: cero datos (poisson 0.04%, heat1d 0.15%, burgers 0.08% vs el estándar, sin observaciones)." : "FORWARD, well-posed: physics + boundary + initial conditions are COMPLETE: zero data needed (poisson 0.04%, heat1d 0.15%, burgers 0.08% vs the standard, with no observations)."}</li>
+          <li>{es ? "Pero información completa no es entrenabilidad: con la MISMA información, la Helmholtz ingenua da 121% y la allencahn suave 95%. En los directos difíciles falta el sesgo inductivo correcto (Fourier, restricciones duras, RAR), no más información." : "But information-complete is not trainable: with the SAME information, naive Helmholtz gives 121% and soft allencahn 95%. Hard forward problems lack the right inductive bias (Fourier, hard constraints, RAR), not more information."}</li>
+          <li>{es ? "INVERSO con incógnita ESCALAR: poca data basta: dos series de borde reales recuperan UNA difusividad y predicen tres profundidades nunca vistas a ~1 °C." : "INVERSE with a SCALAR unknown: little data suffices: two real boundary series recover ONE diffusivity and predict three held-out depths at ~1 degC."}</li>
+          <li>{es ? "INVERSO con incógnita de CAMPO: los datos interiores son ESENCIALES: 0 sensores = 356% (irrecuperable); ~100 sensores ruidosos = 4%. La curva completa de identificabilidad (error vs número de sensores) está computada en el Diagnóstico de heat2d-inverse." : "INVERSE with a FIELD unknown: interior data is ESSENTIAL: 0 sensors = 356% (unrecoverable); ~100 noisy sensors = 4%. The full identifiability curve (error vs number of sensors) is computed in heat2d-inverse's Diagnostics."}</li>
+          <li>{es ? "EL TECHO: ninguna cantidad de información vence al caos: el leave-time ~2 s del péndulo es un límite de Lyapunov, no un déficit de datos. Y con datos escasos, el resultado honesto INCLUYE la incertidumbre: σ del ensamble crece exactamente donde no hay sensores." : "THE CEILING: no amount of information beats chaos: the pendulum's ~2 s leave-time is a Lyapunov limit, not a data deficit. And under scarce data the honest result INCLUDES the uncertainty: the ensemble's sigma grows exactly where sensors are absent."}</li>
+        </ul>
+      </div>
 
       <div className="panel" style={{ margin: "18px 0", borderColor: "var(--accent)" }}>
         <h3>{es ? "La historia en 8 capítulos: cuándo ganan y cuándo pierden" : "The story in 8 chapters: when they win and when they lose"}</h3>

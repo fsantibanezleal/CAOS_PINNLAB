@@ -3,6 +3,29 @@
 All notable changes to **PINN-Lab**. Format: `X.XX.XXX` (display), see `pinnlab.__version__`. Keep `0.x` while on
 synthetic/benchmark data. Tag every release.
 
+## [0.22.000] (2026-07-10) FUNDAMENTALS: the identifiability sweep, why-PDEs, the information budget, constraint anatomy (issue #44)
+
+Answering the owner's fundamental questions with computed content and taught concepts (review persisted in
+wip/web-review/fundamentals-review-2026-07-10.md):
+
+- **THE IDENTIFIABILITY SWEEP (new bake)**: heat2d-inverse trained at n = 0/10/25/50/100 sensors at ONE fair fast
+  budget: recovered-k error = 356% / 17.3% / 16.3% / 13.6% / 12.6%. The computed answer to "how much information
+  does a PINN need": the cliff is between 0 and 10 sensors (ANY anchoring data restores identifiability of the
+  field unknown), then returns diminish; the fully-trained n=100 run reaches 4.0% (Compare). Shown as a log-y curve
+  in the Diagnostics view (`build_identifiability_sweep.py` + `build_n_sensors()`; XYChart gained yLog).
+- **CONSTRAINT ANATOMY**: every case now shows "What pins the solution" chips under its equation: BC / IC / PARAM /
+  UNKNOWN / DATA / ANCHOR, color-coded, bilingual, sourced from each case definition. A PDE alone has infinitely
+  many solutions; the chips teach what makes each problem well-posed.
+- **Introduction RESORTED with the fundamentals**: Why PDEs matter (local laws, the three predictions) -> the loss
+  -> What a PINN attempts to reach (zero-loss = the solution for well-posed problems; the solution-as-object target)
+  -> The information budget (four regimes + the chaos ceiling, all with the catalogue's computed numbers) -> the
+  story -> is/isn't.
+- **Docs audit (repo-wide)**: README gains the method-ladder & dynamics section + the tests-never-write-canonical
+  rule; docs index cross-links the ladder; pipeline.py docstring points to the ladder tools + re-apply order; the
+  architecture-modal Overview text (EN/ES) mentions the ladder bakes; all 20 governing-equation strings audited
+  (correct); heat2d case doc + the ladder architecture doc record the identifiability result.
+- Full validation: 20 cases x 2 themes 0 console errors; 26 artifact contract tests pass.
+
 ## [0.21.003] (2026-07-10) polish round: Compare colorbar, pendulum/UQ axes, story labels, snapshot consistency (issue #42)
 
 - **Compare view: a shared labeled colorbar** for the value lanes - the viridis scale finally has a numeric anchor
