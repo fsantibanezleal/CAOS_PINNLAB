@@ -1,6 +1,7 @@
 import { useMemo } from "react";
 
 import type { CompareLane, CompareTrace } from "../../lib/contract";
+import { fmtTick, niceTicks } from "../../lib/plot";
 import { Transport } from "./Transport";
 import { useAnimator } from "./useAnimator";
 
@@ -50,12 +51,23 @@ export function CompareEvolution({ trace, lanes, vRange, lang }: { trace: Compar
       </h4>
       <Transport anim={anim} lang={lang} axisLabel={trace.dims[tDim]} axisValue={tArr[it] ?? 0} />
       <svg viewBox={`0 0 ${W} ${H}`} className="cmpev-svg">
+        {niceTicks(lo, hi, 5).map((v) => (
+          <g key={"y" + v}>
+            <line x1={pad.l} y1={sy(v)} x2={W - pad.r} y2={sy(v)} stroke="var(--border)" strokeWidth="0.6" opacity="0.7" />
+            <text x={pad.l - 6} y={sy(v) + 3} textAnchor="end" className="lp-tick">{fmtTick(v)}</text>
+          </g>
+        ))}
+        {niceTicks(sArr[0] ?? 0, sArr[n - 1] ?? 1, 6).map((v) => {
+          const x = pad.l + (((v - (sArr[0] ?? 0)) / (((sArr[n - 1] ?? 1) - (sArr[0] ?? 0)) || 1)) * (W - pad.l - pad.r));
+          return (
+            <g key={"x" + v}>
+              <line x1={x} y1={pad.t} x2={x} y2={H - pad.b} stroke="var(--border)" strokeWidth="0.5" opacity="0.45" />
+              <text x={x} y={H - pad.b + 14} textAnchor="middle" className="lp-tick">{fmtTick(v)}</text>
+            </g>
+          );
+        })}
         <line x1={pad.l} y1={pad.t} x2={pad.l} y2={H - pad.b} stroke="var(--border)" strokeWidth="1" />
         <line x1={pad.l} y1={H - pad.b} x2={W - pad.r} y2={H - pad.b} stroke="var(--border)" strokeWidth="1" />
-        <text x={pad.l - 6} y={sy(hi) + 4} textAnchor="end" className="lp-tick">{hi.toExponential(1)}</text>
-        <text x={pad.l - 6} y={sy(lo) + 4} textAnchor="end" className="lp-tick">{lo.toExponential(1)}</text>
-        <text x={pad.l} y={H - pad.b + 15} textAnchor="start" className="lp-tick">{(sArr[0] ?? 0).toFixed(2)}</text>
-        <text x={W - pad.r} y={H - pad.b + 15} textAnchor="end" className="lp-tick">{(sArr[n - 1] ?? 1).toFixed(2)}</text>
         <text x={(pad.l + W - pad.r) / 2} y={H - 4} textAnchor="middle" className="lp-axislabel">{trace.dims[spaceDim]}</text>
         {series.map((s) => (
           <polyline key={s.key} points={poly(s.at(it))} fill="none" stroke={s.color} strokeWidth={s.key === "standard" ? 2.4 : 1.8} strokeDasharray={s.key === "standard" ? undefined : undefined} opacity={s.key === "analytic" ? 0.65 : 1} />
