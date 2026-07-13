@@ -160,7 +160,7 @@ export interface Diagnostics {
   case_id: string;
   wavenumber_sweep?: { n: number[]; naive: number[]; adapted: number[] };
   radial_spectrum?: { k: number[]; standard: number[]; naive: number[]; adapted: number[] };
-  line_comparisons?: { title_en: string; title_es: string; xLabel: string; yLabel: string; series: DiagSeries[] }[];
+  line_comparisons?: { title_en: string; title_es: string; xLabel: string; yLabel: string; yLog?: boolean; series: DiagSeries[] }[];
   l2?: Record<string, number>;
   rmse?: Record<string, number>;
 }

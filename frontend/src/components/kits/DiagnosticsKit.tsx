@@ -71,7 +71,7 @@ export function DiagnosticsKit({ manifest, lang }: { manifest: CaseManifest; lan
       {d.line_comparisons?.map((lc, i) => (
         <div key={i} className="diag-block">
           <h4>{es ? lc.title_es : lc.title_en}<SnapBtn name={`${manifest.case_id}-diag-${i}`} /></h4>
-          <XYChart series={lc.series} xLabel={lc.xLabel} yLabel={lc.yLabel} />
+          <XYChart series={lc.series} xLabel={lc.xLabel} yLabel={lc.yLabel} yLog={lc.yLog} />
         </div>
       ))}
     </div>
@@ -79,15 +79,16 @@ export function DiagnosticsKit({ manifest, lang }: { manifest: CaseManifest; lan
 }
 
 /** A chart where each series carries its OWN x,y (a benchmark scatter of points vs a model curve). */
-function XYChart({ series, xLabel, yLabel }: { series: { label: string; color: string; scatter?: boolean; x: number[]; y: number[] }[]; xLabel: string; yLabel: string }) {
+function XYChart({ series, xLabel, yLabel, yLog }: { series: { label: string; color: string; scatter?: boolean; x: number[]; y: number[] }[]; xLabel: string; yLabel: string; yLog?: boolean }) {
   const W = 640;
   const H = 300;
   const pad = { l: 52, r: 12, t: 12, b: 40 };
   const all = series.flatMap((s) => s.x.map((xv, i) => ({ x: xv, y: s.y[i] }))).filter((p) => Number.isFinite(p.x) && Number.isFinite(p.y));
+  const tf = (v: number) => (yLog ? Math.log10(Math.max(v, 1e-6)) : v);
   const xMin = Math.min(...all.map((p) => p.x)), xMax = Math.max(...all.map((p) => p.x));
-  const yMin = Math.min(...all.map((p) => p.y)), yMax = Math.max(...all.map((p) => p.y));
+  const yMin = Math.min(...all.map((p) => tf(p.y))), yMax = Math.max(...all.map((p) => tf(p.y)));
   const px = (x: number) => pad.l + ((x - xMin) / (xMax - xMin || 1)) * (W - pad.l - pad.r);
-  const py = (y: number) => H - pad.b - ((y - yMin) / (yMax - yMin || 1)) * (H - pad.t - pad.b);
+  const py = (y: number) => H - pad.b - ((tf(y) - yMin) / (yMax - yMin || 1)) * (H - pad.t - pad.b);
   return (
     <div className="diag-chart">
       <svg viewBox={`0 0 ${W} ${H}`} className="diag-svg">
@@ -96,10 +97,11 @@ function XYChart({ series, xLabel, yLabel }: { series: { label: string; color: s
         {Array.from({ length: 5 }, (_, i) => {
           const yv = yMin + (i / 4) * (yMax - yMin);
           const y = H - pad.b - (i / 4) * (H - pad.t - pad.b);
+          const lbl = yLog ? Math.pow(10, yv).toPrecision(2) : yv.toFixed(2);
           return (
             <g key={i}>
               <line x1={pad.l} y1={y} x2={W - pad.r} y2={y} stroke="var(--border)" strokeWidth="0.6" />
-              <text className="diag-tick" x={pad.l - 6} y={y + 3} textAnchor="end">{yv.toFixed(2)}</text>
+              <text className="diag-tick" x={pad.l - 6} y={y + 3} textAnchor="end">{lbl}</text>
             </g>
           );
         })}

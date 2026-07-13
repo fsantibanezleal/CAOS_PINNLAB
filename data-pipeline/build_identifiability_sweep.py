@@ -50,7 +50,7 @@ def main():
         "line_comparisons": [{
             "title_en": "IDENTIFIABILITY: recovered-k error vs number of sensors (same training budget)",
             "title_es": "IDENTIFICABILIDAD: error de k recuperada vs numero de sensores (mismo presupuesto)",
-            "xLabel": "number of T sensors", "yLabel": "k L2 vs k*",
+            "xLabel": "number of T sensors", "yLabel": "k L2 vs k*", "yLog": True,
             "series": [
                 {"label": "recovered k (fast budget)", "color": "var(--accent)", "x": [float(v) for v in ns], "y": l2s},
                 {"label": "per-run points", "color": "var(--accent)", "scatter": True, "x": [float(v) for v in ns], "y": l2s},

@@ -77,6 +77,9 @@ is the *method*, not the training.
 - **navier** — the PINN velocity vs the Ghia (1982) Re=100 centerlines (u RMSE 0.053, v 0.029).
 - **soil-heat-real** — the reconstruction vs REAL measured USCRN temperatures at the held-out 10/20/50 cm depths,
   out-of-sample (RMSE 1.24 / 1.05 / 0.75 °C).
+- **heat2d-inverse identifiability sweep** — recovered-k error vs number of sensors at one fair budget:
+  356 % (n=0) → 17.3 % (n=10) → 16.3 % (n=25) → 13.6 % (n=50) → 12.6 % (n=100): the computed answer to "how much
+  information does a PINN need"; the cliff is between 0 and 10 sensors.
 
 ## Adding a comparison to a new case
 
