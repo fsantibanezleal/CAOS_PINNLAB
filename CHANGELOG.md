@@ -3,6 +3,27 @@
 All notable changes to **PINN-Lab**. Format: `X.XX.XXX` (display), see `pinnlab.__version__`. Keep `0.x` while on
 synthetic/benchmark data. Tag every release.
 
+## [0.21.002] (2026-07-10) visual-quality pass: real axes everywhere, the equation truly never cut (issue #40)
+
+Owner: "why are the graphs so ugly now?" - confirmed by live screenshots and fixed per the dataviz procedure
+(recessive grids, nice ticks, smart number formats, render-and-look):
+
+- **Shared plot helpers** (lib/plot.ts): nice 1/2/5 tick generation + smart formatting (plain decimals in the human
+  range, exponentials only outside it, k-suffixed iteration counts).
+- **The animated hero** now has real axes: 4-6 ticks per axis with plain-decimal labels, a recessive grid, bounded
+  width (780px), a calm title with a proper current-vs-initial legend, and no mono debug text. The carpet + temporal
+  graph fit with it.
+- **The equation strip** finally cannot clip: the equation owns a FULL-WIDTH row (verified: the whole heat1d
+  u* = e^(-alpha pi^2 t) sin(pi x) renders); method/engine/L2/parity + the expected band moved to the second row.
+- **Training L2 chart**: index-spaced checkpoints (0/250/.../12k evenly, no more 6-points-in-a-corner), percent
+  y-ticks on the log scale, integer iteration read-out, panels enlarged to ~400px.
+- **Compare**: uniform fixed 240px panels across the value AND error rows (no more mismatched sizes), captions
+  baseline-aligned; the animated-ladder chart got the same real axes.
+- **Side profiles**: numeric y-ticks + grid (they had none).
+- **Colorbar/read-outs**: smart formatting ("1" instead of "1.0e+0").
+- **Bug fix**: the App now reacts to URL param changes AFTER mount (external hash navigation / back-forward sync).
+- Full validation: 20 cases x 2 themes, 0 console errors; before/after screenshots in the issue.
+
 ## [0.21.001] (2026-07-10) improvement pass: shareable deep links, story-to-view, Benchmark ladder, ladder diagram, artifact tests, sandboxed test suite (issue #38)
 
 - **Shareable deep links**: #/?case=<id>&view=<view> - open a link and land exactly there; every navigation keeps

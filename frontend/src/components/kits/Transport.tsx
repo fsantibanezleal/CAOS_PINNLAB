@@ -7,11 +7,14 @@ export function Transport({
   lang,
   axisLabel,
   axisValue,
+  fmt,
 }: {
   anim: Animator;
   lang: "en" | "es";
   axisLabel: string;
   axisValue: number;
+  /** Value formatter for the read-out (default 3 decimals; pass e.g. an integer formatter for iterations). */
+  fmt?: (v: number) => string;
 }) {
   const es = lang === "es";
   return (
@@ -32,7 +35,7 @@ export function Transport({
           anim.setFrame(Number(e.target.value));
         }}
       />
-      <span className="t-readout mono">{axisLabel}={axisValue.toFixed(3)} · {anim.frame + 1}/{anim.nFrames}</span>
+      <span className="t-readout mono">{axisLabel}={(fmt ?? ((v: number) => v.toFixed(3)))(axisValue)} · {anim.frame + 1}/{anim.nFrames}</span>
       <label className="t-ctl">
         <span className="muted">{es ? "Vel" : "Speed"}</span>
         <select value={anim.speed} onChange={(e) => anim.setSpeed(Number(e.target.value))}>

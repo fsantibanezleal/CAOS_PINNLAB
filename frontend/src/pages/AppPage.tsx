@@ -90,6 +90,23 @@ export function AppPage() {
     }
   }, [index, group, caseId, groups]);
 
+  // REACT to URL param changes AFTER mount too (external hash navigation / back-forward): keep state in sync.
+  useEffect(() => {
+    if (!index || !caseId) return;
+    const pCase = searchParams.get("case");
+    const pView = searchParams.get("view") ?? undefined;
+    if (pCase && pCase !== caseId) {
+      const found = index.cases.find((c) => c.case_id === pCase);
+      if (found) {
+        setGroup(found.category);
+        setCaseId(found.case_id);
+        setView(pView);
+      }
+    } else if (pCase === caseId && pView !== view) {
+      setView(pView);
+    }
+  }, [searchParams]);
+
   if (err) return <div className="pl-app"><div className="pl-work"><aside className="pl-rail" /><section className="pl-stage"><div className="banner error">⚠ {err}</div></section><aside className="pl-rail" /></div></div>;
   if (!index || !caseId) return <div className="pl-app"><div className="pl-work"><aside className="pl-rail" /><section className="pl-stage"><div className="loading">{es ? "Cargando…" : "Loading…"}</div></section><aside className="pl-rail" /></div></div>;
 

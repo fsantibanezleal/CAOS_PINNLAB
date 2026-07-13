@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 
 import type { CaseManifest, TrainingData } from "../../lib/contract";
 import { loadTraining } from "../../lib/data";
+import { fmtCount, fmtTick } from "../../lib/plot";
 import { snapshotElement } from "../../lib/snapshot";
 import { HeatCanvas } from "./HeatCanvas";
 import { Transport } from "./Transport";
@@ -59,12 +60,16 @@ export function TrainingKit({ manifest, lang }: { manifest: CaseManifest; lang: 
   const allL2 = keys.flatMap((k) => d.lanes[k].l2).filter((v) => v > 0);
   const yMin = Math.log10(Math.max(1e-4, Math.min(...allL2)));
   const yMax = Math.log10(Math.max(...allL2, 1e-4));
-  const xMax = cps[cps.length - 1] || 1;
-  const px = (cp: number) => pad.l + (cp / xMax) * (W - pad.l - pad.r);
+  // INDEX-spaced x (checkpoints are 0/250/.../12k - raw-value spacing crushes the early ones into a corner)
+  const px = (i: number) => pad.l + (i / Math.max(1, cps.length - 1)) * (W - pad.l - pad.r);
   const py = (v: number) => {
     const t = (Math.log10(Math.max(v, 1e-4)) - yMin) / (yMax - yMin || 1);
     return H - pad.b - t * (H - pad.t - pad.b);
   };
+  // log-decade y ticks inside [yMin, yMax] (plus the ends)
+  const decades: number[] = [];
+  for (let e = Math.ceil(yMin); e <= Math.floor(yMax); e++) decades.push(Math.pow(10, e));
+  const yTickVals = Array.from(new Set([Math.pow(10, yMin), ...decades, Math.pow(10, yMax)]));
 
   return (
     <div className="train-kit">
@@ -73,7 +78,7 @@ export function TrainingKit({ manifest, lang }: { manifest: CaseManifest; lang: 
           ? "MÍRALO APRENDER: el campo de cada carril en checkpoints REALES de entrenamiento, lado a lado, misma escala de color. La patología de entrenamiento se ve como dinámica: el carril ingenuo no converge; el adaptado sí."
           : "WATCH IT LEARN: each lane's field at REAL training checkpoints, side by side, one colour scale. The training pathology becomes visible dynamics: the naive lane fails to converge; the adapted lane snaps on."}
       </p>
-      <Transport anim={anim} lang={lang} axisLabel={es ? "iteración" : "iteration"} axisValue={cps[f] ?? 0} />
+      <Transport anim={anim} lang={lang} axisLabel={es ? "iteración" : "iteration"} axisValue={cps[f] ?? 0} fmt={fmtCount} />
       <div className="train-panels">
         {keys.map((k) => (
           <figure key={k} className="train-panel">
@@ -92,23 +97,26 @@ export function TrainingKit({ manifest, lang }: { manifest: CaseManifest; lang: 
         <svg viewBox={`0 0 ${W} ${H}`} className="diag-svg">
           <line x1={pad.l} y1={pad.t} x2={pad.l} y2={H - pad.b} stroke="var(--border)" strokeWidth="1" />
           <line x1={pad.l} y1={H - pad.b} x2={W - pad.r} y2={H - pad.b} stroke="var(--border)" strokeWidth="1" />
-          {[yMin, (yMin + yMax) / 2, yMax].map((lv, i) => (
+          {yTickVals.map((v, i) => (
             <g key={i}>
-              <line x1={pad.l} y1={py(Math.pow(10, lv))} x2={W - pad.r} y2={py(Math.pow(10, lv))} stroke="var(--border)" strokeWidth="0.5" />
-              <text x={pad.l - 6} y={py(Math.pow(10, lv)) + 3} textAnchor="end" className="lp-tick">{Math.pow(10, lv).toExponential(0)}</text>
+              <line x1={pad.l} y1={py(v)} x2={W - pad.r} y2={py(v)} stroke="var(--border)" strokeWidth="0.6" opacity="0.7" />
+              <text x={pad.l - 6} y={py(v) + 3} textAnchor="end" className="lp-tick">{(v * 100) >= 1 ? `${fmtTick(v * 100)}%` : fmtTick(v)}</text>
             </g>
           ))}
-          {cps.map((cp) => (
-            <text key={cp} x={px(cp)} y={H - pad.b + 14} textAnchor="middle" className="lp-tick">{cp >= 1000 ? `${cp / 1000}k` : cp}</text>
+          {cps.map((cp, i) => (
+            <g key={cp}>
+              <line x1={px(i)} y1={pad.t} x2={px(i)} y2={H - pad.b} stroke="var(--border)" strokeWidth="0.4" opacity="0.4" />
+              <text x={px(i)} y={H - pad.b + 14} textAnchor="middle" className="lp-tick">{fmtCount(cp)}</text>
+            </g>
           ))}
           <text x={(pad.l + W - pad.r) / 2} y={H - 4} textAnchor="middle" className="lp-axislabel">{es ? "iteración de entrenamiento" : "training iteration"}</text>
           {keys.map((k) => (
             <g key={k}>
-              <polyline points={d.lanes[k].l2.map((v, i) => `${px(cps[i])},${py(v)}`).join(" ")} fill="none" stroke={laneColor(k)} strokeWidth="2" />
-              {d.lanes[k].l2.map((v, i) => <circle key={i} cx={px(cps[i])} cy={py(v)} r={i === f ? 4 : 2.2} fill={laneColor(k)} />)}
+              <polyline points={d.lanes[k].l2.map((v, i) => `${px(i)},${py(v)}`).join(" ")} fill="none" stroke={laneColor(k)} strokeWidth="2" />
+              {d.lanes[k].l2.map((v, i) => <circle key={i} cx={px(i)} cy={py(v)} r={i === f ? 4 : 2.2} fill={laneColor(k)} />)}
             </g>
           ))}
-          <line x1={px(cps[f])} y1={pad.t} x2={px(cps[f])} y2={H - pad.b} stroke="var(--accent-2)" strokeDasharray="3 2" strokeWidth="1" />
+          <line x1={px(f)} y1={pad.t} x2={px(f)} y2={H - pad.b} stroke="var(--accent-2)" strokeDasharray="3 2" strokeWidth="1" />
         </svg>
         <div className="diag-legend">
           {keys.map((k) => (

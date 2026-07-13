@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 
 import { viridis } from "../lib/colormap";
+import { fmtTick, fmtVal, niceTicks } from "../lib/plot";
 import { LineProfile } from "./kits/LineProfile";
 import { Transport } from "./kits/Transport";
 import { useAnimator } from "./kits/useAnimator";
@@ -169,10 +170,9 @@ export function FieldView({
       )}
       {hasTime && (
         <div className="fieldview-hero">
-          <div className="fv-hero-title muted">
-            {outputLabel}({g1.xLabel}) {es ? "en" : "at"} {timeLabel}={tVal.toFixed(3)}
-            <span className="profile-legend"> · <span className="pl-sel">{es ? "actual" : "current"}</span> vs <span className="pl-ref">{es ? "inicial" : "initial"} ({timeLabel}=0)</span></span>
-            <span className="muted"> · {es ? "pulsa ▶ para VER la evolución" : "press ▶ to WATCH it evolve"}</span>
+          <div className="fv-hero-title">
+            {outputLabel}({g1.xLabel}) {es ? "en" : "at"} {timeLabel} = <span className="mono">{fmtVal(tVal)}</span>
+            <span className="profile-legend"> &nbsp; <span className="pl-sel">— {es ? "actual" : "current"}</span> &nbsp; <span className="pl-ref">┄ {es ? "inicial" : "initial"} ({timeLabel}=0)</span></span>
           </div>
           <LineProfile values={g1.values} ghost={g1.init} spaceArr={heroArr} yRange={[lo, hi]} spaceLabel={dimTag(g1.xLabel)} outLabel={outputLabel} />
         </div>
@@ -197,7 +197,7 @@ export function FieldView({
         <div className="readout">
           <span className="mono">
             {axisX.label}={axVal(readIx, axisX, nx).toFixed(3)} &nbsp; {axisY.label}={axVal(readIy, axisY, ny).toFixed(3)}
-            &nbsp; → &nbsp; <strong>{outputLabel}={readVal != null ? readVal.toExponential(3): "-"}</strong>
+            &nbsp; → &nbsp; <strong>{outputLabel}={readVal != null ? fmtVal(readVal): "-"}</strong>
             <span className="muted"> &nbsp;({pinned ? (es ? "fijado · doble clic para soltar": "pinned · double-click to release") : (es ? "sigue el cursor · clic para fijar": "follows cursor · click to pin")})</span>
           </span>
         </div>
@@ -257,8 +257,8 @@ function Colorbar({ lo, hi, value, label }: { lo: number; hi: number; value: num
         {t !== null && <div className="colorbar-tick" style={{ top: `${(1 - t) * 100}%` }} />}
       </div>
       <div className="colorbar-labels">
-        <span className="mono">{hi.toExponential(1)}</span>
-        <span className="mono">{lo.toExponential(1)}</span>
+        <span className="mono">{fmtTick(hi)}</span>
+        <span className="mono">{fmtTick(lo)}</span>
       </div>
     </div>
   );
@@ -290,22 +290,27 @@ function Profile({
   es: boolean;
 }) {
   const W = 280;
-  const H = 96;
-  const pad = 6;
+  const H = 108;
+  const padL = 40;
+  const padR = 8;
+  const padT = 6;
+  const padB = 8;
   const hasRef = !!reference && reference.length > 1;
   // y-scale LOCKED to the whole field [yLo,yHi] so the animated profile does not jump frame-to-frame and the
   // initial-vs-selected comparison is on one honest scale.
   const lo = yLo;
   const hi = yHi;
   const span = hi - lo || 1;
+  const yTicks = niceTicks(lo, hi, 3);
   const toPts = (arr: number[]) =>
     arr
       .map((v, i) => {
-        const x = pad + (i / Math.max(1, n - 1)) * (W - 2 * pad);
-        const y = H - pad - ((v - lo) / span) * (H - 2 * pad);
+        const x = padL + (i / Math.max(1, n - 1)) * (W - padL - padR);
+        const y = H - padB - ((v - lo) / span) * (H - padT - padB);
         return `${x.toFixed(1)},${y.toFixed(1)}`;
       })
       .join(" ");
+  const sy = (v: number) => H - padB - ((v - lo) / span) * (H - padT - padB);
   const cxFrac = cursorIdx >= 0 ? cursorIdx / Math.max(1, n - 1): null;
   return (
     <div className="profile">
@@ -321,17 +326,23 @@ function Profile({
       </div>
       <div className="profile-plot">
         <span className="profile-ylabel">{yLabel}</span>
-        <svg viewBox={`0 0 ${W} ${H}`} className="profile-svg" preserveAspectRatio="none">
-          <line x1={pad} y1={H - pad} x2={W - pad} y2={H - pad} stroke="var(--border)" strokeWidth="0.8" />
-          <line x1={pad} y1={pad} x2={pad} y2={H - pad} stroke="var(--border)" strokeWidth="0.8" />
+        <svg viewBox={`0 0 ${W} ${H}`} className="profile-svg">
+          {yTicks.map((v) => (
+            <g key={v}>
+              <line x1={padL} y1={sy(v)} x2={W - padR} y2={sy(v)} stroke="var(--border)" strokeWidth="0.5" opacity="0.7" />
+              <text x={padL - 4} y={sy(v) + 3} textAnchor="end" className="lp-tick">{fmtTick(v)}</text>
+            </g>
+          ))}
+          <line x1={padL} y1={H - padB} x2={W - padR} y2={H - padB} stroke="var(--border)" strokeWidth="0.8" />
+          <line x1={padL} y1={padT} x2={padL} y2={H - padB} stroke="var(--border)" strokeWidth="0.8" />
           {hasRef && <polyline points={toPts(reference!)} fill="none" stroke="var(--muted)" strokeWidth="1.2" strokeDasharray="4 3" />}
           {values.length > 1 && <polyline points={toPts(values)} fill="none" stroke="var(--accent)" strokeWidth="1.6" />}
           {cxFrac !== null && (
             <line
-              x1={pad + cxFrac * (W - 2 * pad)}
-              y1={pad}
-              x2={pad + cxFrac * (W - 2 * pad)}
-              y2={H - pad}
+              x1={padL + cxFrac * (W - padL - padR)}
+              y1={padT}
+              x2={padL + cxFrac * (W - padL - padR)}
+              y2={H - padB}
               stroke="var(--accent-2)"
               strokeWidth="1"
               strokeDasharray="3 2"

@@ -172,11 +172,14 @@ ol li, ul li { margin: 4px 0; }
 }
 .pl-main { display: flex; flex-direction: column; gap: 12px; min-width: 0; min-height: 0; }
 /* full-width context strip: the governing equation is never cut (it lives in a wide row, not a 320px rail) */
-.pl-context { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 22px; background: var(--panel); border: 1px solid var(--border); border-radius: 12px; padding: 10px 16px; box-shadow: var(--shadow); }
-.pl-ctx-eq { flex: 1 1 340px; min-width: 0; overflow-x: auto; }
+.pl-context { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 22px; background: var(--panel); border: 1px solid var(--border); border-radius: 12px; padding: 10px 16px; box-shadow: var(--shadow); }
+/* the equation owns a FULL-WIDTH row so it is never clipped; a long one scrolls with a visible thin bar */
+.pl-ctx-eq { flex: 1 1 100%; min-width: 0; overflow-x: auto; scrollbar-width: thin; }
+.pl-ctx-eq .eq { padding: 8px 12px; }
 .pl-ctx-meta { display: flex; flex-wrap: wrap; gap: 6px 16px; font-size: 12.5px; }
 .pl-ctx-metric b { margin-right: 4px; }
-.pl-ctx-band { flex-basis: 100%; margin: 0; font-size: 12px; line-height: 1.45; }
+.pl-ctx-band { flex: 1 1 320px; margin: 0; font-size: 12px; line-height: 1.45; text-align: right; }
+@media (max-width: 1100px) { .pl-ctx-band { text-align: left; } }
 .pl-rail { background: var(--panel); border: 1px solid var(--border); border-radius: 12px; padding: 14px; overflow-y: auto; box-shadow: var(--shadow); }
 .pl-stage { background: var(--panel); border: 1px solid var(--border); border-radius: 12px; padding: 16px; overflow: auto; min-width: 0; position: relative; box-shadow: var(--shadow); }
 .pl-rail h4 { font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted); margin: 12px 0 7px; font-weight: 700; }
@@ -216,8 +219,8 @@ ol li, ul li { margin: 4px 0; }
 .cmp-num.cmp-good { color: var(--good); border-color: color-mix(in srgb, var(--good) 45%, transparent); }
 .cmp-panels { display: flex; gap: 12px; flex-wrap: wrap; align-items: flex-start; }
 .cmp-errrow { margin-top: 2px; }
-.cmp-panel { margin: 0; display: flex; flex-direction: column; gap: 4px; flex: 0 1 210px; }
-.cmp-cap { font-size: 11.5px; text-align: center; font-weight: 600; }
+.cmp-panel { margin: 0; display: flex; flex-direction: column; gap: 4px; flex: 0 0 240px; width: 240px; }
+.cmp-cap { font-size: 11.5px; text-align: center; font-weight: 600; min-height: 2.6em; display: flex; align-items: flex-end; justify-content: center; gap: 4px; }
 .cmp-cap.cmp-ref { color: var(--muted); }
 .cmp-cap.cmp-exact { color: var(--accent); }
 .cmp-cap.cmp-bad { color: var(--bad); }
@@ -235,7 +238,7 @@ ol li, ul li { margin: 4px 0; }
 /* ── TrainingKit (issue #36): watch it learn ────────────────────────────────────────────── */
 .train-kit { display: flex; flex-direction: column; gap: 12px; }
 .train-panels { display: flex; gap: 14px; flex-wrap: wrap; align-items: flex-start; }
-.train-panel { margin: 0; display: flex; flex-direction: column; gap: 4px; flex: 0 1 300px; }
+.train-panel { margin: 0; display: flex; flex-direction: column; gap: 4px; flex: 0 1 400px; min-width: 300px; }
 .train-cap { font-size: 12.5px; font-weight: 600; }
 .train-map { border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
 
@@ -319,12 +322,13 @@ ol li, ul li { margin: 4px 0; }
 .profile-plot { display: flex; align-items: stretch; gap: 4px; }
 .profile-ylabel { writing-mode: vertical-rl; transform: rotate(180deg); font-size: 10.5px; color: var(--muted); align-self: center; white-space: nowrap; }
 .profile-xlabel { text-align: center; font-size: 10.5px; color: var(--muted); margin-top: 2px; }
-.profile-svg { width: 100%; height: 96px; display: block; }
+.profile-svg { width: 100%; height: auto; display: block; }
 .fieldview-transport { flex: 1 1 100%; order: -1; }
 /* the ANIMATED EVOLUTION HERO (issue #36): the big moving profile is the star; the space-time map is the carpet */
 .fieldview-hero { flex: 1 1 100%; }
-.fieldview-hero .lineprofile-svg { max-width: 880px; }
-.fv-hero-title { font-size: 12.5px; margin-bottom: 4px; }
+.fieldview-hero .lineprofile { max-width: 780px; }
+.fieldview-hero .lineprofile-svg { max-width: 780px; }
+.fv-hero-title { font-size: 12.5px; margin: 2px 0 6px; color: var(--text); }
 .fieldview-hint { font-size: 11.5px; margin: 2px 0 0; line-height: 1.45; }
 @media (max-width: 880px) { .fieldview { flex-direction: column; } .fieldview-side { width: 100%; } .field-wrap { width: 100%; } }
 
@@ -369,7 +373,7 @@ ol li, ul li { margin: 4px 0; }
 .lineprofile-svg { width: 100%; height: auto; background: var(--panel); border: 1px solid var(--border); border-radius: 8px; }
 .lp-tick { font-size: 9px; fill: var(--muted); font-family: ui-monospace, monospace; }
 .lp-axislabel { font-size: 11px; fill: var(--muted); }
-.lp-readout { font-size: 12.5px; margin-top: 6px; min-height: 18px; }
+.lp-readout { font-size: 12px; margin-top: 4px; min-height: 17px; }
 
 .heatcanvas { position: relative; width: 100%; }
 .heatcanvas .field-canvas { width: 100%; image-rendering: pixelated; border: 1px solid var(--border); border-radius: 8px; display: block; }
@@ -472,7 +476,7 @@ ol li, ul li { margin: 4px 0; }
 .highlight-card.star:hover { border-color: #2fae6b; }
 
 /* dimension caption on the heatmap — states what the axes ARE (space-time evolution vs steady field) */
-.dim-caption { font-size: 12.5px; line-height: 1.5; color: var(--text); background: color-mix(in srgb, var(--accent) 8%, transparent);
+.dim-caption { font-size: 12px; line-height: 1.45; color: var(--text); background: color-mix(in srgb, var(--accent) 8%, transparent);
   border-left: 3px solid var(--accent); padding: 8px 11px; border-radius: 7px; margin: 0 0 12px; max-width: 760px; }
 
 /* initial-vs-selected overlay legend in the cross-section profile */
