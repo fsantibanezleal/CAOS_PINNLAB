@@ -22,11 +22,17 @@ export function CaseExperiment({
   selector,
   description,
   lang,
+  requestedView,
+  onViewChange,
 }: {
   manifestId: string;
   selector: ReactNode;
   description: ReactNode;
   lang: "en" | "es";
+  /** A view to land on (deep link / story chapter), applied when it exists for this case (issue #38). */
+  requestedView?: string;
+  /** Notifies the host when the user switches views, so the URL can follow (shareable deep links). */
+  onViewChange?: (view: string) => void;
 }) {
   const es = lang === "es";
   const [manifest, setManifest] = useState<CaseManifest | null>(null);
@@ -36,9 +42,21 @@ export function CaseExperiment({
   const [tab, setTab] = useState<TabId>("field");
 
   useEffect(() => {
-    // When a case ships the method-ladder comparison (issue #25), land on it - it is the richest view.
-    if (manifest) setTab(manifest.comparison ? "compare" : "field");
-  }, [manifest?.case_id]);
+    // Land on the requested view when it exists for this case (deep link / story chapter); otherwise on the
+    // method-ladder comparison when the case ships one (the richest view), else the Field view.
+    if (!manifest) return;
+    const avail = new Set<TabId>(["field", "live", "charts", "context"]);
+    if (manifest.comparison) avail.add("compare");
+    if (manifest.training) avail.add("training");
+    if (manifest.diagnostics) avail.add("diagnostics");
+    const req = requestedView as TabId | undefined;
+    setTab(req && avail.has(req) ? req : manifest.comparison ? "compare" : "field");
+  }, [manifest?.case_id, requestedView]);
+
+  function switchTab(id: TabId) {
+    setTab(id);
+    onViewChange?.(id);
+  }
 
   useEffect(() => {
     let alive = true;
@@ -143,7 +161,7 @@ export function CaseExperiment({
         <h4>{es ? "Vista" : "View"}</h4>
         <div className="pl-viewbtns">
           {VIEWS.map((v) => (
-            <button key={v.id} type="button" className={"pl-viewbtn" + (v.id === tab ? " on" : "")} onClick={() => setTab(v.id)} aria-pressed={v.id === tab}>
+            <button key={v.id} type="button" className={"pl-viewbtn" + (v.id === tab ? " on" : "")} onClick={() => switchTab(v.id)} aria-pressed={v.id === tab}>
               {v.label}
               <small>{v.sub}</small>
             </button>

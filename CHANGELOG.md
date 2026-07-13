@@ -3,6 +3,27 @@
 All notable changes to **PINN-Lab**. Format: `X.XX.XXX` (display), see `pinnlab.__version__`. Keep `0.x` while on
 synthetic/benchmark data. Tag every release.
 
+## [0.21.001] (2026-07-10) improvement pass: shareable deep links, story-to-view, Benchmark ladder, ladder diagram, artifact tests, sandboxed test suite (issue #38)
+
+- **Shareable deep links**: #/?case=<id>&view=<view> - open a link and land exactly there; every navigation keeps
+  the URL in sync. One mechanism also powers the story.
+- **Story chapters land on the DEMONSTRATING view** (helmholtz -> Training, allencahn -> Training, soil-heat-real ->
+  Diagnostics, ...) with a one-line chapter blurb under the selector.
+- **Benchmark page: the ladder columns** - naive-vs-standard and fix-vs-standard L2 per case (from the baked
+  comparisons; manifests now carry the summary so no heavy trace fetches), each case linking to its Compare view.
+  A dash means the lane does not exist (a contrast is never fabricated).
+- **Architecture modal: "Method ladder & dynamics" tab** with a new hand-authored theme-aware SVG (pipeline lanes ->
+  baked artifacts -> web views + the real results strip), EN/ES.
+- **allencahn Training extended to 12k checkpoints**: the naive soft lane oscillates at 77-114% and never converges;
+  the hard-constraint lane descends monotonically 63% -> 34% (short-budget; the fully-trained 0.4% is in Compare).
+- **Artifact contract tests** (25 tests): comparison/training/frames/diagnostics files exist, keys + shapes + L2
+  lengths consistent, manifest summaries match traces, coverage floors enforced.
+- **CRITICAL test-suite fix**: the pipeline smoke tests wrote the CANONICAL artifacts (a quick run clobbered
+  poisson2d/heat1d bakes and silently stripped comparison blocks from manifests - caught by the standing rule,
+  restored from git). The whole suite is now SANDBOXED via an autouse conftest fixture redirecting
+  DERIVED/MANIFESTS/MODELS to tmp dirs. 34 tests pass with zero canonical writes.
+- Full validation: 20 cases x 2 themes, 0 console errors.
+
 ## [0.21.000] (2026-07-10) DYNAMICS: the app now SHOWS motion + the when-PINNs-win/lose story (issue #36)
 
 Owner review: "why are no dynamics observed?" Root cause: we computed the right content but presented its dynamics

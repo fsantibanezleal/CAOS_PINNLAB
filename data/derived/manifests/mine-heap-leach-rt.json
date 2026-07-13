@@ -204,7 +204,10 @@
    }
   ],
   "note_en": "The PINN (advection-diffusion-reaction) field vs the closed-form standard solution, and their pointwise error. Relative-L2 = 0.0%.",
-  "note_es": "El campo de la PINN (advection-diffusion-reaction) frente a la solución estándar de forma cerrada, y su error puntual. L2 relativa = 0.0%."
+  "note_es": "El campo de la PINN (advection-diffusion-reaction) frente a la solución estándar de forma cerrada, y su error puntual. L2 relativa = 0.0%.",
+  "summary": {
+   "adapted_vs_std": 8e-05
+  }
  },
  "evolution": {
   "path": "mine-heap-leach-rt/frames.json"

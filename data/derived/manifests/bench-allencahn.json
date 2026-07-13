@@ -91,7 +91,11 @@
   ],
   "onnx_naive": "bench-allencahn-naive.onnx",
   "note_en": "The naive SOFT PINN collapses to a metastable state and smears the sharp +/-1 transition layers (L2 = 95% vs the spectral standard); the hard-constraint + RAR fix tracks them (L2 = 0.4%).",
-  "note_es": "La PINN SUAVE ingenua colapsa a un estado metaestable y difumina las capas de transición +/-1 (L2 = 95% vs el estándar espectral); la corrección de restricciones duras + RAR las sigue (L2 = 0.4%)."
+  "note_es": "La PINN SUAVE ingenua colapsa a un estado metaestable y difumina las capas de transición +/-1 (L2 = 95% vs el estándar espectral); la corrección de restricciones duras + RAR las sigue (L2 = 0.4%).",
+  "summary": {
+   "naive_vs_std": 0.95373,
+   "adapted_vs_std": 0.00434
+  }
  },
  "training": {
   "path": "bench-allencahn/training.json"
