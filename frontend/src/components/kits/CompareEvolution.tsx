@@ -2,6 +2,7 @@ import { useMemo } from "react";
 
 import type { CompareLane, CompareTrace } from "../../lib/contract";
 import { fmtTick, niceTicks } from "../../lib/plot";
+import { snapshotElement } from "../../lib/snapshot";
 import { Transport } from "./Transport";
 import { useAnimator } from "./useAnimator";
 
@@ -48,9 +49,11 @@ export function CompareEvolution({ trace, lanes, vRange, lang }: { trace: Compar
     <div className="cmpev">
       <h4 className="cmpev-title">
         {es ? "VER la escalera evolucionar: cada carril en el mismo instante" : "WATCH the ladder evolve: every lane at the same instant"}
+        <button type="button" className="snap-btn" title="Save PNG"
+          onClick={(e) => snapshotElement((e.currentTarget as HTMLElement).closest(".cmpev") as HTMLElement, `${trace.case_id}-ladder-evolution`)}>⤓</button>
       </h4>
       <Transport anim={anim} lang={lang} axisLabel={trace.dims[tDim]} axisValue={tArr[it] ?? 0} />
-      <svg viewBox={`0 0 ${W} ${H}`} className="cmpev-svg">
+      <svg viewBox={`0 0 ${W} ${H}`} className="cmpev-svg" aria-label="Method-ladder evolution chart" role="img">
         {niceTicks(lo, hi, 5).map((v) => (
           <g key={"y" + v}>
             <line x1={pad.l} y1={sy(v)} x2={W - pad.r} y2={sy(v)} stroke="var(--border)" strokeWidth="0.6" opacity="0.7" />

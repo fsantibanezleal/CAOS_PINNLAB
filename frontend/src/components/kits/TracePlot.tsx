@@ -1,3 +1,5 @@
+import { fmtTick, niceTicks } from "../../lib/plot";
+
 export interface Series {
   points: [number, number][];
   color: string;
@@ -67,16 +69,30 @@ export function TracePlot({
   return (
     <svg viewBox={`0 0 ${W} ${H}`} className="trace-svg" preserveAspectRatio="xMidYMid meet">
       {title && <text x={W / 2} y={13} textAnchor="middle" className="tp-title">{title}</text>}
+      {/* recessive grid + nice ticks (log-y keeps decade labels via the range ends) */}
+      {!yLog &&
+        niceTicks(yRange[0], yRange[1], 4).map((v) => (
+          <g key={"y" + v}>
+            <line x1={padL} y1={sy(v)} x2={W - padR} y2={sy(v)} stroke="var(--border)" strokeWidth="0.5" opacity="0.65" />
+            <text x={padL - 5} y={sy(v) + 3} textAnchor="end" className="tp-tick">{fmtTick(v)}</text>
+          </g>
+        ))}
+      {yLog && (
+        <>
+          <text x={padL - 5} y={sy(yRange[1]) + 3} textAnchor="end" className="tp-tick">{fmt(yRange[1], true)}</text>
+          <text x={padL - 5} y={sy(yRange[0]) + 3} textAnchor="end" className="tp-tick">{fmt(yRange[0], true)}</text>
+        </>
+      )}
+      {niceTicks(x0, x1, 5).map((v) => (
+        <g key={"x" + v}>
+          <line x1={sx(v)} y1={padT} x2={sx(v)} y2={H - padB} stroke="var(--border)" strokeWidth="0.4" opacity="0.4" />
+          <text x={sx(v)} y={H - padB + 14} textAnchor="middle" className="tp-tick">{fmtTick(v)}</text>
+        </g>
+      ))}
       {/* frame */}
       <line x1={padL} y1={padT} x2={padL} y2={H - padB} stroke="var(--border)" strokeWidth="1" />
       <line x1={padL} y1={H - padB} x2={W - padR} y2={H - padB} stroke="var(--border)" strokeWidth="1" />
-      {/* y labels */}
-      <text x={padL - 5} y={sy(yRange[1]) + 3} textAnchor="end" className="tp-tick">{fmt(yRange[1], yLog)}</text>
-      <text x={padL - 5} y={sy(yRange[0]) + 3} textAnchor="end" className="tp-tick">{fmt(yRange[0], yLog)}</text>
       <text x={6} y={(padT + H - padB) / 2} textAnchor="middle" className="tp-axis" transform={`rotate(-90 8 ${(padT + H - padB) / 2})`}>{yLabel}</text>
-      {/* x labels */}
-      <text x={padL} y={H - padB + 14} textAnchor="start" className="tp-tick">{x0.toFixed(2)}</text>
-      <text x={W - padR} y={H - padB + 14} textAnchor="end" className="tp-tick">{x1.toFixed(2)}</text>
       <text x={(padL + W - padR) / 2} y={H - 3} textAnchor="middle" className="tp-axis">{xLabel}</text>
       {/* markers (vertical) */}
       {markers.map((m, i) => (

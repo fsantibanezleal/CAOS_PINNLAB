@@ -93,7 +93,9 @@ export function TrainingKit({ manifest, lang }: { manifest: CaseManifest; lang: 
         ))}
       </div>
       <div className="diag-block">
-        <h4>{es ? "L2 relativa vs iteración (escala log)" : "Relative L2 vs iteration (log scale)"}</h4>
+        <h4>{es ? "L2 relativa vs iteración (escala log)" : "Relative L2 vs iteration (log scale)"}
+          <button type="button" className="snap-btn" title="Save PNG"
+            onClick={(e) => snapshotElement((e.currentTarget as HTMLElement).closest(".diag-block") as HTMLElement, `${manifest.case_id}-training-l2`)}>⤓</button></h4>
         <svg viewBox={`0 0 ${W} ${H}`} className="diag-svg">
           <line x1={pad.l} y1={pad.t} x2={pad.l} y2={H - pad.b} stroke="var(--border)" strokeWidth="1" />
           <line x1={pad.l} y1={H - pad.b} x2={W - pad.r} y2={H - pad.b} stroke="var(--border)" strokeWidth="1" />

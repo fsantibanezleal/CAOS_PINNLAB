@@ -1,5 +1,7 @@
 import { useMemo, useState } from "react";
 
+import { fmtTick, niceTicks } from "../../lib/plot";
+
 import { TracePlot } from "./TracePlot";
 import type { KitProps } from "./types";
 
@@ -70,13 +72,24 @@ export function UQBandKit({ manifest, trace, lang }: KitProps) {
         <input className="scrub" type="range" min={0} max={Math.max(0, nt - 1)} step={1} value={itc} onChange={(e) => setIt(Number(e.target.value))} />
       </label>
 
-      <svg viewBox={`0 0 ${W} ${H}`} className="uq-svg">
+      <svg viewBox={`0 0 ${W} ${H}`} className="uq-svg" aria-label="Uncertainty band" role="img">
+        {niceTicks(lo, hi, 5).map((v) => (
+          <g key={"y" + v}>
+            <line x1={padL} y1={sY(v)} x2={W - padR} y2={sY(v)} stroke="var(--border)" strokeWidth="0.5" opacity="0.65" />
+            <text x={padL - 6} y={sY(v) + 3} textAnchor="end" className="lp-tick">{fmtTick(v)}</text>
+          </g>
+        ))}
+        {niceTicks(x0, x1, 6).map((v) => {
+          const xpx = padL + ((v - x0) / ((x1 - x0) || 1)) * (W - padL - padR);
+          return (
+            <g key={"x" + v}>
+              <line x1={xpx} y1={padT} x2={xpx} y2={H - padB} stroke="var(--border)" strokeWidth="0.4" opacity="0.4" />
+              <text x={xpx} y={H - padB + 16} textAnchor="middle" className="lp-tick">{fmtTick(v)}</text>
+            </g>
+          );
+        })}
         <line x1={padL} y1={padT} x2={padL} y2={H - padB} stroke="var(--border)" />
         <line x1={padL} y1={H - padB} x2={W - padR} y2={H - padB} stroke="var(--border)" />
-        <text x={padL - 6} y={sY(hi) + 4} textAnchor="end" className="lp-tick">{hi.toExponential(1)}</text>
-        <text x={padL - 6} y={sY(lo) + 4} textAnchor="end" className="lp-tick">{lo.toExponential(1)}</text>
-        <text x={padL} y={H - padB + 16} textAnchor="start" className="lp-tick">{x0.toFixed(2)}</text>
-        <text x={W - padR} y={H - padB + 16} textAnchor="end" className="lp-tick">{x1.toFixed(2)}</text>
         <text x={(padL + W - padR) / 2} y={H - 4} textAnchor="middle" className="lp-axislabel">{spaceAxis}</text>
         <path d={bandPath(2)} fill="var(--accent)" opacity={0.16} />
         <path d={bandPath(1)} fill="var(--accent)" opacity={0.28} />

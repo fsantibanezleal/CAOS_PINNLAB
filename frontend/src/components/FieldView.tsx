@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 
 import { viridis } from "../lib/colormap";
 import { fmtTick, fmtVal, niceTicks } from "../lib/plot";
+import { snapshotElement } from "../lib/snapshot";
 import { LineProfile } from "./kits/LineProfile";
 import { Transport } from "./kits/Transport";
 import { useAnimator } from "./kits/useAnimator";
@@ -173,6 +174,8 @@ export function FieldView({
           <div className="fv-hero-title">
             {outputLabel}({g1.xLabel}) {es ? "en" : "at"} {timeLabel} = <span className="mono">{fmtVal(tVal)}</span>
             <span className="profile-legend"> &nbsp; <span className="pl-sel">— {es ? "actual" : "current"}</span> &nbsp; <span className="pl-ref">┄ {es ? "inicial" : "initial"} ({timeLabel}=0)</span></span>
+            <button type="button" className="snap-btn" title="Save PNG"
+              onClick={(e) => snapshotElement((e.currentTarget as HTMLElement).closest(".fieldview-hero") as HTMLElement, `${outputLabel}-evolution`)}>⤓</button>
           </div>
           <LineProfile values={g1.values} ghost={g1.init} spaceArr={heroArr} yRange={[lo, hi]} spaceLabel={dimTag(g1.xLabel)} outLabel={outputLabel} />
         </div>
@@ -227,6 +230,8 @@ export function FieldView({
             cursorIdx={g2.cursor}
             yLo={lo}
             yHi={hi}
+            xLo={timeIsY ? axisY.lo : axisX.lo}
+            xHi={timeIsY ? axisY.hi : axisX.hi}
             es={es}
           />
         </div>
@@ -275,6 +280,8 @@ function Profile({
   reference,
   yLo,
   yHi,
+  xLo,
+  xHi,
   es,
 }: {
   title: string;
@@ -287,6 +294,8 @@ function Profile({
   reference?: number[];
   yLo: number;
   yHi: number;
+  xLo?: number;
+  xHi?: number;
   es: boolean;
 }) {
   const W = 280;
@@ -335,6 +344,12 @@ function Profile({
           ))}
           <line x1={padL} y1={H - padB} x2={W - padR} y2={H - padB} stroke="var(--border)" strokeWidth="0.8" />
           <line x1={padL} y1={padT} x2={padL} y2={H - padB} stroke="var(--border)" strokeWidth="0.8" />
+          {xLo !== undefined && xHi !== undefined && (
+            <>
+              <text x={padL + 2} y={H - 1} textAnchor="start" className="lp-tick">{fmtTick(xLo)}</text>
+              <text x={W - padR} y={H - 1} textAnchor="end" className="lp-tick">{fmtTick(xHi)}</text>
+            </>
+          )}
           {hasRef && <polyline points={toPts(reference!)} fill="none" stroke="var(--muted)" strokeWidth="1.2" strokeDasharray="4 3" />}
           {values.length > 1 && <polyline points={toPts(values)} fill="none" stroke="var(--accent)" strokeWidth="1.6" />}
           {cxFrac !== null && (

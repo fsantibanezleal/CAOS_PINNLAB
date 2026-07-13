@@ -3,6 +3,19 @@
 All notable changes to **PINN-Lab**. Format: `X.XX.XXX` (display), see `pinnlab.__version__`. Keep `0.x` while on
 synthetic/benchmark data. Tag every release.
 
+## [0.21.003] (2026-07-10) polish round: Compare colorbar, pendulum/UQ axes, story labels, snapshot consistency (issue #42)
+
+- **Compare view: a shared labeled colorbar** for the value lanes - the viridis scale finally has a numeric anchor
+  (max / mid / min), and it uses the previously-empty right space.
+- **Pendulum (TracePlot) + UQ band charts** brought to the plot standard: nice-tick gridded axes with smart number
+  formats on the phase portrait, butterfly, angles and the sigma band (they still had bare min/max exponentials).
+- **Story labels shortened** so the 8 chapters no longer truncate in the rail select; the chapter blurb carries the detail.
+- **Snapshot-to-PNG consistency**: the animated hero, the animated ladder and the Training L2 chart now have the
+  same export button as the panels.
+- **Side profiles**: numeric x end-ticks (y ticks landed in #40).
+- **aria-labels** on the chart SVGs; the hero tightened to 720px (more fits above the fold).
+- Full validation: 20 cases x 2 themes, 0 console errors.
+
 ## [0.21.002] (2026-07-10) visual-quality pass: real axes everywhere, the equation truly never cut (issue #40)
 
 Owner: "why are the graphs so ugly now?" - confirmed by live screenshots and fixed per the dataviz procedure

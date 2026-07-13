@@ -24,21 +24,21 @@ const CATEGORY_ORDER = [
  *  lacks: forward-easy (classical wins) -> forward-hard (needs the fix) -> inverse/data (PINNs win) -> real data ->
  *  operators -> UQ -> the chaotic limit. */
 const STORY: { id: string; view: string; star?: boolean; en: string; es: string; subEn: string; subEs: string }[] = [
-  { id: "bench-poisson2d", view: "compare", en: "1 · Easy forward: the classical solver already wins", es: "1 · Directo fácil: el solucionador clásico ya gana",
+  { id: "bench-poisson2d", view: "compare", en: "1 · Easy forward: classical wins", es: "1 · Directo fácil: gana el clásico",
     subEn: "The PINN matches the closed form (<0.1%), but here a classical solver is exact and faster: the PINN is NOT the tool.", subEs: "La PINN iguala la forma cerrada (<0.1%), pero aquí un solucionador clásico es exacto y más rápido: la PINN NO es la herramienta." },
-  { id: "ind-helmholtz", view: "training", en: "2 · Hard forward: naive fails (spectral bias), Fourier fixes", es: "2 · Directo difícil: la ingenua falla (sesgo espectral), Fourier corrige",
+  { id: "ind-helmholtz", view: "training", en: "2 · Hard forward: naive fails, Fourier fixes", es: "2 · Directo difícil: ingenua falla, Fourier corrige",
     subEn: "Watch it (not) learn: the naive lane is a flat blank at 100% while the Fourier lane already shows the pattern by iteration 500.", subEs: "Míralo (no) aprender: el carril ingenuo es un blanco plano al 100% mientras el de Fourier ya muestra el patrón en la iteración 500." },
-  { id: "bench-allencahn", view: "training", en: "3 · Stiff dynamics: soft PINN collapses, constraints + RAR track", es: "3 · Dinámica rígida: la PINN suave colapsa, restricciones + RAR siguen",
+  { id: "bench-allencahn", view: "training", en: "3 · Stiff: soft collapses, constraints track", es: "3 · Rígida: la suave colapsa, restricciones siguen",
     subEn: "The metastable collapse as visible training dynamics; the fully-trained fix reaches 0.4% (Compare).", subEs: "El colapso metaestable como dinámica de entrenamiento visible; la corrección totalmente entrenada llega a 0.4% (Comparar)." },
-  { id: "ind-heat2d-inverse", view: "compare", en: "4 · WHERE PINNS WIN: inverse + sparse data", es: "4 · DONDE GANAN LAS PINN: inverso + datos dispersos",
+  { id: "ind-heat2d-inverse", view: "compare", en: "4 · WHERE PINNS WIN: inverse + data", es: "4 · DONDE GANAN: inverso + datos",
     subEn: "Pure physics with no data: 356% (unrecoverable). Physics + 100 sparse sensors: 4%. The data makes it solvable.", subEs: "Física pura sin datos: 356% (irrecuperable). Física + 100 sensores dispersos: 4%. Los datos lo hacen soluble." },
-  { id: "env-soil-heat-real", view: "diagnostics", star: true, en: "5 · Real measured data, validated out-of-sample", es: "5 · Datos reales medidos, validado fuera de muestra",
+  { id: "env-soil-heat-real", view: "diagnostics", star: true, en: "5 · Real data, out-of-sample", es: "5 · Datos reales, fuera de muestra",
     subEn: "NOAA soil temperatures: held-out depths never seen by the optimizer, reconstructed to ~1 degC RMSE.", subEs: "Temperaturas de suelo NOAA: profundidades nunca vistas por el optimizador, reconstruidas a ~1 gradoC RMSE." },
-  { id: "bench-darcy-operator", view: "compare", en: "6 · Operators: amortize a whole PDE family", es: "6 · Operadores: amortizar una familia de EDPs",
+  { id: "bench-darcy-operator", view: "compare", en: "6 · Operators: one net, a PDE family", es: "6 · Operadores: una red, una familia",
     subEn: "One FNO maps a NEW permeability field to its pressure in a single pass (2.5% vs finite differences).", subEs: "Un FNO mapea un campo de permeabilidad NUEVO a su presión en un solo paso (2.5% vs diferencias finitas)." },
-  { id: "poll-source-uq-bpinn", view: "field", en: "7 · Uncertainty: error bars where data is sparse", es: "7 · Incertidumbre: barras de error donde faltan datos",
+  { id: "poll-source-uq-bpinn", view: "field", en: "7 · Uncertainty: honest error bars", es: "7 · Incertidumbre: barras honestas",
     subEn: "A deep ensemble gives mean +- sigma; sigma grows exactly where the sensors are not.", subEs: "Un ensamble profundo da media +- sigma; sigma crece exactamente donde no hay sensores." },
-  { id: "dyn-double-pendulum", view: "field", en: "8 · The honest limit: chaos defeats any surrogate", es: "8 · El límite honesto: el caos vence a cualquier sustituto",
+  { id: "dyn-double-pendulum", view: "field", en: "8 · The limit: chaos wins", es: "8 · El límite: gana el caos",
     subEn: "The PINN tracks the integrator ~2 s, then chaos peels it away: no surrogate beats the Lyapunov exponent.", subEs: "La PINN sigue al integrador ~2 s y el caos la despega: ningún sustituto vence al exponente de Lyapunov." },
 ];
 const isFeatured = (id: string) => STORY.some((f) => f.id === id && f.star);

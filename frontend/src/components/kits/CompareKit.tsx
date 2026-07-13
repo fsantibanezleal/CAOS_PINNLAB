@@ -1,7 +1,8 @@
 import { useEffect, useMemo, useState } from "react";
 
 import type { CaseManifest, CompareTrace } from "../../lib/contract";
-import { fieldRange } from "../../lib/colormap";
+import { fieldRange, viridis } from "../../lib/colormap";
+import { fmtTick } from "../../lib/plot";
 import { loadComparison } from "../../lib/data";
 import { snapshotElement } from "../../lib/snapshot";
 import { CompareEvolution } from "./CompareEvolution";
@@ -92,6 +93,19 @@ export function CompareKit({ manifest, lang }: { manifest: CaseManifest; lang: "
             <div className="cmp-val mono">{hov ? fmtv(at(l.key)) : " "}</div>
           </figure>
         ))}
+        <div className="cmp-cbar" aria-hidden>
+          <div className="cmp-cbar-scale">
+            {Array.from({ length: 24 }, (_, i) => {
+              const [r, g, b] = viridis(1 - i / 23);
+              return <div key={i} style={{ background: `rgb(${r},${g},${b})` }} />;
+            })}
+          </div>
+          <div className="cmp-cbar-labels mono">
+            <span>{fmtTick(vRange[1])}</span>
+            <span>{fmtTick((vRange[0] + vRange[1]) / 2)}</span>
+            <span>{fmtTick(vRange[0])}</span>
+          </div>
+        </div>
       </div>
 
       {/* the error maps (|lane - standard|), own scales */}
