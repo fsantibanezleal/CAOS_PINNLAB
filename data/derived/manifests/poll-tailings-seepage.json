@@ -197,6 +197,9 @@
    }
   ],
   "note_en": "The PINN (richards-seepage) field vs the closed-form standard solution, and their pointwise error. Relative-L2 = 0.3%.",
-  "note_es": "El campo de la PINN (richards-seepage) frente a la solución estándar de forma cerrada, y su error puntual. L2 relativa = 0.3%."
+  "note_es": "El campo de la PINN (richards-seepage) frente a la solución estándar de forma cerrada, y su error puntual. L2 relativa = 0.3%.",
+  "summary": {
+   "adapted_vs_std": 0.0026
+  }
  }
 }

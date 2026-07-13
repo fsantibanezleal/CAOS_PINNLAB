@@ -1,7 +1,10 @@
 """Pipeline smoke (quick path): the canonical pilot case runs through all six stages, exports a faithful ONNX
 (parity vs model.predict), classifies a lane from measurements, and writes a consistent artifact + manifest. The
 `quick` path uses few iterations — it checks the train->ONNX->web plumbing + contracts, NOT convergence accuracy
-(accuracy is asserted separately by the offline precompute + the Benchmark page)."""
+(accuracy is asserted separately by the offline precompute + the Benchmark page).
+
+SANDBOXED suite-wide by the autouse fixture in conftest.py (hard rule: tests must NEVER write the canonical
+artifacts) — every pipeline write target (DERIVED / MANIFESTS / MODELS) is redirected to a per-test tmp dir."""
 import json
 
 from pinnlab import pipeline, registry

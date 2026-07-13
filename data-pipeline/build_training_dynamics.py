@@ -69,7 +69,7 @@ def bake_allencahn():
     from pinnlab.cases import bench_allencahn as A
 
     print("[allencahn] training dynamics (naive soft vs hard-constraint) ...", flush=True)
-    cps = [0, 250, 500, 1000, 2000, 4000, 6000]
+    cps = CHECKPOINTS  # full 12k horizon: the naive collapse plateaus while the constrained lane keeps descending
     x = np.linspace(-1, 1, GRID)
     t = np.linspace(0, 1, GRID)
     Xx, Tt = np.meshgrid(x, t, indexing="ij")

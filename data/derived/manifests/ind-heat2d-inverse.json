@@ -95,6 +95,10 @@
   ],
   "note_en": "INVERSE problem: recover the conductivity k(x,y). PURE PHYSICS with no sensor data leaves k underdetermined - the recovered field is nowhere near k* (L2 = 356% vs the analytic standard). Add the ~100 sparse T sensors and physics+data recovers it (L2 = 4.0%). The DATA is what makes the inverse solvable.",
   "note_es": "Problema INVERSO: recuperar la conductividad k(x,y). La FISICA PURA sin datos de sensores deja k indeterminada: el campo recuperado no se parece a k* (L2 = 356% vs el estandar analitico). Con ~100 sensores T dispersos, fisica+datos lo recupera (L2 = 4.0%). Los DATOS son los que hacen soluble el inverso.",
-  "onnx_naive": "ind-heat2d-inverse-naive.onnx"
+  "onnx_naive": "ind-heat2d-inverse-naive.onnx",
+  "summary": {
+   "adapted_vs_std": 0.0403,
+   "naive_vs_std": 3.56416
+  }
  }
 }

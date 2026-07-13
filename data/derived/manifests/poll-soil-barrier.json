@@ -91,6 +91,10 @@
   ],
   "note_en": "The naive plain PINN (no domain-decomposition) vs the domain-decomposition fix, both against the classical standard solution. Naive L2 = 19.2%, adapted L2 = 19.1%.",
   "note_es": "La PINN ingenua (sin domain-decomposition) frente a la corrección domain-decomposition, ambas contra la solución estándar clásica. L2 ingenua = 19.2%, adaptada = 19.1%.",
-  "onnx_naive": "poll-soil-barrier-naive.onnx"
+  "onnx_naive": "poll-soil-barrier-naive.onnx",
+  "summary": {
+   "adapted_vs_std": 0.1914,
+   "naive_vs_std": 0.19159
+  }
  }
 }

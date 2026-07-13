@@ -22,6 +22,7 @@ export const TABS: TabDef[] = [
   { id: "pipeline", labelKey: "arch.tab.pipeline", textKey: "arch.pipeline.text", svg: "offline-pipeline.svg" },
   { id: "bridge", labelKey: "arch.tab.bridge", textKey: "arch.bridge.text", svg: "train-onnx-web.svg" },
   { id: "gate", labelKey: "arch.tab.gate", textKey: "arch.gate.text", svg: "lane-gate.svg" },
+  { id: "ladder", labelKey: "arch.tab.ladder", textKey: "arch.ladder.text", svg: "method-ladder.svg" },
   {
     id: "methods",
     labelKey: "arch.tab.methods",

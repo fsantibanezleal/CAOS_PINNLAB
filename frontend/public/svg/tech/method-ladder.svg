@@ -1,0 +1,100 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 520" width="960" class="arch-svg" role="img" aria-label="The method ladder: the offline pipeline computes standard, naive and adapted lanes plus dynamics; the web replays them as Compare, Training and animated views">
+  <style>
+    .arch-svg text { font-family: Inter, "Segoe UI", system-ui, sans-serif; }
+    .arch-svg .mono { font-family: ui-monospace, Consolas, monospace; }
+    .arch-svg .bx { fill: var(--panel-2); stroke: var(--border); stroke-width: 1.2; }
+    .arch-svg .bx-std { stroke: var(--muted); stroke-width: 1.6; }
+    .arch-svg .bx-naive { stroke: var(--bad); stroke-width: 1.6; }
+    .arch-svg .bx-fix { stroke: var(--good); stroke-width: 1.6; }
+    .arch-svg .bx-store { stroke: var(--accent); stroke-width: 1.6; }
+    .arch-svg .bx-view { stroke: var(--accent-2); stroke-width: 1.6; }
+    .arch-svg .t { fill: var(--text); font-size: 13px; font-weight: 600; }
+    .arch-svg .s { fill: var(--muted); font-size: 11px; }
+    .arch-svg .hd { fill: var(--muted); font-size: 11px; font-weight: 700; letter-spacing: .06em; }
+    .arch-svg .num { fill: var(--text); font-size: 11px; }
+    .arch-svg .num-bad { fill: var(--bad); font-size: 11px; font-weight: 700; }
+    .arch-svg .num-good { fill: var(--good); font-size: 11px; font-weight: 700; }
+    .arch-svg .ln { stroke: var(--border); stroke-width: 1.4; fill: none; marker-end: url(#ml-arr); }
+  </style>
+  <defs>
+    <marker id="ml-arr" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L8,4 L0,8 z" fill="var(--muted)" />
+    </marker>
+  </defs>
+
+  <text x="24" y="30" class="hd">OFFLINE PIPELINE (COMPUTES THE LADDER)</text>
+
+  <rect x="24" y="44" width="270" height="70" rx="10" class="bx bx-std" />
+  <text x="40" y="70" class="t">standard solution</text>
+  <text x="40" y="88" class="s">closed form / classical solver (FDM, spectral)</text>
+  <text x="40" y="103" class="s">the ground truth every lane is measured against</text>
+
+  <rect x="24" y="126" width="270" height="70" rx="10" class="bx bx-naive" />
+  <text x="40" y="152" class="t">naive PINN (the plain net)</text>
+  <text x="40" y="170" class="s">soft BC / plain tanh / no data - trained for real</text>
+  <text x="40" y="185" class="s">so its failure is visible, never asserted</text>
+
+  <rect x="24" y="208" width="270" height="70" rx="10" class="bx bx-fix" />
+  <text x="40" y="234" class="t">adapted PINN (the fix)</text>
+  <text x="40" y="252" class="s">Fourier features · hard constraints + RAR · FBPINN</text>
+  <text x="40" y="267" class="s">physics + data on the inverse cases</text>
+
+  <rect x="24" y="290" width="270" height="86" rx="10" class="bx" />
+  <text x="40" y="316" class="t">dynamics bakes</text>
+  <text x="40" y="334" class="s">training checkpoints (watch it learn)</text>
+  <text x="40" y="349" class="s">2-D time frames (offline ONNX evals)</text>
+  <text x="40" y="364" class="s">wavenumber sweeps · benchmark centerlines</text>
+
+  <text x="378" y="30" class="hd">BAKED ARTIFACTS (COMMITTED, REPLAYED)</text>
+
+  <rect x="378" y="44" width="240" height="64" rx="10" class="bx bx-store" />
+  <text x="394" y="68" class="t mono">comparison.json</text>
+  <text x="394" y="86" class="s">standard | naive | adapted + error maps + L2</text>
+
+  <rect x="378" y="120" width="240" height="64" rx="10" class="bx bx-store" />
+  <text x="394" y="144" class="t mono">training.json</text>
+  <text x="394" y="162" class="s">per-lane fields at real checkpoints + L2 curve</text>
+
+  <rect x="378" y="196" width="240" height="64" rx="10" class="bx bx-store" />
+  <text x="394" y="220" class="t mono">frames.json</text>
+  <text x="394" y="238" class="s">smooth 2-D time sequence (fixed colour scale)</text>
+
+  <rect x="378" y="272" width="240" height="64" rx="10" class="bx bx-store" />
+  <text x="394" y="296" class="t mono">diagnostics.json</text>
+  <text x="394" y="314" class="s">sweeps · spectra · Ghia / held-out sensors</text>
+
+  <text x="700" y="30" class="hd">WEB VIEWS (THE VIEWER)</text>
+
+  <rect x="700" y="44" width="236" height="64" rx="10" class="bx bx-view" />
+  <text x="716" y="68" class="t">Compare (+ animated ladder)</text>
+  <text x="716" y="86" class="s">lanes side by side; press play: they evolve together</text>
+
+  <rect x="700" y="120" width="236" height="64" rx="10" class="bx bx-view" />
+  <text x="716" y="144" class="t">Training - watch it learn</text>
+  <text x="716" y="162" class="s">naive vs adapted converging (or not), live L2</text>
+
+  <rect x="700" y="196" width="236" height="64" rx="10" class="bx bx-view" />
+  <text x="716" y="220" class="t">Field - animated evolution hero</text>
+  <text x="716" y="238" class="s">the moving profile / 2-D frames; probe + carpet</text>
+
+  <rect x="700" y="272" width="236" height="64" rx="10" class="bx bx-view" />
+  <text x="716" y="296" class="t">Diagnostics - the WHY</text>
+  <text x="716" y="314" class="s">where naive collapses · benchmark validation</text>
+
+  <path class="ln" d="M294 79 L378 76" />
+  <path class="ln" d="M294 161 L378 84" />
+  <path class="ln" d="M294 243 L378 92" />
+  <path class="ln" d="M294 333 L378 152" />
+  <path class="ln" d="M294 341 L378 228" />
+  <path class="ln" d="M294 357 L378 304" />
+  <path class="ln" d="M618 76 L700 76" />
+  <path class="ln" d="M618 152 L700 152" />
+  <path class="ln" d="M618 228 L700 228" />
+  <path class="ln" d="M618 304 L700 304" />
+
+  <rect x="24" y="404" width="912" height="92" rx="10" class="bx" />
+  <text x="40" y="428" class="hd">REAL RESULTS (NOTHING INVENTED)</text>
+  <text x="40" y="450" class="num">helmholtz: <tspan class="num-bad">naive 120.8%</tspan> vs <tspan class="num-good">Fourier 9.3%</tspan> · allencahn: <tspan class="num-bad">soft 95.4% (collapse)</tspan> vs <tspan class="num-good">hard+RAR 0.4%</tspan> · heat2d-inverse: <tspan class="num-bad">no data 356%</tspan> vs <tspan class="num-good">physics+data 4.0%</tspan></text>
+  <text x="40" y="470" class="num">navier vs Ghia 1982 centerlines: u RMSE 0.053 · soil-heat-real vs held-out REAL sensors: ~1 degC · darcy FNO vs finite differences: 2.5%</text>
+  <text x="40" y="488" class="s">Where a fair test shows no real contrast (wave1d) or a solver diverges, nothing is shipped: the ladder never fabricates a failure.</text>
+</svg>

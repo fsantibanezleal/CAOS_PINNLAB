@@ -51,6 +51,7 @@ const en = {
       pipeline: "Offline pipeline",
       bridge: "Train → ONNX → web",
       gate: "Live vs precompute",
+      ladder: "Method ladder & dynamics",
       methods: "Methods & honesty",
     },
     overview: {
@@ -67,6 +68,9 @@ const en = {
     },
     gate: {
       text: "Each case is classified LIVE or PRECOMPUTE from MEASUREMENTS, never by hand: live iff the ONNX ≤ 4 MB AND one full-grid inference ≤ 120 ms AND the baked trace ≤ 1 MB. A LIVE case ships its .onnx and runs interactively in the browser; a PRECOMPUTE case ships only the replay trace. The verdict and the three measured numbers go into the manifest, and CI re-derives the lane from them so a mislabel cannot ship: the boundary between what is computed live and what is precomputed is honest and auditable.",
+    },
+    ladder: {
+      text: "The pipeline computes the honest METHOD LADDER per case - the standard solution (closed form or a classical solver), the naive PINN (the plain net, trained for real so its failure is visible), the adapted fix, and the data-driven lane where the case is about data - plus the dynamics bakes: training checkpoints (watch it learn), smooth 2-D time frames, sweeps and benchmark validations. The web only replays: Compare (with the animated ladder), Training, the animated Field hero, and Diagnostics. Real headline numbers: naive Helmholtz 120.8% vs Fourier 9.3%; naive Allen-Cahn 95.4% (metastable collapse) vs hard-constraint+RAR 0.4%; heat2d-inverse with no data 356% vs physics+data 4.0%. Where a fair test shows no real contrast, nothing is fabricated.",
     },
     methods: {
       text: "20 cases across canonical benchmarks, mining / mineral-processing, pollution / environmental, industrial fluids & heat, and control: each exercising a real SOTA technique, each honestly labeled. The matrix maps cases to methods; the blocks summarize the method families and the honesty taxonomy.",
@@ -147,6 +151,7 @@ const es: typeof en = {
       pipeline: "Pipeline offline",
       bridge: "Train → ONNX → web",
       gate: "Live vs precómputo",
+      ladder: "Escalera de métodos y dinámica",
       methods: "Métodos y honestidad",
     },
     overview: {
@@ -163,6 +168,9 @@ const es: typeof en = {
     },
     gate: {
       text: "Cada caso se clasifica LIVE o PRECOMPUTE a partir de MEDICIONES, nunca a mano: live si y solo si el ONNX ≤ 4 MB Y una inferencia de grilla completa ≤ 120 ms Y la traza horneada ≤ 1 MB. Un caso LIVE envía su .onnx y corre interactivo en el navegador; un caso PRECOMPUTE envía solo la traza de replay. El veredicto y los tres números medidos van al manifiesto, y CI re-deriva el lane desde ellos para que una etiqueta errónea no pueda desplegarse: la frontera entre lo que se computa en vivo y lo precomputado es honesta y auditable.",
+    },
+    ladder: {
+      text: "La tubería computa la ESCALERA DE MÉTODOS honesta por caso: la solución estándar (forma cerrada o solucionador clásico), la PINN ingenua (la red simple, entrenada de verdad para que su falla sea visible), la corrección adaptada y el carril con datos cuando el caso trata de datos; más los horneados de dinámica: checkpoints de entrenamiento (míralo aprender), fotogramas 2-D suaves, barridos y validaciones de benchmark. La web solo reproduce: Comparar (con la escalera animada), Entrenamiento, el héroe animado del Campo y Diagnóstico. Números reales: Helmholtz ingenua 120.8% vs Fourier 9.3%; Allen-Cahn ingenua 95.4% (colapso metaestable) vs restricciones duras+RAR 0.4%; heat2d-inverse sin datos 356% vs física+datos 4.0%. Donde una prueba justa no muestra contraste real, no se fabrica nada.",
     },
     methods: {
       text: "20 casos en benchmarks canónicos, minería / procesamiento de minerales, contaminación / ambiental, fluidos & calor industrial, y control: cada uno ejercitando una técnica SOTA real, cada uno etiquetado con honestidad. La matriz mapea casos a métodos; los bloques resumen las familias de métodos y la taxonomía de honestidad.",

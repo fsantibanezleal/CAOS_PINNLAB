@@ -97,7 +97,14 @@
   ],
   "onnx_naive": "ind-helmholtz-naive.onnx",
   "note_en": "The naive plain-tanh PINN suffers spectral bias and cannot resolve the high-wavenumber pattern; the Fourier-feature embedding fixes it. Both are compared to the classical FDM standard solution.",
-  "note_es": "La PINN ingenua (tanh) sufre sesgo espectral y no resuelve el patrón de alto número de onda; las características de Fourier lo corrigen. Ambas se comparan con la solución estándar FDM."
+  "note_es": "La PINN ingenua (tanh) sufre sesgo espectral y no resuelve el patrón de alto número de onda; las características de Fourier lo corrigen. Ambas se comparan con la solución estándar FDM.",
+  "summary": {
+   "naive_vs_std": 1.20846,
+   "adapted_vs_std": 0.093,
+   "naive_vs_analytic": 1.21864,
+   "adapted_vs_analytic": 0.08934,
+   "std_vs_analytic": 0.00932
+  }
  },
  "diagnostics": {
   "path": "ind-helmholtz/diagnostics.json"

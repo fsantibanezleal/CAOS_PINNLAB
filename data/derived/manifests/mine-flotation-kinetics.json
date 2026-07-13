@@ -83,6 +83,9 @@
    }
   ],
   "note_en": "The PINN (parametric-kinetics) field vs the closed-form standard solution, and their pointwise error. Relative-L2 = 0.1%.",
-  "note_es": "El campo de la PINN (parametric-kinetics) frente a la solución estándar de forma cerrada, y su error puntual. L2 relativa = 0.1%."
+  "note_es": "El campo de la PINN (parametric-kinetics) frente a la solución estándar de forma cerrada, y su error puntual. L2 relativa = 0.1%.",
+  "summary": {
+   "adapted_vs_std": 0.00079
+  }
  }
 }

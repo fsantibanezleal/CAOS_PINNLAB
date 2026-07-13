@@ -90,6 +90,9 @@
    }
   ],
   "note_en": "The PINN (bayesian-ensemble-uq) field vs the closed-form standard solution, and their pointwise error. Relative-L2 = 1.2%.",
-  "note_es": "El campo de la PINN (bayesian-ensemble-uq) frente a la solución estándar de forma cerrada, y su error puntual. L2 relativa = 1.2%."
+  "note_es": "El campo de la PINN (bayesian-ensemble-uq) frente a la solución estándar de forma cerrada, y su error puntual. L2 relativa = 1.2%.",
+  "summary": {
+   "adapted_vs_std": 0.01194
+  }
  }
 }

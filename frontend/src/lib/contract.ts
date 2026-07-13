@@ -129,6 +129,9 @@ export interface ComparisonBlock {
   onnx_naive?: string; // the naive lane's ONNX (for a Live on/off toggle)
   note_en: string;
   note_es: string;
+  // the trace's headline L2 numbers copied into the manifest, so summary pages (Benchmark) can show the ladder
+  // without fetching the heavy comparison traces
+  summary?: Record<string, number>;
 }
 
 /** The comparison trace: several fields (standard / analytic / naive / adapted / errors) on one grid. */
