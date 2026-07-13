@@ -76,3 +76,7 @@ The pipeline bakes the spectral-reference **standard** vs the **naive soft PINN*
 (see [the method ladder](../architecture/method-ladder-comparison.md)). The naive lane collapses to a metastable state and smears the sharp +/-1 transition
 layers (**95.4 %** relative-L2 vs the spectral standard); the hard-constraint + RAR fix tracks them (**0.4 %**). The
 textbook PINN failure, computed and shown side by side with the error maps.
+
+## Training view (watch it learn)
+
+The app's **Training** view replays the field at REAL training checkpoints (0 to 6k iterations), the naive soft PINN vs the hard-constraint PINN side by side with the live L2 and the L2-vs-iteration curve - the metastable collapse and the constrained convergence as visible dynamics. Baked by `build_training_dynamics.py`.

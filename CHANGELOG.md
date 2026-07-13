@@ -3,6 +3,37 @@
 All notable changes to **PINN-Lab**. Format: `X.XX.XXX` (display), see `pinnlab.__version__`. Keep `0.x` while on
 synthetic/benchmark data. Tag every release.
 
+## [0.21.000] (2026-07-10) DYNAMICS: the app now SHOWS motion + the when-PINNs-win/lose story (issue #36)
+
+Owner review: "why are no dynamics observed?" Root cause: we computed the right content but presented its dynamics
+as stills (the space-time carpet encodes motion instead of showing it). Grounded in a deep-research pass
+(wip/web-review/dynamics-research-2026-07-10.md, 13 adversarially-verified findings): animated field evolution +
+quantitative L2 is the verified state of practice; use-case-first + failure-mode-and-remedy is the right primary
+axis for an educational catalogue.
+
+- **Animated evolution hero** (Field + Live): for every time case the dominant element is now the MOVING profile
+  u(space) at time t (locked y-scale, ghost = initial state), driven by the transport bar; the space-time map is
+  demoted to the seek/probe carpet. Both-mode probe retained. 10 cases.
+- **CompareEvolution**: PLAY the method ladder - standard (grey) vs naive (red) vs adapted (green) profiles evolving
+  TOGETHER on one locked scale; you watch the naive lane peel away from the standard. Pure replay of the baked
+  comparisons; lights up on 10 (space,t) comparisons.
+- **2-D evolution frames**: offline ONNX bakes (ocean 24 frames; heap-leach 16 x 2 species) -> the Field view plays
+  the 2-D field evolving (SpatioTemporalKit, colour scale fixed across frames).
+- **TrainingKit - "watch it learn"** (BEYOND the surveyed state of practice - the catalogue's novel presentation
+  element): REAL checkpoint fields, naive vs adapted side by side + live L2 + the L2-vs-iteration curve.
+  helmholtz: the naive tanh lane never leaves ~100% at ANY checkpoint (at iter 500 it is literally a flat blank at
+  100.3% while the Fourier lane already shows the pattern at 25.9% -> 9.0% at 12k) - spectral bias made visible as
+  a training pathology (Krishnapriyan 2021). allencahn: the naive soft lane plateaus ~95-114% while the
+  hard-constraint lane descends 63% -> 45% at the short 6k budget (the fully-trained 0.4% lives in Compare).
+- **THE STORY**: an 8-chapter "when PINNs win / lose" selector in the App rail (each chapter lands on the case whose
+  computed Compare/Training/Diagnostics view DEMONSTRATES it) + the storyline written into the Introduction.
+  Chapter 1 says it honestly: on the easy forward problem the classical solver already wins.
+- All animations: paused by default, play-once, loop opt-in, halt on hidden tab.
+- Persisted: research dossier + evaluation (wip/web-review/), the dynamics layer in docs/architecture/
+  method-ladder-comparison.md, Training sections in the helmholtz/allencahn case docs.
+- Full validation: 20 cases x 2 themes - 10 animated ladders, 10 evolution heroes, 2 frame animations, 2 Training
+  views, all empirically verified to MOVE (polyline/canvas-hash change under play), 0 console errors.
+
 ## [0.20.009] (2026-07-10) persist the capability in docs + Experiments page + a click-to-enlarge detail popup
 
 Persisting all the deep-pass content and one more graph enrichment:

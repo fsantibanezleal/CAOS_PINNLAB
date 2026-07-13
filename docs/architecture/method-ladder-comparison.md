@@ -86,3 +86,29 @@ is the *method*, not the training.
    `build_standard_comparisons.py`.
 3. The manifest gains `comparison`/`diagnostics`; the CompareKit/DiagnosticsKit render them with no per-case web code.
 4. Screenshot-verify (light + dark, 0 console errors) before deploy. Never ship a fabricated or diverged result.
+
+
+## The dynamics layer (issue #36, 2026-07-10)
+
+The comparison content is also shown AS MOTION (deep-research dossier `wip/web-review/dynamics-research-2026-07-10.md`:
+animated field evolution + quantitative L2 is the verified state of practice; training-dynamics animation goes beyond it):
+
+- **Animated evolution hero** (`FieldView`): for every time case the dominant element is the MOVING spatial profile at
+  time t (locked y-scale, ghost = initial state) driven by the transport bar; the space-time map is the seek/probe
+  carpet. Works in both the Field and Live tabs.
+- **CompareEvolution** (`kits/CompareEvolution.tsx`): for any (space,t) comparison, the lanes animate TOGETHER -
+  standard (grey) vs naive (red) vs adapted (green) profiles on one locked scale. Pure replay of the baked comparison.
+- **Evolution frames** (`build_evolution_frames.py` -> manifest `evolution` + `view_kit: SpatioTemporalKit`): offline
+  ONNX evals bake a smooth t-sequence for the 2-D transport cases (ocean 24 frames, heap-leach 16 x 2 species); the
+  Field view plays the 2-D field with a colour scale fixed across frames.
+- **TrainingKit - "watch it learn"** (`build_training_dynamics.py` -> manifest `training`): REAL checkpoint fields
+  (naive vs adapted side by side, one colour scale) + live per-lane L2 + the L2-vs-iteration curve. Makes the
+  training pathology visible as dynamics: the naive Helmholtz lane never leaves ~100 % (spectral bias is a
+  training-time pathology, Krishnapriyan 2021), the Fourier lane converges to ~9 %. Beyond the surveyed state of
+  practice - claimed as novel presentation, not as a research result.
+- **The story** (`AppPage` STORY + Introduction): the 8-chapter when-PINNs-win/lose use-case narrative, each chapter
+  landing on the case whose computed view demonstrates it. Grounded in the research finding that use-case-first +
+  failure-mode-and-remedy is the right primary axis for an educational catalogue; the domain browse stays as the
+  secondary axis.
+
+All animations follow the standing rules: paused by default, play runs once then stops, loop opt-in, halt on hidden tab.

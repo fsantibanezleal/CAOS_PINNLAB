@@ -18,15 +18,21 @@ const CATEGORY_ORDER = [
   "control",
 ];
 
-/** Cross-cutting HIGHLIGHTS so the standout cases are not lost in the sea of 20: surfaced at the top of the rail.
- *  REAL data first + starred; then hybrid data+physics; then uncertainty; then chaotic dynamics. */
-const FEATURED: { id: string; star?: boolean }[] = [
-  { id: "env-soil-heat-real", star: true },
-  { id: "ind-heat2d-inverse" },
-  { id: "poll-source-uq-bpinn" },
-  { id: "dyn-double-pendulum" },
+/** THE STORY (issue #36): the use-case narrative of when PINNs win and when they lose, each chapter landing on the
+ *  case + view that DEMONSTRATES it with real computed content. This is the pedagogical axis the domain grouping
+ *  lacks: forward-easy (classical wins) -> forward-hard (needs the fix) -> inverse/data (PINNs win) -> real data ->
+ *  operators -> UQ -> the chaotic limit. */
+const STORY: { id: string; star?: boolean; en: string; es: string }[] = [
+  { id: "bench-poisson2d", en: "1 · Easy forward: the classical solver already wins", es: "1 · Directo fácil: el solucionador clásico ya gana" },
+  { id: "ind-helmholtz", en: "2 · Hard forward: naive fails (spectral bias), Fourier fixes", es: "2 · Directo difícil: la ingenua falla (sesgo espectral), Fourier corrige" },
+  { id: "bench-allencahn", en: "3 · Stiff dynamics: soft PINN collapses, constraints + RAR track", es: "3 · Dinámica rígida: la PINN suave colapsa, restricciones + RAR siguen" },
+  { id: "ind-heat2d-inverse", en: "4 · WHERE PINNS WIN: inverse + sparse data", es: "4 · DONDE GANAN LAS PINN: inverso + datos dispersos" },
+  { id: "env-soil-heat-real", star: true, en: "5 · Real measured data, validated out-of-sample", es: "5 · Datos reales medidos, validado fuera de muestra" },
+  { id: "bench-darcy-operator", en: "6 · Operators: amortize a whole PDE family", es: "6 · Operadores: amortizar una familia de EDPs" },
+  { id: "poll-source-uq-bpinn", en: "7 · Uncertainty: error bars where data is sparse", es: "7 · Incertidumbre: barras de error donde faltan datos" },
+  { id: "dyn-double-pendulum", en: "8 · The honest limit: chaos defeats any surrogate", es: "8 · El límite honesto: el caos vence a cualquier sustituto" },
 ];
-const isFeatured = (id: string) => FEATURED.some((f) => f.id === id);
+const isFeatured = (id: string) => STORY.some((f) => f.id === id && f.star);
 
 /** The App page (ADR-0016 §9 + ADR-0063), now a FULL-WIDTH workbench mirroring CAOS_RES_Lidar3D: the content
  *  fills the whole viewport (header + footer are already full-width) instead of being boxed in the narrow reading
@@ -78,21 +84,21 @@ export function AppPage() {
   const selector = (
     <div className="pl-selector">
       <label className="pl-selrow">
-        <span className="pl-sellabel">{es ? "Destacados" : "Highlights"}</span>
+        <span className="pl-sellabel">{es ? "La historia: cuándo ganan / pierden las PINN" : "The story: when PINNs win / lose"}</span>
         <select
           className="pl-select"
-          value={FEATURED.some((f) => f.id === caseId) ? caseId : ""}
+          value={STORY.some((f) => f.id === caseId) ? caseId : ""}
           onChange={(e) => {
             const id = e.target.value;
             const c = index.cases.find((x) => x.case_id === id);
             if (c) selectCase(c.category, id);
           }}
         >
-          <option value="">{es ? "Ir a un destacado…" : "Jump to a highlight…"}</option>
-          {FEATURED.map((f) => {
+          <option value="">{es ? "Recorre la historia en 8 capítulos…" : "Walk the story in 8 chapters…"}</option>
+          {STORY.map((f) => {
             const c = index.cases.find((x) => x.case_id === f.id);
             if (!c) return null;
-            return <option key={f.id} value={f.id}>{(f.star ? "★ " : "") + caseLabel(f.id)}</option>;
+            return <option key={f.id} value={f.id}>{es ? f.es : f.en}</option>;
           })}
         </select>
       </label>

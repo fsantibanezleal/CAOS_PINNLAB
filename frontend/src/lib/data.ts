@@ -41,3 +41,13 @@ export function loadComparison(tracePath: string): Promise<import("./contract").
 export function loadDiagnostics(path: string): Promise<import("./contract").Diagnostics> {
   return getJson(`${DATA}/derived/${path}`);
 }
+
+/** Load a case's "watch it learn" training-dynamics frames (issue #36). */
+export function loadTraining(path: string): Promise<import("./contract").TrainingData> {
+  return getJson(`${DATA}/derived/${path}`);
+}
+
+/** Load a case's baked 2-D time-frame sequence (issue #36). */
+export function loadEvolution(path: string): Promise<import("./contract").EvolutionFrames> {
+  return getJson(`${DATA}/derived/${path}`);
+}

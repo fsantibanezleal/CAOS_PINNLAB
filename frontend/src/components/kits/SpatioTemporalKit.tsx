@@ -1,8 +1,8 @@
 import { useEffect, useMemo, useState } from "react";
 
-import type { FieldTrace } from "../../lib/contract";
+import type { EvolutionFrames, FieldTrace } from "../../lib/contract";
 import { fieldRange, viridis } from "../../lib/colormap";
-import { loadTrace } from "../../lib/data";
+import { loadEvolution, loadTrace } from "../../lib/data";
 import { HeatCanvas } from "./HeatCanvas";
 import { Transport } from "./Transport";
 import type { KitProps } from "./types";
@@ -20,20 +20,42 @@ export function SpatioTemporalKit({ manifest, lang }: KitProps) {
   const tKey = manifest.param_specs[0]?.key ?? "t";
 
   const [traces, setTraces] = useState<FieldTrace[] | null>(null);
+  const [ev, setEv] = useState<EvolutionFrames | null>(null);
   const [err, setErr] = useState<string | null>(null);
 
   useEffect(() => {
     let alive = true;
     setTraces(null);
-    Promise.all(manifest.variants.map((v) => loadTrace(v.trace.path)))
-      .then((ts) => alive && setTraces(ts))
-      .catch((e) => alive && setErr(String(e)));
+    setEv(null);
+    // Prefer a baked evolution-frames file (a SMOOTH offline-ONNX sequence, issue #36); fall back to the
+    // per-variant snapshot traces when a case has no dedicated frames bake.
+    if (manifest.evolution?.path) {
+      loadEvolution(manifest.evolution.path).then((e) => alive && setEv(e)).catch((e) => alive && setErr(String(e)));
+    } else {
+      Promise.all(manifest.variants.map((v) => loadTrace(v.trace.path)))
+        .then((ts) => alive && setTraces(ts))
+        .catch((e) => alive && setErr(String(e)));
+    }
     return () => { alive = false; };
   }, [manifest.case_id]);
 
   const data = useMemo(() => {
-    if (!traces || !traces.length) return null;
-    const frames = traces.map((t) => t.fields[outName] as number[][]);
+    let frames: number[][][] | null = null;
+    let ax0: number[] = [0, 1];
+    let ax1: number[] = [0, 1];
+    let tVals: number[] = [];
+    if (ev && ev.frames[outName]) {
+      frames = ev.frames[outName];
+      ax0 = ev.axes[fa[0]] ?? ax0;
+      ax1 = ev.axes[fa[1]] ?? ax1;
+      tVals = ev.t;
+    } else if (traces && traces.length) {
+      frames = traces.map((t) => t.fields[outName] as number[][]);
+      ax0 = (traces[0]?.axes[fa[0]] ?? ax0) as number[];
+      ax1 = (traces[0]?.axes[fa[1]] ?? ax1) as number[];
+      tVals = manifest.variants.map((v) => v.params[tKey] ?? 0);
+    }
+    if (!frames || !frames.length) return null;
     let lo = Infinity;
     let hi = -Infinity;
     for (const fr of frames) {
@@ -42,11 +64,8 @@ export function SpatioTemporalKit({ manifest, lang }: KitProps) {
       if (b > hi) hi = b;
     }
     const range: [number, number] = [lo, hi > lo ? hi: lo + 1];
-    const ax0 = traces[0]?.axes[fa[0]] ?? [0, 1];
-    const ax1 = traces[0]?.axes[fa[1]] ?? [0, 1];
-    const tVals = manifest.variants.map((v) => v.params[tKey] ?? 0);
     return { frames, range, ax0, ax1, tVals };
-  }, [traces, outName, fa, tKey, manifest.variants]);
+  }, [traces, ev, outName, fa, tKey, manifest.variants]);
 
   const nF = data?.frames.length ?? manifest.variants.length;
   const anim = useAnimator(nF, { fps: 6 });

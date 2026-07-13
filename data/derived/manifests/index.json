@@ -156,7 +156,7 @@
    "title": "Heap-leach reactive transport: advection-diffusion-reaction PINN (2 species, time-scrubber)",
    "manifest_path": "manifests/mine-heap-leach-rt.json",
    "system_type": "",
-   "view_kit": "HeatmapKit",
+   "view_kit": "SpatioTemporalKit",
    "method": "advection-diffusion-reaction",
    "real_or_synthetic": "synthetic-illustrative"
   },
@@ -176,7 +176,7 @@
    "title": "Ocean pollutant transport: 2D advection-diffusion PINN (time-scrubber)",
    "manifest_path": "manifests/poll-ocean-transport.json",
    "system_type": "",
-   "view_kit": "HeatmapKit",
+   "view_kit": "SpatioTemporalKit",
    "method": "advection-diffusion",
    "real_or_synthetic": "synthetic-illustrative"
   },

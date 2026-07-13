@@ -5,11 +5,12 @@ import { loadManifest, loadTrace } from "../lib/data";
 import { Equation } from "./Equation";
 import { CompareKit } from "./kits/CompareKit";
 import { DiagnosticsKit } from "./kits/DiagnosticsKit";
+import { TrainingKit } from "./kits/TrainingKit";
 import { resolveKit } from "./kits/registry";
 import { LivePanel } from "./LivePanel";
 import { VariantCharts } from "./VariantCharts";
 
-type TabId = "compare" | "field" | "live" | "charts" | "context" | "diagnostics";
+type TabId = "compare" | "field" | "live" | "charts" | "context" | "diagnostics" | "training";
 
 /** One case = a full-width workbench (ADR-0016 §9 + ADR-0063), mirroring CAOS_RES_Lidar3D's `.work` shell:
  *  a LEFT control rail (the case selector, passed in as `selector`, then the regime chips + the view switch),
@@ -75,6 +76,7 @@ export function CaseExperiment({
     { id: "field", label: es ? "Campo" : "Field", sub: es ? "campo interactivo" : "interactive field" },
     { id: "live", label: "Live", sub: es ? "inferencia en el navegador" : "in-browser inference" },
     { id: "charts", label: "Charts", sub: es ? "comparación de regímenes" : "regime comparison" },
+    ...(manifest?.training ? [{ id: "training" as TabId, label: es ? "Entrenamiento" : "Training", sub: es ? "míralo aprender" : "watch it learn" }] : []),
     ...(manifest?.diagnostics ? [{ id: "diagnostics" as TabId, label: es ? "Diagnóstico" : "Diagnostics", sub: es ? "por qué falla" : "why it fails" }] : []),
     { id: "context", label: "Context", sub: es ? "teoría y ecuaciones" : "theory + equations" },
   ];
@@ -104,6 +106,8 @@ export function CaseExperiment({
   const stage =
     tab === "compare" ? (
       <CompareKit manifest={manifest} lang={lang} />
+    ) : tab === "training" ? (
+      <TrainingKit manifest={manifest} lang={lang} />
     ) : tab === "diagnostics" ? (
       <DiagnosticsKit manifest={manifest} lang={lang} />
     ) : tab === "field" ? (

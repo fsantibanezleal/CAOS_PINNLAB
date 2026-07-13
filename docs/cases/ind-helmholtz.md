@@ -73,3 +73,7 @@ The pipeline bakes the full **method ladder** for this case (see [the method lad
   standard (spectral bias blurs the high-wavenumber pattern); the Fourier-feature fix reaches **9.3 %**.
 - **Diagnostics view**: the **wavenumber sweep** (naive 3 % at n=1 rising to ~100 % at n>=2, while Fourier stays low)
   and the **radial spectral energy** (the high-|k| band the naive lane cannot reach). Real numbers from real training runs.
+
+## Training view (watch it learn)
+
+The app's **Training** view replays the field at REAL training checkpoints (0 to 12k iterations), naive vs Fourier side by side with the live L2 and the L2-vs-iteration curve. The naive tanh lane never leaves ~100 % relative-L2 at ANY checkpoint - spectral bias is a training-time pathology, not a capacity limit - while the Fourier lane converges to ~9 %. Baked by `build_training_dynamics.py`.
