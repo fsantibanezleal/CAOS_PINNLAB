@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 
 import { viridis } from "../lib/colormap";
+import { LineProfile } from "./kits/LineProfile";
 import { Transport } from "./kits/Transport";
 import { useAnimator } from "./kits/useAnimator";
 
@@ -155,11 +156,25 @@ export function FieldView({
     g2 = { xLabel: axisY.label, n: ny, values: field[cur.ix] ?? [], cursor: cur.iy };
   }
 
+  // the space-axis coordinate array for the animated hero (LineProfile ticks + hover read-out)
+  const heroAxis = timeIsY ? axisX : axisY;
+  const heroArr = Array.from({ length: g1.n }, (_, i) => axVal(i, heroAxis, g1.n));
+
   return (
     <div className="fieldview">
       {hasTime && (
         <div className="fieldview-transport">
           <Transport anim={anim} lang={lang} axisLabel={timeLabel} axisValue={tVal} />
+        </div>
+      )}
+      {hasTime && (
+        <div className="fieldview-hero">
+          <div className="fv-hero-title muted">
+            {outputLabel}({g1.xLabel}) {es ? "en" : "at"} {timeLabel}={tVal.toFixed(3)}
+            <span className="profile-legend"> · <span className="pl-sel">{es ? "actual" : "current"}</span> vs <span className="pl-ref">{es ? "inicial" : "initial"} ({timeLabel}=0)</span></span>
+            <span className="muted"> · {es ? "pulsa ▶ para VER la evolución" : "press ▶ to WATCH it evolve"}</span>
+          </div>
+          <LineProfile values={g1.values} ghost={g1.init} spaceArr={heroArr} yRange={[lo, hi]} spaceLabel={dimTag(g1.xLabel)} outLabel={outputLabel} />
         </div>
       )}
       <div className="fieldview-map">
@@ -188,21 +203,23 @@ export function FieldView({
         </div>
 
         <div className="profiles">
+          {!hasTime && (
+            <Profile
+              title={`${outputLabel} vs ${dimTag(g1.xLabel)}`}
+              legend={g1.init ? { tVal, timeLabel }: undefined}
+              xLabel={dimTag(g1.xLabel)}
+              yLabel={outputLabel}
+              n={g1.n}
+              values={g1.values}
+              reference={g1.init}
+              cursorIdx={g1.cursor}
+              yLo={lo}
+              yHi={hi}
+              es={es}
+            />
+          )}
           <Profile
-            title={`${outputLabel} vs ${dimTag(g1.xLabel)}`}
-            legend={g1.init ? { tVal, timeLabel }: undefined}
-            xLabel={dimTag(g1.xLabel)}
-            yLabel={outputLabel}
-            n={g1.n}
-            values={g1.values}
-            reference={g1.init}
-            cursorIdx={g1.cursor}
-            yLo={lo}
-            yHi={hi}
-            es={es}
-          />
-          <Profile
-            title={`${outputLabel} vs ${dimTag(g2.xLabel)}`}
+            title={`${outputLabel} vs ${dimTag(g2.xLabel)}${hasTime ? (es ? " (en el punto fijado)" : " (at the pinned spot)") : ""}`}
             xLabel={dimTag(g2.xLabel)}
             yLabel={outputLabel}
             n={g2.n}

@@ -38,6 +38,25 @@ export function Introduction() {
          : "That buys three things classical numerics can't give at once: mesh-free solution of forward/inverse PDEs, field discovery from sparse/noisy data (the PDE is a physics prior wherever there are no sensors), and a single differentiable artifact that exports and runs client-side."}
       </p>
 
+      <div className="panel" style={{ margin: "18px 0", borderColor: "var(--accent)" }}>
+        <h3>{es ? "La historia en 8 capítulos: cuándo ganan y cuándo pierden" : "The story in 8 chapters: when they win and when they lose"}</h3>
+        <p style={{ fontSize: 14 }}>
+          {es
+            ? "El catálogo no es una lista plana: cuenta una historia honesta, y cada capítulo se DEMUESTRA con contenido computado (no afirmado) en la vista Comparar / Entrenamiento / Diagnóstico del caso. Recórrela desde el selector 'La historia' del App."
+            : "The catalogue is not a flat list: it tells an honest story, and every chapter is DEMONSTRATED with computed (not asserted) content in that case's Compare / Training / Diagnostics view. Walk it from the App's 'The story' selector."}
+        </p>
+        <ol style={{ fontSize: 13.5, lineHeight: 1.65 }}>
+          <li>{es ? "Directo fácil (poisson2d): la PINN iguala la forma cerrada (<0.1%), pero un solucionador clásico ya es exacto y más rápido: aquí la PINN NO es la herramienta." : "Easy forward (poisson2d): the PINN matches the closed form (<0.1%), but a classical solver is already exact and faster: the PINN is NOT the tool here."}</li>
+          <li>{es ? "Directo difícil (helmholtz): la PINN ingenua se queda en ~121% por sesgo espectral (míralo NO aprender en la vista Entrenamiento); las características de Fourier la llevan a 9%." : "Hard forward (helmholtz): the naive PINN sits at ~121% from spectral bias (watch it FAIL to learn in the Training view); Fourier features bring it to 9%."}</li>
+          <li>{es ? "Dinámica rígida (allencahn): la PINN suave colapsa a un estado metaestable (95%); restricciones duras + RAR siguen las capas (0.4%)." : "Stiff dynamics (allencahn): the soft PINN collapses to a metastable state (95%); hard constraints + RAR track the layers (0.4%)."}</li>
+          <li>{es ? "DONDE GANAN (heat2d-inverse): con física pura y sin datos, k es irrecuperable (356%); con ~100 sensores dispersos, 4%. Los datos hacen soluble el inverso." : "WHERE THEY WIN (heat2d-inverse): pure physics with no data leaves k unrecoverable (356%); with ~100 sparse sensors, 4%. The data makes the inverse solvable."}</li>
+          <li>{es ? "Datos reales (soil-heat-real): reconstruye temperaturas de suelo NOAA y valida FUERA DE MUESTRA en profundidades nunca vistas (~1 grado C RMSE)." : "Real data (soil-heat-real): reconstructs NOAA soil temperatures and validates OUT-OF-SAMPLE at depths never seen (~1 degC RMSE)."}</li>
+          <li>{es ? "Operadores (darcy): un FNO mapea un campo de permeabilidad NUEVO a su presión en un paso (2.5% vs diferencias finitas): amortiza una familia entera." : "Operators (darcy): an FNO maps a NEW permeability field to its pressure in one pass (2.5% vs finite differences): amortizing a whole family."}</li>
+          <li>{es ? "Incertidumbre (source-uq): un ensamble da media +- sigma; sigma crece exactamente donde faltan datos." : "Uncertainty (source-uq): an ensemble gives mean +- sigma; sigma grows exactly where data is sparse."}</li>
+          <li>{es ? "El límite honesto (double-pendulum): la PINN sigue al integrador ~2 s y el caos la despega: ningún sustituto vence al exponente de Lyapunov." : "The honest limit (double-pendulum): the PINN tracks the integrator ~2 s and chaos peels it away: no surrogate beats the Lyapunov exponent."}</li>
+        </ol>
+      </div>
+
       <h2>{es ? "Qué ES PINN-Lab": "What PINN-Lab IS"}</h2>
       <ul>
         <li>

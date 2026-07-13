@@ -91,6 +91,27 @@ export interface CaseManifest {
   // data-driven PINN, and the diagnostics that explain WHY. Present only for cases whose pipeline computes them.
   comparison?: ComparisonBlock;
   diagnostics?: { path: string };
+  // DYNAMICS (issue #36): baked animations the web replays.
+  training?: { path: string }; // "watch it learn": the field at training checkpoints, naive vs adapted
+  evolution?: { path: string }; // 2-D time-frame sequence (ONNX offline evals) for the animated Field view
+}
+
+/** "Watch it learn" (issue #36): per-lane field frames at training checkpoints + the L2-vs-iteration curve. */
+export interface TrainingData {
+  schema?: string;
+  case_id: string;
+  checkpoints: number[];
+  axes: Record<string, number[]>;
+  lanes: Record<string, { frames: number[][][]; l2: number[]; label_en: string; label_es: string }>;
+}
+
+/** A baked 2-D time-frame sequence: the field at each t (offline ONNX evals), for the animated Field view. */
+export interface EvolutionFrames {
+  schema?: string;
+  case_id: string;
+  t: number[];
+  axes: Record<string, number[]>;
+  frames: Record<string, number[][][]>; // output name -> [frame][ix][iy]
 }
 
 /** One lane in the method-ladder comparison: a field key in the comparison trace + how to read it. */

@@ -4,6 +4,7 @@ import type { CaseManifest, CompareTrace } from "../../lib/contract";
 import { fieldRange } from "../../lib/colormap";
 import { loadComparison } from "../../lib/data";
 import { snapshotElement } from "../../lib/snapshot";
+import { CompareEvolution } from "./CompareEvolution";
 import { HeatCanvas } from "./HeatCanvas";
 
 function SnapBtn({ target, name }: { target: string; name: string }) {
@@ -107,6 +108,9 @@ export function CompareKit({ manifest, lang }: { manifest: CaseManifest; lang: "
           ))}
         </div>
       )}
+
+      {/* DYNAMICS (issue #36): animate the lanes together over time when the trace has a time axis */}
+      <CompareEvolution trace={trace} lanes={valueLanes} vRange={vRange} lang={lang} />
 
       <div className="cmp-readout mono">
         {hov ? (
