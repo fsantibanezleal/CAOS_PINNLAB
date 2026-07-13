@@ -53,10 +53,26 @@ halts on hidden tab (`useAnimator`).
   wins the easy forward case; chapter 8 shows chaos defeating the surrogate). The storyline makes that narrative
   navigable instead of implicit.
 
-## 4. Research grounding
+## 4. Research grounding (deep-research dossier: `dynamics-research-2026-07-10.md`, 13 verified findings)
 
-Deep-research dossier (fan-out + adversarial verification): see `dynamics-research-2026-07-10.md` (appended when the
-workflow completes). Preliminary anchors from prior verified research in this repo: Krishnapriyan 2021 (training
-pathologies - the reason training dynamics matter), Grossmann 2024 (PINNs have not beaten FEM on forward problems -
-the reason chapter 1 exists), Tancik 2020 / Wang-Wang-Perdikaris 2021 (spectral bias + Fourier features - the
-mechanism TrainingKit makes visible), Raissi 2020 HFM (the inverse/data win - chapters 4-5).
+The fan-out + adversarially-verified research CONFIRMS the redesign direction and sharpens it:
+
+- **Organization**: no single pattern dominates the best 2024-2026 resources; three coexist by purpose. The
+  most-cited PINN library (DeepXDE) organizes **use-case-first** (function approximation / forward / inverse /
+  operator learning); the strongest research showcases (jaxpi + the Expert's Guide arXiv:2308.08468, PINNacle)
+  organize by benchmark in service of an explicit **failure-mode-and-remedy narrative**; framework vendors
+  (PhysicsNeMo) go domain-first with PINNs demoted to one method tag (5 of 37 cards). The research's explicit
+  conclusion for an educational catalogue: **a use-case-narrative primary axis with an honesty layer of openly
+  published weak results and failure-mode framing, delivered as animated field evolution plus error quantification**
+  - exactly the STORY selector + honest ladder + animated heroes implemented here. Keeping the domain browse as the
+  secondary axis matches the coexistence pattern.
+- **Visualization**: the verified state of practice for time-dependent solutions is **animated field-evolution
+  paired with quantitative relative-L2 tables** - implemented (animated heroes + the L2 headlines/tables). Notably,
+  **no surviving evidence establishes training-dynamics animation as standard practice**: our TrainingKit is
+  BEYOND the state of practice, i.e. the catalogue's genuine novel presentation element (grounded in Krishnapriyan
+  NeurIPS 2021: the pathologies are training-time, ill-conditioned loss landscapes - so showing training IS showing
+  the mechanism). Claimed as novel presentation, not as a research result.
+- **Honesty**: the strongest resources co-publish weak results next to strong ones in the same table (jaxpi's
+  16-35% errors on chaotic/transitional flows), name the pathology and its root cause, and pair every limitation
+  with a named mitigation - the pattern the method ladder + story chapters follow (chapter 1 says the classical
+  solver wins; chapter 8 shows chaos defeating the surrogate).

@@ -1,0 +1,2555 @@
+# Deep research dossier: presenting + visualizing PINNs (2026-07-10)
+
+Provenance: deep-research workflow wf_ffbca1a3-bce - 5 search angles, 103 agents, top-15 sources fetched,
+3-vote adversarial verification per claim, 0 agent errors. Persisted per the deep-work rule (research on disk).
+
+## Question
+
+> Best practices for PRESENTING and VISUALIZING Physics-Informed Neural Networks (PINNs) in an interactive educational web catalogue (2024-2026 state of the art). Specifically: (1) How do the best PINN showcases, benchmark suites and educational resources organize their content - by physics domain, by method, or by USE-CASE narrative (forward easy vs hard, inverse/data assimilation, operator learning, UQ, chaotic limits)? Examples: NVIDIA PhysicsNeMo/Modulus examples, DeepXDE gallery, jaxpi (Predictive Intelligence Lab), Ben Moseley's FBPINN/so-what-is-a-pinn materials, PINN benchmark papers (PINNacle, PDEBench), distill.pub-style interactive explainers. (2) What VISUALIZATION forms are used to show time-dependent PDE solutions and PINN behaviour - animated field evolution vs static space-time carpets, side-by-side prediction-vs-reference animations, error-map animations, TRAINING-dynamics animations (the solution evolving over training iterations, spectral bias made visible), collocation/residual point animations? Which are considered most effective pedagogically? (3) How do the best resources honestly communicate PINN ADVANTAGES (inverse problems, data assimilation, mesh-free, operators) vs LIMITATIONS (slower than FEM on forward problems, spectral bias, training pathologies, chaotic divergence)? Cite primary sources (project sites, GitHub repos, papers with arXiv/DOI).
+
+## Synthesis
+
+No single organizational pattern dominates the best 2024-2026 PINN showcases; three coexist, and the choice tracks the resource's purpose. Framework vendors organize domain-first with PINNs demoted to one method tag among data-driven surrogates (NVIDIA PhysicsNeMo: 5 of 37 catalog cards tagged Physics-Losses, PINN tooling in an optional physicsnemo.sym add-on); the most-cited PINN library organizes use-case-first (DeepXDE: function approximation / forward / inverse / operator learning at top level, equation class second); and the strongest research showcases organize by benchmark problem in service of an explicit failure-mode-and-remedy narrative (jaxpi + the Expert's Guide arXiv:2308.08468, PINNacle), while introductory teaching walks one toy problem through forward-then-inverse use cases (Moseley's harmonic oscillator workshop). For time-dependent solutions, the verified state of practice is animated field-evolution GIFs paired with quantitative relative-L2 error tables; no surviving evidence establishes training-dynamics animation as standard practice or ranks pedagogical effectiveness of visualization forms. Honest limitation communication is achieved by co-publishing weak results next to strong ones in the same table (jaxpi's 16-35% errors on chaotic/transitional flows), naming training pathologies and their root cause (ill-conditioned loss landscapes from soft PDE-residual regularization, not expressivity; Krishnapriyan NeurIPS 2021), and always pairing each limitation with named mitigations (Expert's Guide, PINNacle's domain-decomposition and loss-reweighting directions). For an educational catalogue this evidence supports a use-case-narrative primary axis (forward easy vs hard, inverse/data assimilation, operator learning) with an honesty layer of openly published weak results and failure-mode framing, delivered as animated field evolution plus error quantification.
+
+## Verified findings
+
+### 1. Framework-vendor catalogues (NVIDIA PhysicsNeMo) organize domain-first, not PINN-first: top-level sections by application domain (Introductory, CFD, Weather/Climate, Healthcare, Additive Manufacturing, Molecular Dynamics, Geophysics, etc.) with a flat filter vocabulary mixing domain, method, and workflow tags; PINNs appear only as the 'Physics-Losses' method tag on 5 of 37 example cards (vs 13 GNN, 7 neural-operator, 5 diffusion cards), and PINN/PINO workflows live in an optional physicsnemo.sym add-on module, positioning PINNs as one method family among data-driven surrogates rather than the organizing principle.
+
+- Confidence: high (vote 3-0 (4 merged claims, each 3-0))
+- Source: https://docs.nvidia.com/physicsnemo/latest/examples_catalog.html
+- Source: https://docs.nvidia.com/deeplearning/physicsnemo/physicsnemo-core/examples/README.html
+- Source: https://github.com/NVIDIA/physicsnemo/tree/main/examples
+- Evidence: Raw HTML of the catalog verified 2026-07-13: 'Explore our comprehensive collection of examples organized by topic'; 19 flat example-filter buttons mixing domains (cfd, weather-climate), methods (physics-losses, gnns, diffusion, neural-operators), and workflow tags (transient, large-scale, inverse-problems); exactly 37 example cards of which exactly 5 carry physics-losses. Core examples README headings verbatim: 'Introductory examples for learning key ideas' then 'Domain-specific examples' (CFD, Weather, Structural Mechanics, Healthcare, ...). Install note verbatim: 'Physics-informed training examples (PINNs, PINO, physics-informed fine-tuning) use the physicsnemo.sym module. Install with pip install "nvidia-physicsnemo[sym]"'. Since v2.0 the formerly standalone physicsnemo-sym is an opt-in extra; predecessor Modulus/SimNet was PINN-first, current PhysicsNeMo is not.
+
+### 2. Even inside its domain-first catalogue, PhysicsNeMo layers a use-case/paradigm narrative: the introductory tier labels examples along a physics-vs-data training spectrum (purely physics-driven; data + physics constraints; data-driven then physics-informed fine-tuning; purely data-driven), and inverse-problem/unknown-coefficient recovery is a distinct named use-case: an 'Inverse PINN' example recovers advection-diffusion coefficients (kinematic viscosity within 2%, thermal diffusivity within 20-28%) from OpenFOAM observations of a heat-sink configuration.
+
+- Confidence: high (vote 3-0 (2 merged claims, each 3-0))
+- Source: https://docs.nvidia.com/deeplearning/physicsnemo/physicsnemo-core/examples/README.html
+- Source: https://docs.nvidia.com/physicsnemo/latest/examples_catalog.html
+- Source: https://docs.nvidia.com/physicsnemo/latest/physicsnemo/examples/cfd/inverse_pinns/README.html
+- Evidence: Verbatim intro-tier labels: Lid Driven Cavity Flow = 'Purely physics-driven (no external simulation/experimental data) training'; Darcy Flow (Data + Physics) = 'Data-driven training with physics-based constraints'; Stokes Flow = 'Data-driven training followed by physics-based fine-tuning'; plain Darcy Flow = data-driven basics. Catalog entry verbatim: 'Inverse PINN that recovers unknown advection-diffusion coefficients (kinematic viscosity and thermal diffusivity) from OpenFOAM observations of a heat-sink configuration.' Dedicated example page explicitly contrasts inverse vs forward PINNs; stable lineage back to Modulus v2209 tutorial.
+
+### 3. DeepXDE, one of the most-cited PINN libraries, organizes its official demo gallery use-case-first: exactly four top-level task-type sections (Demos of Function Approximation, Forward Problems, Inverse Problems, Operator Learning), with mathematical equation class as the second level inside the forward page (exactly five headings: ODEs; Time-independent PDEs; Time-dependent PDEs; Integro-differential equations; Fractional PDEs, ordered roughly by increasing generality). Physics application domain is never an organizing axis.
+
+- Confidence: high (vote 3-0 (3 merged claims, each 3-0))
+- Source: https://deepxde.readthedocs.io/en/v1.15.0/demos/pinn_forward.html
+- Source: https://github.com/lululxvi/deepxde
+- Source: https://doi.org/10.1137/19M1274067
+- Evidence: v1.15.0 (current stable) docs toctree verified: demos/function, demos/pinn_forward, demos/pinn_inverse, demos/operator; README 'Explore more' lists the same four categories verbatim. Deterministic RST heading grep of docs/demos/pinn_forward.rst: exactly 5 equation-class headings in the claimed order; demos are equation-named (Poisson, Burgers, Heat, Lotka-Volterra), no fluids/solids/heat domain sections. Ordering mirrors the DeepXDE paper's capability list (Lu et al., SIAM Review 63(1), 2021). Caveat: the 'increasing difficulty' rationale is editorial (hedged 'roughly'), never stated by DeepXDE.
+
+### 4. DeepXDE frames inverse problems as first-class, on equal footing with forward problems across every equation class it supports ('solving forward/inverse' for ODEs/PDEs, IDEs, fPINN fractional PDEs, NN-aPC stochastic PDEs), including peer-reviewed hard-constraint hPINN inverse design/topology optimization; its 10 inverse demos (Lorenz system, unknown-forcing Poisson, Brinkman-Forchheimer, diffusion-reaction, Navier-Stokes around a cylinder, fractional Poisson) form a top-level section structurally parallel to forward demos. This is how a major library presents inverse/data-assimilation as a core PINN advantage.
+
+- Confidence: high (vote 3-0)
+- Source: https://github.com/lululxvi/deepxde
+- Source: https://doi.org/10.1137/21M1397908
+- Source: https://arxiv.org/abs/2102.04626
+- Source: https://deepxde.readthedocs.io/en/latest/demos/pinn_inverse.html
+- Evidence: README verbatim: every capability bullet pairs 'solving forward/inverse'; 'PINN with hard constraints (hPINN): solving inverse design/topology optimization'. hPINN is peer-reviewed (Lu et al., SIAM J. Sci. Comput. 43(6):B1105-B1132, 2021), demonstrating topology optimization matching adjoint-based PDE-constrained optimization. Caveat: DeepXDE never uses the phrase 'data assimilation'; that bundling is the catalogue category's wording, not DeepXDE's.
+
+### 5. DeepXDE embeds training-pathology remedies (multi-scale Fourier features for spectral bias, residual-based adaptive refinement and training-point resampling for collocation, hard boundary/initial-condition enforcement) as named variants of canonical benchmark equations inside the equation taxonomy, with no separate methods or limitations section anywhere in the docs; remedies are normalized into worked examples rather than foregrounded as pathologies.
+
+- Confidence: high (vote 3-0)
+- Source: https://deepxde.readthedocs.io/en/v1.15.0/demos/pinn_forward.html
+- Evidence: Demo titles verbatim: 'Poisson equation in 1D with Multi-scale Fourier feature networks', 'Burgers equation with residual-based adaptive refinement', 'Heat equation with training points resampling', 'Wave propagation with spatio-temporal multi-scale Fourier feature architecture', 'Poisson equation in 1D with hard boundary conditions'. No section titled Methods/Techniques/Limitations/Training pathologies exists on the demos page or docs sidebar; the landing Features list and FAQ (GitHub-issue links) are inventories, not presentations. Structural fact about one resource, verified against multiple pages of that resource.
+
+### 6. jaxpi (Predictive Intelligence Lab) organizes its showcase by PDE benchmark problem (Allen-Cahn, advection, Stokes, Kuramoto-Sivashinsky, lid-driven cavity, Navier-Stokes in tori and around a cylinder, plus animated Grey-Scott, Ginzburg-Landau, Kolmogorov flow, Rayleigh-Taylor) presented as a relative-L2 benchmark table, not by use-case narrative; but its purpose is training best practices: it is the companion code to 'An Expert's Guide to Training Physics-informed Neural Networks' (arXiv:2308.08468) and integrates the lab's PINN-pathology literature (gradient-flow pathologies, NTK analysis, PirateNets arXiv:2402.00326, gradient alignment arXiv:2502.00604), with full reproducibility (per-example configs, checkpoints, W&B logs) as the stated delivery vehicle ('reproduce all results reported in this paper... facilitate easy adaptation to new use-case scenarios').
+
+- Confidence: high (vote 3-0 (3 merged claims, each 3-0))
+- Source: https://github.com/PredictiveIntelligenceLab/jaxpi
+- Source: https://arxiv.org/abs/2308.08468
+- Source: https://arxiv.org/abs/2402.00326
+- Source: https://arxiv.org/abs/2502.00604
+- Source: https://arxiv.org/abs/2007.14527
+- Evidence: Raw README verified 2026-07-13: benchmark table columns Benchmark / Relative L2 Error / Checkpoint / Weights & Biases with the seven problems; all 16 examples/ subdirectories are physics-problem-named; zero occurrences of 'inverse', 'operator', 'UQ' in the README. Abstract of 2308.08468 verbatim on the library release. CITATION CORRECTION applied during synthesis: the NTK paper ('When and Why PINNs Fail to Train') is arXiv:2007.14527 (Wang, Yu, Perdikaris), not 2109.01050 (which is Krishnapriyan et al.); both are in the README's integrated-papers list. Repo active (JAX 0.4.36/CUDA 12.4; jaxpi2 successor exists); exact reproducibility depends on JAX matmul precision per the README.
+
+### 7. For time-dependent PDE solutions, jaxpi's sole visualization form is animated field evolution: the README's only embedded media are 8 animated GIFs of predicted fields (Navier-Stokes in tori, vortex shedding u/v velocity plus w vorticity around a cylinder, Grey-Scott, Ginzburg-Landau, Kolmogorov flow, Rayleigh-Taylor instability), with zero static space-time carpets and zero training-dynamics animations. This is the verified state of practice for a top research showcase; nothing in the surviving evidence establishes training-dynamics animation or spectral-bias visualization as standard practice.
+
+- Confidence: high (vote 3-0)
+- Source: https://github.com/PredictiveIntelligenceLab/jaxpi
+- Evidence: Deterministic media inventory of raw README (2026-07-13): 8 GIFs (ns_animation.gif, ns_cylinder_u/v/w.gif, gs_animation.gif, gl_animation.gif, kf.gif, rayleigh_taylor.gif), zero non-GIF images. eval.py confirms plotted fields are model predictions (u_pred/v_pred/p_pred). CORRECTION: the 'w' GIF is vorticity (models.py computes w = v_x - u_y on a 2D problem), not a third velocity component. Fact about jaxpi specifically; generalization to 'most effective pedagogically' is NOT supported by surviving evidence.
+
+### 8. jaxpi honestly co-publishes weak and strong results in the same benchmark table: relative L2 errors span 5.37e-5 (Allen-Cahn) and 8.04e-5 (Stokes flow) up to 1.61e-1 (Kuramoto-Sivashinsky, chaotic), 1.58e-1 (lid-driven cavity at Re=3200), and 3.53e-1 (Navier-Stokes in tori); errors of order 16-35% are openly reported on the chaotic/transitional forward problems, exemplifying weak-result disclosure as an honesty practice.
+
+- Confidence: high (vote 3-0)
+- Source: https://github.com/PredictiveIntelligenceLab/jaxpi
+- Source: https://arxiv.org/abs/2308.08468
+- Evidence: All five values verified verbatim in one table of the live README (plus Advection 6.88e-4; the NS-cylinder row has no L2 value, which does not contradict). Companion paper confirms cavity Re=3200 and frames KS as 'simulating chaotic dynamics'. Caveats: 'honestly publishes weak results' is a fair characterization, not README wording (README says examples showcase 'effectiveness and robustness'); Re=3200 cavity is transitional/high-Re rather than strictly turbulent.
+
+### 9. The Expert's Guide paper (arXiv:2308.08468, Wang/Sankaran/Wang/Perdikaris) exemplifies failure-mode-first presentation: it explicitly attributes PINN underperformance to 'training pathologies' and 'poor choices made by users who lack deep learning expertise', structures its entire contribution as best practices (non-dimensionalization, Fourier features + random weight factorization, causal training, loss balancing, curriculum), and organizes its results around deliberately challenging benchmarks each framed by the difficulty it exposes (unbalanced gradients, causality violation, spectral bias, chaotic long-time divergence) with fully reproducible per-benchmark ablation tables.
+
+- Confidence: high (vote 3-0 (2 merged claims, each 3-0))
+- Source: https://arxiv.org/abs/2308.08468
+- Source: https://github.com/PredictiveIntelligenceLab/jaxpi
+- Evidence: Abstract verbatim: 'Their practical effectiveness however can be hampered by training pathologies, but also oftentimes by poor choices made by users who lack deep learning expertise' and 'We also put forth a series of challenging benchmark problems that highlight some of the most prominent difficulties in training PINNs, and present comprehensive and fully reproducible ablation studies...'. ar5iv full text: Section 7 benchmarks each framed by exposed difficulty (7.1 Allen-Cahn: unbalanced gradients + causality + spectral bias via gradient histograms and NTK eigenvalue decay; 7.2 advection c=80; 7.4 KS chaotic time-marching; 7.5 cavity Re=3200 curriculum), Tables 2-5 ablate individual techniques. Caveat: it foregrounds fixable TRAINING limitations while claiming SOTA; it does not discuss fundamental cost-vs-FEM limitations.
+
+### 10. The canonical honest-limitations sources establish that existing PINN methodologies learn good models for relatively trivial problems and can easily fail on even slightly more complex PDEs, and that these failures stem from the soft PDE-residual regularization making the loss landscape ill-conditioned and hard to optimize, not from lack of network expressivity (Krishnapriyan et al., NeurIPS 2021, arXiv:2109.01050). Confirmed by ICML 2024 loss-landscape analysis (Rathore et al.) and re-confirmed at current SOTA by PINNacle (several tasks unsolved by all 10+ variants; 'not yet on par with traditional numerical methods' on hard problems). This grounds a 'forward easy vs forward hard' catalogue narrative and the 'training pathologies' limitation.
+
+- Confidence: high (vote 3-0 (2 merged claims, each 3-0))
+- Source: https://arxiv.org/abs/2109.01050
+- Source: https://arxiv.org/abs/2402.01868
+- Source: https://doi.org/10.1137/20M1318043
+- Source: https://arxiv.org/abs/2306.08827
+- Evidence: Both key sentences verified verbatim in the 2109.01050 abstract, including 'not due to the lack of expressivity in the NN architecture, but that the PINN's setup makes the loss landscape very hard to optimize'. Remedies proposed there (curriculum regularization, seq2seq) match easy-vs-hard framing. Rathore et al. (ICML 2024, PMLR 235:42159-42191) links ill-conditioned differential operators to loss ill-conditioning. Precision caveats: the paper hedges 'these possible failure modes' (its convection/reaction/diffusion cases); it is co-canonical with Wang/Teng/Perdikaris gradient-pathologies (SIAM J. Sci. Comput. 43(5), 2021), which coined 'pathologies'; unreviewed dissent arXiv:2505.10949 argues some classic toy failures are FP32/L-BFGS precision artifacts but does not overturn PINNacle's unsolved-task findings.
+
+### 11. PINNacle (NeurIPS 2024 Datasets and Benchmarks) communicates PINN limitations by explicitly framing its experiments over ~10 SOTA PINN variants as exposing both strengths and weaknesses, and pairs the identified failure modes with promising remedy directions: domain decomposition methods and loss reweighting for multi-scale problems and complex geometry.
+
+- Confidence: high (vote 3-0)
+- Source: https://arxiv.org/abs/2306.08827
+- Source: https://openreview.net/forum?id=aekfb95slj
+- Evidence: Abstract verbatim: 'We have conducted extensive experiments with these methods, offering insights into their strengths and weaknesses... an in-depth analysis to guide future research, particularly in areas such as domain decomposition methods and loss reweighting for handling multi-scale problems and complex geometry.' Peer-reviewed NeurIPS 2024 D&B version corroborates. IMPORTANT: the companion claim that PINNacle is internally organized along two axes (physics domain x challenge category) was REFUTED (1-2); only the strengths/weaknesses framing and remedy directions are verified, not its internal taxonomy.
+
+### 12. PDEBench (NeurIPS 2022 D&B) positions PINN as one baseline among four (FNO, U-Net, PINN, Gradient-Based Inverse Method) and splits its baseline suite top-level by task class (forward surrogate modeling vs inverse problems, e.g., initial-condition inversion), showing that major PDE-ML benchmarks organize around tasks with PINNs as a peer method rather than around PINNs; its datasets themselves are organized per-PDE.
+
+- Confidence: high (vote 3-0)
+- Source: https://arxiv.org/abs/2210.07182
+- Source: https://github.com/pdebench/PDEBench
+- Evidence: Abstract verbatim: 'baseline results with popular machine learning models (FNO, U-Net, PINN, Gradient-Based Inverse Method)'. Live repo structure confirms: train_models_forward.py vs train_models_inverse.py, parallel fno/, unet/, pinn/, inverse/ directories; the inverse task is substantive (ProbRasterLatent, InitialConditionInterp, MCMC config; FNO beats U-Net on IC inversion). IMPORTANT: the companion claim that PDEBench is organized along an explicit easy-to-hard difficulty gradient was REFUTED (0-3); do not cite that.
+
+### 13. Ben Moseley's introductory PINN workshop is pure use-case-narrative pedagogy on a single canonical toy problem: a PINN for the damped harmonic oscillator, coded from scratch in PyTorch, covers both the forward-simulation and the inverse-problem use cases in one notebook; depth on one problem across use cases, not physics-domain breadth (repo contains only the workshop notebooks, README, license, and one GIF).
+
+- Confidence: high (vote 3-0)
+- Source: https://github.com/benmoseley/harmonic-oscillator-pinn-workshop
+- Evidence: README verbatim: 'We will be coding a PINN from scratch in PyTorch and using it solve simulation and inversion tasks related to the damped harmonic oscillator.' GitHub self-description: 'Introductory workshop on PINNs using the harmonic oscillator'. File listing confirms single-problem scope; Moseley's sibling scalable-pinns-workshop (Session 1 trains a PINN on the same oscillator) is consistent. Caveat: repo created 2022 (pre-dates the 2024-2026 window) but verified accurate as a present-tense description on 2026-07-13; his FBPINN research materials were not covered by surviving claims.
+
+
+## Caveats (from the verification pass)
+
+- (
+- 1
+- )
+-  
+- V
+- i
+- s
+- u
+- a
+- l
+- i
+- z
+- a
+- t
+- i
+- o
+- n
+-  
+- e
+- v
+- i
+- d
+- e
+- n
+- c
+- e
+-  
+- (
+- r
+- e
+- s
+- e
+- a
+- r
+- c
+- h
+-  
+- s
+- u
+- b
+- -
+- q
+- u
+- e
+- s
+- t
+- i
+- o
+- n
+-  
+- 2
+- )
+-  
+- i
+- s
+-  
+- t
+- h
+- e
+-  
+- t
+- h
+- i
+- n
+- n
+- e
+- s
+- t
+-  
+- l
+- e
+- g
+- :
+-  
+- o
+- n
+- l
+- y
+-  
+- j
+- a
+- x
+- p
+- i
+- '
+- s
+-  
+- a
+- n
+- i
+- m
+- a
+- t
+- e
+- d
+- -
+- G
+- I
+- F
+-  
+- p
+- r
+- a
+- c
+- t
+- i
+- c
+- e
+-  
+- a
+- n
+- d
+-  
+- t
+- h
+- e
+-  
+- b
+- e
+- n
+- c
+- h
+- m
+- a
+- r
+- k
+- -
+- t
+- a
+- b
+- l
+- e
+-  
+- c
+- o
+- n
+- v
+- e
+- n
+- t
+- i
+- o
+- n
+-  
+- s
+- u
+- r
+- v
+- i
+- v
+- e
+- d
+-  
+- v
+- e
+- r
+- i
+- f
+- i
+- c
+- a
+- t
+- i
+- o
+- n
+- .
+-  
+- N
+- o
+-  
+- c
+- l
+- a
+- i
+- m
+- s
+-  
+- s
+- u
+- r
+- v
+- i
+- v
+- e
+- d
+-  
+- a
+- b
+- o
+- u
+- t
+-  
+- t
+- r
+- a
+- i
+- n
+- i
+- n
+- g
+- -
+- d
+- y
+- n
+- a
+- m
+- i
+- c
+- s
+-  
+- a
+- n
+- i
+- m
+- a
+- t
+- i
+- o
+- n
+- s
+-  
+- (
+- s
+- o
+- l
+- u
+- t
+- i
+- o
+- n
+-  
+- e
+- v
+- o
+- l
+- v
+- i
+- n
+- g
+-  
+- o
+- v
+- e
+- r
+-  
+- t
+- r
+- a
+- i
+- n
+- i
+- n
+- g
+-  
+- i
+- t
+- e
+- r
+- a
+- t
+- i
+- o
+- n
+- s
+- )
+- ,
+-  
+- s
+- p
+- e
+- c
+- t
+- r
+- a
+- l
+- -
+- b
+- i
+- a
+- s
+-  
+- v
+- i
+- s
+- u
+- a
+- l
+- i
+- z
+- a
+- t
+- i
+- o
+- n
+- s
+- ,
+-  
+- s
+- i
+- d
+- e
+- -
+- b
+- y
+- -
+- s
+- i
+- d
+- e
+-  
+- p
+- r
+- e
+- d
+- i
+- c
+- t
+- i
+- o
+- n
+- -
+- v
+- s
+- -
+- r
+- e
+- f
+- e
+- r
+- e
+- n
+- c
+- e
+-  
+- o
+- r
+-  
+- e
+- r
+- r
+- o
+- r
+- -
+- m
+- a
+- p
+-  
+- a
+- n
+- i
+- m
+- a
+- t
+- i
+- o
+- n
+- s
+- ,
+-  
+- c
+- o
+- l
+- l
+- o
+- c
+- a
+- t
+- i
+- o
+- n
+- -
+- p
+- o
+- i
+- n
+- t
+-  
+- a
+- n
+- i
+- m
+- a
+- t
+- i
+- o
+- n
+- s
+- ,
+-  
+- o
+- r
+-  
+- d
+- i
+- s
+- t
+- i
+- l
+- l
+- .
+- p
+- u
+- b
+- -
+- s
+- t
+- y
+- l
+- e
+-  
+- i
+- n
+- t
+- e
+- r
+- a
+- c
+- t
+- i
+- v
+- e
+-  
+- e
+- x
+- p
+- l
+- a
+- i
+- n
+- e
+- r
+- s
+- ,
+-  
+- a
+- n
+- d
+-  
+- n
+- o
+- t
+- h
+- i
+- n
+- g
+-  
+- e
+- s
+- t
+- a
+- b
+- l
+- i
+- s
+- h
+- e
+- s
+-  
+- w
+- h
+- i
+- c
+- h
+-  
+- f
+- o
+- r
+- m
+- s
+-  
+- a
+- r
+- e
+-  
+- '
+- m
+- o
+- s
+- t
+-  
+- e
+- f
+- f
+- e
+- c
+- t
+- i
+- v
+- e
+-  
+- p
+- e
+- d
+- a
+- g
+- o
+- g
+- i
+- c
+- a
+- l
+- l
+- y
+- '
+- ;
+-  
+- t
+- h
+- a
+- t
+-  
+- p
+- a
+- r
+- t
+-  
+- o
+- f
+-  
+- t
+- h
+- e
+-  
+- q
+- u
+- e
+- s
+- t
+- i
+- o
+- n
+-  
+- i
+- s
+-  
+- u
+- n
+- a
+- n
+- s
+- w
+- e
+- r
+- e
+- d
+-  
+- b
+- y
+-  
+- v
+- e
+- r
+- i
+- f
+- i
+- e
+- d
+-  
+- e
+- v
+- i
+- d
+- e
+- n
+- c
+- e
+-  
+- a
+- n
+- d
+-  
+- a
+- n
+- y
+-  
+- c
+- a
+- t
+- a
+- l
+- o
+- g
+- u
+- e
+-  
+- d
+- e
+- s
+- i
+- g
+- n
+-  
+- t
+- h
+- e
+- r
+- e
+-  
+- m
+- u
+- s
+- t
+-  
+- b
+- e
+-  
+- t
+- r
+- e
+- a
+- t
+- e
+- d
+-  
+- a
+- s
+-  
+- i
+- n
+- f
+- o
+- r
+- m
+- e
+- d
+-  
+- j
+- u
+- d
+- g
+- m
+- e
+- n
+- t
+- ,
+-  
+- n
+- o
+- t
+-  
+- s
+- o
+- u
+- r
+- c
+- e
+- d
+-  
+- b
+- e
+- s
+- t
+-  
+- p
+- r
+- a
+- c
+- t
+- i
+- c
+- e
+- .
+-  
+- (
+- 2
+- )
+-  
+- T
+- w
+- o
+-  
+- i
+- n
+- t
+- e
+- r
+- n
+- a
+- l
+- -
+- o
+- r
+- g
+- a
+- n
+- i
+- z
+- a
+- t
+- i
+- o
+- n
+-  
+- c
+- l
+- a
+- i
+- m
+- s
+-  
+- w
+- e
+- r
+- e
+-  
+- r
+- e
+- f
+- u
+- t
+- e
+- d
+-  
+- a
+- n
+- d
+-  
+- m
+- u
+- s
+- t
+-  
+- n
+- o
+- t
+-  
+- b
+- e
+-  
+- c
+- i
+- t
+- e
+- d
+- :
+-  
+- P
+- I
+- N
+- N
+- a
+- c
+- l
+- e
+- '
+- s
+-  
+- a
+- l
+- l
+- e
+- g
+- e
+- d
+-  
+- t
+- w
+- o
+- -
+- a
+- x
+- i
+- s
+-  
+- (
+- p
+- h
+- y
+- s
+- i
+- c
+- s
+-  
+- d
+- o
+- m
+- a
+- i
+- n
+-  
+- x
+-  
+- c
+- h
+- a
+- l
+- l
+- e
+- n
+- g
+- e
+-  
+- c
+- a
+- t
+- e
+- g
+- o
+- r
+- y
+- )
+-  
+- o
+- r
+- g
+- a
+- n
+- i
+- z
+- a
+- t
+- i
+- o
+- n
+-  
+- (
+- v
+- o
+- t
+- e
+- d
+-  
+- 1
+- -
+- 2
+- )
+-  
+- a
+- n
+- d
+-  
+- P
+- D
+- E
+- B
+- e
+- n
+- c
+- h
+- '
+- s
+-  
+- a
+- l
+- l
+- e
+- g
+- e
+- d
+-  
+- e
+- a
+- s
+- y
+- -
+- t
+- o
+- -
+- h
+- a
+- r
+- d
+-  
+- d
+- i
+- f
+- f
+- i
+- c
+- u
+- l
+- t
+- y
+- -
+- g
+- r
+- a
+- d
+- i
+- e
+- n
+- t
+-  
+- o
+- r
+- g
+- a
+- n
+- i
+- z
+- a
+- t
+- i
+- o
+- n
+-  
+- (
+- v
+- o
+- t
+- e
+- d
+-  
+- 0
+- -
+- 3
+- ;
+-  
+- P
+- D
+- E
+- B
+- e
+- n
+- c
+- h
+-  
+- d
+- a
+- t
+- a
+- s
+- e
+- t
+- s
+-  
+- a
+- r
+- e
+-  
+- o
+- r
+- g
+- a
+- n
+- i
+- z
+- e
+- d
+-  
+- p
+- e
+- r
+- -
+- P
+- D
+- E
+- )
+- .
+-  
+- O
+- n
+- l
+- y
+-  
+- P
+- I
+- N
+- N
+- a
+- c
+- l
+- e
+- '
+- s
+-  
+- s
+- t
+- r
+- e
+- n
+- g
+- t
+- h
+- s
+- /
+- w
+- e
+- a
+- k
+- n
+- e
+- s
+- s
+- e
+- s
+-  
+- f
+- r
+- a
+- m
+- i
+- n
+- g
+-  
+- a
+- n
+- d
+-  
+- P
+- D
+- E
+- B
+- e
+- n
+- c
+- h
+- '
+- s
+-  
+- f
+- o
+- r
+- w
+- a
+- r
+- d
+- /
+- i
+- n
+- v
+- e
+- r
+- s
+- e
+-  
+- b
+- a
+- s
+- e
+- l
+- i
+- n
+- e
+-  
+- s
+- p
+- l
+- i
+- t
+-  
+- a
+- r
+- e
+-  
+- v
+- e
+- r
+- i
+- f
+- i
+- e
+- d
+- .
+-  
+- (
+- 3
+- )
+-  
+- F
+- i
+- n
+- d
+- i
+- n
+- g
+- s
+-  
+- a
+- b
+- o
+- u
+- t
+-  
+- D
+- e
+- e
+- p
+- X
+- D
+- E
+- '
+- s
+-  
+- r
+- e
+- m
+- e
+- d
+- y
+- -
+- e
+- m
+- b
+- e
+- d
+- d
+- i
+- n
+- g
+- ,
+-  
+- j
+- a
+- x
+- p
+- i
+- '
+- s
+-  
+- G
+- I
+- F
+- s
+- ,
+-  
+- a
+- n
+- d
+-  
+- M
+- o
+- s
+- e
+- l
+- e
+- y
+- '
+- s
+-  
+- w
+- o
+- r
+- k
+- s
+- h
+- o
+- p
+-  
+- a
+- r
+- e
+-  
+- s
+- t
+- r
+- u
+- c
+- t
+- u
+- r
+- a
+- l
+-  
+- f
+- a
+- c
+- t
+- s
+-  
+- a
+- b
+- o
+- u
+- t
+-  
+- a
+-  
+- s
+- i
+- n
+- g
+- l
+- e
+-  
+- r
+- e
+- s
+- o
+- u
+- r
+- c
+- e
+- ;
+-  
+- t
+- h
+- e
+-  
+- r
+- e
+- s
+- o
+- u
+- r
+- c
+- e
+-  
+- i
+- t
+- s
+- e
+- l
+- f
+-  
+- i
+- s
+-  
+- d
+- e
+- f
+- i
+- n
+- i
+- t
+- i
+- o
+- n
+- a
+- l
+- l
+- y
+-  
+- t
+- h
+- e
+-  
+- p
+- r
+- i
+- m
+- a
+- r
+- y
+-  
+- s
+- o
+- u
+- r
+- c
+- e
+-  
+- (
+- v
+- e
+- r
+- i
+- f
+- i
+- e
+- d
+-  
+- v
+- e
+- r
+- b
+- a
+- t
+- i
+- m
+- ,
+-  
+- 3
+- -
+- 0
+- )
+- ,
+-  
+- b
+- u
+- t
+-  
+- t
+- h
+- e
+- y
+-  
+- c
+- a
+- n
+- n
+- o
+- t
+-  
+- b
+- e
+-  
+- g
+- e
+- n
+- e
+- r
+- a
+- l
+- i
+- z
+- e
+- d
+-  
+- t
+- o
+-  
+- '
+- s
+- t
+- a
+- n
+- d
+- a
+- r
+- d
+-  
+- p
+- r
+- a
+- c
+- t
+- i
+- c
+- e
+- '
+-  
+- a
+- c
+- r
+- o
+- s
+- s
+-  
+- t
+- h
+- e
+-  
+- f
+- i
+- e
+- l
+- d
+- .
+-  
+- (
+- 4
+- )
+-  
+- C
+- i
+- t
+- a
+- t
+- i
+- o
+- n
+-  
+- c
+- o
+- r
+- r
+- e
+- c
+- t
+- i
+- o
+- n
+- s
+-  
+- a
+- p
+- p
+- l
+- i
+- e
+- d
+-  
+- i
+- n
+-  
+- s
+- y
+- n
+- t
+- h
+- e
+- s
+- i
+- s
+- :
+-  
+- t
+- h
+- e
+-  
+- N
+- T
+- K
+-  
+- p
+- a
+- p
+- e
+- r
+-  
+- i
+- n
+- t
+- e
+- g
+- r
+- a
+- t
+- e
+- d
+-  
+- b
+- y
+-  
+- j
+- a
+- x
+- p
+- i
+-  
+- i
+- s
+-  
+- a
+- r
+- X
+- i
+- v
+- :
+- 2
+- 0
+- 0
+- 7
+- .
+- 1
+- 4
+- 5
+- 2
+- 7
+-  
+- (
+- W
+- a
+- n
+- g
+- ,
+-  
+- Y
+- u
+- ,
+-  
+- P
+- e
+- r
+- d
+- i
+- k
+- a
+- r
+- i
+- s
+- )
+- ,
+-  
+- n
+- o
+- t
+-  
+- a
+- r
+- X
+- i
+- v
+- :
+- 2
+- 1
+- 0
+- 9
+- .
+- 0
+- 1
+- 0
+- 5
+- 0
+-  
+- (
+- K
+- r
+- i
+- s
+- h
+- n
+- a
+- p
+- r
+- i
+- y
+- a
+- n
+-  
+- e
+- t
+-  
+- a
+- l
+- .
+- ,
+-  
+- f
+- a
+- i
+- l
+- u
+- r
+- e
+-  
+- m
+- o
+- d
+- e
+- s
+- )
+- ;
+-  
+- j
+- a
+- x
+- p
+- i
+- '
+- s
+-  
+- v
+- o
+- r
+- t
+- e
+- x
+- -
+- s
+- h
+- e
+- d
+- d
+- i
+- n
+- g
+-  
+- '
+- w
+- '
+-  
+- G
+- I
+- F
+-  
+- s
+- h
+- o
+- w
+- s
+-  
+- v
+- o
+- r
+- t
+- i
+- c
+- i
+- t
+- y
+-  
+- (
+- w
+-  
+- =
+-  
+- v
+- _
+- x
+-  
+- -
+-  
+- u
+- _
+- y
+- )
+- ,
+-  
+- n
+- o
+- t
+-  
+- a
+-  
+- v
+- e
+- l
+- o
+- c
+- i
+- t
+- y
+-  
+- c
+- o
+- m
+- p
+- o
+- n
+- e
+- n
+- t
+- .
+-  
+- (
+- 5
+- )
+-  
+- T
+- h
+- e
+-  
+- '
+- s
+- l
+- o
+- w
+- e
+- r
+-  
+- t
+- h
+- a
+- n
+-  
+- F
+- E
+- M
+-  
+- o
+- n
+-  
+- f
+- o
+- r
+- w
+- a
+- r
+- d
+-  
+- p
+- r
+- o
+- b
+- l
+- e
+- m
+- s
+- '
+-  
+- l
+- i
+- m
+- i
+- t
+- a
+- t
+- i
+- o
+- n
+-  
+- (
+- e
+- .
+- g
+- .
+- ,
+-  
+- t
+- h
+- e
+-  
+- M
+- c
+- G
+- r
+- e
+- i
+- v
+- y
+-  
+- &
+-  
+- H
+- a
+- k
+- i
+- m
+-  
+- 2
+- 0
+- 2
+- 4
+-  
+- w
+- e
+- a
+- k
+- -
+- b
+- a
+- s
+- e
+- l
+- i
+- n
+- e
+- s
+-  
+- c
+- r
+- i
+- t
+- i
+- q
+- u
+- e
+- )
+-  
+- w
+- a
+- s
+-  
+- n
+- o
+- t
+-  
+- c
+- o
+- v
+- e
+- r
+- e
+- d
+-  
+- b
+- y
+-  
+- a
+- n
+- y
+-  
+- s
+- u
+- r
+- v
+- i
+- v
+- i
+- n
+- g
+-  
+- c
+- l
+- a
+- i
+- m
+- ;
+-  
+- t
+- h
+- e
+-  
+- v
+- e
+- r
+- i
+- f
+- i
+- e
+- d
+-  
+- h
+- o
+- n
+- e
+- s
+- t
+- -
+- l
+- i
+- m
+- i
+- t
+- a
+- t
+- i
+- o
+- n
+- s
+-  
+- e
+- v
+- i
+- d
+- e
+- n
+- c
+- e
+-  
+- c
+- o
+- v
+- e
+- r
+- s
+-  
+- t
+- r
+- a
+- i
+- n
+- i
+- n
+- g
+-  
+- p
+- a
+- t
+- h
+- o
+- l
+- o
+- g
+- i
+- e
+- s
+- ,
+-  
+- w
+- e
+- a
+- k
+- -
+- r
+- e
+- s
+- u
+- l
+- t
+-  
+- d
+- i
+- s
+- c
+- l
+- o
+- s
+- u
+- r
+- e
+- ,
+-  
+- a
+- n
+- d
+-  
+- c
+- h
+- a
+- o
+- t
+- i
+- c
+-  
+- d
+- i
+- v
+- e
+- r
+- g
+- e
+- n
+- c
+- e
+-  
+- o
+- n
+- l
+- y
+- .
+-  
+- (
+- 6
+- )
+-  
+- T
+- i
+- m
+- e
+- -
+- s
+- e
+- n
+- s
+- i
+- t
+- i
+- v
+- i
+- t
+- y
+- :
+-  
+- N
+- V
+- I
+- D
+- I
+- A
+-  
+- /
+- l
+- a
+- t
+- e
+- s
+- t
+- /
+-  
+- d
+- o
+- c
+- s
+- ,
+-  
+- D
+- e
+- e
+- p
+- X
+- D
+- E
+-  
+- s
+- t
+- a
+- b
+- l
+- e
+-  
+- d
+- o
+- c
+- s
+- ,
+-  
+- a
+- n
+- d
+-  
+- G
+- i
+- t
+- H
+- u
+- b
+-  
+- R
+- E
+- A
+- D
+- M
+- E
+- s
+-  
+- w
+- e
+- r
+- e
+-  
+- v
+- e
+- r
+- i
+- f
+- i
+- e
+- d
+-  
+- l
+- i
+- v
+- e
+-  
+- o
+- n
+-  
+- 2
+- 0
+- 2
+- 6
+- -
+- 0
+- 7
+- -
+- 1
+- 3
+-  
+- a
+- n
+- d
+-  
+- c
+- a
+- n
+-  
+- d
+- r
+- i
+- f
+- t
+- ;
+-  
+- P
+- h
+- y
+- s
+- i
+- c
+- s
+- N
+- e
+- M
+- o
+-  
+- r
+- e
+- s
+- t
+- r
+- u
+- c
+- t
+- u
+- r
+- e
+- d
+-  
+- r
+- e
+- c
+- e
+- n
+- t
+- l
+- y
+-  
+- (
+- M
+- o
+- d
+- u
+- l
+- u
+- s
+-  
+- r
+- e
+- n
+- a
+- m
+- e
+- ,
+-  
+- s
+- y
+- m
+-  
+- u
+- p
+- s
+- t
+- r
+- e
+- a
+- m
+- e
+- d
+-  
+- a
+- t
+-  
+- v
+- 2
+- .
+- 0
+- )
+- ,
+-  
+- s
+- o
+-  
+- i
+- t
+- s
+-  
+- t
+- a
+- x
+- o
+- n
+- o
+- m
+- y
+-  
+- i
+- s
+-  
+- t
+- h
+- e
+-  
+- m
+- o
+- s
+- t
+-  
+- l
+- i
+- k
+- e
+- l
+- y
+-  
+- t
+- o
+-  
+- c
+- h
+- a
+- n
+- g
+- e
+- .
+-  
+- (
+- 7
+- )
+-  
+- O
+- n
+- e
+-  
+- u
+- n
+- r
+- e
+- v
+- i
+- e
+- w
+- e
+- d
+-  
+- d
+- i
+- s
+- s
+- e
+- n
+- t
+-  
+- e
+- x
+- i
+- s
+- t
+- s
+-  
+- (
+- a
+- r
+- X
+- i
+- v
+- :
+- 2
+- 5
+- 0
+- 5
+- .
+- 1
+- 0
+- 9
+- 4
+- 9
+- ,
+-  
+- '
+- F
+- P
+- 6
+- 4
+-  
+- i
+- s
+-  
+- A
+- l
+- l
+-  
+- Y
+- o
+- u
+-  
+- N
+- e
+- e
+- d
+- '
+- ,
+-  
+- a
+- r
+- g
+- u
+- i
+- n
+- g
+-  
+- s
+- o
+- m
+- e
+-  
+- c
+- l
+- a
+- s
+- s
+- i
+- c
+-  
+- f
+- a
+- i
+- l
+- u
+- r
+- e
+-  
+- d
+- e
+- m
+- o
+- s
+-  
+- a
+- r
+- e
+-  
+- F
+- P
+- 3
+- 2
+- /
+- L
+- -
+- B
+- F
+- G
+- S
+-  
+- p
+- r
+- e
+- c
+- i
+- s
+- i
+- o
+- n
+-  
+- a
+- r
+- t
+- i
+- f
+- a
+- c
+- t
+- s
+- )
+- ;
+-  
+- i
+- t
+-  
+- t
+- e
+- m
+- p
+- e
+- r
+- s
+-  
+- h
+- o
+- w
+-  
+- c
+- a
+- t
+- e
+- g
+- o
+- r
+- i
+- c
+- a
+- l
+- l
+- y
+-  
+- t
+- h
+- e
+-  
+- c
+- l
+- a
+- s
+- s
+- i
+- c
+-  
+- t
+- o
+- y
+-  
+- f
+- a
+- i
+- l
+- u
+- r
+- e
+- s
+-  
+- s
+- h
+- o
+- u
+- l
+- d
+-  
+- b
+- e
+-  
+- p
+- r
+- e
+- s
+- e
+- n
+- t
+- e
+- d
+-  
+- b
+- u
+- t
+-  
+- d
+- o
+- e
+- s
+-  
+- n
+- o
+- t
+-  
+- o
+- v
+- e
+- r
+- t
+- u
+- r
+- n
+-  
+- t
+- h
+- e
+-  
+- b
+- e
+- n
+- c
+- h
+- m
+- a
+- r
+- k
+- -
+- l
+- e
+- v
+- e
+- l
+-  
+- f
+- i
+- n
+- d
+- i
+- n
+- g
+- s
+- .
+
+## Open questions
+
+- What visualization forms do the remaining named exemplars (Moseley's FBPINN and 'so what is a PINN' materials, distill.pub-style interactive explainers, PINNacle's own result figures) actually use for training dynamics and spectral bias, and is there any evidence-based ranking of pedagogical effectiveness (animated field evolution vs static space-time carpets vs side-by-side error-map animations)?
+- How do top resources communicate compute cost and accuracy vs classical solvers (FEM/spectral) on forward problems, the McGreivy & Hakim 2024 weak-baseline critique line, which no surviving claim addressed and which is central to honestly presenting the 'forward easy' use case?
+- What is PINNacle's actual internal benchmark organization (its two-axis domain-x-challenge characterization was refuted 1-2)? A targeted re-check of the paper's Table 1 / repo structure is needed before mirroring its structure in the catalogue.
+- How are operator learning and uncertainty quantification presented and visualized as PINN-adjacent use cases (DeepXDE has an operator-learning demo section and NN-aPC for stochastic PDEs, but no surviving claim examined their presentation depth, and no UQ showcase survived verification at all)?
+
+## Refuted claims (killed by adversarial votes - do NOT cite)
+
+- PINNacle organizes its benchmark along two axes: PDE physics domain (heat conduction, fluid dynamics, biology, electromagnetics) and real-world challenge category (complex geometry, multi-scale phenomena, nonlinearity, high dimensionality), rather than by use-case narrative such as forward-vs-inverse. - REFUTED: 
+- PDEBench organizes its benchmark content by PDE task along an explicit difficulty gradient, covering a wider range of time-dependent PDE simulation tasks than prior benchmarks, spanning from common easy examples to realistic hard problems. This supports the 'forward easy vs hard' use-case-narrative organization asked about in the research question. - REFUTED: 
+
+## Stats
+
+- {"angles": 5, "sourcesFetched": 21, "claimsExtracted": 104, "claimsVerified": 25, "confirmed": 23, "killed": 2, "unverified": 0, "afterSynthesis": 13, "urlDupes": 5, "budgetDropped": 4, "agentCalls": 103}
