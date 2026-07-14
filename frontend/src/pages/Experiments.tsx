@@ -70,6 +70,34 @@ export function Experiments() {
             : "Honest: where a fair test shows no real contrast (wave1d) or a solver diverged (a rushed FDM cavity), no fabricated result is shown. Open a case's Compare view for the fields + error maps."}
         </p>
       </div>
+      <div className="panel" style={{ marginBottom: 16 }}>
+        <h3>{lang === "es" ? "Qué se corrió de verdad (y cómo se mantiene honesto)" : "What was actually run (and how it stays honest)"}</h3>
+        <ul style={{ fontSize: 13.5, lineHeight: 1.6 }}>
+          <li>{lang === "es"
+            ? "PRESUPUESTO JUSTO. Cuando un caso compara dos carriles (ingenuo vs corrección), AMBOS se entrenan de cero con el MISMO presupuesto (mismos pasos de Adam, misma receta): un contraste solo cuenta si las dos redes tuvieron la misma oportunidad. Un intento temprano que reutilizaba una red preentrenada invirtió el resultado de wave1d; se corrigió."
+            : "FAIR BUDGET. When a case contrasts two lanes (naive vs fix), BOTH are trained from scratch at the SAME budget (same Adam steps, same recipe): a contrast only counts if both networks got the same chance. An early attempt that reused a pre-trained net inverted wave1d's result; it was corrected."}</li>
+          <li>{lang === "es"
+            ? "LA CURVA DE IDENTIFICABILIDAD (heat2d-inverse). Se entrenó el mismo inverso con n = 0, 10, 25, 50, 100 sensores a un presupuesto fijo: el error del campo k recuperado cae 356% → 17.3% → 16.3% → 13.6% → 12.6%. El acantilado está entre 0 y 10 sensores: CUALQUIER dato de anclaje restaura la identificabilidad de la incógnita de campo; luego los retornos decrecen. Es la respuesta computada a 'cuánta información necesita una PINN'."
+            : "THE IDENTIFIABILITY CURVE (heat2d-inverse). The same inverse was trained at n = 0, 10, 25, 50, 100 sensors at a fixed budget: the recovered-k field error falls 356% → 17.3% → 16.3% → 13.6% → 12.6%. The cliff is between 0 and 10 sensors: ANY anchoring data restores identifiability of the field unknown; then returns diminish. It is the computed answer to 'how much information a PINN needs'."}</li>
+          <li>{lang === "es"
+            ? "VALIDACIÓN FUERA DE MUESTRA CON DATOS REALES (soil-heat-real). Se recuperó UNA difusividad (0.305 mm²/s) desde dos series reales de sensores NOAA, y se predijeron TRES profundidades interiores nunca vistas por el optimizador: RMSE 1.24 / 1.05 / 0.75 °C a 10 / 20 / 50 cm. Es la única validación que cuenta: contra datos retenidos."
+            : "OUT-OF-SAMPLE REAL-DATA VALIDATION (soil-heat-real). ONE diffusivity (0.305 mm²/s) was recovered from two real NOAA sensor series, and THREE interior depths the optimizer never saw were predicted: RMSE 1.24 / 1.05 / 0.75 °C at 10 / 20 / 50 cm. It is the only validation that counts: against held-out data."}</li>
+          <li>{lang === "es"
+            ? "EL HOLDOUT DE TINTE (hidden-velocity, el caso insignia). De 800 muestras de tinte, 160 nunca se entrenaron; la ONNX exportada las reconstruye a 0.78% de RMSE. Y el resultado es honesto en su alcance: la corriente se recupera a 16% DONDE el tinte barrió, 37% en las zonas muertas que nunca vio (no identificable, para cualquier método): el mapa de dónde confiar es parte del resultado."
+            : "THE DYE HOLDOUT (hidden-velocity, the flagship). Of 800 dye samples, 160 were never trained on; the exported ONNX reconstructs them to 0.78% RMSE. And the result is honest about its scope: the current is recovered to 16% WHERE the dye swept, 37% in the dead zones it never saw (unidentifiable, for any method): the map of where to trust is part of the result."}</li>
+          <li>{lang === "es"
+            ? "DINÁMICA DE ENTRENAMIENTO CAPTURADA (helmholtz, allencahn). Se guardó el campo en checkpoints reales: la vista Entrenamiento REPRODUCE al carril ingenuo NO aprender (Helmholtz clavado en ~100% mientras Fourier ya muestra el patrón), no lo afirma."
+            : "TRAINING DYNAMICS CAPTURED (helmholtz, allencahn). The field was saved at real checkpoints: the Training view REPLAYS the naive lane failing to learn (Helmholtz stuck at ~100% while Fourier already shows the pattern), it does not assert it."}</li>
+          <li>{lang === "es"
+            ? "RESULTADOS NEGATIVOS PUBLICADOS. Donde una prueba justa no dio contraste (wave1d, ~11% ambos carriles) o un solucionador divergió (una cavidad FDM apresurada, revertida a favor de las líneas de Ghia), NO se inventa un número: el registro honesto es el producto."
+            : "NEGATIVE RESULTS PUBLISHED. Where a fair test gave no contrast (wave1d, ~11% both lanes) or a solver diverged (a rushed FDM cavity, reverted in favor of the Ghia centerlines), NO number is invented: the honest record is the product."}</li>
+        </ul>
+        <p className="muted" style={{ fontSize: 12.5, marginTop: 6 }}>
+          {lang === "es"
+            ? "Sigue a Benchmark para los números completos y cómo leerlos."
+            : "Continue to Benchmark for the full numbers and how to read them."}
+        </p>
+      </div>
       {Object.entries(byCat).map(([cat, ms]) => (
         <div key={cat} className="panel" style={{ marginBottom: 16 }}>
           <h3>{CATEGORY_LABELS[cat]?.[lang] ?? cat}</h3>

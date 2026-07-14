@@ -164,7 +164,7 @@ export function FieldView({
   const cy = 1 - Math.max(0, Math.min(1, (cur.iy - wy0) / Math.max(1, wny - 1)));
   // the map box sizes EXACTLY to the zoom window's aspect within the available area (plan E2): overlays stay
   // truthful. Reserve ~44px per cell for the colorbar row's axis-hint label + gap.
-  const fit = useFitBox<HTMLDivElement>(wnx / Math.max(1, wny), 44);
+  const fit = useFitBox<HTMLDivElement>(wnx / Math.max(1, wny), 64);
   const tVal = hasTime ? (timeIsY ? axVal(curTime, axisY, ny): axVal(curTime, axisX, nx)): 0;
   const timeLabel = timeIsY ? axisY.label: axisX.label;
 
