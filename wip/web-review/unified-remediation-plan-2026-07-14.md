@@ -118,3 +118,13 @@ explained, referencing the Methodology ladder.
 - Fundamentals content: information budget, identifiability, constraint chips: kept, re-homed (chips into
   Results §3, budget into Context/Introduction).
 - The 21st case (hidden velocity, trained, 16.4% swept recovery): ships with this work.
+
+## 6. EXECUTION STATUS (2026-07-14, v0.24.000 LIVE)
+
+- S1 DONE, S2 DONE, S3 DONE (first pass: 34 markers on 12 cases via FieldView/TimeEvolution/VectorField/
+  HiddenFlow), S4 partial (single-regime Charts tab replaced). Shipped as v0.24.000 with the #48 flagship
+  (PR #50); structural validator asserts Results-first/content/non-overflow/page-fit per case: 21x2 themes
+  green ON PROD, 0 console errors; 51 contract tests green.
+- Measured on prod: rail overflow 220px -> 0; stage 404/466px -> 247/616px; no page scroll at 1500x950.
+- REMAINING (issue #49 open): line-chart zoom + per-series solo; heatmap wheel-zoom/pan; shared probe/time
+  cursor across views; markers on SpatioTemporal/UQBand; Context jargon sweep; responsive breakpoints.

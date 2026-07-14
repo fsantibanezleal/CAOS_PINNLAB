@@ -4,6 +4,7 @@ import type { EvolutionFrames, FieldTrace } from "../../lib/contract";
 import { fieldRange, viridis } from "../../lib/colormap";
 import { loadEvolution, loadTrace } from "../../lib/data";
 import { HeatCanvas } from "./HeatCanvas";
+import { markersFor, MarkerLayer } from "./MarkerLayer";
 import { Transport } from "./Transport";
 import type { KitProps } from "./types";
 import { useAnimator } from "./useAnimator";
@@ -12,7 +13,7 @@ import { useAnimator } from "./useAnimator";
  *  variant is a time snapshot (e.g. ocean-transport, heap-leach). It loads ALL variant traces and animates the
  *  2-D heatmap forward over t, with a color scale fixed across every frame (so the motion is real, not a
  *  per-frame autoscale) and a hover value read-out. No retraining: every snapshot is already baked. */
-export function SpatioTemporalKit({ manifest, lang }: KitProps) {
+export function SpatioTemporalKit({ manifest, active, lang }: KitProps) {
   const es = lang === "es";
   const [outIdx, setOutIdx] = useState(0);
   const outName = manifest.outputs[outIdx] ?? manifest.outputs[0];
@@ -103,8 +104,9 @@ export function SpatioTemporalKit({ manifest, lang }: KitProps) {
       )}
       <Transport anim={anim} lang={lang} axisLabel={tKey} axisValue={tVals[f] ?? 0} />
       <div className="st-grid">
-        <div className="st-map" onMouseMove={onMove} onMouseLeave={() => setHover(null)}>
+        <div className="st-map" onMouseMove={onMove} onMouseLeave={() => setHover(null)} style={{ position: "relative" }}>
           <HeatCanvas field={frame} range={range} ariaLabel={`${outName} at ${tKey}=${(tVals[f] ?? 0).toFixed(2)}`} />
+          <MarkerLayer markers={markersFor(manifest, active)} a0={ax0[0] ?? 0} a1={ax0[ax0.length - 1] ?? 1} b0={ax1[0] ?? 0} b1={ax1[ax1.length - 1] ?? 1} lang={lang} />
         </div>
         <div className="st-cbar" aria-hidden>
           <div className="st-cbar-scale">

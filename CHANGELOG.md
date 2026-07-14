@@ -3,6 +3,21 @@
 All notable changes to **PINN-Lab**. Format: `X.XX.XXX` (display), see `pinnlab.__version__`. Keep `0.x` while on
 synthetic/benchmark data. Tag every release.
 
+## [0.24.001] (2026-07-14) INTERACTIVE VIZ: chart solo + drag-zoom, field wheel-zoom, frame markers, responsive (issue #49 S4/S5)
+
+- **Diagnostic charts are interactive**: click a legend entry to SOLO a series (click again for all); drag
+  horizontally to zoom an x-range (double-click resets, a reset chip appears); the crosshair hover values stay.
+  Applies to every line comparison (Ghia centerlines, sensor sweeps, held-out profiles, the flagship's
+  recovered-current profiles) and the wavenumber/spectrum charts.
+- **The field maps wheel-zoom**: scroll to zoom around the cursor (the zoom is a data-window slice, so the
+  crosshair, read-out, markers and axis mapping stay truthful; a badge shows the factor; double-click resets
+  and releases the pin). Click-to-pin / follow-cursor behavior unchanged.
+- **Markers on the animated frame kits**: the ocean checkpoint now draws on the drifting-spill frames
+  (SpatioTemporalKit).
+- **Responsive**: below 900px the rail stacks above the stage and the stepper wraps.
+- Verified: interactions exercised end-to-end (solo dims, zoom + reset, badge, frame markers) with 0 console
+  errors; full structural validator 21 cases x 2 themes green.
+
 ## [0.24.000] (2026-07-14) THE INVESTIGATION WORKBENCH + THE HFM FLAGSHIP (issues #48, #49 S1-S3)
 
 The owner's full review (persisted in `wip/web-review/unified-remediation-plan-2026-07-14.md`) found the app a
