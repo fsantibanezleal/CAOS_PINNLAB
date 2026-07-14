@@ -9,6 +9,31 @@ export function Introduction() {
     <div className="prose" style={{ maxWidth: 1000 }}>
       <h1>{es ? "Qué es PINN-Lab": "What PINN-Lab is"}</h1>
 
+      <div className="panel" style={{ margin: "14px 0 18px", borderColor: "var(--accent)" }}>
+        <h3 style={{ marginTop: 0 }}>{es ? "Cada caso responde una pregunta de ingeniería" : "Every case answers an engineering question"}</h3>
+        <p style={{ fontSize: 14 }}>
+          {es
+            ? "Una EDP es un instrumento de medida: transporta mediciones baratas hasta la cantidad que necesitas y no puedes medir directamente. Ese es el contenido real de este catálogo: no la ecuación, sino la PREGUNTA que cada caso responde y la ESTIMACIÓN computada que entrega. Tres ejemplos, todos calculados por el pipeline offline (nunca afirmados):"
+            : "A PDE is a measuring instrument: it transports cheap measurements to the quantity you need and cannot measure directly. That is this catalogue's real content: not the equation, but the QUESTION each case answers and the computed ESTIMATE it delivers. Three examples, all computed by the offline pipeline (never asserted):"}
+        </p>
+        <ul style={{ fontSize: 13.5, lineHeight: 1.65 }}>
+          <li>{es
+            ? "¿Cuál es la difusividad térmica de ESTE suelo? No se puede medir in situ: dos series reales de temperatura de borde + la ecuación del calor la estiman (0.304 mm²/s), validada en profundidades que el optimizador nunca vio (~1 °C RMSE)."
+            : "What is THIS soil's thermal diffusivity? You cannot measure it in situ: two real boundary temperature series + the heat equation estimate it (0.304 mm²/s), validated at depths the optimizer never saw (~1 degC RMSE)."}</li>
+          <li>{es
+            ? "¿Dónde aísla y dónde conduce esta placa? Un mapa de defectos desde ~100 temperaturas puntuales: 4% de error; con física sola y cero datos, 356% (irrecuperable)."
+            : "Where is this plate insulating vs conducting? A defect map from ~100 point temperatures: 4% error; from physics alone with zero data, 356% (unrecoverable)."}</li>
+          <li>{es
+            ? "¿Cuándo llega el derrame al punto costero? Llegada a medio pico en t = 0.44 leída del campo transportado; cualquier otro punto está a una evaluación de distancia."
+            : "When does the spill reach the coastal checkpoint? Half-peak arrival at t = 0.44 read off the transported field; any other point is one evaluation away."}</li>
+        </ul>
+        <p style={{ fontSize: 13.5 }}>
+          {es
+            ? "En el App, cada caso abre con LA PREGUNTA y LA ESTIMACIÓN antes que nada; el resto del banco de trabajo (Comparar, Campo, Live, Entrenamiento, Diagnóstico) muestra CÓMO se ganó ese número y cuándo desconfiar de él."
+            : "In the App, every case opens with THE QUESTION and THE ESTIMATE before anything else; the rest of the workbench (Compare, Field, Live, Training, Diagnostics) shows HOW that number was earned and when to distrust it."}
+        </p>
+      </div>
+
       <h2>{es ? "Por qué importan las EDPs" : "Why PDEs matter"}</h2>
       <p>
         {es

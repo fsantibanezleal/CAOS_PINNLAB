@@ -201,5 +201,25 @@
   "summary": {
    "adapted_vs_std": 0.00082
   }
+ },
+ "estimate": {
+  "question_en": "When does the shock front arrive at the checkpoint x=0? (front-arrival estimation)",
+  "question_es": "¿Cuándo llega el frente de choque al punto x=0? (estimación de llegada de frentes)",
+  "why_en": "Arrival times are read off the tracked front; the viscosity family shares one net (the exact arrival is x*/s = 0.8 for every ν).",
+  "why_es": "Los tiempos de llegada se leen del frente rastreado; la familia de viscosidades comparte una red (la llegada exacta es x*/s = 0.8 para todo ν).",
+  "items": [
+   {
+    "label_en": "front (u=0.5) reaches x=0 at",
+    "label_es": "el frente (u=0.5) llega a x=0 en",
+    "values": {
+     "nu02": "t = 0.82 (exact 0.80)",
+     "nu03": "t = 0.82 (exact 0.80)",
+     "nu04": "t = 0.80 (exact 0.80)",
+     "nu05": "t = 0.82 (exact 0.80)",
+     "nu06": "t = 0.82 (exact 0.80)",
+     "nu08": "t = 0.82 (exact 0.80)"
+    }
+   }
+  ]
  }
 }

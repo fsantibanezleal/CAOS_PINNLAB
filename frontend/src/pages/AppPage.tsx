@@ -153,8 +153,18 @@ export function AppPage() {
         </select>
       </label>
       {(() => {
+        // Lead the chapter with the case's engineering QUESTION (issue #46), then the computed evidence line.
         const ch = STORY.find((f) => f.id === caseId);
-        return ch ? <p className="pl-story-blurb">{es ? ch.subEs : ch.subEn}</p> : null;
+        if (!ch) return null;
+        const entry = index.cases.find((x) => x.case_id === caseId);
+        const q = entry ? (es ? entry.question_es : entry.question_en) : undefined;
+        return (
+          <p className="pl-story-blurb">
+            {q && <strong className="pl-story-q">{q}</strong>}
+            {q ? " " : ""}
+            {es ? ch.subEs : ch.subEn}
+          </p>
+        );
       })()}
 
       <label className="pl-selrow">
@@ -179,6 +189,9 @@ export function AppPage() {
           >
             {isFeatured(c.case_id) && <span className="pl-star">★</span>}
             {caseLabel(c.case_id)}
+            {(es ? c.question_es : c.question_en) && (
+              <small className="pl-caseq">{es ? c.question_es : c.question_en}</small>
+            )}
           </button>
         ))}
       </div>

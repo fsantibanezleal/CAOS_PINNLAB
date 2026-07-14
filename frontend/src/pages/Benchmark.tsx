@@ -18,23 +18,25 @@ export function Benchmark() {
     loadIndex().then((ix) => Promise.all(ix.cases.map((c) => loadManifest(c.case_id))).then(setRows));
   }, []);
 
+  const es = lang === "es";
   return (
-    <div className="prose" style={{ maxWidth: 1040 }}>
+    <div className="prose" style={{ maxWidth: 1160 }}>
       <h1>Benchmark</h1>
       <p className="muted">
-        {lang === "es"
-          ? "Honestidad: error relativo vs la referencia (analítica/dataset/numérica), paridad ONNX-vs-modelo, y etiqueta de datos sintéticos vs reales. Sin números maquillados."
-         : "Honesty: relative error vs the reference (analytic/dataset/numerical), ONNX-vs-model parity, and the synthetic-vs-real data label. No dressed-up numbers."}
+        {es
+          ? "Honestidad: qué estima cada caso (la cantidad de interés computada offline), error relativo vs la referencia (analítica/dataset/numérica), paridad ONNX-vs-modelo, y etiqueta de datos sintéticos vs reales. Sin números maquillados."
+         : "Honesty: what each case estimates (the quantity of interest, computed offline), relative error vs the reference (analytic/dataset/numerical), ONNX-vs-model parity, and the synthetic-vs-real data label. No dressed-up numbers."}
       </p>
       <div className="panel">
         <table className="tbl">
           <thead>
             <tr>
               <th>case</th>
+              <th>{es ? "qué estima" : "what it estimates"}</th>
               <th>anchor</th>
               <th>{t("app.relL2")}</th>
-              <th>{lang === "es" ? "ingenua vs estándar" : "naive vs standard"}</th>
-              <th>{lang === "es" ? "corrección vs estándar" : "fix vs standard"}</th>
+              <th>{es ? "ingenua vs estándar" : "naive vs standard"}</th>
+              <th>{es ? "corrección vs estándar" : "fix vs standard"}</th>
               <th>{t("app.onnxParity")}</th>
               <th>{t("app.dataLabel")}</th>
             </tr>
@@ -43,10 +45,20 @@ export function Benchmark() {
             {rows.map((m) => {
               const s = (m.comparison?.summary ?? {}) as Record<string, number>;
               const pct = (v: number | undefined) => (typeof v === "number" ? (v * 100).toFixed(1) + "%" : "—");
+              const it0 = m.estimate?.items?.[0];
+              const qoiVal = it0 ? (it0.value ?? Object.values(it0.values ?? {})[0]) : undefined;
               return (
                 <tr key={m.case_id}>
                   <td className="mono">
                     <a href={`#/?case=${m.case_id}${m.comparison ? "&view=compare" : ""}`}>{m.case_id}</a>
+                  </td>
+                  <td style={{ maxWidth: 220 }} title={m.estimate ? (es ? m.estimate.question_es : m.estimate.question_en) : undefined}>
+                    {it0 ? (
+                      <>
+                        <span className="muted" style={{ fontSize: 11, display: "block", lineHeight: 1.3 }}>{es ? it0.label_es : it0.label_en}</span>
+                        <span className="mono" style={{ fontSize: 12 }}>{qoiVal}</span>
+                      </>
+                    ) : "—"}
                   </td>
                   <td>{m.validation_anchor}</td>
                   <td className="mono">

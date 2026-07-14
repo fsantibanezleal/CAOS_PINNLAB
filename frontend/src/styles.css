@@ -202,11 +202,32 @@ ol li, ul li { margin: 4px 0; }
 .pl-viewbtn small { display: block; font-weight: 400; font-size: 11px; opacity: 0.8; margin-top: 1px; }
 /* case list in the left rail (domain -> case) */
 .pl-caselist { display: flex; flex-direction: column; gap: 4px; }
-.pl-caseitem { text-align: left; padding: 7px 10px; border: 1px solid transparent; border-radius: 8px; background: transparent; color: var(--muted); font-size: 12.5px; cursor: pointer; font-family: inherit; display: flex; align-items: baseline; gap: 6px; }
+.pl-caseitem { text-align: left; padding: 7px 10px; border: 1px solid transparent; border-radius: 8px; background: transparent; color: var(--muted); font-size: 12.5px; cursor: pointer; font-family: inherit; display: flex; align-items: baseline; gap: 6px; flex-wrap: wrap; }
 .pl-caseitem:hover { color: var(--text); background: var(--panel-2); }
 .pl-caseitem.on { color: var(--text); background: var(--panel-2); border-color: var(--accent); }
 .pl-caseitem .pl-star { color: var(--accent); }
-.pl-caselist-scroll { max-height: 176px; overflow-y: auto; }
+/* the engineering question under each case name (issue #46): the list sells the QUESTION, not the operator */
+.pl-caseq { flex: 1 1 100%; font-size: 10.5px; line-height: 1.35; opacity: .75; font-weight: 400; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.pl-caseitem.on .pl-caseq { opacity: .9; }
+.pl-caselist-scroll { max-height: 300px; overflow-y: auto; }
+
+/* ---- THE QUESTION then THE ESTIMATE (issue #46): the answer card above the context strip ---- */
+.pl-answer { display: flex; flex-wrap: wrap; gap: 10px 26px; background: var(--panel); border: 1px solid color-mix(in srgb, var(--accent) 45%, var(--border)); border-radius: 12px; padding: 12px 16px; box-shadow: var(--shadow); }
+.pl-ans-q { flex: 1 1 300px; min-width: 260px; }
+.pl-ans-eyebrow { display: block; font-size: 10px; letter-spacing: .08em; font-weight: 700; color: var(--accent); margin-bottom: 3px; }
+.pl-ans-question { margin: 0 0 6px; font-size: 15.5px; font-weight: 650; line-height: 1.4; color: var(--text); }
+.pl-ans-why { margin: 0; font-size: 11.5px; line-height: 1.5; color: var(--muted); }
+.pl-ans-eyebrow2 { font-size: 9.5px; letter-spacing: .06em; font-weight: 700; color: var(--accent-2); text-transform: uppercase; margin-right: 5px; }
+.pl-ans-items { flex: 1.4 1 380px; min-width: 300px; }
+.pl-ans-grid { display: flex; flex-wrap: wrap; gap: 8px; }
+.pl-ans-item { flex: 1 1 200px; min-width: 180px; border: 1px solid var(--border); border-radius: 10px; background: var(--panel-2); padding: 7px 11px; display: flex; flex-direction: column; gap: 3px; }
+.pl-ans-label { font-size: 11px; line-height: 1.35; color: var(--muted); }
+.pl-ans-value { font-size: 15px; font-weight: 650; color: var(--text); }
+.pl-ans-variants { display: flex; flex-wrap: wrap; gap: 3px; margin-top: 2px; }
+.pl-ans-vchip { font-size: 10px; padding: 1px 7px; border-radius: 999px; border: 1px solid var(--border); background: transparent; color: var(--muted); cursor: pointer; font-family: inherit; }
+.pl-ans-vchip:hover { color: var(--text); border-color: var(--accent); }
+.pl-ans-vchip.on { color: var(--accent); border-color: color-mix(in srgb, var(--accent) 55%, transparent); background: color-mix(in srgb, var(--accent) 12%, transparent); }
+.pl-story-q { display: block; color: var(--accent); font-weight: 650; margin-bottom: 2px; }
 .pl-story-blurb { font-size: 11.5px; color: var(--muted); line-height: 1.5; margin: 6px 0 0; border-left: 2px solid var(--accent); padding-left: 8px; }
 .pl-selrow { display: flex; flex-direction: column; gap: 4px; margin: 12px 0 0; }
 .pl-selrow:first-child { margin-top: 0; }

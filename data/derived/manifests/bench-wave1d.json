@@ -201,5 +201,25 @@
   "summary": {
    "adapted_vs_std": 0.00321
   }
+ },
+ "estimate": {
+  "question_en": "What oscillation period does the string have at each wave speed?",
+  "question_es": "¿Qué período de oscilación tiene la cuerda a cada velocidad de onda?",
+  "why_en": "The period is read from the reconstructed standing wave; the speed family shares one net (exact T = 2/c).",
+  "why_es": "El período se lee de la onda estacionaria reconstruida; la familia de velocidades comparte una red (T exacto = 2/c).",
+  "items": [
+   {
+    "label_en": "measured period (4x first zero crossing)",
+    "label_es": "período medido (4x primer cruce por cero)",
+    "values": {
+     "c05": "T > window (exact 4.00)",
+     "c075": "T = 2.67 (exact 2.67)",
+     "c10": "T = 2.00 (exact 2.00)",
+     "c125": "T = 1.60 (exact 1.60)",
+     "c15": "T = 1.33 (exact 1.33)",
+     "c20": "T = 1.00 (exact 1.00)"
+    }
+   }
+  ]
  }
 }

@@ -72,5 +72,23 @@
  ],
  "diagnostics": {
   "path": "bench-navier-cavity/diagnostics.json"
+ },
+ "estimate": {
+  "question_en": "Where does the primary vortex sit? (mixing/recirculation quality)",
+  "question_es": "¿Dónde queda el vórtice primario? (calidad de mezcla/recirculación)",
+  "why_en": "The vortex core is the classical cavity metric; it is read from the coupled (u,v) the loss-weighted net reconstructs (validated on the Ghia centerlines).",
+  "why_es": "El núcleo del vórtice es la métrica clásica de la cavidad; se lee del (u,v) acoplado que la red ponderada reconstruye (validado en las líneas de Ghia).",
+  "items": [
+   {
+    "label_en": "vortex core (stream-function extremum)",
+    "label_es": "núcleo del vórtice (extremo de la función corriente)",
+    "value": "(x, y) = (0.61, 0.75)"
+   },
+   {
+    "label_en": "core strength ψ",
+    "label_es": "intensidad del núcleo ψ",
+    "value": "-0.0835"
+   }
+  ]
  }
 }

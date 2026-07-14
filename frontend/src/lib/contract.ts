@@ -94,6 +94,26 @@ export interface CaseManifest {
   // DYNAMICS (issue #36): baked animations the web replays.
   training?: { path: string }; // "watch it learn": the field at training checkpoints, naive vs adapted
   evolution?: { path: string }; // 2-D time-frame sequence (ONNX offline evals) for the animated Field view
+  // THE ESTIMATE (issue #46): the engineering question this case answers + the answer, computed by
+  // data-pipeline/build_estimates.py from the baked artifacts (training-free; every number derived, none asserted).
+  estimate?: EstimateBlock;
+}
+
+/** One answer line: a preformatted value, either single or per-variant (keyed by variant id). */
+export interface EstimateItem {
+  label_en: string;
+  label_es: string;
+  value?: string;
+  values?: Record<string, string>;
+}
+
+/** The case's engineering QUESTION, the honest why-a-PINN line, and the computed ANSWER items. */
+export interface EstimateBlock {
+  question_en: string;
+  question_es: string;
+  why_en: string;
+  why_es: string;
+  items: EstimateItem[];
 }
 
 /** "Watch it learn" (issue #36): per-lane field frames at training checkpoints + the L2-vs-iteration curve. */
@@ -186,6 +206,9 @@ export interface CaseIndexEntry {
   view_kit?: string;
   method?: string;
   real_or_synthetic?: string;
+  // the engineering question the case answers (issue #46), patched in by build_estimates.py
+  question_en?: string;
+  question_es?: string;
 }
 
 export interface CaseIndex {

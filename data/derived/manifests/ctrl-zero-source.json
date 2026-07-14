@@ -201,5 +201,23 @@
   "summary": {
    "adapted_vs_std": 0.02138
   }
+ },
+ "estimate": {
+  "question_en": "Does the estimator return ZERO when the true answer is zero? (the negative control)",
+  "question_es": "¿El estimador devuelve CERO cuando la respuesta verdadera es cero? (el control negativo)",
+  "why_en": "Every measuring instrument needs a null test: with f = 0 the only solution is u = 0, and the machinery must find it.",
+  "why_es": "Todo instrumento de medida necesita una prueba nula: con f = 0 la única solución es u = 0, y la maquinaria debe encontrarla.",
+  "items": [
+   {
+    "label_en": "RMS of u at a = 0 (should be ≈ 0)",
+    "label_es": "RMS de u en a = 0 (debe ser ≈ 0)",
+    "value": "5.2e-04"
+   },
+   {
+    "label_en": "max |u| at a = 0",
+    "label_es": "máx |u| en a = 0",
+    "value": "1.3e-03"
+   }
+  ]
  }
 }

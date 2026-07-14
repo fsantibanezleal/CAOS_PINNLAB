@@ -3,6 +3,7 @@ import { useEffect, useState, type ReactNode } from "react";
 import type { CaseManifest, FieldTrace } from "../lib/contract";
 import { CONSTRAINTS, PIN_LABELS } from "../content/constraints";
 import { loadManifest, loadTrace } from "../lib/data";
+import { AnswerCard } from "./AnswerCard";
 import { Equation } from "./Equation";
 import { CompareKit } from "./kits/CompareKit";
 import { DiagnosticsKit } from "./kits/DiagnosticsKit";
@@ -170,8 +171,10 @@ export function CaseExperiment({
         </div>
       </aside>
 
-      {/* MAIN: a full-width TOP context strip (equation never cut) then the full-width stage under it */}
+      {/* MAIN: THE QUESTION + THE ESTIMATE first (issue #46), then the context strip (equation never cut),
+          then the full-width stage under it */}
       <div className="pl-main">
+        <AnswerCard manifest={manifest} activeId={active.id} onSelect={setActiveId} lang={lang} />
         <div className="pl-context">
           <div className="pl-ctx-eq"><Equation tex={manifest.governing_equations} /></div>
           {CONSTRAINTS[manifest.case_id] && (

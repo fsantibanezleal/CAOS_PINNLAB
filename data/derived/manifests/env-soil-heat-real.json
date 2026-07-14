@@ -73,5 +73,23 @@
  ],
  "diagnostics": {
   "path": "env-soil-heat-real/diagnostics.json"
+ },
+ "estimate": {
+  "question_en": "What is this soil's thermal diffusivity? (you cannot measure it in situ)",
+  "question_es": "¿Cuál es la difusividad térmica de este suelo? (no se puede medir in situ)",
+  "why_en": "The PINN is the instrument: two REAL boundary temperature series + the heat equation estimate the property, validated on interior depths the optimizer never saw.",
+  "why_es": "La PINN es el instrumento: dos series reales de temperatura de borde + la ecuación del calor estiman la propiedad, validada en profundidades interiores que el optimizador nunca vio.",
+  "items": [
+   {
+    "label_en": "recovered diffusivity α",
+    "label_es": "difusividad recuperada α",
+    "value": "0.304 mm²/s"
+   },
+   {
+    "label_en": "out-of-sample error (10/20/50 cm)",
+    "label_es": "error fuera de muestra (10/20/50 cm)",
+    "value": "1.03 °C RMSE"
+   }
+  ]
  }
 }

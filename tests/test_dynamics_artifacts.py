@@ -117,3 +117,40 @@ def test_diagnostics_contract(m):
     for lc in d.get("line_comparisons", []):
         for s in lc["series"]:
             assert len(s["x"]) == len(s["y"]), f"series {s['label']} x/y mismatch"
+
+
+# ---- THE ESTIMATE block (issue #46): every case answers an engineering question with computed numbers ----
+
+def test_estimate_coverage_all_cases():
+    """The estimation reframe covers the WHOLE catalogue: a case without its question/answer is a regression."""
+    missing = [m["case_id"] for m in ALL if not m.get("estimate")]
+    assert not missing, f"cases without an estimate block: {missing}"
+
+
+@pytest.mark.parametrize("m", ALL, ids=lambda m: m["case_id"])
+def test_estimate_contract(m):
+    e = m.get("estimate")
+    assert e, "estimate block missing"
+    for k in ("question_en", "question_es", "why_en", "why_es"):
+        assert isinstance(e.get(k), str) and e[k].strip(), f"{k} missing/empty"
+    assert e["question_en"].strip().endswith("?") or "(" in e["question_en"], "the question should read as a question"
+    items = e.get("items")
+    assert isinstance(items, list) and len(items) >= 1, "at least one answer item"
+    variant_ids = {v["id"] for v in m["variants"]}
+    for it in items:
+        assert isinstance(it.get("label_en"), str) and it["label_en"].strip()
+        assert isinstance(it.get("label_es"), str) and it["label_es"].strip()
+        has_value = isinstance(it.get("value"), str) and it["value"].strip()
+        has_values = isinstance(it.get("values"), dict) and len(it["values"]) > 0
+        assert has_value != has_values, "an item carries value XOR values"
+        if has_values:
+            unknown = set(it["values"]) - variant_ids
+            assert not unknown, f"values keyed by unknown variant ids: {unknown}"
+            assert all(isinstance(v, str) and v.strip() for v in it["values"].values())
+
+
+def test_index_carries_questions():
+    """build_estimates.py patches index.json so the case list + story can lead with the question."""
+    idx = json.loads((MANIFESTS / "index.json").read_text(encoding="utf-8"))
+    missing = [c["case_id"] for c in idx["cases"] if not (c.get("question_en") and c.get("question_es"))]
+    assert not missing, f"index entries without questions: {missing}"
