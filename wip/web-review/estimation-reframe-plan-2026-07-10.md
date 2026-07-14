@@ -192,3 +192,21 @@ Answering the owner's question 'did you search for cases where PDEs/PINNs estima
   fundamentals-review-2026-07-10.md (constraints/budget): both remain valid layers; this reframe adds the MISSING
   first layer: the question. Order of a case page becomes: QUESTION -> ANSWER (estimate) -> how (the ladder,
   the dynamics, the constraints) -> how much information (identifiability).
+
+## 6. EXECUTION STATUS (2026-07-13, v0.23.000 LIVE, issue #46 CLOSED)
+
+- Phase A DONE: build_estimates.py (training-free) baked all 20 estimate blocks + index questions. Sanity pass
+  caught and fixed 4 derivation defects before shipping: speed-minimum vortex detector landed on a corner eddy
+  (replaced by the stream-function extremum, core at (0.61, 0.75)); the engine's lyapunov_est 0.0205 1/s fails
+  ln(0.3/0.01)/1.99 = 1.7 1/s so it is NOT surfaced (trace-derived twin leave-time 2.11 s shipped instead);
+  zero-source l2_relative is relative-with-eps (absolute RMS 5.2e-4 shipped); saturated exceedance renders >99.9%.
+  Cross-validation: heat1d vs ln2/(alpha pi^2) all 6 alphas; wave T=2/c exact; burgers 0.80-0.82 vs 0.80;
+  flotation 1-exp(-k), t90=ln10/k within 2%; darcy peaks within 4% of FD.
+- Phase B DONE: AnswerCard (regime-reactive, chips drive the regime), case-list questions, story-blurb questions,
+  Introduction estimation opening, Methodology "PINNs as estimators in the wild" transcribed from §5b (only the
+  20 verified claims; 5 new REFS; fixed two off-by-one BEYOND citations, one rendering doi:undefined live).
+- Phase C DONE: Benchmark "what it estimates" column.
+- Phase D DEFERRED to a dedicated compute session (recorded in issue #46 close comment): the HFM-style
+  velocimetry-from-dye case is real training, not to be rushed into a release week.
+- Validation: 22 new contract tests (suite green incl. sandboxed pipeline smoke); tsc + build clean;
+  estimate-QA harness 7 surfaces x 2 themes local AND on prod; pl-validate-all 20x2 = 0 console errors.
