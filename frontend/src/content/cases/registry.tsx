@@ -10,6 +10,7 @@ import { HeapLeachContext } from "./HeapLeachContext";
 import { Heat1dContext } from "./Heat1dContext";
 import { Heat2dInverseContext } from "./Heat2dInverseContext";
 import { HelmholtzContext } from "./HelmholtzContext";
+import { HiddenVelocityContext } from "./HiddenVelocityContext";
 import { NavierCavityContext } from "./NavierCavityContext";
 import { OceanTransportContext } from "./OceanTransportContext";
 import { PoissonContext } from "./PoissonContext";
@@ -40,6 +41,7 @@ const CASE_CONTEXT: Record<string, (p: { lang: "en" | "es" }) => ReactNode> = {
   "mine-heap-leach-rt": HeapLeachContext,
   "mine-comminution-pbe": ComminutionContext,
   "ind-helmholtz": HelmholtzContext,
+  "ind-hidden-velocity": HiddenVelocityContext,
   "bench-navier-cavity": NavierCavityContext,
   "env-soil-heat-real": SoilHeatRealContext,
   "poll-source-uq-bpinn": SourceUqBpinnContext,

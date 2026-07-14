@@ -2,8 +2,9 @@ import { useEffect, useState, type ReactNode } from "react";
 
 import type { CaseManifest, FieldTrace } from "../lib/contract";
 import { CONSTRAINTS, PIN_LABELS } from "../content/constraints";
+import { RESULTS } from "../content/results";
 import { loadManifest, loadTrace } from "../lib/data";
-import { AnswerCard } from "./AnswerCard";
+import { CaseResults } from "./CaseResults";
 import { Equation } from "./Equation";
 import { CompareKit } from "./kits/CompareKit";
 import { DiagnosticsKit } from "./kits/DiagnosticsKit";
@@ -12,13 +13,14 @@ import { resolveKit } from "./kits/registry";
 import { LivePanel } from "./LivePanel";
 import { VariantCharts } from "./VariantCharts";
 
-type TabId = "compare" | "field" | "live" | "charts" | "context" | "diagnostics" | "training";
+type TabId = "results" | "context" | "field" | "live" | "compare" | "training" | "diagnostics" | "charts";
 
-/** One case = a full-width workbench (ADR-0016 §9 + ADR-0063), mirroring CAOS_RES_Lidar3D's `.work` shell:
- *  a LEFT control rail (the case selector, passed in as `selector`, then the regime chips + the view switch),
- *  a CENTER stage that fills the width with the active view (Field / Live / Charts / Context), and a RIGHT
- *  stats rail (governing equation + method/engine/L2/ONNX + expected band). No control is lost from the old
- *  stacked layout; they are re-slotted into the three columns so the content finally uses the full width. */
+/** One case = an INVESTIGATION workbench (unified remediation plan, issue #49). Owner-fixed structure:
+ *  the tabs start with RESULTS (the landing view: situation -> what the model calculates -> what we know ->
+ *  how the PINN helps -> the answer + verdict), then CONTEXT (the theory), then the evidence views. The tabs
+ *  sit ON the stage they control; the regime chips sit directly ABOVE the stage (control next to effect);
+ *  the left rail carries ONLY case selection; the method/engine/error meta is a one-line stage footer. The
+ *  instrument fits the screen: no page scroll to operate it. */
 export function CaseExperiment({
   manifestId,
   selector,
@@ -41,18 +43,18 @@ export function CaseExperiment({
   const [activeId, setActiveId] = useState<string>("");
   const [trace, setTrace] = useState<FieldTrace | null>(null);
   const [err, setErr] = useState<string | null>(null);
-  const [tab, setTab] = useState<TabId>("field");
+  const [tab, setTab] = useState<TabId>("results");
 
   useEffect(() => {
-    // Land on the requested view when it exists for this case (deep link / story chapter); otherwise on the
-    // method-ladder comparison when the case ships one (the richest view), else the Field view.
+    // Land on the requested view when it exists (deep link / story chapter); otherwise on RESULTS: every case
+    // opens with what was asked and what was found (owner decision D1), never with raw solver output.
     if (!manifest) return;
-    const avail = new Set<TabId>(["field", "live", "charts", "context"]);
+    const avail = new Set<TabId>(["results", "context", "field", "live", "charts"]);
     if (manifest.comparison) avail.add("compare");
     if (manifest.training) avail.add("training");
     if (manifest.diagnostics) avail.add("diagnostics");
     const req = requestedView as TabId | undefined;
-    setTab(req && avail.has(req) ? req : manifest.comparison ? "compare" : "field");
+    setTab(req && avail.has(req) ? req : "results");
   }, [manifest?.case_id, requestedView]);
 
   function switchTab(id: TabId) {
@@ -91,14 +93,16 @@ export function CaseExperiment({
     };
   }, [active?.trace.path]);
 
+  // Owner-fixed order (D1): Results, Context, then the rest.
   const VIEWS: { id: TabId; label: string; sub: string }[] = [
-    ...(manifest?.comparison ? [{ id: "compare" as TabId, label: es ? "Comparar" : "Compare", sub: es ? "estándar vs PINN" : "standard vs PINN" }] : []),
+    { id: "results", label: es ? "Resultados" : "Results", sub: es ? "la pregunta y la respuesta" : "the question and the answer" },
+    { id: "context", label: es ? "Contexto" : "Context", sub: es ? "teoría y ecuaciones" : "theory + equations" },
     { id: "field", label: es ? "Campo" : "Field", sub: es ? "campo interactivo" : "interactive field" },
     { id: "live", label: "Live", sub: es ? "inferencia en el navegador" : "in-browser inference" },
-    { id: "charts", label: "Charts", sub: es ? "comparación de regímenes" : "regime comparison" },
+    ...(manifest?.comparison ? [{ id: "compare" as TabId, label: es ? "Comparar" : "Compare", sub: es ? "estándar vs PINN" : "standard vs PINN" }] : []),
     ...(manifest?.training ? [{ id: "training" as TabId, label: es ? "Entrenamiento" : "Training", sub: es ? "míralo aprender" : "watch it learn" }] : []),
-    ...(manifest?.diagnostics ? [{ id: "diagnostics" as TabId, label: es ? "Diagnóstico" : "Diagnostics", sub: es ? "por qué falla" : "why it fails" }] : []),
-    { id: "context", label: "Context", sub: es ? "teoría y ecuaciones" : "theory + equations" },
+    ...(manifest?.diagnostics ? [{ id: "diagnostics" as TabId, label: es ? "Diagnóstico" : "Diagnostics", sub: es ? "validación independiente" : "independent validation" }] : []),
+    { id: "charts", label: "Charts", sub: es ? "errores por régimen" : "regime errors" },
   ];
 
   if (err) {
@@ -106,7 +110,6 @@ export function CaseExperiment({
       <div className="pl-work">
         <aside className="pl-rail">{selector}</aside>
         <section className="pl-stage"><div className="banner error">⚠ {err}</div></section>
-        <aside className="pl-rail" />
       </div>
     );
   }
@@ -115,16 +118,33 @@ export function CaseExperiment({
       <div className="pl-work">
         <aside className="pl-rail">{selector}</aside>
         <section className="pl-stage"><div className="loading">{es ? "Cargando…" : "Loading…"}</div></section>
-        <aside className="pl-rail" />
       </div>
     );
   }
 
   const Kit = resolveKit(manifest.view_kit);
   const l2 = active.metrics.l2_relative;
+  const r = RESULTS[manifest.case_id];
 
   const stage =
-    tab === "compare" ? (
+    tab === "results" ? (
+      <CaseResults manifest={manifest} trace={trace} active={active} lang={lang} kit={Kit} onGoto={(v) => switchTab(v as TabId)} onSelectVariant={setActiveId} />
+    ) : tab === "context" ? (
+      <div className="pl-ctxview">
+        <div className="pl-ctx-eq"><Equation tex={manifest.governing_equations} /></div>
+        {CONSTRAINTS[manifest.case_id] && (
+          <div className="pl-pins" title={es ? "Qué fija la solución: una EDP sola tiene infinitas soluciones" : "What pins the solution down: a PDE alone has infinitely many solutions"}>
+            <span className="pl-pins-label">{es ? "Qué fija la solución" : "What pins the solution"}</span>
+            {CONSTRAINTS[manifest.case_id].map((pin, i) => (
+              <span key={i} className={"pin pin-" + pin.kind}>
+                <b>{PIN_LABELS[pin.kind][lang]}</b> {es ? pin.es : pin.en}
+              </span>
+            ))}
+          </div>
+        )}
+        <div className="prose">{description}</div>
+      </div>
+    ) : tab === "compare" ? (
       <CompareKit manifest={manifest} lang={lang} />
     ) : tab === "training" ? (
       <TrainingKit manifest={manifest} lang={lang} />
@@ -134,70 +154,45 @@ export function CaseExperiment({
       <Kit key={manifest.case_id} manifest={manifest} trace={trace} active={active} lang={lang} />
     ) : tab === "live" ? (
       <LivePanel manifest={manifest} lang={lang} />
-    ) : tab === "charts" ? (
-      <VariantCharts variants={manifest.variants} activeId={active.id} onSelect={setActiveId} lang={lang} />
     ) : (
-      <div className="prose">{description}</div>
+      <VariantCharts variants={manifest.variants} activeId={active.id} onSelect={setActiveId} lang={lang} />
     );
 
   return (
     <div className="pl-work">
-      {/* LEFT rail: case selector (from AppPage) + regime + view switch */}
-      <aside className="pl-rail">
-        {selector}
-        <hr className="pl-rail-sep" />
-        <h4>
-          {es ? "Régimen" : "Regime"} ({manifest.variants.length}){" "}
-          <span className={"badge " + (manifest.lane === "live" ? "live" : "precomputed")}>
-            {manifest.lane === "live" ? "live" : "precompute"}
-          </span>
-        </h4>
-        <div className="variant-chips">
-          {manifest.variants.map((v) => (
-            <button key={v.id} className={"variant-chip" + (v.id === active.id ? " active" : "")} onClick={() => setActiveId(v.id)}>
-              {es ? v.label_es : v.label_en}
-            </button>
-          ))}
-        </div>
-        {active && <p className="variant-note">{es ? active.note_es : active.note_en}</p>}
-        <h4>{es ? "Vista" : "View"}</h4>
-        <div className="pl-viewbtns">
-          {VIEWS.map((v) => (
-            <button key={v.id} type="button" className={"pl-viewbtn" + (v.id === tab ? " on" : "")} onClick={() => switchTab(v.id)} aria-pressed={v.id === tab}>
-              {v.label}
-              <small>{v.sub}</small>
-            </button>
-          ))}
-        </div>
-      </aside>
+      {/* LEFT rail: case selection ONLY (search + domain + list, from AppPage) */}
+      <aside className="pl-rail">{selector}</aside>
 
-      {/* MAIN: THE QUESTION + THE ESTIMATE first (issue #46), then the context strip (equation never cut),
-          then the full-width stage under it */}
+      {/* MAIN: regime strip -> tabs ON the stage -> the stage filling the rest -> a one-line meta footer */}
       <div className="pl-main">
-        <AnswerCard manifest={manifest} activeId={active.id} onSelect={setActiveId} lang={lang} />
-        <div className="pl-context">
-          <div className="pl-ctx-eq"><Equation tex={manifest.governing_equations} /></div>
-          {CONSTRAINTS[manifest.case_id] && (
-            <div className="pl-pins" title={es ? "Qué fija la solución: una EDP sola tiene infinitas soluciones" : "What pins the solution down: a PDE alone has infinitely many solutions"}>
-              <span className="pl-pins-label">{es ? "Qué fija la solución" : "What pins the solution"}</span>
-              {CONSTRAINTS[manifest.case_id].map((pin, i) => (
-                <span key={i} className={"pin pin-" + pin.kind}>
-                  <b>{PIN_LABELS[pin.kind][lang]}</b> {es ? pin.es : pin.en}
-                </span>
-              ))}
-            </div>
-          )}
-          <div className="pl-ctx-meta">
-            <span className="pl-ctx-metric"><b className="muted">{es ? "Método" : "Method"}</b> <span className="mono">{manifest.method}</span></span>
-            <span className="pl-ctx-metric"><b className="muted">{es ? "Motor" : "Engine"}</b> <span className="mono">{manifest.engine.framework}</span></span>
-            <span className="pl-ctx-metric"><b className="muted">L2</b> <span className="mono">{typeof l2 === "number" ? l2.toExponential(2) : String(l2)}</span></span>
-            <span className="pl-ctx-metric"><b className="muted">{es ? "Paridad ONNX" : "ONNX parity"}</b> <span className="mono">{manifest.onnx.parity_max_abs.toExponential(1)}</span></span>
+        {manifest.variants.length > 1 && (
+          <div className="pl-regime-strip" role="group" aria-label={es ? "Régimen" : "Regime"}>
+            <span className="pl-regime-label">{es ? "RÉGIMEN" : "REGIME"}</span>
+            {manifest.variants.map((v) => (
+              <button key={v.id} className={"variant-chip" + (v.id === active.id ? " active" : "")} title={es ? v.note_es : v.note_en} onClick={() => setActiveId(v.id)}>
+                {es ? v.label_es : v.label_en}
+              </button>
+            ))}
+            <span className="pl-regime-note muted">{es ? active.note_es : active.note_en}</span>
           </div>
-          <p className="pl-ctx-band muted">{manifest.expected_band}</p>
+        )}
+        <div className="pl-stagetabs" role="tablist" aria-label={es ? "Vistas" : "Views"}>
+          {VIEWS.map((v) => (
+            <button key={v.id} type="button" role="tab" className={"pl-viewbtn" + (v.id === tab ? " on" : "")} onClick={() => switchTab(v.id)} aria-selected={v.id === tab} title={v.sub}>
+              {v.label}
+            </button>
+          ))}
         </div>
         <section className="pl-stage" aria-label={manifest.title}>
           {stage}
         </section>
+        <div className="pl-meta-footer mono">
+          <span><b className="muted">{es ? "Método" : "Method"}</b> {manifest.method}</span>
+          <span><b className="muted">{es ? "Motor" : "Engine"}</b> {manifest.engine.framework}</span>
+          <span><b className="muted">L2</b> {typeof l2 === "number" ? l2.toExponential(2) : String(l2)}</span>
+          <span><b className="muted">{es ? "Paridad ONNX" : "ONNX parity"}</b> {manifest.onnx.parity_max_abs.toExponential(1)}</span>
+          {r && <span className="pl-meta-verdict" title={es ? r.verdict_es : r.verdict_en}><b className="muted">{es ? "Veredicto" : "Verdict"}</b> {(es ? r.verdict_es : r.verdict_en).split(":")[0]}</span>}
+        </div>
       </div>
     </div>
   );

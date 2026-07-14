@@ -13,7 +13,6 @@ ln 2/(alpha pi^2): agreement within the trace's time resolution (1-2.5%).
 from __future__ import annotations
 
 import json
-import io
 from pathlib import Path
 
 import numpy as np
@@ -125,7 +124,7 @@ def bake_all():
         "The ensemble gives the estimate WITH honest error bars: sigma grows exactly where sensors are absent, so the compliance answer carries its own confidence.",
         "El ensamble entrega la estimación CON barras de error honestas: sigma crece justo donde no hay sensores, así el veredicto de cumplimiento lleva su propia confianza.",
         [
-            item(f"c at (x=0.5, t=0.25)", "c en (x=0.5, t=0.25)", value=f"{mu:.3f} ± {2*sg:.3f} (2σ)"),
+            item("c at (x=0.5, t=0.25)", "c en (x=0.5, t=0.25)", value=f"{mu:.3f} ± {2*sg:.3f} (2σ)"),
             item(f"P(c > {thr}) at that point", f"P(c > {thr}) en ese punto", value=p_str),
             item("least-trusted spot (largest σ)", "punto menos confiable (mayor σ)", value=f"σ = {float(std[sij]):.4f} at (x={float(xs[sij[0]]):.2f}, t={float(ts[sij[1]]):.2f})"),
         ],
@@ -229,7 +228,7 @@ def bake_all():
     s_star = 0.3
     for v in m["variants"]:
         t = trace_of(m, v["id"])
-        ss, ts_ = np.array(t["axes"]["s"]), np.array(t["axes"]["t"])
+        ss = np.array(t["axes"]["s"])
         n = np.array(t["fields"]["n"])  # [is][it]
         below = ss <= s_star
         num = np.trapezoid(n[below, -1], ss[below]); den = np.trapezoid(n[:, -1], ss)
@@ -479,6 +478,36 @@ def bake_all():
             item("max |u| at a = 0", "máx |u| en a = 0", value=f"{mx:.1e}"),
         ],
     )
+
+    # ---- ind-hidden-velocity (issue #48): the HFM flagship. The vortex core is read from the RECOVERED
+    #      current via the stream-function extremum (the Phase A technique, now applied to an estimate that
+    #      was never measured); the swept vs dead-zone split is the honesty pair. ----
+    if (MANIFESTS / "ind-hidden-velocity.json").exists():
+        m = man("ind-hidden-velocity")
+        mid = next((v for v in m["variants"] if v["id"] == "t05"), m["variants"][0])
+        t = trace_of(m, mid["id"])
+        xs, ys = np.array(t["axes"]["x"]), np.array(t["axes"]["y"])
+        u = np.array(t["fields"]["u"])
+        dy = np.diff(ys)
+        psi = np.zeros_like(u)
+        psi[:, 1:] = np.cumsum(0.5 * (u[:, 1:] + u[:, :-1]) * dy[None, :], axis=1)
+        ij = np.unravel_index(np.argmax(np.abs(psi)), psi.shape)
+        cx, cy = float(xs[ij[0]]), float(ys[ij[1]])
+        s = t.get("summary", {})
+        QUESTIONS["ind-hidden-velocity"] = set_estimate(
+            "ind-hidden-velocity",
+            "You can only see the dye. What is the current underneath? (the HFM mechanism, Science 2020)",
+            "Solo puedes ver el tinte. ¿Cuál es la corriente debajo? (el mecanismo HFM, Science 2020)",
+            "The flagship: the whole velocity field is estimated from sparse noisy dye samples + transport physics alone: no velocity data, no IC/BC. Exactly what direct measurement cannot give.",
+            "El buque insignia: todo el campo de velocidad se estima solo desde muestras dispersas y ruidosas de tinte + la física del transporte: sin datos de velocidad, sin CI/CB. Justo lo que la medición directa no puede dar.",
+            [
+                item("recovered circulation center (true: 0.50, 0.50)", "centro de circulación recuperado (verdadero: 0.50, 0.50)", value=f"(x, y) = ({cx:.2f}, {cy:.2f})"),
+                item("current error INSIDE the dye-swept region", "error de corriente DENTRO de la región barrida", value=f"{s.get('speed_rel_rmse_swept', 0)*100:.1f}% rel RMSE"),
+                item("in the never-dyed dead zones (unidentifiable)", "en las zonas muertas sin tinte (no identificable)", value=f"{s.get('speed_rel_rmse_dead', 0)*100:.1f}%"),
+            ],
+        )
+    else:
+        print("[ind-hidden-velocity] manifest not baked yet: skipped (re-run after the pipeline)")
 
     # ---- patch index.json with the questions ----
     idx = json.loads((MANIFESTS / "index.json").read_text(encoding="utf-8"))

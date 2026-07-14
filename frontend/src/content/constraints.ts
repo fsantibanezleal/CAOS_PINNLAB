@@ -74,6 +74,12 @@ export const CONSTRAINTS: Record<string, Pin[]> = {
     { kind: "param", en: "wavenumber fixed at k₀ = 6π (the spectral-bias stress)", es: "número de onda fijo k₀ = 6π (el estrés del sesgo espectral)" },
     { kind: "anchor", en: "analytic MMS + classical FDM standard", es: "MMS analítica + estándar FDM clásico" },
   ],
+  "ind-hidden-velocity": [
+    { kind: "unknown", en: "the WHOLE velocity field (u,v): never measured, the HFM hidden state", es: "TODO el campo de velocidad (u,v): nunca medido, el estado oculto de HFM" },
+    { kind: "data", en: "~640 sparse noisy dye samples are the ONLY observations (no IC/BC on c)", es: "~640 muestras de tinte dispersas y ruidosas son las ÚNICAS observaciones (sin CI/CB de c)" },
+    { kind: "param", en: "D = 0.02 known (HFM-style); incompressibility + declared STEADY flow as residuals", es: "D = 0.02 conocida (estilo HFM); incompresibilidad + flujo ESTACIONARIO declarado como residuales" },
+    { kind: "anchor", en: "closed-form u* + stability-asserted FD dye truth; swept vs dead-zone error split", es: "u* cerrada + tinte FD con estabilidad verificada; error separado barrida vs zona muerta" },
+  ],
   "ind-heat2d-inverse": [
     { kind: "bc", en: "T = 0 on the boundary (hard)", es: "T = 0 en el borde (dura)" },
     { kind: "unknown", en: "k(x,y) is a FIELD unknown: physics alone leaves it underdetermined (356%)", es: "k(x,y) es incógnita de CAMPO: la física sola la deja indeterminada (356%)" },

@@ -10,7 +10,7 @@ value; lanes are derived from measurements (see [the gate](../architecture/the-g
 | Category | Cases |
 |----------|-------|
 | **canonical-benchmark** | poisson2d · heat1d · wave1d · burgers1d · allencahn · navier-cavity · darcy-operator (FNO) · **double-pendulum (chaotic ODE)** |
-| **industrial-fluids-heat** | helmholtz · heat2d-inverse |
+| **industrial-fluids-heat** | helmholtz · heat2d-inverse · **hidden-velocity (HFM flagship)** |
 | **mining / mineral-processing** | heap-leach-rt · thickener-settling · flotation-kinetics · comminution-pbe |
 | **pollution / environmental** | ocean-transport · soil-barrier · tailings-seepage · **soil-heat-real (REAL DATA)** · source-uq-bpinn (UQ) |
 | **control** | zero-source |
@@ -47,6 +47,7 @@ the reproduce command).
 **Industrial fluids / heat**
 - [ind-helmholtz](ind-helmholtz.md) — Helmholtz, Fourier-feature inputs.
 - [ind-heat2d-inverse](ind-heat2d-inverse.md) — inverse conductivity field from sparse sensors.
+- [ind-hidden-velocity](ind-hidden-velocity.md) — **the HFM flagship**: the whole current estimated from sparse dye samples alone (no velocity data, no IC/BC), with the dye-swept identifiability split.
 
 **Mining / mineral-processing**
 - [mine-heap-leach-rt](mine-heap-leach-rt.md) — 2-species reactive transport.

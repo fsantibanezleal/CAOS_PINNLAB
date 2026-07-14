@@ -137,7 +137,7 @@ const METHODS: Method[] = [
     bodyEs:
       "Las PINN brillan donde los solvers clásicos sufren: recuperar un campo o parámetro desconocido desde observaciones dispersas y ruidosas, sumando un término de datos al residual de la EDP. La incertidumbre es esencial: un deep ensemble (aproximación bayesiana barata) da una media predictiva Y una barra de error calibrada que crece donde faltan datos. PINN-Lab hace ambos, incluido un caso inverso sobre datos REALES medidos.",
     eq: String.raw`\min_{\theta,\,\xi}\ \mathcal{L}_{\text{PDE}}(\theta;\xi)+\mathcal{L}_{\text{data}}(\theta);\qquad \bar u=\tfrac1K\!\sum_k u_{\theta_k},\ \sigma=\mathrm{std}_k\,u_{\theta_k}`,
-    cases: "ind-heat2d-inverse, env-soil-heat-real (REAL), poll-source-uq-bpinn (UQ)",
+    cases: "ind-heat2d-inverse, ind-hidden-velocity (HFM flagship), env-soil-heat-real (REAL), poll-source-uq-bpinn (UQ)",
     ref: 9,
   },
 ];

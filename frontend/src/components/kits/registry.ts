@@ -1,4 +1,5 @@
 import { HeatmapKit } from "./HeatmapKit";
+import { HiddenFlowKit } from "./HiddenFlowKit";
 import { InverseOverlayKit } from "./InverseOverlayKit";
 import { SpatioTemporalKit } from "./SpatioTemporalKit";
 import { TimeEvolutionKit } from "./TimeEvolutionKit";
@@ -18,6 +19,7 @@ export const KITS: Record<string, KitComponent> = {
   VectorFieldKit,
   UQBandKit,
   InverseOverlayKit,
+  HiddenFlowKit,
   // Phase 3: PhasePortraitKit
   // Phase 4: ModeShapeKit
 };
