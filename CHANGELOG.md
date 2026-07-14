@@ -3,6 +3,14 @@
 All notable changes to **PINN-Lab**. Format: `X.XX.XXX` (display), see `pinnlab.__version__`. Keep `0.x` while on
 synthetic/benchmark data. Tag every release.
 
+## [0.25.003] (2026-07-15) Header/footer font aligned to the shell ADR
+
+The header and footer declared "Inter"/"JetBrains Mono" (never loaded), so on viewers with those fonts
+installed the shell drifted from the other CAOS apps (which use the system stack per ADR-0016 + the
+CAOS_SEISMIC/LDA-HSI design system). Aligned the app-wide font to the exemplar system stack (ui-sans-serif,
+system-ui, ...; ui-monospace, ...) with antialiasing, so the header/footer render consistently with the rest
+of the portfolio. Header verified single-line and ADR-0016-shaped (brand, route-nav, actions).
+
 ## [0.25.002] (2026-07-15) RESULTS made rich again: the full interactive viz + an enriched answer (issue #49)
 
 The interim v0.25.001 Results showed ONE static key image (a regression). Restored: the Results tab now shows
