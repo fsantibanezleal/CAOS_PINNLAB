@@ -693,6 +693,7 @@ ol li, ul li { margin: 4px 0; }
 .fv2-transport { flex: none; }
 .fv2-body { flex: 1 1 auto; min-height: 0; display: flex; gap: 12px; }
 .fv2-mapcol { flex: 0 0 auto; min-width: 0; min-height: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+.fv2-mapcol .fv2-maprow { justify-content: center; }
 .fv2-maprow { display: flex; gap: 6px; align-items: stretch; }
 .fv2-mapcol .field-wrap { position: relative; flex: none; }
 .fv2-mapcol .field-canvas { display: block; border-radius: 8px; border: 1px solid var(--border); }

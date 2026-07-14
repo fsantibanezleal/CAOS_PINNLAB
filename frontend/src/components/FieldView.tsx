@@ -162,9 +162,11 @@ export function FieldView({
   // crosshair mapped through the zoom window (clamped to its edges when the pin is outside the view)
   const cx = Math.max(0, Math.min(1, (cur.ix - wx0) / Math.max(1, wnx - 1)));
   const cy = 1 - Math.max(0, Math.min(1, (cur.iy - wy0) / Math.max(1, wny - 1)));
-  // the map box sizes EXACTLY to the zoom window's aspect within the available area (plan E2): overlays stay
-  // truthful. Reserve ~44px per cell for the colorbar row's axis-hint label + gap.
-  const fit = useFitBox<HTMLDivElement>(wnx / Math.max(1, wny), 64);
+  // the map box sizes to the zoom window's aspect within the available area (plan E2): overlays stay truthful.
+  // The ref is on the WHOLE body row (measures the real space); cols=1.9 reserves ~47% of the width for the
+  // profile column, so the map never collapses when the profiles are present (the shrink bug). It is capped by
+  // the body height too, so a square field fills the height and takes just its share of the width.
+  const fit = useFitBox<HTMLDivElement>(wnx / Math.max(1, wny), 8, 1.9, 6);
   const tVal = hasTime ? (timeIsY ? axVal(curTime, axisY, ny): axVal(curTime, axisX, nx)): 0;
   const timeLabel = timeIsY ? axisY.label: axisX.label;
 
@@ -195,9 +197,11 @@ export function FieldView({
           <Transport anim={anim} lang={lang} axisLabel={timeLabel} axisValue={tVal} />
         </div>
       )}
-      <div className="fv2-body">
-        {/* LEFT: the map, sized square to the available height (fitted); colorbar beside it */}
-        <div className="fv2-mapcol" ref={fit.areaRef}>
+      {/* the fit ref is on the STABLE body row (its size does not depend on the map), so setting the map size
+          never resizes the measured element: no ResizeObserver feedback loop ("good for a moment then shrinks"). */}
+      <div className="fv2-body" ref={fit.areaRef}>
+        {/* LEFT: the map, sized square from the available space; colorbar beside it */}
+        <div className="fv2-mapcol" style={fit.w ? { width: fit.w } : undefined}>
           <div className="fv2-maprow" style={fit.h ? { height: fit.h } : undefined}>
             <div className="field-wrap" style={fit.w ? { width: fit.w, height: fit.h } : undefined}
               onMouseMove={onMove} onMouseLeave={() => setHov(null)} onClick={onClick} onWheel={onWheel}
