@@ -99,6 +99,94 @@ Deep-research workflow running (PINN-as-estimator applications with QoI/measurem
 limitations). Findings + citations will be appended here and drive the Methodology section (Phase B) and the Phase D
 decision.
 
+
+
+## 5b. RESEARCH FINDINGS (deep-research workflow wf_54a23afd-263: 20 adversarially-verified claims, 3-0 votes; synthesis step rate-limited so claims listed directly)
+
+Answering the owner's question 'did you search for cases where PDEs/PINNs estimate a parameter or metric?': yes, and the verified record follows. Every claim carries its primary source + verbatim quote.
+
+**1.** The foundational 2019 PINN paper explicitly defines two problem classes, and the second, 'data-driven discovery of partial differential equations', is exactly the estimation-instrument use: inferring unknown PDE parameters/coefficients from measurement data. This is the primary-source basis for research-question item 8 (system identification) and the template all later application classes (thermal, permeability, elastography, seismic) instantiate.
+   - Source: https://www.sciencedirect.com/science/article/abs/pii/S0021999118307125
+   - Quote: "In this work, we present our developments in the context of solving two main classes of problems: data-driven solution and data-driven discovery of partial differential equations."
+
+**2.** The core mechanism that makes a PINN usable as a proxy for unmeasurable quantities is stated in the opening sentence: the network is trained on supervised data while being constrained to satisfy governing nonlinear PDEs, so physics acts as regularization that lets indirect/partial observations determine hidden fields and parameters, without meshing or a discretized forward solver in an outer optimization loop as in classical FEM-plus-adjoint inversion.
+   - Source: https://www.sciencedirect.com/science/article/abs/pii/S0021999118307125
+   - Quote: "We introduce physics-informed neural networks – neural networks that are trained to solve supervised learning tasks while respecting any given laws of physics described by general nonlinear partial differential equations."
+
+**3.** Raissi, Yazdani and Karniadakis (Science 367(6481):1026-1030, 2020, DOI 10.1126/science.aaw4741) introduce Hidden Fluid Mechanics (HFM), a physics-informed deep-learning framework that estimates velocity and pressure fields from flow-visualization images (passive scalar/concentration transport data) by encoding the Navier-Stokes equations into the neural network, because extracting these fields directly from images is otherwise challenging.
+   - Source: https://pubmed.ncbi.nlm.nih.gov/32001523/
+   - Quote: "Although such flow patterns can be, in principle, described by the Navier-Stokes equations, extracting the velocity and pressure fields directly from the images is challenging. We addressed this problem by developing hidden fluid mechanics (HFM), a physics-informed deep-learning framework capable of encoding the Navier-Stokes equations into the neural networks"
+
+**4.** The stated advantage of HFM over classical CFD-based inversion is that it does not require specification of the flow geometry or the initial and boundary conditions, which classical forward-solver-plus-optimization approaches typically need.
+   - Source: https://pubmed.ncbi.nlm.nih.gov/32001523/
+   - Quote: "a physics-informed deep-learning framework capable of encoding the Navier-Stokes equations into the neural networks while being agnostic to the geometry or the initial and boundary conditions."
+
+**5.** The authors explicitly position HFM as an estimation instrument (a proxy) for quantities that cannot be measured directly, demonstrating it on several physical and biomedical flow problems rather than on a deployed industrial system, i.e. an academic demonstration.
+   - Source: https://pubmed.ncbi.nlm.nih.gov/32001523/
+   - Quote: "We demonstrate HFM for several physical and biomedical problems by extracting quantitative information for which direct measurements may not be possible."
+
+**6.** The field's authoritative 2021 review (by the PINN originators) states as a Key Point that PINNs are effective and efficient specifically for ill-posed and inverse problems, i.e., the estimation-instrument setting where parameters, fields, or boundary conditions are unknown, and that scalability to large problems requires combining PINNs with domain decomposition.
+   - Source: https://www.nature.com/articles/s42254-021-00314-5
+   - Quote: "Physics-informed neural networks are effective and efficient for ill-posed and inverse problems, and combined with domain decomposition are scalable to large problems."
+
+**7.** The review's stated motivation for preferring physics-informed learning over classical inversion pipelines (FEM plus optimization loops, adjoint methods) is cost and implementation burden: it asserts that solving inverse problems with hidden physics by conventional numerical means is often prohibitively expensive and demands special formulations and elaborate codes.
+   - Source: https://www.nature.com/articles/s42254-021-00314-5
+   - Quote: "Moreover, solving inverse problems with hidden physics is often prohibitively expensive and requires different formulations and elaborate computer codes."
+
+**8.** As a flagship hidden-fluid-mechanics estimation example, the review's Figure 2 shows a PINN inferring the 3D flow field over an espresso cup from Tomo-BOS (tomographic background-oriented schlieren) imaging data, i.e., velocity estimated from an indirectly measured scalar field on real experimental data; this is a laboratory/academic demonstration rather than an industrial deployment, in the same class as Raissi et al.'s Hidden Fluid Mechanics (velocity and pressure from flow visualizations), which the review cites.
+   - Source: https://www.nature.com/articles/s42254-021-00314-5
+   - Quote: "Inferring the 3D flow over an espresso cup based using the Tomo-BOS imaging system and physics-informed neural networks (PINNs)."
+
+**9.** The survey characterizes PINNs (as introduced by Raissi et al. 2019) as a single framework that handles both forward solution of governing models and inverse problems in which the model parameters themselves are learned from observable data, i.e., the PINN functions as a parameter-estimation instrument, which is the core framing of the research question.
+   - Source: https://dl.acm.org/doi/10.1007/s10915-022-01939-z
+   - Quote: "They created physics-informed neural networks (PINNs) which can handle both forward problems of estimating the solutions of governing mathematical models and inverse problems, where the model parameters are learnt from observable data."
+
+**10.** The survey's stated reason to prefer PINNs over classical inversion pipelines is code/workflow unification: the same code that solves the forward problem solves the inverse problem with minimal modification (no separate adjoint or FEM+optimization loop machinery), and it names characterizing fluid flows from sensor data (the Hidden Fluid Mechanics use case) as the canonical inverse example.
+   - Source: https://dl.acm.org/doi/10.1007/s10915-022-01939-z
+   - Quote: "In addition to solving differential equations (the forward problem), PINNs may be used to solve inverse problems such as characterizing fluid flows from sensor data. In fact, the same code used to solve forward problems can be used to solve inverse problems with minimal modification."
+
+**11.** SINDy estimates the governing equations of a dynamical system themselves (which nonlinear terms are active and their coefficients) directly from measurement data, using sparse regression over a library of candidate functions rather than assuming a prior model structure. This defines the estimation task (quantity of interest = ODE terms/coefficients; data = state time series) that later PINN-based system-identification work targets.
+   - Source: https://www.researchgate.net/publication/301627530_Sparse_Identification_of_Nonlinear_Dynamics_SINDy
+   - Quote: "In particular, we use sparse regression to determine the fewest terms in the dynamic governing equations required to accurately represent the data."
+
+**12.** The classical SINDy pipeline requires time derivatives of the measured state; when only the state is measured, derivatives must be obtained by numerical differentiation of noisy data, which the paper mitigates with total-variation regularized differentiation. This derivative-from-noisy-data bottleneck is the documented weakness that motivates PINN reformulations (differentiating a smooth network surrogate via autodiff instead of differentiating the raw data), i.e. it answers the 'why a PINN rather than classical identification' axis.
+   - Source: https://www.researchgate.net/publication/301627530_Sparse_Identification_of_Nonlinear_Dynamics_SINDy
+   - Quote: "we use the total variation regularized derivative to de-noise the derivative"
+
+**13.** For saturated subsurface flow, the paper estimates the spatially distributed hydraulic conductivity field by approximating both conductivity and hydraulic head with two separate deep neural networks, trained jointly on sparse measurements of conductivity and head plus the Darcy's-law PDE constraint (residual minimized at selected points in the domain).
+   - Source: https://agupubs.onlinelibrary.wiley.com/doi/full/10.1029/2019WR026731
+   - Quote: "For saturated flow, we approximate hydraulic conductivity and head with two DNNs and use Darcy's law in addition to measurements of hydraulic conductivity and head to train these DNNs."
+
+**14.** For unsaturated flow governed by the Richards equation, the PINN estimates the unsaturated conductivity function (a constitutive relationship) using capillary pressure measurements ONLY, explicitly assuming zero direct measurements of unsaturated conductivity because that quantity is difficult to measure in the field, i.e. the PINN acts as a proxy instrument for an unmeasurable quantity.
+   - Source: https://agupubs.onlinelibrary.wiley.com/doi/full/10.1029/2019WR026731
+   - Quote: "For unsaturated flow, we approximate unsaturated conductivity function and capillary pressure with DNNs and train these DNNs using measurements of capillary pressure and the Richards equation. Because it is difficult to measure unsaturated conductivity in the field, we assume that no measurements of unsaturated conductivity are available."
+
+**15.** The stated rationale for the PINN over purely data-driven regression is that embedding the PDE constraint (Darcy or Richards residual at collocation points) increases accuracy when the target function is only sparsely observed and makes estimation possible at all when the function of interest has no direct measurements.
+   - Source: https://agupubs.onlinelibrary.wiley.com/doi/full/10.1029/2019WR026731
+   - Quote: "We demonstrate that physics constraints increase the accuracy of DNN approximations of sparsely observed functions and allow for training DNNs when no direct measurements of the functions of interest are available."
+
+**16.** On the saturated hydraulic conductivity estimation problem, the physics-informed DNN is claimed to be more accurate than the state-of-the-art classical inverse method used as baseline, maximum a posteriori (MAP) probability estimation, which is the paper's direct 'why PINN rather than classical inversion' evidence.
+   - Source: https://agupubs.onlinelibrary.wiley.com/doi/full/10.1029/2019WR026731
+   - Quote: "For the saturated conductivity estimation problem, we show that the physics-informed DNN method is more accurate than the state-of-the-art maximum a posteriori probability method."
+
+**17.** The paper presents what its authors state is the first full waveform inversion (FWI) for seismological applications using PINNs, and all validation is on synthetic case studies (2D acoustic wave equation; homogeneous, ellipsoidal-anomaly crosswell, teleseismic plane-wave, and nine-source checkerboard models), i.e. an academic demonstration rather than a deployed field system.
+   - Source: https://agupubs.onlinelibrary.wiley.com/doi/10.1029/2021JB023120
+   - Quote: "Nevertheless, to our knowledge, we present the first FWI for seismological applications using PINNs. In this study, we focus on the development of acoustic FWI with PINNs and demonstrate its practical application to various synthetic case studies."
+
+**18.** Why a PINN instead of classical inversion: the method is meshless and the inversions recovered anomaly location, dimensions, and magnitude even from deliberately poor, uneducated initial guesses, relieving the starting-model dependence of classical gradient-based FWI; a priori structural knowledge (e.g. purely depth-dependent velocity) can be encoded directly in the network parameterization.
+   - Source: https://agupubs.onlinelibrary.wiley.com/doi/10.1029/2021JB023120
+   - Quote: "PINNs are a meshless method. They offer great flexibility in terms of implementation and if a priori knowledge is available for inverse problems. Moreover, our results show that PINNs perform well even without a priori knowledge or in the absence of an educated starting model."
+
+**19.** Honest limitations are stated: for the pure forward problem, spectral element or finite difference solvers remain more efficient and accurate than PINNs; loss-term weighting and network sizing are heuristic (wrong choices can converge to a wrong solution); large computational domains incur large GPU memory costs; and inverted models recover smoothed rather than sharp discontinuities (e.g. the step-function ellipsoidal anomaly is retrieved with smeared boundaries).
+   - Source: https://agupubs.onlinelibrary.wiley.com/doi/10.1029/2021JB023120
+   - Quote: "We find that the current state-of-the-art PINNs provide good results for the forward model, even though spectral element or finite difference methods are more efficient and accurate."
+
+**20.** The paper uses a two-stage Bayesian PINN (TSBPINN) as an estimation instrument to invert groundwater contaminant SOURCE PARAMETERS (position and intensity) from noisy concentration observations, with a Gaussian likelihood modeling observational noise and posterior distributions providing uncertainty quantification, i.e., the PINN estimates a hidden quantity (the buried source) that cannot be measured directly.
+   - Source: https://ascelibrary.org/doi/10.1061/JWRMD5.WRENG-7084
+   - Quote: "A Bayesian probabilistic architecture models observational noise as Gaussian likelihood functions, enabling concurrent inversion of source parameters (position/intensity) and uncertainty propagation analysis through posterior distributions."
+
+(11 verification agents on the last two claims hit a session rate limit; those claims are EXCLUDED (only 3-0-verified claims listed).)
+
 ## 6. Relation to previous plans
 - Supersedes the presentation emphasis of dynamics-evaluation-2026-07-10.md (motion) and
   fundamentals-review-2026-07-10.md (constraints/budget): both remain valid layers; this reframe adds the MISSING
