@@ -48,11 +48,11 @@ header.top {
   padding: 10px 20px; border-bottom: 1px solid var(--border);
   background: linear-gradient(180deg, var(--panel), var(--bg)); position: sticky; top: 0; z-index: 10;
 }
-.brand { display: flex; align-items: center; gap: 8px; font-weight: 700; color: var(--text); }
+.brand { display: flex; align-items: center; gap: 8px; font-weight: 700; color: var(--text); white-space: nowrap; }
 .brand:hover { text-decoration: none; }
 .brand .brand-mark { color: var(--accent); flex: none; }
 .brand small { color: var(--muted); font-weight: 400; }
-nav.main { display: flex; gap: 4px; flex-wrap: wrap; margin-left: 8px; }
+nav.main { display: flex; gap: 2px; flex-wrap: nowrap; margin-left: 8px; white-space: nowrap; }
 nav.main a {
   padding: 6px 12px; border-radius: 8px; color: var(--muted); font-weight: 500;
 }
@@ -109,7 +109,7 @@ main.content.content-doc { max-width: 1280px; margin: 0 auto; padding: 22px; }
 .tag.validated { background: color-mix(in srgb, var(--accent) 22%, transparent); color: var(--accent); }
 
 .field-wrap { display: flex; flex-direction: column; gap: 10px; align-items: flex-start; }
-canvas.field { width: 100%; max-width: 560px; image-rendering: auto; border-radius: 10px; border: 1px solid var(--border); background: var(--panel-2); }
+canvas.field { max-width: 100%; max-height: 100%; width: auto; height: auto; image-rendering: auto; border-radius: 10px; border: 1px solid var(--border); background: var(--panel-2); }
 .eq { background: var(--panel-2); border-radius: 10px; padding: 12px; overflow-x: auto; }
 .muted { color: var(--muted); }
 .row { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
@@ -181,8 +181,8 @@ ol li, ul li { margin: 4px 0; }
 .pl-stepper .pl-story-blurb { margin: 5px 2px 0; }
 
 .pl-work {
-  display: grid; grid-template-columns: 280px minmax(0, 1fr); gap: 12px;
-  padding: 10px 16px 14px; height: calc(100vh - 208px); min-height: 520px; box-sizing: border-box;
+  display: grid; grid-template-columns: 320px minmax(0, 1fr); gap: 12px;
+  padding: 10px 16px 14px; height: calc(100vh - 132px); min-height: 540px; box-sizing: border-box;
 }
 .pl-main { display: flex; flex-direction: column; gap: 8px; min-width: 0; min-height: 0; }
 /* the governing equation block (now inside Results + Context): never clipped; long ones scroll themselves */
@@ -243,7 +243,8 @@ ol li, ul li { margin: 4px 0; }
 @media (max-width: 1100px) { .pl-ctx-band { text-align: left; } }
 .pl-rail { background: var(--panel); border: 1px solid var(--border); border-radius: 12px; padding: 14px; box-shadow: var(--shadow); display: flex; flex-direction: column; min-height: 0; }
 .pl-selector { display: flex; flex-direction: column; min-height: 0; flex: 1; }
-.pl-stage { background: var(--panel); border: 1px solid var(--border); border-radius: 12px; padding: 16px; overflow: auto; min-width: 0; position: relative; box-shadow: var(--shadow); }
+.pl-stage { background: var(--panel); border: 1px solid var(--border); border-radius: 12px; padding: 12px 14px; overflow: hidden; min-width: 0; min-height: 0; position: relative; box-shadow: var(--shadow); flex: 1 1 auto; display: flex; flex-direction: column; }
+.pl-stage > * { flex: 1 1 auto; min-height: 0; }
 .pl-rail h4 { font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted); margin: 12px 0 7px; font-weight: 700; }
 .pl-rail h4:first-child, .pl-selector > h4:first-child { margin-top: 0; }
 .pl-rail-sep { border: 0; border-top: 1px solid var(--border); margin: 14px 0 0; }
@@ -599,3 +600,88 @@ ol li, ul li { margin: 4px 0; }
   .pl-stepper-row { flex-wrap: wrap; }
   .pl-step { flex: 1 1 140px; }
 }
+
+/* ================= THE SIZING ENGINE + E1/E3 LAYOUTS (real-review plan 2026-07-15) ================= */
+/* the equation strip: the case's identity, full width, always visible */
+.pl-eqrow { flex: none; background: var(--panel); border: 1px solid var(--border); border-radius: 10px; padding: 2px 12px; overflow-x: auto; scrollbar-width: thin; }
+.pl-eqrow .eq { background: none; padding: 6px 4px; }
+.pl-stagetabs { flex: none; }
+.pl-meta-footer { flex: none; }
+/* rail blocks: selector + pins + regime, fixed structure */
+.pl-casecard { border: 1px solid color-mix(in srgb, var(--accent) 45%, var(--border)); border-radius: 10px; background: color-mix(in srgb, var(--accent) 6%, var(--panel)); padding: 9px 11px; margin-top: 10px; }
+.pl-casecard b { font-size: 14px; }
+.pl-casecard-q { margin: 4px 0 0; font-size: 12px; line-height: 1.45; color: var(--muted); }
+.pl-railpins { margin-top: 12px; }
+.pl-railpins .pl-pins { gap: 4px; }
+.pl-railpins .pin { font-size: 10px; line-height: 1.3; padding: 2px 7px; }
+.pl-railregime { margin-top: 12px; }
+.pl-railregime .variant-note { font-size: 11.5px; }
+
+/* the Results tab: answer left, key graph right, one screen */
+.pl-results { display: grid; grid-template-columns: minmax(300px, 2fr) minmax(0, 3fr); gap: 16px; height: 100%; min-height: 0; }
+.pl-res-answer { min-height: 0; overflow-y: auto; scrollbar-width: thin; border: 1px solid color-mix(in srgb, var(--accent) 50%, var(--border)); border-radius: 12px; background: color-mix(in srgb, var(--accent) 5%, var(--panel)); padding: 12px 14px; }
+.pl-res-viz { min-height: 0; display: flex; flex-direction: column; overflow: hidden; }
+.pl-res-viz > * { flex: 1 1 auto; min-height: 0; }
+.pl-res-evidence { margin-top: 10px; }
+.pl-res-evidence ul { list-style: none; margin: 4px 0 0; padding: 0; font-size: 12px; line-height: 1.5; }
+
+/* the Context tab: sectioned, full width, no scroll */
+.pl-secpager { display: flex; flex-direction: column; height: 100%; min-height: 0; gap: 10px; }
+.pl-secnav { flex: none; display: flex; flex-wrap: wrap; gap: 5px; }
+.pl-secbtn { font-family: inherit; font-size: 12px; font-weight: 600; padding: 4px 12px; border-radius: 999px; border: 1px solid var(--border); background: var(--panel-2); color: var(--muted); cursor: pointer; }
+.pl-secbtn:hover { color: var(--text); border-color: var(--accent); }
+.pl-secbtn.on { color: var(--accent); border-color: var(--accent); background: color-mix(in srgb, var(--accent) 12%, transparent); }
+.pl-secbody { flex: 1 1 auto; min-height: 0; overflow: hidden; }
+/* long prose flows into columns and uses the FULL width instead of a capped single column */
+.pl-prosewide { column-width: 400px; column-gap: 30px; column-fill: auto; }
+.pl-prosewide h2 { column-span: all; margin: 0 0 8px; font-size: 18px; }
+.pl-prosewide h3 { margin: 0 0 8px; font-size: 15px; }
+.pl-prosewide p, .pl-prosewide ul { font-size: 13px; line-height: 1.55; break-inside: avoid-column; }
+.pl-prosewide .eq { break-inside: avoid; }
+.pl-sumgrid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; height: 100%; min-height: 0; align-content: start; overflow-y: auto; scrollbar-width: thin; }
+.pl-res-card { border: 1px solid var(--border); border-radius: 10px; background: var(--panel-2); padding: 10px 13px; }
+.pl-res-card h4 { font-size: 11px; text-transform: uppercase; letter-spacing: .06em; color: var(--accent); margin: 0 0 5px; font-weight: 700; }
+.pl-res-card p { margin: 0; font-size: 12.5px; line-height: 1.55; }
+
+/* the Field view fills the stage: transport / map+profiles grid / hint */
+.fieldview { display: grid; height: 100%; min-height: 0; gap: 4px 14px; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); grid-template-rows: auto minmax(0, 1fr) minmax(0, 1fr) auto; grid-template-areas: 'transport transport' 'map hero' 'map side' 'hint hint'; }
+.fieldview-transport { grid-area: transport; }
+.fieldview-hero { grid-area: hero; min-height: 0; display: flex; flex-direction: column; }
+.fieldview-map { grid-area: map; min-height: 0; display: flex; flex-direction: column; }
+.fieldview-side { grid-area: side; min-height: 0; display: flex; flex-direction: column; }
+.fieldview-hint { grid-area: hint; margin: 0; font-size: 11px; }
+.fieldview .fw-stack { flex: 1 1 auto; min-height: 0; display: flex; flex-direction: column; }
+.fieldview .fw-row { flex: 1 1 auto; min-height: 0; display: flex; gap: 8px; align-items: center; justify-content: center; }
+.fieldview .field-wrap { position: relative; flex: none; }
+.fieldview .field-canvas { max-width: 100%; max-height: 100%; width: auto; height: auto; margin: auto; }
+.fieldview-hero svg, .fieldview-side svg { width: 100%; height: 100%; }
+/* fitted map boxes (plan E2): the parent is sized exactly by useFitBox, the canvas fills it 1:1 */
+.fitted .heatcanvas { width: 100%; height: 100%; position: relative; }
+.fitted .heatcanvas .field-canvas { width: 100%; height: 100%; display: block; }
+.pl-subnav { flex: none; display: flex; gap: 5px; margin: 2px 0 6px; }
+/* Compare: fitted sub-views, one row of LARGE panels + colorbar (plan 2.2.5) */
+.cmp-kit { display: flex; flex-direction: column; height: 100%; min-height: 0; gap: 6px; }
+.cmp-headline { flex: none; display: flex; flex-wrap: wrap; gap: 6px 10px; align-items: center; }
+.cmp-fitarea { flex: 1 1 auto; min-height: 0; display: flex; gap: 10px; align-items: center; justify-content: center; }
+.cmp-fitarea .cmp-panel { margin: 0; display: flex; flex-direction: column; gap: 3px; flex: none; }
+.cmp-fitarea .cmp-map { position: relative; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
+.cmp-evarea { flex: 1 1 auto; min-height: 0; overflow: hidden; display: flex; flex-direction: column; }
+.cmp-evarea > * { flex: 1 1 auto; min-height: 0; }
+.cmp-readout { flex: none; font-size: 11.5px; }
+.st-kit { display: flex; flex-direction: column; height: 100%; min-height: 0; gap: 6px; }
+.st-grid { flex: 1 1 auto; min-height: 0; display: flex; gap: 12px; align-items: center; justify-content: center; }
+.vf-kit { display: flex; flex-direction: column; height: 100%; min-height: 0; gap: 6px; }
+.vf-fitarea { flex: 1 1 auto; min-height: 0; display: flex; align-items: center; justify-content: center; }
+.vf-fitarea canvas { width: 100% !important; height: 100% !important; }
+/* shrink-permission for the field grid (grid/flex min-auto-size trap) */
+.fieldview > * { min-width: 0; min-height: 0; }
+.fieldview svg { display: block; }
+.fieldview .profiles { flex: 1 1 auto; min-height: 0; display: flex; flex-direction: column; gap: 6px; }
+.fieldview .profiles > * { flex: 1 1 0; min-height: 0; display: flex; flex-direction: column; }
+.fieldview .profiles svg { flex: 1 1 auto; min-height: 0; width: 100%; height: 100%; }
+.fieldview-side .readout { flex: none; }
+.fieldview-hero { overflow: hidden; }
+.fieldview-hero svg { flex: 1 1 auto; min-height: 0; }
+.st-readout, .st-kit .hint, .te-kit .hint, .fieldview-hint { flex: none; font-size: 11px; margin: 0; }
+/* the rotated axis captions belonged to the old stacked layout; the fitted grid reads axes off the profiles */
+.fieldview .axis-y-label, .fieldview .axis-x-label { display: none; }

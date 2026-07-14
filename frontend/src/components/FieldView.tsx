@@ -7,6 +7,7 @@ import { LineProfile } from "./kits/LineProfile";
 import { MarkerLayer } from "./kits/MarkerLayer";
 import { Transport } from "./kits/Transport";
 import { useAnimator } from "./kits/useAnimator";
+import { useFitBox } from "./kits/useFitBox";
 
 export interface FieldAxis {
   label: string;
@@ -163,6 +164,8 @@ export function FieldView({
   // crosshair mapped through the zoom window (clamped to its edges when the pin is outside the view)
   const cx = Math.max(0, Math.min(1, (cur.ix - wx0) / Math.max(1, wnx - 1)));
   const cy = 1 - Math.max(0, Math.min(1, (cur.iy - wy0) / Math.max(1, wny - 1)));
+  // the map box sizes EXACTLY to the zoom window's aspect within the available area (plan E2): overlays stay truthful
+  const fit = useFitBox<HTMLDivElement>(wnx / Math.max(1, wny), 4);
   const tVal = hasTime ? (timeIsY ? axVal(curTime, axisY, ny): axVal(curTime, axisX, nx)): 0;
   const timeLabel = timeIsY ? axisY.label: axisX.label;
 
@@ -208,11 +211,12 @@ export function FieldView({
       <div className="fieldview-map">
         <div className="axis-y-label">{dimTag(axisY.label)}</div>
         <div className="fw-stack">
-          <div className="fw-row">
-            <div className="field-wrap" onMouseMove={onMove} onMouseLeave={() => setHov(null)} onClick={onClick} onWheel={onWheel}
+          <div className="fw-row" ref={fit.areaRef}>
+            <div className="field-wrap" style={fit.w ? { width: fit.w, height: fit.h } : undefined}
+              onMouseMove={onMove} onMouseLeave={() => setHov(null)} onClick={onClick} onWheel={onWheel}
               onDoubleClick={() => { onDblClick(); setWin(null); }}
               title={es ? (pinned ? "Fijado. Doble clic para soltar y restablecer el zoom. Rueda = zoom." : "Clic para fijar; rueda = zoom; doble clic restablece") : (pinned ? "Pinned. Double-click releases + resets zoom. Wheel = zoom." : "Click to pin; wheel = zoom; double-click resets")}>
-              <canvas ref={canvasRef} className="field-canvas" style={{ aspectRatio: `${wnx} / ${wny || 1}` }} />
+              <canvas ref={canvasRef} className="field-canvas" style={{ width: "100%", height: "100%" }} />
               {win && <span className="fw-zoombadge mono">{es ? "zoom" : "zoom"} {Math.round(((nx - 1) / Math.max(1, wnx - 1)) * 10) / 10}x · {es ? "doble clic restablece" : "dbl-click resets"}</span>}
               <div className="xhair xhair-v" style={{ left: `${cx * 100}%` }} />
               <div className="xhair xhair-h" style={{ top: `${cy * 100}%` }} />
