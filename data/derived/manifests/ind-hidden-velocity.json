@@ -231,6 +231,20 @@
     "label_es": "en las zonas muertas sin tinte (no identificable)",
     "value": "37.5%"
    }
+  ],
+  "markers": [
+   {
+    "a": 0.47,
+    "b": 0.5,
+    "label_en": "recovered center",
+    "label_es": "centro recuperado"
+   },
+   {
+    "a": 0.5,
+    "b": 0.5,
+    "label_en": "true center",
+    "label_es": "centro verdadero"
+   }
   ]
  }
 }

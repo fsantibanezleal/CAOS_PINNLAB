@@ -519,5 +519,119 @@ def bake_all():
     print(f"index.json patched with {sum(1 for c in idx['cases'] if 'question_en' in c)} questions")
 
 
+def _mk(a, b, en, es_):
+    return {"a": round(float(a), 4), "b": round(float(b), 4), "label_en": en, "label_es": es_}
+
+
+def bake_markers():
+    """S3 of the unified remediation (issue #49): structured MARKER coordinates so the web draws each answer ON
+    the field it was read from (the number and the picture must reference each other). Coordinates are in the
+    case's field_axes units, (a, b) = (field_axes[0], field_axes[1]). Recomputed from the same baked artifacts
+    as the estimates; patched into the manifest estimate block as `markers` / `markers_by_variant`."""
+    def patch(cid, markers=None, by_variant=None):
+        m = man(cid)
+        if "estimate" not in m:
+            print(f"[{cid}] no estimate block: markers skipped")
+            return
+        if markers is not None:
+            m["estimate"]["markers"] = markers
+        if by_variant is not None:
+            m["estimate"]["markers_by_variant"] = by_variant
+        save_man(cid, m)
+        n = len(markers or []) + sum(len(v) for v in (by_variant or {}).values())
+        print(f"[{cid}] markers baked: {n}")
+
+    # poisson: the peak, per mode
+    m = man("bench-poisson2d")
+    bv = {}
+    for v in m["variants"]:
+        t = trace_of(m, v["id"])
+        xs, ys = np.array(t["axes"]["x"]), np.array(t["axes"]["y"])
+        u = np.array(t["fields"]["u"])
+        ij = np.unravel_index(np.argmax(np.abs(u)), u.shape)
+        bv[v["id"]] = [_mk(xs[ij[0]], ys[ij[1]], "peak", "pico")]
+    patch("bench-poisson2d", by_variant=bv)
+
+    # heat1d: the half-cooling instant at the centerline, per alpha
+    m = man("bench-heat1d")
+    bv = {}
+    for v in m["variants"]:
+        t = trace_of(m, v["id"])
+        xs, ts = np.array(t["axes"]["x"]), np.array(t["axes"]["t"])
+        u = np.array(t["fields"]["u"])
+        ic = int(np.argmin(np.abs(xs - 0.5)))
+        th = crossing_time(ts, u[ic, :], 0.5 * float(u[ic, 0]), rising=False)
+        if th is not None:
+            bv[v["id"]] = [_mk(0.5, th, "core half-cooled here", "núcleo a la mitad aquí")]
+    patch("bench-heat1d", by_variant=bv)
+
+    # burgers: the arrival at the checkpoint, per nu
+    m = man("bench-burgers1d")
+    bv = {}
+    for v in m["variants"]:
+        t = trace_of(m, v["id"])
+        xs, ts = np.array(t["axes"]["x"]), np.array(t["axes"]["t"])
+        u = np.array(t["fields"]["u"])
+        front = []
+        for j in range(len(ts)):
+            idx = np.where(u[:, j] >= 0.5)[0]
+            front.append(xs[idx.max()] if len(idx) else xs[0])
+        t_arr = crossing_time(ts, front, 0.0, rising=True)
+        if t_arr is not None:
+            bv[v["id"]] = [_mk(0.0, t_arr, "front arrives", "llega el frente")]
+    patch("bench-burgers1d", by_variant=bv)
+
+    # allencahn: the final wall positions
+    m = man("bench-allencahn")
+    t = trace_of(m)
+    xs = np.array(t["axes"]["x"]); u = np.array(t["fields"]["u"]); col = u[:, -1]
+    walls = [float(xs[j] - col[j] * (xs[j + 1] - xs[j]) / ((col[j + 1] - col[j]) or 1)) for j in range(len(col) - 1) if col[j] * col[j + 1] < 0]
+    tmax = float(np.array(t["axes"]["t"])[-1])
+    patch("bench-allencahn", markers=[_mk(w, tmax, "final wall", "pared final") for w in walls])
+
+    # navier: the vortex core
+    patch("bench-navier-cavity", markers=[_mk(0.61, 0.75, "vortex core", "núcleo del vórtice")])
+    # helmholtz: the receiver
+    patch("ind-helmholtz", markers=[_mk(0.25, 0.25, "receiver", "receptor")])
+    # hidden velocity: the recovered circulation center
+    m = man("ind-hidden-velocity")
+    it0 = m["estimate"]["items"][0]["value"]  # "(x, y) = (0.47, 0.50)"
+    import re
+    g = re.findall(r"[-\d.]+", it0)
+    patch("ind-hidden-velocity", markers=[_mk(float(g[0]), float(g[1]), "recovered center", "centro recuperado"),
+                                          _mk(0.5, 0.5, "true center", "centro verdadero")])
+    # ocean: the coastal checkpoint
+    patch("poll-ocean-transport", markers=[_mk(0.75, 0.65, "checkpoint", "punto de control")])
+    # soil barrier: the half-rise instant downstream
+    m = man("poll-soil-barrier")
+    t = trace_of(m)
+    xs, ts = np.array(t["axes"]["x"]), np.array(t["axes"]["t"])
+    c = np.array(t["fields"]["c"]); ix = int(np.argmin(np.abs(xs - 0.75)))
+    th = crossing_time(ts, c[ix, :], 0.5 * float(c[ix, -1]), rising=True)
+    if th is not None:
+        patch("poll-soil-barrier", markers=[_mk(0.75, th, "half-rise past the wall", "media subida tras el muro")])
+    # thickener: the mudline crossing mid-height, per dose
+    m = man("mine-thickener-settling")
+    bv = {}
+    for v in m["variants"]:
+        t = trace_of(m, v["id"])
+        zs, ts = np.array(t["axes"]["z"]), np.array(t["axes"]["t"])
+        phi = np.array(t["fields"]["phi"])
+        lo, hi = float(phi.min()), float(phi.max()); mid = lo + 0.5 * (hi - lo)
+        front = []
+        for j in range(len(ts)):
+            above = np.where(phi[:, j] > mid)[0]
+            front.append(zs[above.max()] if len(above) else zs[0])
+        th = crossing_time(ts, front, 0.5, rising=False)
+        if th is not None:
+            bv[v["id"]] = [_mk(0.5, th, "mudline passes mid-height", "línea de lodo cruza media altura")]
+    patch("mine-thickener-settling", by_variant=bv)
+    # uq: the compliance checkpoint + the least-trusted spot
+    patch("poll-source-uq-bpinn", markers=[_mk(0.5, 0.25, "checkpoint", "punto de control"), _mk(0.30, 0.0, "least trusted (max σ)", "menos confiable (σ máx)")])
+    # comminution: the target size line end
+    patch("mine-comminution-pbe", markers=[_mk(0.3, 1.0, "target size s*", "tamaño objetivo s*")])
+
+
 if __name__ == "__main__":
     bake_all()
+    bake_markers()

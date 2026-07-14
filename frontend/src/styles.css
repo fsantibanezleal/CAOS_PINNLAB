@@ -579,3 +579,10 @@ ol li, ul li { margin: 4px 0; }
 .cmp-detail .modal-body { display: flex; justify-content: center; }
 .cmp-detail-map { width: min(70vh, 100%); }
 .cmp-detail-map canvas { width: 100%; image-rendering: auto; border-radius: 8px; }
+
+/* ---- THE ANSWER DRAWN ON THE FIELD (issue #49 S3): estimate markers ---- */
+.pl-marker { position: absolute; transform: translate(-50%, -50%); pointer-events: none; z-index: 5; display: flex; align-items: center; gap: 4px; }
+.pl-marker-dot { width: 10px; height: 10px; border-radius: 50%; border: 2px solid #fff; background: var(--warn); box-shadow: 0 0 0 2px rgba(0,0,0,.45), 0 0 8px rgba(0,0,0,.5); flex: none; }
+.pl-marker-label { font-size: 10px; font-weight: 700; color: #fff; background: rgba(0,0,0,.62); padding: 1px 6px; border-radius: 6px; white-space: nowrap; text-shadow: 0 1px 2px rgba(0,0,0,.8); }
+.pl-marker.below { flex-direction: column; align-items: flex-start; gap: 2px; }
+.pl-marker.below .pl-marker-dot { margin-left: 0; }

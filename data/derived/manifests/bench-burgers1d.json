@@ -220,6 +220,56 @@
      "nu08": "t = 0.82 (exact 0.80)"
     }
    }
-  ]
+  ],
+  "markers_by_variant": {
+   "nu02": [
+    {
+     "a": 0.0,
+     "b": 0.8167,
+     "label_en": "front arrives",
+     "label_es": "llega el frente"
+    }
+   ],
+   "nu03": [
+    {
+     "a": 0.0,
+     "b": 0.8167,
+     "label_en": "front arrives",
+     "label_es": "llega el frente"
+    }
+   ],
+   "nu04": [
+    {
+     "a": 0.0,
+     "b": 0.8,
+     "label_en": "front arrives",
+     "label_es": "llega el frente"
+    }
+   ],
+   "nu05": [
+    {
+     "a": 0.0,
+     "b": 0.8167,
+     "label_en": "front arrives",
+     "label_es": "llega el frente"
+    }
+   ],
+   "nu06": [
+    {
+     "a": 0.0,
+     "b": 0.8167,
+     "label_en": "front arrives",
+     "label_es": "llega el frente"
+    }
+   ],
+   "nu08": [
+    {
+     "a": 0.0,
+     "b": 0.8167,
+     "label_en": "front arrives",
+     "label_es": "llega el frente"
+    }
+   ]
+  }
  }
 }

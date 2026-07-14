@@ -3,6 +3,7 @@ import { useMemo, useState } from "react";
 import { fieldRange } from "../../lib/colormap";
 import { HeatCanvas } from "./HeatCanvas";
 import { LineProfile } from "./LineProfile";
+import { markersFor, MarkerLayer } from "./MarkerLayer";
 import { Transport } from "./Transport";
 import type { KitProps } from "./types";
 import { useAnimator } from "./useAnimator";
@@ -13,7 +14,7 @@ const TIME_NAMES = new Set(["t", "time", "tau", "tt", "τ"]);
  *  animates the profile `u(space)` forward over t (with a faint ghost of the initial frame and a y-scale
  *  locked to the whole run), and shows the `[space, t]` carpet as a click-to-seek bar. No retraining: the
  *  trace already holds every frame; the kit just walks the time columns. The Live tab still re-evals the ONNX. */
-export function TimeEvolutionKit({ manifest, trace, lang }: KitProps) {
+export function TimeEvolutionKit({ manifest, trace, active, lang }: KitProps) {
   const es = lang === "es";
   const [outIdx, setOutIdx] = useState(0);
   const outName = manifest.outputs[outIdx] ?? manifest.outputs[0];
@@ -77,12 +78,20 @@ export function TimeEvolutionKit({ manifest, trace, lang }: KitProps) {
           <div className="te-carpet-label muted">
             {outName}({spaceAxis},{tAxis}): {es ? "clic para saltar en el tiempo": "click to seek in time"}
           </div>
-          <HeatCanvas
-            field={carpet}
-            vCursor={nT > 1 ? it / (nT - 1): 0}
-            onSeekV={(f) => { anim.setPlaying(false); anim.setFrame(f * (nT - 1)); }}
-            ariaLabel={`${outName} ${spaceAxis}-${tAxis} carpet`}
-          />
+          <div style={{ position: "relative" }}>
+            <HeatCanvas
+              field={carpet}
+              vCursor={nT > 1 ? it / (nT - 1): 0}
+              onSeekV={(f) => { anim.setPlaying(false); anim.setFrame(f * (nT - 1)); }}
+              ariaLabel={`${outName} ${spaceAxis}-${tAxis} carpet`}
+            />
+            <MarkerLayer
+              markers={markersFor(manifest, active)}
+              a0={sArr[0] ?? 0} a1={sArr[sArr.length - 1] ?? 1}
+              b0={tArr[0] ?? 0} b1={tArr[tArr.length - 1] ?? 1}
+              lang={lang}
+            />
+          </div>
         </div>
       </div>
       <p className="hint">

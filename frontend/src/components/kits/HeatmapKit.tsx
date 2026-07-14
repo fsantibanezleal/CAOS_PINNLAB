@@ -1,6 +1,7 @@
 import { useState } from "react";
 
 import { FieldView } from "../FieldView";
+import { markersFor } from "./MarkerLayer";
 import type { KitProps } from "./types";
 
 const TIME_NAMES = new Set(["t", "time", "tau", "tt", "τ"]);
@@ -59,6 +60,7 @@ export function HeatmapKit({ manifest, trace, active, lang }: KitProps) {
           axisY={{ label: fa[1], lo: ax1[0], hi: ax1[ax1.length - 1] }}
           outputLabel={outName}
           lang={lang}
+          markers={markersFor(manifest, active)}
         />
       ): (
         <div className="loading">{es ? "Cargando campo…": "Loading field…"}</div>

@@ -113,6 +113,14 @@
     "label_es": "concentración allí en t=1",
     "value": "0.157"
    }
+  ],
+  "markers": [
+   {
+    "a": 0.75,
+    "b": 0.3916,
+    "label_en": "half-rise past the wall",
+    "label_es": "media subida tras el muro"
+   }
   ]
  }
 }

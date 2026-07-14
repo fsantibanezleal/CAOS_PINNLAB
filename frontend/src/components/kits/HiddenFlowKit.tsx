@@ -2,6 +2,7 @@ import { useMemo, useState } from "react";
 
 import { fieldRange } from "../../lib/colormap";
 import { HeatCanvas } from "./HeatCanvas";
+import { markersFor, MarkerLayer } from "./MarkerLayer";
 import type { KitProps } from "./types";
 
 /** HiddenFlowKit (issue #48): the HFM mechanism made visible. The case recovers a hidden VELOCITY field from
@@ -85,6 +86,9 @@ export function HiddenFlowKit({ manifest, trace, active, lang }: KitProps) {
                     style={{ left: `${((o[0] - x0) / (x1 - x0)) * 100}%`, top: `${(1 - (o[1] - y0) / (y1 - y0)) * 100}%` }}
                   />
                 ))}
+              {(p.id === "speed" || p.id === "speed_true") && (
+                <MarkerLayer markers={markersFor(manifest, active)} a0={x0} a1={x1} b0={y0} b1={y1} lang={lang} />
+              )}
             </div>
           </figure>
         ))}

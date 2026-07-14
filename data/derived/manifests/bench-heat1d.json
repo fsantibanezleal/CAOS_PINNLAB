@@ -220,6 +220,56 @@
      "a10": "t = 0.07 (exact 0.070)"
     }
    }
-  ]
+  ],
+  "markers_by_variant": {
+   "a01": [
+    {
+     "a": 0.5,
+     "b": 0.7003,
+     "label_en": "core half-cooled here",
+     "label_es": "núcleo a la mitad aquí"
+    }
+   ],
+   "a02": [
+    {
+     "a": 0.5,
+     "b": 0.3511,
+     "label_en": "core half-cooled here",
+     "label_es": "núcleo a la mitad aquí"
+    }
+   ],
+   "a04": [
+    {
+     "a": 0.5,
+     "b": 0.1757,
+     "label_en": "core half-cooled here",
+     "label_es": "núcleo a la mitad aquí"
+    }
+   ],
+   "a06": [
+    {
+     "a": 0.5,
+     "b": 0.1171,
+     "label_en": "core half-cooled here",
+     "label_es": "núcleo a la mitad aquí"
+    }
+   ],
+   "a08": [
+    {
+     "a": 0.5,
+     "b": 0.0879,
+     "label_en": "core half-cooled here",
+     "label_es": "núcleo a la mitad aquí"
+    }
+   ],
+   "a10": [
+    {
+     "a": 0.5,
+     "b": 0.0707,
+     "label_en": "core half-cooled here",
+     "label_es": "núcleo a la mitad aquí"
+    }
+   ]
+  }
  }
 }

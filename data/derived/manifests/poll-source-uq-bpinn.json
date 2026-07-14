@@ -116,6 +116,20 @@
     "label_es": "punto menos confiable (mayor σ)",
     "value": "σ = 0.0186 at (x=0.30, t=0.00)"
    }
+  ],
+  "markers": [
+   {
+    "a": 0.5,
+    "b": 0.25,
+    "label_en": "checkpoint",
+    "label_es": "punto de control"
+   },
+   {
+    "a": 0.3,
+    "b": 0.0,
+    "label_en": "least trusted (max σ)",
+    "label_es": "menos confiable (σ máx)"
+   }
   ]
  }
 }

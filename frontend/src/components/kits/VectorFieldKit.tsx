@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 
 import { viridis } from "../../lib/colormap";
+import { markersFor, MarkerLayer } from "./MarkerLayer";
 import type { KitProps } from "./types";
 
 // bilinear sample of a [nx][ny] field at data coords (x,y), clamped to the grid
@@ -54,7 +55,7 @@ type Bg = "speed" | "p" | "vort";
  *  a scalar background (speed / pressure / vorticity), with a hover read-out of (u,v,|U|,p). Static: streamlines are
  *  computed once from the baked field (no animation, no autoplay). Reveals the recirculating vortex that a per-scalar
  *  heatmap hides. (ADR-0063.) */
-export function VectorFieldKit({ manifest, trace, lang }: KitProps) {
+export function VectorFieldKit({ manifest, trace, active, lang }: KitProps) {
   const es = lang === "es";
   const [bg, setBg] = useState<Bg>("speed");
   const [showQuiver, setShowQuiver] = useState(false);
@@ -227,8 +228,9 @@ export function VectorFieldKit({ manifest, trace, lang }: KitProps) {
         </div>
         <label className="t-ctl"><input type="checkbox" checked={showQuiver} onChange={(e) => setShowQuiver(e.target.checked)} /> {es ? "Flechas": "Quiver"}</label>
       </div>
-      <div className="vf-map" onMouseMove={onMove} onMouseLeave={() => setHover(null)} style={{ width: W, maxWidth: "100%" }}>
+      <div className="vf-map" onMouseMove={onMove} onMouseLeave={() => setHover(null)} style={{ width: W, maxWidth: "100%", position: "relative" }}>
         <canvas ref={canvasRef} style={{ width: "100%", aspectRatio: "1 / 1", display: "block", borderRadius: 8, border: "1px solid var(--border)" }} />
+        <MarkerLayer markers={markersFor(manifest, active)} a0={d.xs[0]} a1={d.xs[d.xs.length - 1]} b0={d.ys[0]} b1={d.ys[d.ys.length - 1]} lang={lang} />
       </div>
       <div className="vf-readout mono">
         {hover

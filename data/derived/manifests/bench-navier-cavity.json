@@ -89,6 +89,14 @@
     "label_es": "intensidad del núcleo ψ",
     "value": "-0.0835"
    }
+  ],
+  "markers": [
+   {
+    "a": 0.61,
+    "b": 0.75,
+    "label_en": "vortex core",
+    "label_es": "núcleo del vórtice"
+   }
   ]
  }
 }

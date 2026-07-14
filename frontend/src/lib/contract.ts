@@ -107,6 +107,15 @@ export interface EstimateItem {
   values?: Record<string, string>;
 }
 
+/** A computed answer drawn ON the field it was read from (issue #49 S3): coordinates in field_axes units,
+ *  (a, b) = (field_axes[0], field_axes[1]). The number and the picture reference each other. */
+export interface EstimateMarker {
+  a: number;
+  b: number;
+  label_en: string;
+  label_es: string;
+}
+
 /** The case's engineering QUESTION, the honest why-a-PINN line, and the computed ANSWER items. */
 export interface EstimateBlock {
   question_en: string;
@@ -114,6 +123,8 @@ export interface EstimateBlock {
   why_en: string;
   why_es: string;
   items: EstimateItem[];
+  markers?: EstimateMarker[];
+  markers_by_variant?: Record<string, EstimateMarker[]>;
 }
 
 /** "Watch it learn" (issue #36): per-lane field frames at training checkpoints + the L2-vs-iteration curve. */
