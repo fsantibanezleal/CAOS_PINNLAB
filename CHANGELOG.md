@@ -3,6 +3,15 @@
 All notable changes to **PINN-Lab**. Format: `X.XX.XXX` (display), see `pinnlab.__version__`. Keep `0.x` while on
 synthetic/benchmark data. Tag every release.
 
+## [0.26.001] (2026-07-15) FIX: the heatmap no longer collapses to a few pixels (issue #57)
+
+The field map appeared at a good size then shrank to a tiny few-pixel version when the profile plots were
+present (Results, Field, Live). Cause: the contain-fit hook measured the map column, whose width was set from
+the fit result: a ResizeObserver feedback loop that converged toward zero while the profile column took the
+width. Fixed: the fit now measures the STABLE body row and reserves ~47% of the width for the profiles, so the
+map is sized from the real available space and claims its own width. Verified stable over time (canvas
+~300px, no shrink) and the fit gate still passes 508 checks.
+
 ## [0.26.000] (2026-07-15) THE REVIEW PLAN COMPLETE: fit gate + content arc closed (issue #49)
 
 Closes the real-review remediation plan (wip/web-review/real-review-and-plan-2026-07-15.md), E1-E6.
