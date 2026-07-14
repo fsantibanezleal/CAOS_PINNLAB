@@ -5,7 +5,6 @@ import { fieldRange, viridis } from "../lib/colormap";
 import { fmtTick } from "../lib/plot";
 import { HeatCanvas } from "./kits/HeatCanvas";
 import { markersFor, MarkerLayer } from "./kits/MarkerLayer";
-import { useFitBox } from "./kits/useFitBox";
 
 /** THE RESULTS KEY GRAPH (plan §2.2.1): ONE fitted visualization of the case's primary field, with its answer
  *  markers and a hover read-out: clean and motivating, guaranteed to fit the Results box (no scroll). The full
@@ -36,7 +35,6 @@ export function ResultKeyViz({ manifest, trace, active, lang }: { manifest: Case
   const ys = (trace?.axes[fa[1]] ?? [0, 1]) as number[];
   const nH = picked?.field.length ?? 1;
   const nV = picked?.field[0]?.length ?? 1;
-  const fit = useFitBox<HTMLDivElement>(nH / Math.max(1, nV), 22);
   const range = useMemo(() => (picked ? fieldRange(picked.field) : ([0, 1] as [number, number])), [picked]);
 
   if (!trace) return <div className="loading">{es ? "Cargando…" : "Loading…"}</div>;
@@ -55,13 +53,13 @@ export function ResultKeyViz({ manifest, trace, active, lang }: { manifest: Case
   return (
     <div className="rkv">
       <div className="rkv-caption muted">{picked.label} · {fa[0]} × {fa[1]}</div>
-      <div className="rkv-area" ref={fit.areaRef}>
+      <div className="rkv-area">
         <div className="rkv-map fitted" onMouseMove={onMove} onMouseLeave={() => setHov(null)}
-          style={{ width: fit.w || undefined, height: fit.h || undefined, position: "relative" }}>
+          style={{ aspectRatio: `${nH} / ${nV}`, position: "relative" }}>
           <HeatCanvas field={picked.field} range={range} ariaLabel={picked.label} />
           <MarkerLayer markers={markersFor(manifest, active)} a0={xs[0]} a1={xs[xs.length - 1]} b0={ys[0]} b1={ys[ys.length - 1]} lang={lang} />
         </div>
-        <div className="rkv-cbar" aria-hidden style={fit.h ? { height: fit.h } : undefined}>
+        <div className="rkv-cbar" aria-hidden>
           <div className="rkv-cbar-scale">
             {Array.from({ length: 20 }, (_, i) => {
               const [r, g, b] = viridis(1 - i / 19);
