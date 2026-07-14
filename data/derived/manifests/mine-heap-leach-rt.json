@@ -212,5 +212,23 @@
  "evolution": {
   "path": "mine-heap-leach-rt/frames.json"
  },
- "view_kit": "SpatioTemporalKit"
+ "view_kit": "SpatioTemporalKit",
+ "estimate": {
+  "question_en": "When does the reagent front break through at the base of the heap? (irrigation planning)",
+  "question_es": "¿Cuándo el frente de reactivo alcanza la base de la pila? (planificación de riego)",
+  "why_en": "Breakthrough curves are read off the transported field; with time as a network input the whole schedule is one evaluation away.",
+  "why_es": "Las curvas de ruptura se leen del campo transportado; con el tiempo como entrada de la red, todo el calendario está a una evaluación.",
+  "items": [
+   {
+    "label_en": "half-change breakthrough at the base",
+    "label_es": "ruptura de medio cambio en la base",
+    "value": "t = 0.60"
+   },
+   {
+    "label_en": "mean base cA shift over the window",
+    "label_es": "cambio medio de cA en la base",
+    "value": "0.96 to 1.17"
+   }
+  ]
+ }
 }

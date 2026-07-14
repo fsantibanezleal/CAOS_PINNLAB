@@ -18,7 +18,9 @@
    "system_type": "",
    "view_kit": "HeatmapKit",
    "method": "hard-constraints-rar",
-   "real_or_synthetic": "synthetic"
+   "real_or_synthetic": "synthetic",
+   "question_en": "Where do the phase walls sit after the evolution? (microstructure coarsening)",
+   "question_es": "¿Dónde quedan las paredes de fase tras la evolución? (engrosamiento de microestructura)"
   },
   {
    "case_id": "bench-burgers1d",
@@ -28,7 +30,9 @@
    "system_type": "",
    "view_kit": "HeatmapKit",
    "method": "hard-constraints-rar",
-   "real_or_synthetic": "synthetic"
+   "real_or_synthetic": "synthetic",
+   "question_en": "When does the shock front arrive at the checkpoint x=0? (front-arrival estimation)",
+   "question_es": "¿Cuándo llega el frente de choque al punto x=0? (estimación de llegada de frentes)"
   },
   {
    "case_id": "bench-darcy-operator",
@@ -38,7 +42,9 @@
    "system_type": "",
    "view_kit": "HeatmapKit",
    "method": "operator-fno",
-   "real_or_synthetic": "synthetic"
+   "real_or_synthetic": "synthetic",
+   "question_en": "Screening new geology maps: what peak pressure does each produce, instantly?",
+   "question_es": "Cribado de mapas geológicos nuevos: ¿qué presión pico produce cada uno, al instante?"
   },
   {
    "case_id": "bench-heat1d",
@@ -48,7 +54,9 @@
    "system_type": "",
    "view_kit": "HeatmapKit",
    "method": "time-dependent-hard-constraints",
-   "real_or_synthetic": "synthetic"
+   "real_or_synthetic": "synthetic",
+   "question_en": "How long until the centerline cools to half its initial temperature? (quench / cooling design)",
+   "question_es": "¿Cuánto tarda el centro en enfriarse a la mitad de su temperatura inicial? (diseño de enfriamiento)"
   },
   {
    "case_id": "bench-navier-cavity",
@@ -58,7 +66,9 @@
    "system_type": "vector-flow",
    "view_kit": "VectorFieldKit",
    "method": "multioutput-loss-weighting",
-   "real_or_synthetic": "synthetic-illustrative"
+   "real_or_synthetic": "synthetic-illustrative",
+   "question_en": "Where does the primary vortex sit? (mixing/recirculation quality)",
+   "question_es": "¿Dónde queda el vórtice primario? (calidad de mezcla/recirculación)"
   },
   {
    "case_id": "bench-poisson2d",
@@ -68,7 +78,9 @@
    "system_type": "",
    "view_kit": "HeatmapKit",
    "method": "hard-constraints",
-   "real_or_synthetic": "synthetic"
+   "real_or_synthetic": "synthetic",
+   "question_en": "What is the peak field value and where, for each source mode? (hot-spot screening)",
+   "question_es": "¿Cuál es el valor pico del campo y dónde, para cada modo de fuente? (cribado de puntos calientes)"
   },
   {
    "case_id": "bench-wave1d",
@@ -78,7 +90,9 @@
    "system_type": "",
    "view_kit": "HeatmapKit",
    "method": "siren-hard-constraints",
-   "real_or_synthetic": "synthetic"
+   "real_or_synthetic": "synthetic",
+   "question_en": "What oscillation period does the string have at each wave speed?",
+   "question_es": "¿Qué período de oscilación tiene la cuerda a cada velocidad de onda?"
   },
   {
    "case_id": "ctrl-zero-source",
@@ -88,7 +102,9 @@
    "system_type": "",
    "view_kit": "HeatmapKit",
    "method": "hard-constraints",
-   "real_or_synthetic": "synthetic"
+   "real_or_synthetic": "synthetic",
+   "question_en": "Does the estimator return ZERO when the true answer is zero? (the negative control)",
+   "question_es": "¿El estimador devuelve CERO cuando la respuesta verdadera es cero? (el control negativo)"
   },
   {
    "case_id": "dyn-double-pendulum",
@@ -98,7 +114,9 @@
    "system_type": "ode-dynamical",
    "view_kit": "TrajectoryAnimationKit",
    "method": "ode-residual-hard-ic",
-   "real_or_synthetic": "synthetic-illustrative"
+   "real_or_synthetic": "synthetic-illustrative",
+   "question_en": "How far ahead can ANY surrogate predict this chaotic machine?",
+   "question_es": "¿Cuánto hacia adelante puede predecir esta máquina caótica CUALQUIER sustituto?"
   },
   {
    "case_id": "env-soil-heat-real",
@@ -108,7 +126,9 @@
    "system_type": "",
    "view_kit": "HeatmapKit",
    "method": "inverse-parameter-real",
-   "real_or_synthetic": "validated-real"
+   "real_or_synthetic": "validated-real",
+   "question_en": "What is this soil's thermal diffusivity? (you cannot measure it in situ)",
+   "question_es": "¿Cuál es la difusividad térmica de este suelo? (no se puede medir in situ)"
   },
   {
    "case_id": "ind-heat2d-inverse",
@@ -118,7 +138,9 @@
    "system_type": "inverse-assim",
    "view_kit": "InverseOverlayKit",
    "method": "inverse-field",
-   "real_or_synthetic": "synthetic"
+   "real_or_synthetic": "synthetic",
+   "question_en": "Where is this plate insulating vs conducting? (defect mapping from ~100 point temperatures)",
+   "question_es": "¿Dónde aísla y dónde conduce esta placa? (mapa de defectos desde ~100 temperaturas puntuales)"
   },
   {
    "case_id": "ind-helmholtz",
@@ -128,7 +150,9 @@
    "system_type": "",
    "view_kit": "HeatmapKit",
    "method": "fourier-features",
-   "real_or_synthetic": "synthetic"
+   "real_or_synthetic": "synthetic",
+   "question_en": "What field amplitude reaches the receiver at (0.25, 0.25) at frequency k₀ = 6π? (acoustics at a target)",
+   "question_es": "¿Qué amplitud de campo llega al receptor en (0.25, 0.25) a frecuencia k₀ = 6π? (acústica en un objetivo)"
   },
   {
    "case_id": "mine-comminution-pbe",
@@ -138,7 +162,9 @@
    "system_type": "",
    "view_kit": "HeatmapKit",
    "method": "population-balance",
-   "real_or_synthetic": "synthetic-illustrative"
+   "real_or_synthetic": "synthetic-illustrative",
+   "question_en": "What fraction of the charge passes size s*=0.3 after grinding? (mill sizing, P80-style)",
+   "question_es": "¿Qué fracción de la carga pasa el tamaño s*=0.3 tras la molienda? (dimensionamiento de molinos, estilo P80)"
   },
   {
    "case_id": "mine-flotation-kinetics",
@@ -148,7 +174,9 @@
    "system_type": "",
    "view_kit": "HeatmapKit",
    "method": "parametric-kinetics",
-   "real_or_synthetic": "synthetic-illustrative"
+   "real_or_synthetic": "synthetic-illustrative",
+   "question_en": "What recovery does the cell reach, and what residence time hits 90%? (circuit design)",
+   "question_es": "¿Qué recuperación alcanza la celda, y qué tiempo de residencia logra 90%? (diseño de circuitos)"
   },
   {
    "case_id": "mine-heap-leach-rt",
@@ -158,7 +186,9 @@
    "system_type": "",
    "view_kit": "SpatioTemporalKit",
    "method": "advection-diffusion-reaction",
-   "real_or_synthetic": "synthetic-illustrative"
+   "real_or_synthetic": "synthetic-illustrative",
+   "question_en": "When does the reagent front break through at the base of the heap? (irrigation planning)",
+   "question_es": "¿Cuándo el frente de reactivo alcanza la base de la pila? (planificación de riego)"
   },
   {
    "case_id": "mine-thickener-settling",
@@ -168,7 +198,9 @@
    "system_type": "",
    "view_kit": "HeatmapKit",
    "method": "nonlinear-settling",
-   "real_or_synthetic": "synthetic-illustrative"
+   "real_or_synthetic": "synthetic-illustrative",
+   "question_en": "How long until the mudline settles below mid-height, and where does the front end? (thickener sizing)",
+   "question_es": "¿Cuánto tarda la línea de lodo en bajar de media altura, y dónde termina el frente? (dimensionamiento de espesadores)"
   },
   {
    "case_id": "poll-ocean-transport",
@@ -178,7 +210,9 @@
    "system_type": "",
    "view_kit": "SpatioTemporalKit",
    "method": "advection-diffusion",
-   "real_or_synthetic": "synthetic-illustrative"
+   "real_or_synthetic": "synthetic-illustrative",
+   "question_en": "When does the spill reach the coastal checkpoint, and how strong is the peak? (emergency response)",
+   "question_es": "¿Cuándo llega el derrame al punto costero, y cuán fuerte es el pico? (respuesta a emergencias)"
   },
   {
    "case_id": "poll-soil-barrier",
@@ -188,7 +222,9 @@
    "system_type": "",
    "view_kit": "HeatmapKit",
    "method": "domain-decomposition",
-   "real_or_synthetic": "synthetic-illustrative"
+   "real_or_synthetic": "synthetic-illustrative",
+   "question_en": "How much does the cutoff wall delay the plume downstream? (remediation design)",
+   "question_es": "¿Cuánto retrasa el muro pantalla al penacho aguas abajo? (diseño de remediación)"
   },
   {
    "case_id": "poll-source-uq-bpinn",
@@ -198,7 +234,9 @@
    "system_type": "uq-bayesian",
    "view_kit": "UQBandKit",
    "method": "bayesian-ensemble-uq",
-   "real_or_synthetic": "synthetic-illustrative"
+   "real_or_synthetic": "synthetic-illustrative",
+   "question_en": "Is the concentration at the checkpoint above the limit, and with what confidence?",
+   "question_es": "¿La concentración en el punto de control supera el límite, y con qué confianza?"
   },
   {
    "case_id": "poll-tailings-seepage",
@@ -208,7 +246,9 @@
    "system_type": "",
    "view_kit": "HeatmapKit",
    "method": "richards-seepage",
-   "real_or_synthetic": "synthetic-illustrative"
+   "real_or_synthetic": "synthetic-illustrative",
+   "question_en": "What suction develops at mid-depth of the deposit for each material? (dam-safety screening)",
+   "question_es": "¿Qué succión se desarrolla a media profundidad del depósito para cada material? (cribado de seguridad de presas)"
   }
  ]
 }

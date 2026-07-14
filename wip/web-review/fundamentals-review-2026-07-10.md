@@ -89,7 +89,7 @@ GAPS found by this lens (audited in code, counts are real):
 - E. FLOW: no 60-second primer connecting PDE -> conditions -> PINN -> result for a first-time visitor; the story
   selector assumes the concepts.
 
-## 6. Proposed implementation (pending owner go)
+## 6. Implementation status: ALL DONE (v0.22.000, issue #44 closed)
 
 1. COMPUTE the heat2d-inverse sensor-count sweep (N = 0, 10, 25, 50, 100; short trainings) -> a Diagnostics
    identifiability curve "recovered-k error vs number of sensors": the computed answer to question 5.

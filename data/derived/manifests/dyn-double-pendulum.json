@@ -68,5 +68,23 @@
     "lyapunov_est": 0.0205
    }
   }
- ]
+ ],
+ "estimate": {
+  "question_en": "How far ahead can ANY surrogate predict this chaotic machine?",
+  "question_es": "¿Cuánto hacia adelante puede predecir esta máquina caótica CUALQUIER sustituto?",
+  "why_en": "The honest ceiling of estimation: past the divergence horizon no model, however trained, holds the trajectory: the estimate is the predictability budget itself.",
+  "why_es": "El techo honesto de la estimación: pasado el horizonte de divergencia ningún modelo, por bien entrenado que esté, retiene la trayectoria: la estimación es el propio presupuesto de predictibilidad.",
+  "items": [
+   {
+    "label_en": "PINN leave-time (|Δθ| > 0.3 rad vs RK45)",
+    "label_es": "leave-time de la PINN (|Δθ| > 0.3 rad vs RK45)",
+    "value": "1.99 s"
+   },
+   {
+    "label_en": "a 0.01 rad twin leaves the same tube at",
+    "label_es": "un gemelo a 0.01 rad deja el mismo tubo en",
+    "value": "2.11 s"
+   }
+  ]
+ }
 }

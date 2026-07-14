@@ -165,6 +165,53 @@ const REFS: Ref[] = [
   { cite: "Cai, Mao, Wang, Yin & Karniadakis (2021). Physics-informed neural networks (PINNs) for fluid mechanics: a review. Acta Mech. Sinica 37:1727-1738.", doi: "10.1007/s10409-021-01148-1" },
   { cite: "Grossmann, Komorowska, Latz & Schönlieb (2024). Can physics-informed neural networks beat the finite element method? IMA J. Appl. Math.", doi: "10.48550/arXiv.2302.04107" },
   { cite: "Wang, Wang & Perdikaris (2021). Learning the solution operator of parametric PDEs with physics-informed DeepONets. Science Advances 7(40):eabi8605.", doi: "10.1126/sciadv.abi8605" },
+  { cite: "Karniadakis, Kevrekidis, Lu, Perdikaris, Wang & Yang (2021). Physics-informed machine learning. Nature Reviews Physics 3:422-440.", doi: "10.1038/s42254-021-00314-5" },
+  { cite: "Tartakovsky, Ortiz Marrero, Perdikaris, Tartakovsky & Barajas-Solano (2020). Physics-informed deep neural networks for learning parameters and constitutive relationships in subsurface flow problems. Water Resources Research 56:e2019WR026731.", doi: "10.1029/2019WR026731" },
+  { cite: "Rasht-Behesht, Huber, Shukla & Karniadakis (2022). Physics-informed neural networks (PINNs) for wave propagation and full waveform inversions. JGR Solid Earth 127:e2021JB023120.", doi: "10.1029/2021JB023120" },
+  { cite: "Cuomo, Schiano Di Cola, Giampaolo, Rozza, Raissi & Piccialli (2022). Scientific machine learning through physics-informed neural networks: where we are and what's next. J. Sci. Comput. 92:88.", doi: "10.1007/s10915-022-01939-z" },
+  { cite: "Two-stage Bayesian physics-informed neural network (TSBPINN) inversion of groundwater contaminant source parameters (position/intensity) with posterior uncertainty. ASCE J. Water Resources Planning and Management.", doi: "10.1061/JWRMD5.WRENG-7084" },
+];
+
+/** PINNs AS ESTIMATORS IN THE WILD (issue #46): the published record that the estimation-instrument framing is
+ *  the field's own, transcribed from the adversarially verified research dossier
+ *  (wip/web-review/estimation-reframe-plan-2026-07-10.md §5b: 20 claims, 3-0 verification votes each, primary
+ *  sources only). Each entry maps the published use to the catalogue case that teaches the same mechanism. */
+const ESTIMATORS: { en: string; es: string; caseLink: string; caseLabel: string; ref: number }[] = [
+  {
+    en: "The foundational PINN paper already defines TWO problem classes, and the second, 'data-driven discovery of partial differential equations', is exactly the estimation use: inferring unknown coefficients and fields from measurement data, with the physics acting as the regularizer that lets sparse, indirect observations determine them.",
+    es: "El paper fundacional de las PINN ya define DOS clases de problemas, y la segunda, el 'descubrimiento de ecuaciones a partir de datos', es exactamente el uso de estimación: inferir coeficientes y campos desconocidos desde mediciones, con la física como regularizador que permite que observaciones dispersas e indirectas los determinen.",
+    caseLink: "#/?case=ind-heat2d-inverse&view=compare", caseLabel: "ind-heat2d-inverse", ref: 9,
+  },
+  {
+    en: "Hidden Fluid Mechanics (Science 2020) estimates VELOCITY and PRESSURE fields from flow-visualization images (a passive dye), because extracting them from images directly is otherwise not possible: and it does so while being agnostic to the geometry and the boundary/initial conditions that classical CFD inversion would demand. The paper's own words: quantitative information 'for which direct measurements may not be possible'.",
+    es: "Hidden Fluid Mechanics (Science 2020) estima campos de VELOCIDAD y PRESIÓN desde imágenes de visualización de flujo (un tinte pasivo), porque extraerlos directamente de las imágenes no es posible de otro modo: y lo hace siendo agnóstico a la geometría y a las condiciones de borde/iniciales que la inversión CFD clásica exigiría. En palabras del propio paper: información cuantitativa 'para la que mediciones directas pueden no ser posibles'.",
+    caseLink: "#/?case=poll-ocean-transport&view=field", caseLabel: "poll-ocean-transport", ref: 15,
+  },
+  {
+    en: "The field's authoritative review (Nature Reviews Physics 2021) states as a Key Point that PINNs are 'effective and efficient for ill-posed and inverse problems', and that solving inverse problems with hidden physics classically is 'often prohibitively expensive'; its flagship figure infers the 3D flow over an espresso cup from Tomo-BOS imaging: velocity estimated from an indirectly measured scalar field, on real experimental data.",
+    es: "La revisión de referencia del campo (Nature Reviews Physics 2021) establece como Punto Clave que las PINN son 'efectivas y eficientes para problemas mal planteados e inversos', y que resolver inversos con física oculta por vías clásicas es 'a menudo prohibitivamente caro'; su figura insignia infiere el flujo 3D sobre una taza de espresso desde imágenes Tomo-BOS: velocidad estimada desde un campo escalar medido indirectamente, con datos experimentales reales.",
+    caseLink: "#/?case=env-soil-heat-real&view=diagnostics", caseLabel: "env-soil-heat-real", ref: 19,
+  },
+  {
+    en: "For subsurface flow, physics-informed networks estimate the spatially distributed hydraulic conductivity from sparse head + conductivity measurements (Darcy constraint), and the UNSATURATED conductivity function from capillary pressure ONLY, assuming zero direct measurements 'because it is difficult to measure unsaturated conductivity in the field': the PINN as proxy instrument for an unmeasurable constitutive law, reported MORE accurate than the classical MAP inversion baseline.",
+    es: "En flujo subterráneo, redes informadas por física estiman la conductividad hidráulica distribuida desde mediciones dispersas de carga + conductividad (restricción de Darcy), y la función de conductividad NO SATURADA solo desde presión capilar, asumiendo cero mediciones directas 'porque es difícil medir la conductividad no saturada en terreno': la PINN como instrumento proxy de una ley constitutiva no medible, reportada MÁS precisa que la inversión clásica MAP de referencia.",
+    caseLink: "#/?case=poll-tailings-seepage&view=field", caseLabel: "poll-tailings-seepage · bench-darcy-operator", ref: 20,
+  },
+  {
+    en: "The first full-waveform inversion for seismology with PINNs recovers subsurface VELOCITY MODELS from recorded wavefields: meshless, and robust even from deliberately poor starting models that stall classical gradient-based FWI. Its honest limits are stated in the paper and match this catalogue's stance: for the pure forward problem, spectral-element and finite-difference solvers remain more efficient and accurate, and inverted discontinuities come out smoothed.",
+    es: "La primera inversión de forma de onda completa para sismología con PINN recupera MODELOS DE VELOCIDAD del subsuelo desde campos de onda registrados: sin malla, y robusta incluso desde modelos iniciales deliberadamente pobres que estancan la FWI clásica por gradiente. Sus límites honestos están en el propio paper y calzan con la postura de este catálogo: para el problema directo puro, los solucionadores espectrales y de diferencias finitas siguen siendo más eficientes y precisos, y las discontinuidades invertidas salen suavizadas.",
+    caseLink: "#/?case=ind-helmholtz&view=training", caseLabel: "ind-helmholtz", ref: 21,
+  },
+  {
+    en: "A two-stage Bayesian PINN inverts groundwater contaminant SOURCE parameters (position and intensity) from noisy concentration observations, with posterior distributions carrying the uncertainty: the estimate arrives WITH its error bars, exactly the mechanism the source-uq case teaches.",
+    es: "Una PINN bayesiana de dos etapas invierte los parámetros de la FUENTE contaminante de aguas subterráneas (posición e intensidad) desde observaciones ruidosas de concentración, con distribuciones posteriores llevando la incertidumbre: la estimación llega CON sus barras de error, exactamente el mecanismo que enseña el caso source-uq.",
+    caseLink: "#/?case=poll-source-uq-bpinn&view=field", caseLabel: "poll-source-uq-bpinn", ref: 23,
+  },
+  {
+    en: "And the workflow argument, from the 2022 survey: the SAME code that solves the forward problem solves the inverse one with minimal modification: no separate adjoint derivation, no FEM-plus-optimization loop: which is why 'characterizing fluid flows from sensor data' is its canonical inverse example.",
+    es: "Y el argumento de flujo de trabajo, de la revisión de 2022: el MISMO código que resuelve el problema directo resuelve el inverso con modificación mínima: sin derivar un adjunto aparte, sin bucle FEM+optimización: por eso 'caracterizar flujos desde datos de sensores' es su ejemplo inverso canónico.",
+    caseLink: "#/?case=env-soil-heat-real&view=compare", caseLabel: "env-soil-heat-real", ref: 22,
+  },
 ];
 
 /** The classical → SOTA → candidate-novel LADDER per family (transcribed from the verified deep-research report,
@@ -204,12 +251,12 @@ const BEYOND: Record<string, { en: string; es: string; ref?: number }> = {
   "inverse-uq": {
     en: "This is where PINNs genuinely win: the HYBRID data+physics PINN. Adding a data term is not a hack: it is a fix for an OPTIMIZATION pathology: the PDE-residual gradients dominate (NTK K_rr ≫ K_uu), so a pure-physics net can settle on a low-residual but WRONG solution among the infinitely many satisfying the PDE; the data term supplies the missing gradient that anchors it to the realizable one. The seminal example is Hidden Fluid Mechanics [Raissi 2020], which reconstructs full velocity+pressure fields from sparse noisy visualizations + the Navier-Stokes residual: geometry/BC-agnostic, robust to noise. PINN-Lab's heat2d-inverse (sparse T sensors), soil-heat-real (REAL data) and uq-bpinn are exactly this rung. Honest scope: this is data ASSIMILATION / reconstruction (it needs data; it does not predict from nothing, and extrapolation beyond the data is unreliable): the strong claim that a hybrid PINN beats classical CFD on a general forward solve is NOT supported.",
     es: "Aquí es donde las PINN sí ganan: la PINN HÍBRIDA datos+física. Sumar un término de datos no es un truco: arregla una patología de OPTIMIZACIÓN: los gradientes del residual EDP dominan (NTK K_rr ≫ K_uu), así que una red física-pura puede quedarse en una solución de bajo residual pero INCORRECTA entre las infinitas que satisfacen la EDP; el término de datos aporta el gradiente que la ancla a la realizable. El ejemplo seminal es Hidden Fluid Mechanics [Raissi 2020], que reconstruye campos completos de velocidad+presión desde visualizaciones dispersas y ruidosas + el residual de Navier-Stokes: agnóstico a geometría/BC, robusto al ruido. heat2d-inverse (sensores T dispersos), soil-heat-real (datos REALES) y uq-bpinn son justo este peldaño. Alcance honesto: es ASIMILACIÓN / reconstrucción de datos (necesita datos; no predice desde la nada, y extrapolar más allá de los datos no es confiable): la afirmación fuerte de que una PINN híbrida gana a la CFD clásica en un problema directo general NO está respaldada.",
-    ref: 16,
+    ref: 15,
   },
   "operator-learning": {
     en: "Frontier: physics-informed DeepONet learns the solution OPERATOR (a whole family a↦u), and the physics penalty cuts its data demand: a trainable surrogate that answers a new instance in one forward pass [Wang 2021]. Candidate for PINN-Lab: a physics-informed DeepONet over the parametric families. Honest limit: operators are distribution-bounded: accuracy degrades out-of-distribution, so validate OOD against a classical reference (as the Darcy case does).",
     es: "Frontera: el DeepONet físico aprende el OPERADOR solución (toda una familia a↦u), y la penalización física reduce su demanda de datos: un surrogate entrenable que responde una instancia nueva en una pasada [Wang 2021]. Candidato para PINN-Lab: un DeepONet físico sobre las familias paramétricas. Límite honesto: los operadores están acotados por la distribución: la precisión cae fuera de distribución, así que valida OOD contra una referencia clásica (como hace el caso Darcy).",
-    ref: 19,
+    ref: 18,
   },
 };
 
@@ -235,6 +282,26 @@ export function Methodology() {
           <a href="https://doi.org/10.48550/arXiv.2109.01050" target="_blank" rel="noreferrer noopener">Krishnapriyan 2021</a>{" · "}
           <a href="https://doi.org/10.1126/science.aaw4741" target="_blank" rel="noreferrer noopener">HFM (Raissi 2020)</a>
         </p>
+      </section>
+
+      <section className="panel" style={{ marginBottom: 16, borderColor: "var(--accent-2)" }}>
+        <h3 style={{ marginTop: 0 }}>{es ? "PINNs como estimadores en el mundo real" : "PINNs as estimators in the wild"}</h3>
+        <p style={{ fontSize: 13.5 }}>
+          {es
+            ? "La razón para usar una PINN no es resolver la EDP: es ESTIMAR algo que no se puede medir directamente, usando la EDP como instrumento. Este es el registro publicado (cada afirmación verificada contra su fuente primaria; ver la referencia junto a cada una), y el caso del catálogo que enseña el mismo mecanismo:"
+            : "The reason to use a PINN is not to solve the PDE: it is to ESTIMATE something you cannot measure directly, using the PDE as the instrument. This is the published record (every claim verified against its primary source; see the reference beside each), and the catalogue case that teaches the same mechanism:"}
+        </p>
+        <ul style={{ fontSize: 13, lineHeight: 1.6 }}>
+          {ESTIMATORS.map((x, i) => (
+            <li key={i} style={{ margin: "8px 0" }}>
+              {es ? x.es : x.en}{" "}
+              <a href={x.caseLink} className="mono" style={{ fontSize: 12 }}>{x.caseLabel}</a>{" · "}
+              <a href={`https://doi.org/${REFS[x.ref - 1]?.doi}`} target="_blank" rel="noreferrer noopener" style={{ fontSize: 12 }}>
+                doi:{REFS[x.ref - 1]?.doi}
+              </a>
+            </li>
+          ))}
+        </ul>
       </section>
 
       {METHODS.map((m) => (

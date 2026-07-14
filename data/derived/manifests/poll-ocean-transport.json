@@ -205,5 +205,23 @@
  "evolution": {
   "path": "poll-ocean-transport/frames.json"
  },
- "view_kit": "SpatioTemporalKit"
+ "view_kit": "SpatioTemporalKit",
+ "estimate": {
+  "question_en": "When does the spill reach the coastal checkpoint, and how strong is the peak? (emergency response)",
+  "question_es": "¿Cuándo llega el derrame al punto costero, y cuán fuerte es el pico? (respuesta a emergencias)",
+  "why_en": "Arrival times and peak exposures at any point are read from one transported field; what-if scenarios re-evaluate instantly via the parametric time input.",
+  "why_es": "Tiempos de llegada y picos de exposición en cualquier punto se leen de un solo campo transportado; los escenarios what-if se re-evalúan al instante vía el tiempo paramétrico.",
+  "items": [
+   {
+    "label_en": "arrival (half-peak) at (0.75, 0.65)",
+    "label_es": "llegada (medio pico) en (0.75, 0.65)",
+    "value": "t = 0.44"
+   },
+   {
+    "label_en": "peak concentration there (within t ≤ 1)",
+    "label_es": "concentración pico allí (dentro de t ≤ 1)",
+    "value": "0.077 at t = 1.00"
+   }
+  ]
+ }
 }

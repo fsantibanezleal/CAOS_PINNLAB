@@ -103,5 +103,23 @@
  },
  "diagnostics": {
   "path": "ind-heat2d-inverse/diagnostics.json"
+ },
+ "estimate": {
+  "question_en": "Where is this plate insulating vs conducting? (defect mapping from ~100 point temperatures)",
+  "question_es": "¿Dónde aísla y dónde conduce esta placa? (mapa de defectos desde ~100 temperaturas puntuales)",
+  "why_en": "A FIELD unknown is a native PINN inverse: the map is just another network output fed by sparse data; classical inversion needs a mesh + adjoint + many forward solves.",
+  "why_es": "Una incógnita de CAMPO es un inverso nativo de PINN: el mapa es otra salida de la red alimentada por datos dispersos; la inversión clásica exige malla + adjunto + muchas resoluciones directas.",
+  "items": [
+   {
+    "label_en": "recovered conductivity map error",
+    "label_es": "error del mapa de conductividad",
+    "value": "4.0% vs k*"
+   },
+   {
+    "label_en": "without data (physics alone)",
+    "label_es": "sin datos (física sola)",
+    "value": "356%: unrecoverable"
+   }
+  ]
  }
 }

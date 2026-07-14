@@ -96,5 +96,23 @@
    "adapted_vs_std": 0.1914,
    "naive_vs_std": 0.19159
   }
+ },
+ "estimate": {
+  "question_en": "How much does the cutoff wall delay the plume downstream? (remediation design)",
+  "question_es": "¿Cuánto retrasa el muro pantalla al penacho aguas abajo? (diseño de remediación)",
+  "why_en": "The barrier's kink in the flux is exactly what the domain-decomposed net can represent; the delay is read off the reconstructed field.",
+  "why_es": "El quiebre de flujo en la barrera es justo lo que la red por descomposición de dominio puede representar; el retraso se lee del campo reconstruido.",
+  "items": [
+   {
+    "label_en": "half-rise time at x=0.75 (past the barrier)",
+    "label_es": "tiempo de media subida en x=0.75 (tras la barrera)",
+    "value": "t = 0.39"
+   },
+   {
+    "label_en": "concentration there at t=1",
+    "label_es": "concentración allí en t=1",
+    "value": "0.157"
+   }
+  ]
  }
 }

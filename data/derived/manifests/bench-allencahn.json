@@ -99,5 +99,18 @@
  },
  "training": {
   "path": "bench-allencahn/training.json"
+ },
+ "estimate": {
+  "question_en": "Where do the phase walls sit after the evolution? (microstructure coarsening)",
+  "question_es": "¿Dónde quedan las paredes de fase tras la evolución? (engrosamiento de microestructura)",
+  "why_en": "Interface positions ARE the metric of phase-field simulations; capturing them at all is what the hard-constraint + RAR fix buys (the naive lane loses them entirely).",
+  "why_es": "Las posiciones de interfaz SON la métrica de las simulaciones de campo de fase; capturarlas es lo que compra la corrección de restricciones duras + RAR (el carril ingenuo las pierde).",
+  "items": [
+   {
+    "label_en": "zero crossings of u(x, t=1)",
+    "label_es": "cruces por cero de u(x, t=1)",
+    "value": "-0.494, 0.494"
+   }
+  ]
  }
 }

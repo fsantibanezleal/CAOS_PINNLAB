@@ -94,5 +94,28 @@
   "summary": {
    "adapted_vs_std": 0.01194
   }
+ },
+ "estimate": {
+  "question_en": "Is the concentration at the checkpoint above the limit, and with what confidence?",
+  "question_es": "¿La concentración en el punto de control supera el límite, y con qué confianza?",
+  "why_en": "The ensemble gives the estimate WITH honest error bars: sigma grows exactly where sensors are absent, so the compliance answer carries its own confidence.",
+  "why_es": "El ensamble entrega la estimación CON barras de error honestas: sigma crece justo donde no hay sensores, así el veredicto de cumplimiento lleva su propia confianza.",
+  "items": [
+   {
+    "label_en": "c at (x=0.5, t=0.25)",
+    "label_es": "c en (x=0.5, t=0.25)",
+    "value": "0.789 ± 0.011 (2σ)"
+   },
+   {
+    "label_en": "P(c > 0.5) at that point",
+    "label_es": "P(c > 0.5) en ese punto",
+    "value": ">99.9%"
+   },
+   {
+    "label_en": "least-trusted spot (largest σ)",
+    "label_es": "punto menos confiable (mayor σ)",
+    "value": "σ = 0.0186 at (x=0.30, t=0.00)"
+   }
+  ]
  }
 }

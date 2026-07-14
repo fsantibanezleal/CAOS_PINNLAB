@@ -205,5 +205,25 @@
   "summary": {
    "adapted_vs_std": 0.02462
   }
+ },
+ "estimate": {
+  "question_en": "Screening new geology maps: what peak pressure does each produce, instantly?",
+  "question_es": "Cribado de mapas geológicos nuevos: ¿qué presión pico produce cada uno, al instante?",
+  "why_en": "Amortized estimation: ONE forward pass per NEW permeability map instead of one classical solve each: this is how thousands of realizations get screened.",
+  "why_es": "Estimación amortizada: UNA pasada por cada mapa de permeabilidad NUEVO en vez de una resolución clásica por mapa: así se criban miles de realizaciones.",
+  "items": [
+   {
+    "label_en": "peak head, FNO vs finite differences",
+    "label_es": "presión pico, FNO vs diferencias finitas",
+    "values": {
+     "s1": "0.0128 (FD: 0.0129)",
+     "s2": "0.0108 (FD: 0.0107)",
+     "s3": "0.0110 (FD: 0.0105)",
+     "s4": "0.0157 (FD: 0.0160)",
+     "s5": "0.0124 (FD: 0.0126)",
+     "s6": "0.0145 (FD: 0.0140)"
+    }
+   }
+  ]
  }
 }

@@ -201,5 +201,25 @@
   "summary": {
    "adapted_vs_std": 0.00037
   }
+ },
+ "estimate": {
+  "question_en": "What is the peak field value and where, for each source mode? (hot-spot screening)",
+  "question_es": "¿Cuál es el valor pico del campo y dónde, para cada modo de fuente? (cribado de puntos calientes)",
+  "why_en": "Honest: a classical solver answers ONE mode faster; the parametric net answers the WHOLE mode family, which is what screening needs.",
+  "why_es": "Honesto: un solucionador clásico responde UN modo más rápido; la red paramétrica responde TODA la familia de modos, que es lo que el cribado necesita.",
+  "items": [
+   {
+    "label_en": "peak and location",
+    "label_es": "pico y ubicación",
+    "values": {
+     "k1": "|u|max = 0.0625 at (0.50, 0.50)",
+     "k15": "|u|max = 0.0529 at (0.38, 0.38)",
+     "k2": "|u|max = 0.0399 at (0.30, 0.70)",
+     "k225": "|u|max = 0.0512 at (0.64, 0.64)",
+     "k25": "|u|max = 0.0582 at (0.59, 0.59)",
+     "k3": "|u|max = 0.0625 at (0.50, 0.50)"
+    }
+   }
+  ]
  }
 }

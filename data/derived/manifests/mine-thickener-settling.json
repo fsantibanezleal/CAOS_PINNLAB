@@ -201,5 +201,37 @@
   "summary": {
    "adapted_vs_std": 0.00223
   }
+ },
+ "estimate": {
+  "question_en": "How long until the mudline settles below mid-height, and where does the front end? (thickener sizing)",
+  "question_es": "¿Cuánto tarda la línea de lodo en bajar de media altura, y dónde termina el frente? (dimensionamiento de espesadores)",
+  "why_en": "Sizing thickeners from batch settling curves IS this front-tracking (the Kynch construction); one parametric net carries the whole descent-rate family as a design chart.",
+  "why_es": "Dimensionar espesadores desde curvas de sedimentación ES este seguimiento de frente (construcción de Kynch); una red paramétrica lleva toda la familia de tasas como carta de diseño.",
+  "items": [
+   {
+    "label_en": "mudline passes z=0.5 at",
+    "label_es": "la línea de lodo cruza z=0.5 en",
+    "values": {
+     "r030": "not in window",
+     "r042": "t = 0.94",
+     "r054": "t = 0.74",
+     "r066": "t = 0.60",
+     "r078": "t = 0.51",
+     "r090": "t = 0.44"
+    }
+   },
+   {
+    "label_en": "front position at t=1",
+    "label_es": "posición del frente en t=1",
+    "values": {
+     "r030": "z = 0.59",
+     "r042": "z = 0.46",
+     "r054": "z = 0.36",
+     "r066": "z = 0.24",
+     "r078": "z = 0.12",
+     "r090": "z = 0.00"
+    }
+   }
+  ]
  }
 }

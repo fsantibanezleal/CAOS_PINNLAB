@@ -3,6 +3,44 @@
 All notable changes to **PINN-Lab**. Format: `X.XX.XXX` (display), see `pinnlab.__version__`. Keep `0.x` while on
 synthetic/benchmark data. Tag every release.
 
+## [0.23.000] (2026-07-13) THE ESTIMATION REFRAME: every case asks a question and answers it with a computed estimate (issue #46)
+
+The catalogue's framing moves from solver-centric to estimation-centric: the reason to use a PINN is to ESTIMATE
+something you cannot measure directly, and every case now leads with that. Plan + adversarially verified research
+record in `wip/web-review/estimation-reframe-plan-2026-07-10.md`.
+
+- **THE ANSWERS, BAKED (new pipeline tool `build_estimates.py`)**: a training-free baker computes each case's
+  quantity of interest from the already-validated artifacts (front tracking, threshold crossings, integration,
+  argmax, stream-function integration, exceedance from mean/sigma) and writes a manifest `estimate` block
+  (question EN/ES, honest why-a-PINN line, answer items; per-variant where the family is the point) + patches
+  `index.json` with per-case questions. Cross-validated where closed forms exist: heat1d half-cooling matches
+  ln2/(alpha pi^2) on all six alphas (0.70 vs 0.702 ... 0.07 vs 0.070); wave periods exact (T = 2/c); burgers
+  front arrival 0.80-0.82 vs exact 0.80; flotation recovery matches 1-exp(-k) and t90 = ln10/k within 2%;
+  darcy FNO peak heads within 4% of finite differences. Physical sanity: thickener settling monotone in R,
+  comminution passing fraction monotone in grind rate, navier vortex core at (0.61, 0.75) via the stream
+  function (a plain speed minimum finds a corner eddy instead), pendulum twin-divergence 2.11 s agrees with
+  the PINN leave-time 1.99 s, zero-source RMS 5.2e-4. The engine's `lyapunov_est` summary is NOT surfaced
+  (it fails a back-of-envelope consistency check; the twin leave-time replaces it).
+- **ANSWER CARD (web)**: every case opens with THE QUESTION then THE ESTIMATE (computed offline), plus the
+  why-a-PINN line; per-variant answers react to the regime chips and clicking a value chip switches the regime.
+- **Case list + story**: each case in the Domain list shows its engineering question under the name; story
+  chapters lead with the case's question, then the computed evidence line.
+- **Introduction**: opens with "Every case answers an engineering question" (the PDE as measuring instrument),
+  with three computed examples (soil diffusivity 0.304 mm2/s at ~1 degC holdout; defect map 4% vs 356%;
+  spill arrival t = 0.44).
+- **Methodology**: new "PINNs as estimators in the wild" section transcribed from the verified research record
+  (Raissi 2019 data-driven discovery; Hidden Fluid Mechanics, Science 2020; Nature Reviews Physics 2021 Key
+  Point + Tomo-BOS espresso; subsurface conductivity from sparse heads incl. the no-direct-measurements
+  unsaturated law, WRR 2020; seismic full-waveform inversion with honest limits, JGR 2022; two-stage Bayesian
+  source inversion, ASCE), each mapped to the catalogue case that teaches the same mechanism; 5 new references.
+  Fixed two off-by-one BEYOND citations (inverse-uq linked the fluids review instead of HFM; operator-learning
+  indexed past the reference list and rendered "doi:undefined").
+- **Benchmark**: new "what it estimates" column (the QoI + value per case, question on hover).
+- **Contract tests**: 22 new tests (estimate coverage on all 20 cases, question/why/item shape, value XOR
+  per-variant values, variant-id keys, index questions).
+- Phase D of the plan (an HFM-style velocimetry-from-dye flagship case) is deferred to a dedicated compute
+  session, recorded in the plan and issue #46: real training runs are not rushed into a release.
+
 ## [0.22.000] (2026-07-10) FUNDAMENTALS: the identifiability sweep, why-PDEs, the information budget, constraint anatomy (issue #44)
 
 Answering the owner's fundamental questions with computed content and taught concepts (review persisted in

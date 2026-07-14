@@ -111,5 +111,18 @@
  },
  "training": {
   "path": "ind-helmholtz/training.json"
+ },
+ "estimate": {
+  "question_en": "What field amplitude reaches the receiver at (0.25, 0.25) at frequency k₀ = 6π? (acoustics at a target)",
+  "question_es": "¿Qué amplitud de campo llega al receptor en (0.25, 0.25) a frecuencia k₀ = 6π? (acústica en un objetivo)",
+  "why_en": "Receiver-point estimates are exactly what the naive net gets WRONG at high frequency (spectral bias): the Fourier-feature estimator makes them meaningful.",
+  "why_es": "Las estimaciones en el receptor son justo lo que la red ingenua responde MAL a alta frecuencia (sesgo espectral): el estimador con características de Fourier las hace significativas.",
+  "items": [
+   {
+    "label_en": "u at the receiver (Fourier PINN vs exact)",
+    "label_es": "u en el receptor (PINN Fourier vs exacta)",
+    "value": "0.990 vs 1.000"
+   }
+  ]
  }
 }

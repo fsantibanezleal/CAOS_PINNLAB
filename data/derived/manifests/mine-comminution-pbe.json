@@ -201,5 +201,25 @@
   "summary": {
    "adapted_vs_std": 0.0041
   }
+ },
+ "estimate": {
+  "question_en": "What fraction of the charge passes size s*=0.3 after grinding? (mill sizing, P80-style)",
+  "question_es": "¿Qué fracción de la carga pasa el tamaño s*=0.3 tras la molienda? (dimensionamiento de molinos, estilo P80)",
+  "why_en": "Passing fractions are integrals of the size distribution the net carries for EVERY grind rate: the operating chart in one object.",
+  "why_es": "Las fracciones pasantes son integrales de la distribución que la red lleva para CADA tasa de molienda: la carta de operación en un objeto.",
+  "items": [
+   {
+    "label_en": "passing fraction < 0.3 at t=1",
+    "label_es": "fracción pasante < 0.3 en t=1",
+    "values": {
+     "g00": "0.5%",
+     "g12": "2.0%",
+     "g24": "7.8%",
+     "g36": "21.3%",
+     "g48": "41.9%",
+     "g60": "63.1%"
+    }
+   }
+  ]
  }
 }

@@ -87,5 +87,28 @@
   "summary": {
    "adapted_vs_std": 0.00079
   }
+ },
+ "estimate": {
+  "question_en": "What recovery does the cell reach, and what residence time hits 90%? (circuit design)",
+  "question_es": "¿Qué recuperación alcanza la celda, y qué tiempo de residencia logra 90%? (diseño de circuitos)",
+  "why_en": "One net over the whole rate-constant family IS the design curve: read recovery or residence time for any ore k without re-solving.",
+  "why_es": "Una red sobre toda la familia de constantes ES la curva de diseño: lee recuperación o tiempo de residencia para cualquier k sin re-resolver.",
+  "items": [
+   {
+    "label_en": "k = 0.5: recovery at t=1, time to 90%",
+    "label_es": "k = 0.5: recuperación en t=1, tiempo a 90%",
+    "value": "39.4%, R=90% not reached in window"
+   },
+   {
+    "label_en": "k = 2.8: recovery at t=1, time to 90%",
+    "label_es": "k = 2.8: recuperación en t=1, tiempo a 90%",
+    "value": "93.6%, t90 = 0.84"
+   },
+   {
+    "label_en": "k = 5: recovery at t=1, time to 90%",
+    "label_es": "k = 5: recuperación en t=1, tiempo a 90%",
+    "value": "99.3%, t90 = 0.46"
+   }
+  ]
  }
 }
