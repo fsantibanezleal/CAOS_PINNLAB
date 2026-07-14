@@ -1,0 +1,250 @@
+{
+ "schema": "pinnlab.manifest/v2",
+ "case_id": "ind-hidden-velocity",
+ "category": "industrial-fluids-heat",
+ "title": "Hidden velocity from dye: estimate the current from passive-scalar observations (HFM mechanism)",
+ "governing_equations": "c_t + \\mathbf{u}\\cdot\\nabla c = D\\nabla^2 c,\\ \\ \\nabla\\cdot\\mathbf{u}=0;\\ \\ \\text{recover }\\mathbf{u}(x,y)\\text{ from sparse noisy }c\\text{ samples};\\ \\mathbf{u}^*=A(\\sin\\pi x\\cos\\pi y,\\,-\\cos\\pi x\\sin\\pi y)",
+ "method": "inverse-hidden-state",
+ "real_or_synthetic": "synthetic",
+ "expected_band": "recovered current accurate INSIDE the dye-swept region (u rel-L2 there well below the full-grid number); unidentifiable in never-dyed dead zones, and the full-grid L2 honestly includes them",
+ "validation_anchor": "analytic",
+ "inputs": [
+  "x",
+  "y",
+  "t"
+ ],
+ "outputs": [
+  "u",
+  "v",
+  "c"
+ ],
+ "field_axes": [
+  "x",
+  "y"
+ ],
+ "system_type": "inverse-assim",
+ "view_kit": "HiddenFlowKit",
+ "param_specs": [
+  {
+   "key": "t",
+   "label_en": "Time t",
+   "label_es": "Tiempo t",
+   "default": 0.5,
+   "min": 0.0,
+   "max": 1.0,
+   "step": 0.02,
+   "unit": ""
+  }
+ ],
+ "engine": {
+  "package": "pinnlab",
+  "version": "0.24.000",
+  "framework": "deepxde"
+ },
+ "seed": 42,
+ "trace_schema": "pinnlab.field/v1",
+ "onnx": {
+  "path": "ind-hidden-velocity.onnx",
+  "bytes": 56387,
+  "parity_max_abs": 8.27e-07,
+  "opset": 18,
+  "input_dim": 3
+ },
+ "lane": "live",
+ "gate": {
+  "lane": "live",
+  "onnx_bytes": 56387,
+  "infer_ms": 3.38,
+  "trace_bytes": 307699,
+  "reasons": []
+ },
+ "flags": [],
+ "inverse": {},
+ "run_ms": 1858749.51,
+ "variants": [
+  {
+   "id": "t02",
+   "label_en": "t=0.2",
+   "label_es": "t=0.2",
+   "note_en": "t=0.2 — the blob barely moved; the current is only starting to reveal itself.",
+   "note_es": "t=0.2 — el parche apenas se movió; la corriente apenas empieza a revelarse.",
+   "params": {
+    "t": 0.2
+   },
+   "trace": {
+    "path": "ind-hidden-velocity/t02.json",
+    "bytes": 348292
+   },
+   "metrics": {
+    "onnx_parity_max_abs": 8.27e-07,
+    "validation_anchor": "analytic",
+    "l2_relative": 0.278062,
+    "max_abs_error": 1.048713,
+    "speed_rel_rmse_swept": 0.164418,
+    "speed_rel_rmse_dead": 0.374307,
+    "swept_area_frac": 0.6732,
+    "dye_holdout_rmse": 0.004751
+   }
+  },
+  {
+   "id": "t04",
+   "label_en": "t=0.4",
+   "label_es": "t=0.4",
+   "note_en": "t=0.4 — the dye arcs with the vortex; the swept region grows.",
+   "note_es": "t=0.4 — el tinte se arquea con el vórtice; la región barrida crece.",
+   "params": {
+    "t": 0.4
+   },
+   "trace": {
+    "path": "ind-hidden-velocity/t04.json",
+    "bytes": 348182
+   },
+   "metrics": {
+    "onnx_parity_max_abs": 8.27e-07,
+    "validation_anchor": "analytic",
+    "l2_relative": 0.278133,
+    "max_abs_error": 1.049296,
+    "speed_rel_rmse_swept": 0.164472,
+    "speed_rel_rmse_dead": 0.374473,
+    "swept_area_frac": 0.6732,
+    "dye_holdout_rmse": 0.004751
+   }
+  },
+  {
+   "id": "t05",
+   "label_en": "t=0.5",
+   "label_es": "t=0.5",
+   "note_en": "t=0.5 — mid-window; the reference regime.",
+   "note_es": "t=0.5 — mitad de la ventana; el régimen de referencia.",
+   "params": {
+    "t": 0.5
+   },
+   "trace": {
+    "path": "ind-hidden-velocity/t05.json",
+    "bytes": 347638
+   },
+   "metrics": {
+    "onnx_parity_max_abs": 8.27e-07,
+    "validation_anchor": "analytic",
+    "l2_relative": 0.278177,
+    "max_abs_error": 1.049335,
+    "speed_rel_rmse_swept": 0.164477,
+    "speed_rel_rmse_dead": 0.374521,
+    "swept_area_frac": 0.6732,
+    "dye_holdout_rmse": 0.004751
+   }
+  },
+  {
+   "id": "t06",
+   "label_en": "t=0.6",
+   "label_es": "t=0.6",
+   "note_en": "t=0.6 — over half the ring swept; the recovery is at its best there.",
+   "note_es": "t=0.6 — más de media vuelta barrida; la recuperación es mejor allí.",
+   "params": {
+    "t": 0.6
+   },
+   "trace": {
+    "path": "ind-hidden-velocity/t06.json",
+    "bytes": 347129
+   },
+   "metrics": {
+    "onnx_parity_max_abs": 8.27e-07,
+    "validation_anchor": "analytic",
+    "l2_relative": 0.278191,
+    "max_abs_error": 1.049266,
+    "speed_rel_rmse_swept": 0.164506,
+    "speed_rel_rmse_dead": 0.374507,
+    "swept_area_frac": 0.6732,
+    "dye_holdout_rmse": 0.004751
+   }
+  },
+  {
+   "id": "t08",
+   "label_en": "t=0.8",
+   "label_es": "t=0.8",
+   "note_en": "t=0.8 — broad and fading dye; late-time information is weaker.",
+   "note_es": "t=0.8 — tinte ancho y tenue; la información tardía es más débil.",
+   "params": {
+    "t": 0.8
+   },
+   "trace": {
+    "path": "ind-hidden-velocity/t08.json",
+    "bytes": 346934
+   },
+   "metrics": {
+    "onnx_parity_max_abs": 8.27e-07,
+    "validation_anchor": "analytic",
+    "l2_relative": 0.278218,
+    "max_abs_error": 1.048991,
+    "speed_rel_rmse_swept": 0.164668,
+    "speed_rel_rmse_dead": 0.374415,
+    "swept_area_frac": 0.6732,
+    "dye_holdout_rmse": 0.004751
+   }
+  },
+  {
+   "id": "t10",
+   "label_en": "t=1",
+   "label_es": "t=1",
+   "note_en": "t=1.0 — the window ends; dead zones never saw dye and stay unidentifiable.",
+   "note_es": "t=1.0 — termina la ventana; las zonas muertas nunca vieron tinte y siguen sin identificarse.",
+   "params": {
+    "t": 1.0
+   },
+   "trace": {
+    "path": "ind-hidden-velocity/t10.json",
+    "bytes": 346920
+   },
+   "metrics": {
+    "onnx_parity_max_abs": 8.27e-07,
+    "validation_anchor": "analytic",
+    "l2_relative": 0.278235,
+    "max_abs_error": 1.04883,
+    "speed_rel_rmse_swept": 0.164727,
+    "speed_rel_rmse_dead": 0.374328,
+    "swept_area_frac": 0.6732,
+    "dye_holdout_rmse": 0.004751
+   }
+  }
+ ],
+ "diagnostics": {
+  "path": "ind-hidden-velocity/diagnostics.json"
+ },
+ "estimate": {
+  "question_en": "You can only see the dye. What is the current underneath? (the HFM mechanism, Science 2020)",
+  "question_es": "Solo puedes ver el tinte. ¿Cuál es la corriente debajo? (el mecanismo HFM, Science 2020)",
+  "why_en": "The flagship: the whole velocity field is estimated from sparse noisy dye samples + transport physics alone: no velocity data, no IC/BC. Exactly what direct measurement cannot give.",
+  "why_es": "El buque insignia: todo el campo de velocidad se estima solo desde muestras dispersas y ruidosas de tinte + la física del transporte: sin datos de velocidad, sin CI/CB. Justo lo que la medición directa no puede dar.",
+  "items": [
+   {
+    "label_en": "recovered circulation center (true: 0.50, 0.50)",
+    "label_es": "centro de circulación recuperado (verdadero: 0.50, 0.50)",
+    "value": "(x, y) = (0.47, 0.50)"
+   },
+   {
+    "label_en": "current error INSIDE the dye-swept region",
+    "label_es": "error de corriente DENTRO de la región barrida",
+    "value": "16.4% rel RMSE"
+   },
+   {
+    "label_en": "in the never-dyed dead zones (unidentifiable)",
+    "label_es": "en las zonas muertas sin tinte (no identificable)",
+    "value": "37.5%"
+   }
+  ],
+  "markers": [
+   {
+    "a": 0.47,
+    "b": 0.5,
+    "label_en": "recovered center",
+    "label_es": "centro recuperado"
+   },
+   {
+    "a": 0.5,
+    "b": 0.5,
+    "label_en": "true center",
+    "label_es": "centro verdadero"
+   }
+  ]
+ }
+}

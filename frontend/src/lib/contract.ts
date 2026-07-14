@@ -107,6 +107,15 @@ export interface EstimateItem {
   values?: Record<string, string>;
 }
 
+/** A computed answer drawn ON the field it was read from (issue #49 S3): coordinates in field_axes units,
+ *  (a, b) = (field_axes[0], field_axes[1]). The number and the picture reference each other. */
+export interface EstimateMarker {
+  a: number;
+  b: number;
+  label_en: string;
+  label_es: string;
+}
+
 /** The case's engineering QUESTION, the honest why-a-PINN line, and the computed ANSWER items. */
 export interface EstimateBlock {
   question_en: string;
@@ -114,6 +123,8 @@ export interface EstimateBlock {
   why_en: string;
   why_es: string;
   items: EstimateItem[];
+  markers?: EstimateMarker[];
+  markers_by_variant?: Record<string, EstimateMarker[]>;
 }
 
 /** "Watch it learn" (issue #36): per-lane field frames at training checkpoints + the L2-vs-iteration curve. */
@@ -242,8 +253,8 @@ export const CATEGORY_INTRO: Record<string, { en: string; es: string }> = {
     es: "Transporte, filtración e incertidumbre en entornos ambientales: una pluma que se advecta, una barrera, filtración no saturada, una fuente bayesiana, y el único caso entrenado con datos REALES (temperaturas de suelo NOAA).",
   },
   "industrial-fluids-heat": {
-    en: "Where PINNs genuinely win: an inverse conductivity recovery from sparse sensors, and a Helmholtz field with Fourier-feature inputs.",
-    es: "Donde las PINNs ganan de verdad: una recuperación inversa de conductividad desde sensores dispersos, y un campo de Helmholtz con entradas de Fourier features.",
+    en: "Where PINNs genuinely win: an inverse conductivity recovery from sparse sensors, a hidden velocity field estimated from dye alone (the HFM mechanism), and a Helmholtz field with Fourier-feature inputs.",
+    es: "Donde las PINNs ganan de verdad: una recuperación inversa de conductividad desde sensores dispersos, un campo de velocidad oculto estimado solo desde tinte (el mecanismo HFM), y un campo de Helmholtz con entradas de Fourier features.",
   },
   control: {
     en: "Degenerate sanity anchors: the engine must not crash on a trivial (zero-source) case.",
@@ -260,6 +271,7 @@ export const VIEW_KIT_LABELS: Record<string, { en: string; es: string }> = {
   VectorFieldKit: { en: "Vector flow", es: "Flujo vectorial" },
   UQBandKit: { en: "Uncertainty band", es: "Banda de incertidumbre" },
   InverseOverlayKit: { en: "Inverse overlay", es: "Overlay inverso" },
+  HiddenFlowKit: { en: "Hidden flow (HFM)", es: "Flujo oculto (HFM)" },
 };
 
 /** Honesty label for the data provenance (shown on the case card). */

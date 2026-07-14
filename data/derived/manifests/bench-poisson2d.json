@@ -220,6 +220,56 @@
      "k3": "|u|max = 0.0625 at (0.50, 0.50)"
     }
    }
-  ]
+  ],
+  "markers_by_variant": {
+   "k1": [
+    {
+     "a": 0.5,
+     "b": 0.5,
+     "label_en": "peak",
+     "label_es": "pico"
+    }
+   ],
+   "k15": [
+    {
+     "a": 0.38,
+     "b": 0.38,
+     "label_en": "peak",
+     "label_es": "pico"
+    }
+   ],
+   "k2": [
+    {
+     "a": 0.3,
+     "b": 0.7,
+     "label_en": "peak",
+     "label_es": "pico"
+    }
+   ],
+   "k225": [
+    {
+     "a": 0.64,
+     "b": 0.64,
+     "label_en": "peak",
+     "label_es": "pico"
+    }
+   ],
+   "k25": [
+    {
+     "a": 0.59,
+     "b": 0.59,
+     "label_en": "peak",
+     "label_es": "pico"
+    }
+   ],
+   "k3": [
+    {
+     "a": 0.5,
+     "b": 0.5,
+     "label_en": "peak",
+     "label_es": "pico"
+    }
+   ]
+  }
  }
 }

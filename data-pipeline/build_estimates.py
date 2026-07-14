@@ -13,7 +13,6 @@ ln 2/(alpha pi^2): agreement within the trace's time resolution (1-2.5%).
 from __future__ import annotations
 
 import json
-import io
 from pathlib import Path
 
 import numpy as np
@@ -125,7 +124,7 @@ def bake_all():
         "The ensemble gives the estimate WITH honest error bars: sigma grows exactly where sensors are absent, so the compliance answer carries its own confidence.",
         "El ensamble entrega la estimación CON barras de error honestas: sigma crece justo donde no hay sensores, así el veredicto de cumplimiento lleva su propia confianza.",
         [
-            item(f"c at (x=0.5, t=0.25)", "c en (x=0.5, t=0.25)", value=f"{mu:.3f} ± {2*sg:.3f} (2σ)"),
+            item("c at (x=0.5, t=0.25)", "c en (x=0.5, t=0.25)", value=f"{mu:.3f} ± {2*sg:.3f} (2σ)"),
             item(f"P(c > {thr}) at that point", f"P(c > {thr}) en ese punto", value=p_str),
             item("least-trusted spot (largest σ)", "punto menos confiable (mayor σ)", value=f"σ = {float(std[sij]):.4f} at (x={float(xs[sij[0]]):.2f}, t={float(ts[sij[1]]):.2f})"),
         ],
@@ -229,7 +228,7 @@ def bake_all():
     s_star = 0.3
     for v in m["variants"]:
         t = trace_of(m, v["id"])
-        ss, ts_ = np.array(t["axes"]["s"]), np.array(t["axes"]["t"])
+        ss = np.array(t["axes"]["s"])
         n = np.array(t["fields"]["n"])  # [is][it]
         below = ss <= s_star
         num = np.trapezoid(n[below, -1], ss[below]); den = np.trapezoid(n[:, -1], ss)
@@ -480,6 +479,36 @@ def bake_all():
         ],
     )
 
+    # ---- ind-hidden-velocity (issue #48): the HFM flagship. The vortex core is read from the RECOVERED
+    #      current via the stream-function extremum (the Phase A technique, now applied to an estimate that
+    #      was never measured); the swept vs dead-zone split is the honesty pair. ----
+    if (MANIFESTS / "ind-hidden-velocity.json").exists():
+        m = man("ind-hidden-velocity")
+        mid = next((v for v in m["variants"] if v["id"] == "t05"), m["variants"][0])
+        t = trace_of(m, mid["id"])
+        xs, ys = np.array(t["axes"]["x"]), np.array(t["axes"]["y"])
+        u = np.array(t["fields"]["u"])
+        dy = np.diff(ys)
+        psi = np.zeros_like(u)
+        psi[:, 1:] = np.cumsum(0.5 * (u[:, 1:] + u[:, :-1]) * dy[None, :], axis=1)
+        ij = np.unravel_index(np.argmax(np.abs(psi)), psi.shape)
+        cx, cy = float(xs[ij[0]]), float(ys[ij[1]])
+        s = t.get("summary", {})
+        QUESTIONS["ind-hidden-velocity"] = set_estimate(
+            "ind-hidden-velocity",
+            "You can only see the dye. What is the current underneath? (the HFM mechanism, Science 2020)",
+            "Solo puedes ver el tinte. ¿Cuál es la corriente debajo? (el mecanismo HFM, Science 2020)",
+            "The flagship: the whole velocity field is estimated from sparse noisy dye samples + transport physics alone: no velocity data, no IC/BC. Exactly what direct measurement cannot give.",
+            "El buque insignia: todo el campo de velocidad se estima solo desde muestras dispersas y ruidosas de tinte + la física del transporte: sin datos de velocidad, sin CI/CB. Justo lo que la medición directa no puede dar.",
+            [
+                item("recovered circulation center (true: 0.50, 0.50)", "centro de circulación recuperado (verdadero: 0.50, 0.50)", value=f"(x, y) = ({cx:.2f}, {cy:.2f})"),
+                item("current error INSIDE the dye-swept region", "error de corriente DENTRO de la región barrida", value=f"{s.get('speed_rel_rmse_swept', 0)*100:.1f}% rel RMSE"),
+                item("in the never-dyed dead zones (unidentifiable)", "en las zonas muertas sin tinte (no identificable)", value=f"{s.get('speed_rel_rmse_dead', 0)*100:.1f}%"),
+            ],
+        )
+    else:
+        print("[ind-hidden-velocity] manifest not baked yet: skipped (re-run after the pipeline)")
+
     # ---- patch index.json with the questions ----
     idx = json.loads((MANIFESTS / "index.json").read_text(encoding="utf-8"))
     for c in idx.get("cases", []):
@@ -490,5 +519,119 @@ def bake_all():
     print(f"index.json patched with {sum(1 for c in idx['cases'] if 'question_en' in c)} questions")
 
 
+def _mk(a, b, en, es_):
+    return {"a": round(float(a), 4), "b": round(float(b), 4), "label_en": en, "label_es": es_}
+
+
+def bake_markers():
+    """S3 of the unified remediation (issue #49): structured MARKER coordinates so the web draws each answer ON
+    the field it was read from (the number and the picture must reference each other). Coordinates are in the
+    case's field_axes units, (a, b) = (field_axes[0], field_axes[1]). Recomputed from the same baked artifacts
+    as the estimates; patched into the manifest estimate block as `markers` / `markers_by_variant`."""
+    def patch(cid, markers=None, by_variant=None):
+        m = man(cid)
+        if "estimate" not in m:
+            print(f"[{cid}] no estimate block: markers skipped")
+            return
+        if markers is not None:
+            m["estimate"]["markers"] = markers
+        if by_variant is not None:
+            m["estimate"]["markers_by_variant"] = by_variant
+        save_man(cid, m)
+        n = len(markers or []) + sum(len(v) for v in (by_variant or {}).values())
+        print(f"[{cid}] markers baked: {n}")
+
+    # poisson: the peak, per mode
+    m = man("bench-poisson2d")
+    bv = {}
+    for v in m["variants"]:
+        t = trace_of(m, v["id"])
+        xs, ys = np.array(t["axes"]["x"]), np.array(t["axes"]["y"])
+        u = np.array(t["fields"]["u"])
+        ij = np.unravel_index(np.argmax(np.abs(u)), u.shape)
+        bv[v["id"]] = [_mk(xs[ij[0]], ys[ij[1]], "peak", "pico")]
+    patch("bench-poisson2d", by_variant=bv)
+
+    # heat1d: the half-cooling instant at the centerline, per alpha
+    m = man("bench-heat1d")
+    bv = {}
+    for v in m["variants"]:
+        t = trace_of(m, v["id"])
+        xs, ts = np.array(t["axes"]["x"]), np.array(t["axes"]["t"])
+        u = np.array(t["fields"]["u"])
+        ic = int(np.argmin(np.abs(xs - 0.5)))
+        th = crossing_time(ts, u[ic, :], 0.5 * float(u[ic, 0]), rising=False)
+        if th is not None:
+            bv[v["id"]] = [_mk(0.5, th, "core half-cooled here", "núcleo a la mitad aquí")]
+    patch("bench-heat1d", by_variant=bv)
+
+    # burgers: the arrival at the checkpoint, per nu
+    m = man("bench-burgers1d")
+    bv = {}
+    for v in m["variants"]:
+        t = trace_of(m, v["id"])
+        xs, ts = np.array(t["axes"]["x"]), np.array(t["axes"]["t"])
+        u = np.array(t["fields"]["u"])
+        front = []
+        for j in range(len(ts)):
+            idx = np.where(u[:, j] >= 0.5)[0]
+            front.append(xs[idx.max()] if len(idx) else xs[0])
+        t_arr = crossing_time(ts, front, 0.0, rising=True)
+        if t_arr is not None:
+            bv[v["id"]] = [_mk(0.0, t_arr, "front arrives", "llega el frente")]
+    patch("bench-burgers1d", by_variant=bv)
+
+    # allencahn: the final wall positions
+    m = man("bench-allencahn")
+    t = trace_of(m)
+    xs = np.array(t["axes"]["x"]); u = np.array(t["fields"]["u"]); col = u[:, -1]
+    walls = [float(xs[j] - col[j] * (xs[j + 1] - xs[j]) / ((col[j + 1] - col[j]) or 1)) for j in range(len(col) - 1) if col[j] * col[j + 1] < 0]
+    tmax = float(np.array(t["axes"]["t"])[-1])
+    patch("bench-allencahn", markers=[_mk(w, tmax, "final wall", "pared final") for w in walls])
+
+    # navier: the vortex core
+    patch("bench-navier-cavity", markers=[_mk(0.61, 0.75, "vortex core", "núcleo del vórtice")])
+    # helmholtz: the receiver
+    patch("ind-helmholtz", markers=[_mk(0.25, 0.25, "receiver", "receptor")])
+    # hidden velocity: the recovered circulation center
+    m = man("ind-hidden-velocity")
+    it0 = m["estimate"]["items"][0]["value"]  # "(x, y) = (0.47, 0.50)"
+    import re
+    g = re.findall(r"[-\d.]+", it0)
+    patch("ind-hidden-velocity", markers=[_mk(float(g[0]), float(g[1]), "recovered center", "centro recuperado"),
+                                          _mk(0.5, 0.5, "true center", "centro verdadero")])
+    # ocean: the coastal checkpoint
+    patch("poll-ocean-transport", markers=[_mk(0.75, 0.65, "checkpoint", "punto de control")])
+    # soil barrier: the half-rise instant downstream
+    m = man("poll-soil-barrier")
+    t = trace_of(m)
+    xs, ts = np.array(t["axes"]["x"]), np.array(t["axes"]["t"])
+    c = np.array(t["fields"]["c"]); ix = int(np.argmin(np.abs(xs - 0.75)))
+    th = crossing_time(ts, c[ix, :], 0.5 * float(c[ix, -1]), rising=True)
+    if th is not None:
+        patch("poll-soil-barrier", markers=[_mk(0.75, th, "half-rise past the wall", "media subida tras el muro")])
+    # thickener: the mudline crossing mid-height, per dose
+    m = man("mine-thickener-settling")
+    bv = {}
+    for v in m["variants"]:
+        t = trace_of(m, v["id"])
+        zs, ts = np.array(t["axes"]["z"]), np.array(t["axes"]["t"])
+        phi = np.array(t["fields"]["phi"])
+        lo, hi = float(phi.min()), float(phi.max()); mid = lo + 0.5 * (hi - lo)
+        front = []
+        for j in range(len(ts)):
+            above = np.where(phi[:, j] > mid)[0]
+            front.append(zs[above.max()] if len(above) else zs[0])
+        th = crossing_time(ts, front, 0.5, rising=False)
+        if th is not None:
+            bv[v["id"]] = [_mk(0.5, th, "mudline passes mid-height", "línea de lodo cruza media altura")]
+    patch("mine-thickener-settling", by_variant=bv)
+    # uq: the compliance checkpoint + the least-trusted spot
+    patch("poll-source-uq-bpinn", markers=[_mk(0.5, 0.25, "checkpoint", "punto de control"), _mk(0.30, 0.0, "least trusted (max σ)", "menos confiable (σ máx)")])
+    # comminution: the target size line end
+    patch("mine-comminution-pbe", markers=[_mk(0.3, 1.0, "target size s*", "tamaño objetivo s*")])
+
+
 if __name__ == "__main__":
     bake_all()
+    bake_markers()

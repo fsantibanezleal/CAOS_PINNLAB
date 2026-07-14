@@ -1,7 +1,7 @@
 {
  "schema": "pinnlab.index/v1",
  "engine_version": "0.18.000",
- "n_cases": 20,
+ "n_cases": 21,
  "categories": [
   "canonical-benchmark",
   "control",
@@ -141,6 +141,18 @@
    "real_or_synthetic": "synthetic",
    "question_en": "Where is this plate insulating vs conducting? (defect mapping from ~100 point temperatures)",
    "question_es": "¿Dónde aísla y dónde conduce esta placa? (mapa de defectos desde ~100 temperaturas puntuales)"
+  },
+  {
+   "case_id": "ind-hidden-velocity",
+   "category": "industrial-fluids-heat",
+   "title": "Hidden velocity from dye: estimate the current from passive-scalar observations (HFM mechanism)",
+   "manifest_path": "manifests/ind-hidden-velocity.json",
+   "system_type": "inverse-assim",
+   "view_kit": "HiddenFlowKit",
+   "method": "inverse-hidden-state",
+   "real_or_synthetic": "synthetic",
+   "question_en": "You can only see the dye. What is the current underneath? (the HFM mechanism, Science 2020)",
+   "question_es": "Solo puedes ver el tinte. ¿Cuál es la corriente debajo? (el mecanismo HFM, Science 2020)"
   },
   {
    "case_id": "ind-helmholtz",

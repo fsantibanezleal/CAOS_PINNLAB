@@ -220,6 +220,14 @@
      "g60": "63.1%"
     }
    }
+  ],
+  "markers": [
+   {
+    "a": 0.3,
+    "b": 1.0,
+    "label_en": "target size s*",
+    "label_es": "tamaño objetivo s*"
+   }
   ]
  }
 }

@@ -123,6 +123,14 @@
     "label_es": "u en el receptor (PINN Fourier vs exacta)",
     "value": "0.990 vs 1.000"
    }
+  ],
+  "markers": [
+   {
+    "a": 0.25,
+    "b": 0.25,
+    "label_en": "receiver",
+    "label_es": "receptor"
+   }
   ]
  }
 }

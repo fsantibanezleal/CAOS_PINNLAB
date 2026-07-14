@@ -73,7 +73,7 @@ const en = {
       text: "The pipeline computes the honest METHOD LADDER per case - the standard solution (closed form or a classical solver), the naive PINN (the plain net, trained for real so its failure is visible), the adapted fix, and the data-driven lane where the case is about data - plus the dynamics bakes: training checkpoints (watch it learn), smooth 2-D time frames, sweeps and benchmark validations. The web only replays: Compare (with the animated ladder), Training, the animated Field hero, and Diagnostics. Real headline numbers: naive Helmholtz 120.8% vs Fourier 9.3%; naive Allen-Cahn 95.4% (metastable collapse) vs hard-constraint+RAR 0.4%; heat2d-inverse with no data 356% vs physics+data 4.0%. Where a fair test shows no real contrast, nothing is fabricated.",
     },
     methods: {
-      text: "20 cases across canonical benchmarks, mining / mineral-processing, pollution / environmental, industrial fluids & heat, and control: each exercising a real SOTA technique, each honestly labeled. The matrix maps cases to methods; the blocks summarize the method families and the honesty taxonomy.",
+      text: "21 cases across canonical benchmarks, mining / mineral-processing, pollution / environmental, industrial fluids & heat, and control: each exercising a real SOTA technique, each honestly labeled. The matrix maps cases to methods; the blocks summarize the method families and the honesty taxonomy.",
       constraints: {
         title: "Hard constraints & architectures",
         text: "Output-transform hard BC/IC (Poisson, heat, wave), Fourier-feature inputs (Helmholtz), SIREN, PFNN: boundary conditions satisfied exactly and captured inside the exported ONNX graph.",
@@ -173,7 +173,7 @@ const es: typeof en = {
       text: "La tubería computa la ESCALERA DE MÉTODOS honesta por caso: la solución estándar (forma cerrada o solucionador clásico), la PINN ingenua (la red simple, entrenada de verdad para que su falla sea visible), la corrección adaptada y el carril con datos cuando el caso trata de datos; más los horneados de dinámica: checkpoints de entrenamiento (míralo aprender), fotogramas 2-D suaves, barridos y validaciones de benchmark. La web solo reproduce: Comparar (con la escalera animada), Entrenamiento, el héroe animado del Campo y Diagnóstico. Números reales: Helmholtz ingenua 120.8% vs Fourier 9.3%; Allen-Cahn ingenua 95.4% (colapso metaestable) vs restricciones duras+RAR 0.4%; heat2d-inverse sin datos 356% vs física+datos 4.0%. Donde una prueba justa no muestra contraste real, no se fabrica nada.",
     },
     methods: {
-      text: "20 casos en benchmarks canónicos, minería / procesamiento de minerales, contaminación / ambiental, fluidos & calor industrial, y control: cada uno ejercitando una técnica SOTA real, cada uno etiquetado con honestidad. La matriz mapea casos a métodos; los bloques resumen las familias de métodos y la taxonomía de honestidad.",
+      text: "21 casos en benchmarks canónicos, minería / procesamiento de minerales, contaminación / ambiental, fluidos & calor industrial, y control: cada uno ejercitando una técnica SOTA real, cada uno etiquetado con honestidad. La matriz mapea casos a métodos; los bloques resumen las familias de métodos y la taxonomía de honestidad.",
       constraints: {
         title: "Restricciones duras y arquitecturas",
         text: "BC/IC duras por output-transform (Poisson, calor, onda), entradas con features de Fourier (Helmholtz), SIREN, PFNN: condiciones de borde satisfechas exactamente y capturadas dentro del grafo ONNX exportado.",

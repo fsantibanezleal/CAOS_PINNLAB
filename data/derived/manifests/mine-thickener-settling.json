@@ -232,6 +232,48 @@
      "r090": "z = 0.00"
     }
    }
-  ]
+  ],
+  "markers_by_variant": {
+   "r042": [
+    {
+     "a": 0.5,
+     "b": 0.94,
+     "label_en": "mudline passes mid-height",
+     "label_es": "línea de lodo cruza media altura"
+    }
+   ],
+   "r054": [
+    {
+     "a": 0.5,
+     "b": 0.74,
+     "label_en": "mudline passes mid-height",
+     "label_es": "línea de lodo cruza media altura"
+    }
+   ],
+   "r066": [
+    {
+     "a": 0.5,
+     "b": 0.6,
+     "label_en": "mudline passes mid-height",
+     "label_es": "línea de lodo cruza media altura"
+    }
+   ],
+   "r078": [
+    {
+     "a": 0.5,
+     "b": 0.51,
+     "label_en": "mudline passes mid-height",
+     "label_es": "línea de lodo cruza media altura"
+    }
+   ],
+   "r090": [
+    {
+     "a": 0.5,
+     "b": 0.44,
+     "label_en": "mudline passes mid-height",
+     "label_es": "línea de lodo cruza media altura"
+    }
+   ]
+  }
  }
 }

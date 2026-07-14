@@ -3,6 +3,46 @@
 All notable changes to **PINN-Lab**. Format: `X.XX.XXX` (display), see `pinnlab.__version__`. Keep `0.x` while on
 synthetic/benchmark data. Tag every release.
 
+## [0.24.000] (2026-07-14) THE INVESTIGATION WORKBENCH + THE HFM FLAGSHIP (issues #48, #49 S1-S3)
+
+The owner's full review (persisted in `wip/web-review/unified-remediation-plan-2026-07-14.md`) found the app a
+solver gallery, not a product: this release restructures it into an investigation instrument and ships the 21st
+case.
+
+- **RESULTS-FIRST WORKBENCH (owner-fixed tab order: Results, Context, then the evidence)**: every case now
+  opens on a designed Results screen: THE SITUATION (a concrete scenario with stakes) -> what the model
+  calculates (what the axes and colors physically mean) -> what we know vs what we seek -> how the PINN helps
+  under DECLARED assumptions -> THE ANSWER as a plain-language sentence with its values -> THE VERDICT derived
+  from the baked numbers (usable for X, not for Y) -> the evidence index (what each remaining tab proves).
+  New content layers for all 21 cases, EN/ES, zero unexplained jargon (`scenarios.ts`, `results.ts`).
+- **THE LAYOUT IS AN INSTRUMENT**: the story is a visible 9-chapter stepper (entry lands on chapter 1, never
+  an arbitrary case); tabs sit ON the stage they control; regime chips sit directly above the stage; the left
+  rail is selection only (search across names + questions; only the case list scrolls); one-line meta footer.
+  Measured against the previous release: rail overflow 220px -> 0; the stage starts at 247px instead of 404px
+  and gets 616px instead of 466px; the App page no longer scrolls at 1500x950.
+- **THE ANSWER DRAWN ON THE FIELD**: `build_estimates.py` now bakes structured marker coordinates (34 markers
+  across 12 cases) and the field kits draw them: heat1d's half-cooling instant, burgers' arrival, allencahn's
+  final walls, the navier vortex core, the helmholtz receiver, the flagship's recovered-vs-true circulation
+  centers, the barrier's half-rise, poisson's per-mode peaks, the thickener's mid-height crossings. The number
+  and the picture finally reference each other.
+- **Charts tab fixed**: single-regime cases no longer show a meaningless one-bar chart; they show every
+  measured number of the bake, each explained in plain language.
+- **CASE 21, THE FLAGSHIP: `ind-hidden-velocity` (issue #48)**: the Hidden Fluid Mechanics mechanism (Science
+  2020) at CPU scale: the whole hidden current estimated from ~640 sparse noisy dye samples + transport
+  physics ONLY (no velocity data, no IC/BC). Seeded FD dye truth with asserted stability (central scheme legal
+  at cell Peclet 0.59; CFL-checked; mass conserved). The first training run was REJECTED (38-60% error even in
+  the dye-swept region) and diagnosed: a time-varying velocity that sparse dye cannot pin; the declared
+  steady-flow assumption (u_t = v_t = 0 residuals) fixed it and is documented as teaching content. Shipped
+  honest numbers: 16.4% current error inside the swept region vs 37.5% in the never-dyed dead zones (the
+  unidentifiability split is part of the answer), recovered circulation center (0.47, 0.50) vs true
+  (0.50, 0.50), held-out dye RMSE 0.78% on 160 never-trained samples. New HiddenFlowKit view; 9th story
+  chapter; docs page; Methodology/constraints/registry wired; catalogue counts swept 20 -> 21.
+- Validation: 51 artifact contract tests green; the structural validator now ASSERTS Results-first order,
+  Results content on every case, rail non-overflow and page fit (21 cases x 2 themes, 0 console errors).
+- Remaining from the unified plan (tracked open in issue #49): chart zoom/solo interactivity, the shared
+  probe/time cursor across views, marker wiring on the frame-animation kits, the jargon sweep of Context
+  prose.
+
 ## [0.23.000] (2026-07-13) THE ESTIMATION REFRAME: every case asks a question and answers it with a computed estimate (issue #46)
 
 The catalogue's framing moves from solver-centric to estimation-centric: the reason to use a PINN is to ESTIMATE

@@ -4,6 +4,7 @@ import { viridis } from "../lib/colormap";
 import { fmtTick, fmtVal, niceTicks } from "../lib/plot";
 import { snapshotElement } from "../lib/snapshot";
 import { LineProfile } from "./kits/LineProfile";
+import { MarkerLayer } from "./kits/MarkerLayer";
 import { Transport } from "./kits/Transport";
 import { useAnimator } from "./kits/useAnimator";
 
@@ -33,12 +34,15 @@ export function FieldView({
   axisY,
   outputLabel,
   lang = "en",
+  markers = [],
 }: {
   field: number[][];
   axisX: FieldAxis;
   axisY: FieldAxis;
   outputLabel: string;
   lang?: "en" | "es";
+  /** computed answers drawn ON the field (issue #49 S3), in (axisX, axisY) units */
+  markers?: import("../lib/contract").EstimateMarker[];
 }) {
   const es = lang === "es";
   const nx = field.length;
@@ -189,6 +193,7 @@ export function FieldView({
               <div className="xhair xhair-v" style={{ left: `${cx * 100}%` }} />
               <div className="xhair xhair-h" style={{ top: `${cy * 100}%` }} />
               <div className="xhair-dot" style={{ left: `${cx * 100}%`, top: `${cy * 100}%` }} />
+              <MarkerLayer markers={markers} a0={axisX.lo} a1={axisX.hi} b0={axisY.lo} b1={axisY.hi} lang={lang} />
             </div>
             <Colorbar lo={lo} hi={hi} value={readVal} label={outputLabel} />
           </div>

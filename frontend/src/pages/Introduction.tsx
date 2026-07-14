@@ -89,7 +89,7 @@ export function Introduction() {
       </div>
 
       <div className="panel" style={{ margin: "18px 0", borderColor: "var(--accent)" }}>
-        <h3>{es ? "La historia en 8 capítulos: cuándo ganan y cuándo pierden" : "The story in 8 chapters: when they win and when they lose"}</h3>
+        <h3>{es ? "La historia en 9 capítulos: cuándo ganan y cuándo pierden" : "The story in 9 chapters: when they win and when they lose"}</h3>
         <p style={{ fontSize: 14 }}>
           {es
             ? "El catálogo no es una lista plana: cuenta una historia honesta, y cada capítulo se DEMUESTRA con contenido computado (no afirmado) en la vista Comparar / Entrenamiento / Diagnóstico del caso. Recórrela desde el selector 'La historia' del App."
@@ -111,8 +111,8 @@ export function Introduction() {
       <ul>
         <li>
           {es
-            ? "Un catálogo ejecutable de 20 casos de ecuaciones diferenciales en cuatro grupos: benchmarks canónicos → minería/procesamiento mineral → polución/ambiental → fluidos/calor industriales. Cada caso se entrena offline con un motor SOTA, se valida contra una referencia analítica/numérica, se exporta a ONNX y se reproduce/infiere en el navegador."
-           : "A runnable catalogue of 20 differential-equation cases in four groups: canonical benchmarks → mining/mineral-processing → pollution/environmental → industrial fluids/heat. Each case is trained offline by a SOTA engine, validated against an analytic or numerical reference, exported to ONNX, and replayed/inferred in the browser."}
+            ? "Un catálogo ejecutable de 21 casos de ecuaciones diferenciales en cuatro grupos: benchmarks canónicos → minería/procesamiento mineral → polución/ambiental → fluidos/calor industriales. Cada caso se entrena offline con un motor SOTA, se valida contra una referencia analítica/numérica, se exporta a ONNX y se reproduce/infiere en el navegador."
+           : "A runnable catalogue of 21 differential-equation cases in four groups: canonical benchmarks → mining/mineral-processing → pollution/environmental → industrial fluids/heat. Each case is trained offline by a SOTA engine, validated against an analytic or numerical reference, exported to ONNX, and replayed/inferred in the browser."}
         </li>
         <li>
           {es

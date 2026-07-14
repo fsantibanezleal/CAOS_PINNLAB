@@ -111,6 +111,20 @@
     "label_es": "cruces por cero de u(x, t=1)",
     "value": "-0.494, 0.494"
    }
+  ],
+  "markers": [
+   {
+    "a": -0.4936,
+    "b": 1.0,
+    "label_en": "final wall",
+    "label_es": "pared final"
+   },
+   {
+    "a": 0.4937,
+    "b": 1.0,
+    "label_en": "final wall",
+    "label_es": "pared final"
+   }
   ]
  }
 }

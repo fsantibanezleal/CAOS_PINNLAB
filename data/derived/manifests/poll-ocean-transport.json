@@ -222,6 +222,14 @@
     "label_es": "concentración pico allí (dentro de t ≤ 1)",
     "value": "0.077 at t = 1.00"
    }
+  ],
+  "markers": [
+   {
+    "a": 0.75,
+    "b": 0.65,
+    "label_en": "checkpoint",
+    "label_es": "punto de control"
+   }
   ]
  }
 }
