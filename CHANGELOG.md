@@ -3,6 +3,21 @@
 All notable changes to **PINN-Lab**. Format: `X.XX.XXX` (display), see `pinnlab.__version__`. Keep `0.x` while on
 synthetic/benchmark data. Tag every release.
 
+## [0.25.001] (2026-07-15) CONTENT ARC + Results key-graph fix (issue #49)
+
+- **The five doc pages made faithful to v0.25 and deepened**: Introduction drops the removed "story selector"
+  reference and states the real tab structure; the win/lose material stays as honest documentation pointing at
+  the cases + Methodology. Implementation's Web-flow updated to the real workbench (Results-first tabs, the
+  contain-fit engine, no scroll) and gains a new **Engineering lessons** sub-tab telling the real, documented
+  failures that left rules in the pipeline (the diverged FDM nearly baked, the Allen-Cahn metastable trap, the
+  hidden-velocity steady-flow fix that a first run failed, the compute-bomb fix, the test that clobbered
+  canonical artifacts). Benchmark gains a **"how to read these numbers"** section (anchor classes, ONNX parity
+  is not a physics error, the honest high-error cases, the data-honesty label, the honest dashes) and the
+  reading-arc hand-off across the five pages.
+- **Results key graph fixed**: a leftover `align-items: start` collapsed the grid cell so the key graph
+  rendered at 85px; now it fills the Results stage (360px), markers and all, at every case.
+- 51 contract tests green; all tabs still fit at 1366x768 and 1920x1080.
+
 ## [0.25.000] (2026-07-15) THE LAYOUT OVERHAUL: an instrument that fits the screen (issue #49, real review)
 
 After a full measured review (wip/web-review/real-review-and-plan-2026-07-15.md: the no-scroll principle was

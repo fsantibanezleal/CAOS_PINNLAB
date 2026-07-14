@@ -83,6 +83,32 @@ export function Benchmark() {
             : "The ladder columns come from the baked comparisons (each case's Compare view); a dash means that lane does not exist for the case (a contrast is never fabricated). Click a case to open its comparison."}
         </p>
       </div>
+
+      <div className="panel" style={{ marginTop: 16 }}>
+        <h3>{es ? "Cómo leer estos números" : "How to read these numbers"}</h3>
+        <ul style={{ fontSize: 13.5, lineHeight: 1.6 }}>
+          <li>{es
+            ? "El L2 RELATIVO es el error del campo de la PINN contra su ancla de validación, normalizado por la norma de la referencia. La escala del ancla importa: analítica/MMS (forma cerrada exacta), dataset/benchmark (p. ej. las líneas de Ghia), o datos reales retenidos (soil-heat). Un 0.1% contra una forma cerrada y un 5% contra un benchmark de flujo no son comparables sin mirar el ancla."
+            : "RELATIVE L2 is the PINN field's error against its validation anchor, normalized by the reference's norm. The anchor class matters: analytic/MMS (exact closed form), dataset/benchmark (e.g. the Ghia centerlines), or held-out real data (soil-heat). A 0.1% against a closed form and a 5% against a flow benchmark are not comparable without reading the anchor."}</li>
+          <li>{es
+            ? "La PARIDAD ONNX (siempre < 1e-4, típicamente ~1e-6 a 1e-7) mide que la red exportada al navegador reproduce a la red entrenada. NO es un error de física: es la fidelidad del contrato train→web. Que sea diminuta es lo que hace que el tab Live evalúe exactamente la función entrenada."
+            : "ONNX PARITY (always < 1e-4, typically ~1e-6 to 1e-7) measures that the network exported to the browser reproduces the trained network. It is NOT a physics error: it is the fidelity of the train→web contract. Its being tiny is what makes the Live tab evaluate exactly the trained function."}</li>
+          <li>{es
+            ? "Varios casos se sientan HONESTAMENTE en un error alto por diseño, no por defecto: Helmholtz ~9% (los campos oscilatorios son duros; la lección es que la red ingenua da 121%), la cavidad de Navier ~ RMSE 0.05 en las líneas de Ghia, la barrera de suelo ~19% (el salto de material es genuinamente difícil para redes suaves). Se publican tal cual."
+            : "Several cases sit HONESTLY at a high error by design, not by defect: Helmholtz ~9% (oscillatory fields are hard; the lesson is the naive net gives 121%), the Navier cavity at ~0.05 RMSE on the Ghia centerlines, the soil barrier ~19% (the material jump is genuinely hard for smooth networks). They are published as-is."}</li>
+          <li>{es
+            ? "La etiqueta de DATOS es la línea de honestidad: solo 1 de 21 casos usa datos reales (soil-heat-real, temperaturas NOAA); el resto es sintético o sintético-ilustrativo (un cierre de ingeniería estándar, no un gemelo calibrado). Los casos de minería/polución son modelos reducidos etiquetados como tales."
+            : "The DATA label is the honesty line: only 1 of 21 cases uses real data (soil-heat-real, NOAA temperatures); the rest is synthetic or synthetic-illustrative (a standard engineering closure, not a calibrated twin). The mining/pollution cases are reduced models labeled as such."}</li>
+          <li>{es
+            ? "Donde una prueba justa no mostró contraste real (wave1d, ~11% ambos carriles) o un solucionador divergió (un FDM apresurado), NO se muestra ningún resultado inventado: el guion es honesto."
+            : "Where a fair test showed no real contrast (wave1d, ~11% both lanes) or a solver diverged (a rushed FDM), NO fabricated result is shown: the dash is honest."}</li>
+        </ul>
+        <p className="muted" style={{ fontSize: 12.5, marginTop: 6 }}>
+          {es
+            ? "Cierre del arco: Introducción (por qué las EDPs y las PINN) → Metodología (los métodos y cuándo ganan) → Implementación (cómo se construyó, con las lecciones) → Experimentos (qué se corrió) → Benchmark (los números y su lectura honesta)."
+            : "Closing the arc: Introduction (why PDEs and PINNs) → Methodology (the methods and when they win) → Implementation (how it was built, with the lessons) → Experiments (what was run) → Benchmark (the numbers and their honest reading)."}
+        </p>
+      </div>
     </div>
   );
 }

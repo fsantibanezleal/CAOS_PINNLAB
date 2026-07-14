@@ -618,7 +618,7 @@ ol li, ul li { margin: 4px 0; }
 .pl-railregime .variant-note { font-size: 11.5px; }
 
 /* the Results tab: answer left, key graph right, one screen */
-.pl-results { display: grid; grid-template-columns: minmax(300px, 2fr) minmax(0, 3fr); grid-template-rows: minmax(0, 1fr); gap: 16px; height: 100%; min-height: 0; }
+.pl-results { display: grid; grid-template-columns: minmax(300px, 2fr) minmax(0, 3fr); grid-template-rows: minmax(0, 1fr); align-items: stretch; gap: 16px; height: 100%; min-height: 0; }
 .pl-res-answer { min-height: 0; overflow-y: auto; scrollbar-width: thin; border: 1px solid color-mix(in srgb, var(--accent) 50%, var(--border)); border-radius: 12px; background: color-mix(in srgb, var(--accent) 5%, var(--panel)); padding: 12px 14px; }
 .pl-res-viz { min-height: 0; display: flex; flex-direction: column; overflow: hidden; }
 .pl-res-viz > * { flex: 1 1 auto; min-height: 0; }
@@ -798,7 +798,9 @@ ol li, ul li { margin: 4px 0; }
 /* Results key-viz: one fitted heatmap + colorbar + readout (plan §2.2.1) */
 .rkv { display: flex; flex-direction: column; height: 100%; min-height: 0; gap: 5px; }
 .rkv-caption { flex: none; font-size: 10.5px; }
-.rkv-area { flex: 1 1 auto; min-height: 0; display: flex; gap: 8px; align-items: center; justify-content: center; }
+.rkv-area { flex: 1 1 auto; min-height: 0; display: flex; gap: 8px; align-items: stretch; justify-content: center; }
+.rkv-map { height: 100%; width: auto; max-width: 100%; }
+.rkv-cbar { height: 100%; }
 .rkv-map .heatcanvas, .rkv-map canvas { width: 100%; height: 100%; border-radius: 8px; border: 1px solid var(--border); }
 .rkv-cbar { display: flex; gap: 4px; align-items: stretch; }
 .rkv-cbar-scale { width: 12px; display: flex; flex-direction: column; border-radius: 3px; overflow: hidden; }

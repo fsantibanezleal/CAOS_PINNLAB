@@ -140,26 +140,33 @@ export function Implementation() {
         <li>En el tab <strong>Live</strong>, carga el <strong>ONNX</strong> una vez y lo re-evalúa cada vez que mueves un deslizador de parámetro.</li>
       </ol>
       <p>
-        Cada caso se presenta como un <strong>banco de trabajo</strong> idéntico: una barra de variantes (chips de
-        régimen + insignia del carril + nota bilingüe) y cuatro sub-tabs: <strong>Field</strong> (el campo +
-        ecuaciones + lectura al cursor), <strong>Live</strong> (re-evaluación del ONNX), <strong>Charts</strong>
-        (comparación de L2 por variante) y <strong>Context</strong> (el texto profundo del caso).
+        Cada caso es un <strong>banco de trabajo</strong> idéntico y de estructura estable. La columna izquierda
+        elige el caso (buscador + menús de Dominio y Caso), muestra su tarjeta y qué fija la solución, y fija su
+        <strong> régimen</strong> de parámetro. La <strong>ecuación gobernante</strong> encabeza el escenario a todo
+        el ancho, siempre visible. Las pestañas, en orden fijo: <strong>Resultados</strong> (la pregunta y la
+        respuesta computada + el veredicto + el gráfico clave), <strong>Contexto</strong> (resumen, teoría y método),
+        <strong> Campo</strong>, <strong>Live</strong>, <strong>Comparar</strong>, <strong>Diagnóstico</strong> y
+        <strong> Regímenes</strong>. Cada vista se dimensiona al escenario y llena la pantalla <em>sin scroll</em>.
       </p>
     </>
   ): (
     <>
       <p>The SPA loads the artifacts in a cascade, recomputing nothing:</p>
       <ol>
-        <li>Read the <strong>index</strong> (case inventory) and build one tab per case.</li>
-        <li>On opening a case, load its <strong>manifest</strong>: field axes, parameter spec and the list of variants with their metrics.</li>
-        <li>For the active variant, fetch its <strong>trace</strong> (decimated field) and draw it in the interactive heatmap.</li>
+        <li>Read the <strong>index</strong> (case inventory) and populate the Domain and Case selectors.</li>
+        <li>On selecting a case, load its <strong>manifest</strong>: field axes, parameter spec and the list of variants with their metrics.</li>
+        <li>For the active variant, fetch its <strong>trace</strong> (decimated field) and draw it in the interactive, contain-fitted heatmap.</li>
         <li>In the <strong>Live</strong> tab, load the <strong>ONNX</strong> once and re-evaluate it whenever you move a parameter slider.</li>
       </ol>
       <p>
-        Each case is presented as an identical <strong>workbench</strong>: a variant bar (regime chips + lane badge +
-        bilingual note) and four sub-tabs: <strong>Field</strong> (the field + equations + cursor read-out),
-        <strong> Live</strong> (ONNX re-evaluation), <strong>Charts</strong> (per-variant L2 comparison) and
-        <strong> Context</strong> (the case's deep write-up).
+        Each case is an identical, <strong>structurally stable workbench</strong>. The left column selects the case
+        (search + Domain and Case menus), shows its card and what pins the solution, and sets its
+        <strong> regime</strong>. The <strong>governing equation</strong> heads the stage full-width, always visible.
+        The tabs, in a fixed order: <strong>Results</strong> (the question, the computed answer, the verdict and the
+        key graph), <strong>Context</strong> (summary, theory + method), <strong>Field</strong>, <strong>Live</strong>,
+        <strong> Compare</strong>, <strong>Diagnostics</strong> and <strong>Regimes</strong>. Every view sizes itself
+        to the stage and fills the screen with <em>no scrolling</em> (a contain-fit engine sizes each map/chart to
+        the measured box, so nothing is hard-capped and the crosshair/markers stay truthful).
       </p>
     </>
   );
@@ -196,13 +203,94 @@ export function Implementation() {
     </>
   );
 
+  const lessons = es ? (
+    <>
+      <p>
+        Construir un catálogo honesto significó cometer errores reales y corregirlos con disciplina. Estos son los
+        que dejaron una regla en el pipeline (no anécdotas: cada uno cambió el código o el proceso):
+      </p>
+      <ul>
+        <li>
+          <strong>Un solucionador FDM que divergió y casi se hornea.</strong> Para validar la cavidad de Navier
+          se intentó un FDM propio: divergió a NaN. El guardia <InlineMath tex={String.raw`\varepsilon>0.06`} /> es
+          <em> falso</em> para NaN, así que basura habría pasado el chequeo. Se revirtió y se validó contra las
+          líneas centrales publicadas de Ghia. Regla: nunca hornear una referencia numérica sin sus chequeos de
+          estabilidad, y guardar con <InlineMath tex={String.raw`\lnot(x<\text{tol})`} />, no con <InlineMath tex={String.raw`x>\text{tol}`} />.
+        </li>
+        <li>
+          <strong>La trampa metaestable de Allen-Cahn.</strong> La PINN suave converge a un estado equivocado que
+          <em> parece</em> convergido (95% de error, paredes de fase perdidas). La corrección: restricciones duras +
+          muestreo adaptativo RAR que persigue las capas móviles (0.4%). La lección es el propio contenido del caso:
+          en un directo difícil no falta información, falta el sesgo inductivo correcto.
+        </li>
+        <li>
+          <strong>La corriente oculta y el supuesto que faltaba.</strong> El primer entrenamiento del caso insignia
+          (velocidad desde tinte) daba 38-60% de error incluso donde el tinte barrió: la red gastaba su libertad en
+          una velocidad variable en el tiempo que datos dispersos no pueden fijar. Declarar la corriente estacionaria
+          (residuales <InlineMath tex={String.raw`u_t=v_t=0`} />) agregó todos los tiempos en un campo y bajó a 16%.
+          Ese primer resultado se RECHAZÓ; el fracaso quedó documentado como contenido, no oculto.
+        </li>
+        <li>
+          <strong>La bomba de cómputo.</strong> Los kits animados hacían autoplay de un rAF infinito que fijaba un
+          núcleo de CPU. Regla permanente: animación pausada por defecto, corre UNA vez y se detiene, y se apaga
+          cuando la pestaña se oculta (<InlineMath tex={String.raw`\texttt{visibilitychange}`} />).
+        </li>
+        <li>
+          <strong>Un test que pisó los artefactos canónicos.</strong> Una prueba de humo del pipeline reescribió
+          <InlineMath tex={String.raw`\texttt{data/derived}`} /> con una corrida CPU reducida, degradando la bakeada
+          real. Ahora la suite entera está en un <em>sandbox</em> (los escritos van a un tmp); una prueba nunca
+          escribe un artefacto canónico.
+        </li>
+      </ul>
+    </>
+  ): (
+    <>
+      <p>
+        Building an honest catalogue meant making real mistakes and fixing them with discipline. These are the ones
+        that left a rule in the pipeline (not anecdotes: each changed the code or the process):
+      </p>
+      <ul>
+        <li>
+          <strong>An FDM solver that diverged and nearly got baked.</strong> Validating the Navier cavity with a
+          hand-rolled FDM diverged to NaN. The guard <InlineMath tex={String.raw`\varepsilon>0.06`} /> is <em>false</em>
+          for NaN, so garbage would have passed the check. It was reverted and validated against the published Ghia
+          centerlines instead. Rule: never bake a numerical reference without its stability checks, and guard with
+          <InlineMath tex={String.raw`\ \lnot(x<\text{tol})`} />, not <InlineMath tex={String.raw`x>\text{tol}`} />.
+        </li>
+        <li>
+          <strong>The Allen-Cahn metastable trap.</strong> The soft PINN converges to a wrong state that <em>looks</em>
+          converged (95% error, phase walls lost). The fix: hard constraints + RAR adaptive sampling chasing the
+          moving layers (0.4%). The lesson is the case's own content: a hard forward problem lacks the right inductive
+          bias, not more information.
+        </li>
+        <li>
+          <strong>The hidden current and the missing assumption.</strong> The flagship case's first training
+          (velocity from dye) gave 38-60% error even where the dye swept: the net spent its freedom on a time-varying
+          velocity that sparse data cannot pin. Declaring the current steady (residuals
+          <InlineMath tex={String.raw`\ u_t=v_t=0`} />) aggregated all times into one field and dropped it to 16%.
+          That first result was REJECTED; the failure is documented as content, not hidden.
+        </li>
+        <li>
+          <strong>The compute bomb.</strong> The animated kits autoplayed an infinite rAF that pinned a CPU core.
+          Standing rule: animation paused by default, runs ONCE and stops, and halts when the tab is hidden
+          (<InlineMath tex={String.raw`\texttt{visibilitychange}`} />).
+        </li>
+        <li>
+          <strong>A test that clobbered the canonical artifacts.</strong> A pipeline smoke test rewrote
+          <InlineMath tex={String.raw`\ \texttt{data/derived}`} /> with a reduced CPU run, degrading the real bake.
+          The whole suite is now <em>sandboxed</em> (writes go to a tmp dir); a test never writes a canonical artifact.
+        </li>
+      </ul>
+    </>
+  );
+
   return (
     <div className="prose" style={{ maxWidth: 1100 }}>
       <h1>{es ? "Implementación: arquitectura y flujos": "Implementation: architecture & flows"}</h1>
       <p className="muted">
         {es
-          ? "Cómo está construido PINN-Lab: dos mundos (offline pesado / web liviano) unidos por un contrato de datos, y los flujos de precómputo, web y diseño."
-         : "How PINN-Lab is built: two worlds (heavy offline / light web) joined by a data contract, and the precompute, web and design flows."}
+          ? "Cómo está construido PINN-Lab: dos mundos (offline pesado / web liviano) unidos por un contrato de datos, los flujos de precómputo, web y diseño, y las lecciones de ingeniería que dejaron reglas en el pipeline."
+         : "How PINN-Lab is built: two worlds (heavy offline / light web) joined by a data contract, the precompute, web and design flows, and the engineering lessons that left rules in the pipeline."}
       </p>
       <SubTabs
         ariaLabel={es ? "Flujos de implementación": "Implementation flows"}
@@ -212,6 +300,7 @@ export function Implementation() {
           { id: "bridge", label: es ? "Puente → ONNX": "Train → ONNX bridge", content: bridge },
           { id: "web", label: es ? "Flujo web": "Web flow", content: webflow },
           { id: "design", label: es ? "Flujo de diseño": "Design flow", content: design },
+          { id: "lessons", label: es ? "Lecciones de ingeniería": "Engineering lessons", content: lessons },
         ]}
       />
     </div>
