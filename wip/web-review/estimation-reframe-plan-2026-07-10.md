@@ -210,3 +210,36 @@ Answering the owner's question 'did you search for cases where PDEs/PINNs estima
   velocimetry-from-dye case is real training, not to be rushed into a release week.
 - Validation: 22 new contract tests (suite green incl. sandboxed pipeline smoke); tsc + build clean;
   estimate-QA harness 7 surfaces x 2 themes local AND on prod; pl-validate-all 20x2 = 0 console errors.
+
+## 7. PHASE D DESIGN (2026-07-13, issue #48): ind-hidden-velocity, the HFM flagship at CPU scale
+
+The mechanism to demonstrate is the verified HFM claim set (§5b claims 3-5): velocity estimated from
+flow-visualization (passive scalar) data + the transport physics, agnostic to geometry/BC, "quantitative
+information for which direct measurements may not be possible".
+
+- TRUTH: steady incompressible cellular flow on (0,1)^2, u* = A sin(pi x) cos(pi y), v* = -A cos(pi x) sin(pi y),
+  A = 1.5 (closed form, div-free, normal components vanish on the boundary). A Gaussian dye blob (center (0.5,0.2),
+  s0^2 = 0.006) is advected-diffused (D = 0.02) by an in-build seeded explicit FD solve: 129^2 grid, central
+  differences (cell Peclet = A dx / D = 0.59 < 2, so central is legitimate; upwind would inject numerical
+  diffusion comparable to D and corrupt the truth), dt = 4e-4 (CFL-safe on both limits), no-flux walls,
+  stability-asserted (boundedness + mass conservation), never trusted blindly (the navier FDM lesson).
+- OBSERVATIONS: ~800 seeded space-time samples of c with 0.5%-of-max Gaussian noise. That is ALL the PINN sees
+  besides physics: no velocity data, no IC/BC on c.
+- NET: FNN [3, 64x4, 3] -> (u, v, c). Loss = transport residual (c_t + u c_x + v c_y - D lap c) +
+  incompressibility residual (u_x + v_y) + dye data. D is known (stated; HFM-style). Soft incompressibility
+  (a stream-function hard constraint would be exact but does not export cleanly to ONNX).
+- SCORING: primary l2_relative = recovered u vs u* on the grid (outputs[0] = u). HONESTY: velocity is
+  identifiable only where the dye has gradients; extra_metrics bakes the dye-swept mask (max_t |grad c_FD|
+  threshold) and reports u error IN the swept region vs the dead zones separately. The full-grid number is
+  published as-is even if the dead zones inflate it: never dressed up.
+- POST-BAKE: a held-out dye validation (20% of samples never trained on; ONNX-evaluated RMSE) via a small tool,
+  mirroring build_soilheat_validation.py.
+- WEB: view_kit HiddenFlowKit (new; mirrors InverseOverlayKit's proven layout): recovered speed |u| with the
+  dye-observation dots | true speed |u*| on the same scale | error map | reconstructed dye c at the variant t.
+  Variants sweep t (the Live tab scrubs it, ocean-style). Category industrial-fluids-heat ("where PINNs
+  genuinely win"). Estimate block: recovered vortex core (stream-function extremum of the RECOVERED u) vs the
+  true (0.5, 0.5); the current at a swept checkpoint vs truth; swept-region vs dead-zone u error. A 9th story
+  chapter. Constraint chips: unknown = the whole velocity field; data = dye samples; param = D known; anchor =
+  closed-form u*.
+- SWEEP: every "20 cases" surface goes to 21 (Introduction, contract intros, README, docs, validators, index).
+- Release: v0.24.000, issue #48.
