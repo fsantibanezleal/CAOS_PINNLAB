@@ -3,6 +3,32 @@
 All notable changes to **PINN-Lab**. Format: `X.XX.XXX` (display), see `pinnlab.__version__`. Keep `0.x` while on
 synthetic/benchmark data. Tag every release.
 
+## [0.25.000] (2026-07-15) THE LAYOUT OVERHAUL: an instrument that fits the screen (issue #49, real review)
+
+After a full measured review (wip/web-review/real-review-and-plan-2026-07-15.md: the no-scroll principle was
+violated in every tab of every case, canvases hard-capped, the layout unstable between cases), the App was
+rebuilt to a single coherent contract, honoring the owner's decisions:
+
+- **A stable shell for every case**: the story stepper is GONE; the left rail has one purpose set (search,
+  Domain dropdown, CASE dropdown, the selected case's card, the constraint chips, the regime control, once);
+  the governing EQUATION is a full-width strip above the tabs, always visible (the case's identity); the
+  header is single-line.
+- **Tabs in the owner-fixed order (Results, Context, then the evidence)**, sitting ON the stage.
+- **Every tab fits the stage at full view: no page scroll** (validated at 1366x768 and 1920x1080). A new
+  contain-fit sizing engine (useFitBox) sizes every map/chart to the measured stage box, so nothing is
+  hard-capped and overlays (crosshair, markers, dots) stay truthful. Where a view has more than fits it
+  becomes a sub-view: Context is a section switcher (Summary cards + the deep prose split by its own
+  headings, full-width columns); Compare is a fitted single row of LARGE panels with Fields/Errors/Evolution
+  sub-views (never two rows of thumbnails); Diagnostics is a chart pager; Training, Live, Field, the vector /
+  spatiotemporal / inverse / hidden-flow / trajectory kits all fit.
+- **Results = the result**: the answer sentence + values + verdict + evidence links on the left, ONE fitted
+  key graph on the right (the full interactive kit lives in Field); no scroll.
+- The Charts tab is now "Regimes"; the redundant duplicated regime control and the duplicated equation were
+  removed.
+
+Content depth of the five doc pages (Implementation/Experiments rebuild, the reading arc) is the next slice,
+tracked in issue #49.
+
 ## [0.24.001] (2026-07-14) INTERACTIVE VIZ: chart solo + drag-zoom, field wheel-zoom, frame markers, responsive (issue #49 S4/S5)
 
 - **Diagnostic charts are interactive**: click a legend entry to SOLO a series (click again for all); drag

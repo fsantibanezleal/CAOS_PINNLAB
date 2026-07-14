@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 
 import { viridis } from "../../lib/colormap";
 import { markersFor, MarkerLayer } from "./MarkerLayer";
+import { useFitBox } from "./useFitBox";
 import type { KitProps } from "./types";
 
 // bilinear sample of a [nx][ny] field at data coords (x,y), clamped to the grid
@@ -64,6 +65,7 @@ export function VectorFieldKit({ manifest, trace, active, lang }: KitProps) {
 
   const W = 460;
   const H = 460;
+  const fit = useFitBox<HTMLDivElement>(1, 4);
   const fa = manifest.field_axes;
   const hasUV = manifest.outputs.includes("u") && manifest.outputs.includes("v");
 
@@ -228,9 +230,11 @@ export function VectorFieldKit({ manifest, trace, active, lang }: KitProps) {
         </div>
         <label className="t-ctl"><input type="checkbox" checked={showQuiver} onChange={(e) => setShowQuiver(e.target.checked)} /> {es ? "Flechas": "Quiver"}</label>
       </div>
-      <div className="vf-map" onMouseMove={onMove} onMouseLeave={() => setHover(null)} style={{ width: W, maxWidth: "100%", position: "relative" }}>
+      <div className="vf-fitarea" ref={fit.areaRef}>
+      <div className="vf-map" onMouseMove={onMove} onMouseLeave={() => setHover(null)} style={{ width: fit.w || W, height: fit.h || undefined, position: "relative" }}>
         <canvas ref={canvasRef} style={{ width: "100%", aspectRatio: "1 / 1", display: "block", borderRadius: 8, border: "1px solid var(--border)" }} />
         <MarkerLayer markers={markersFor(manifest, active)} a0={d.xs[0]} a1={d.xs[d.xs.length - 1]} b0={d.ys[0]} b1={d.ys[d.ys.length - 1]} lang={lang} />
+      </div>
       </div>
       <div className="vf-readout mono">
         {hover

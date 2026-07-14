@@ -125,13 +125,7 @@ export function LivePanel({ manifest, lang }: { manifest: CaseManifest; lang: "e
 
   return (
     <div className="live-panel">
-      <p className="muted" style={{ marginTop: 0 }}>
-        {es
-          ? "Inferencia EN VIVO en tu navegador (onnxruntime-web) del .onnx exportado: la misma red entrenada offline. Mueve los controles y el campo se re-evalúa."
-         : "LIVE inference in your browser (onnxruntime-web) of the exported .onnx: the same network trained offline. Move the controls and the field re-evaluates."}
-      </p>
-
-      <div className="live-controls">
+      <div className="live-controls" title={es ? "Inferencia EN VIVO en tu navegador (onnxruntime-web) del .onnx exportado: la misma red entrenada offline." : "LIVE inference in your browser (onnxruntime-web) of the exported .onnx: the same network trained offline."}>
         {manifest.outputs.length > 1 && (
           <label className="ctl">
             <span>{es ? "Campo": "Field"}</span>
@@ -187,7 +181,7 @@ export function LivePanel({ manifest, lang }: { manifest: CaseManifest; lang: "e
       {err && <div className="banner error">{err}</div>}
       {!field && !err && <div className="loading">{es ? "Cargando runtime…": "Loading runtime…"}</div>}
       {field && (
-        <>
+        <div className="live-fieldarea">
           <FieldView
             field={field}
             axisX={{ label: fieldAxes[0], lo: wx[0], hi: wx[1] }}
@@ -195,18 +189,14 @@ export function LivePanel({ manifest, lang }: { manifest: CaseManifest; lang: "e
             outputLabel={manifest.outputs[oIdx]}
             lang={lang}
           />
-          {ms !== null && (
-            <p className="hint">
-              {isParam
-                ? es
-                  ? `Re-evaluado en vivo en ${ms.toFixed(1)} ms para el régimen seleccionado: un solo ONNX cubre toda la familia de parámetros.`
-                 : `Re-evaluated live in ${ms.toFixed(1)} ms at the selected regime: one ONNX covers the whole parameter family.`
-               : es
-                  ? `Re-evaluado en vivo en ${ms.toFixed(1)} ms a ${res}×${res}.`
-                 : `Re-evaluated live in ${ms.toFixed(1)} ms at ${res}×${res}.`}
-            </p>
-          )}
-        </>
+        </div>
+      )}
+      {field && ms !== null && (
+        <p className="live-hint muted">
+          {isParam
+            ? (es ? `Re-evaluado en vivo en ${ms.toFixed(1)} ms para el régimen: un ONNX cubre toda la familia.` : `Re-evaluated live in ${ms.toFixed(1)} ms at the regime: one ONNX covers the whole family.`)
+            : (es ? `Re-evaluado en vivo en ${ms.toFixed(1)} ms a ${res}×${res}.` : `Re-evaluated live in ${ms.toFixed(1)} ms at ${res}×${res}.`)}
+        </p>
       )}
     </div>
   );

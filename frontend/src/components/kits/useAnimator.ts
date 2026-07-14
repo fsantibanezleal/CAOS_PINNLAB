@@ -16,16 +16,18 @@ export interface Animator {
 /** A frame animator driven by requestAnimationFrame (NOT setInterval), advancing on wall-clock time so
  *  `speed` is consistent regardless of render rate. Stops honestly at the last frame when not looping.
  *  Clamps when `nFrames` shrinks (switching to a case with fewer frames). */
-export function useAnimator(nFrames: number, opts?: { fps?: number; startPlaying?: boolean }): Animator {
+export function useAnimator(nFrames: number, opts?: { fps?: number; startPlaying?: boolean; initialF?: number }): Animator {
   const baseFps = opts?.fps ?? 12;
-  const [frame, setFrameState] = useState(0);
+  // initialF: restore a shared time-cursor fraction (issue #49 S3: the instant survives tab switches)
+  const [frame, setFrameState] = useState(() =>
+    Math.max(0, Math.min(nFrames - 1, Math.round((opts?.initialF ?? 0) * Math.max(1, nFrames - 1)))));
   // DEFAULT PAUSED + NON-LOOPING (no autoplay): nothing computes until the user presses Play, and a Play runs ONCE
   // through and stops: never an unbounded replay that pins a CPU core. The user opts into looping per case.
   const [playing, setPlaying] = useState(opts?.startPlaying ?? false);
   const [speed, setSpeed] = useState(1);
   const [loop, setLoop] = useState(false);
 
-  const frameRef = useRef(0);
+  const frameRef = useRef(Math.max(0, Math.min(nFrames - 1, Math.round((opts?.initialF ?? 0) * Math.max(1, nFrames - 1)))));
   const raf = useRef(0);
   const last = useRef(0);
   const acc = useRef(0);

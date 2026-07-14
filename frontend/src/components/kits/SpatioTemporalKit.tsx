@@ -5,6 +5,7 @@ import { fieldRange, viridis } from "../../lib/colormap";
 import { loadEvolution, loadTrace } from "../../lib/data";
 import { HeatCanvas } from "./HeatCanvas";
 import { markersFor, MarkerLayer } from "./MarkerLayer";
+import { useFitBox } from "./useFitBox";
 import { Transport } from "./Transport";
 import type { KitProps } from "./types";
 import { useAnimator } from "./useAnimator";
@@ -69,6 +70,7 @@ export function SpatioTemporalKit({ manifest, active, lang }: KitProps) {
   }, [traces, ev, outName, fa, tKey, manifest.variants]);
 
   const nF = data?.frames.length ?? manifest.variants.length;
+  const fit = useFitBox<HTMLDivElement>(1, 4);
   const anim = useAnimator(nF, { fps: 6 });
   const f = Math.min(anim.frame, nF - 1);
   const [hover, setHover] = useState<{ x: number; y: number; v: number } | null>(null);
@@ -103,8 +105,8 @@ export function SpatioTemporalKit({ manifest, active, lang }: KitProps) {
         </div>
       )}
       <Transport anim={anim} lang={lang} axisLabel={tKey} axisValue={tVals[f] ?? 0} />
-      <div className="st-grid">
-        <div className="st-map" onMouseMove={onMove} onMouseLeave={() => setHover(null)} style={{ position: "relative" }}>
+      <div className="st-grid" ref={fit.areaRef}>
+        <div className="st-map fitted" onMouseMove={onMove} onMouseLeave={() => setHover(null)} style={{ position: "relative", width: fit.w || undefined, height: fit.h || undefined }}>
           <HeatCanvas field={frame} range={range} ariaLabel={`${outName} at ${tKey}=${(tVals[f] ?? 0).toFixed(2)}`} />
           <MarkerLayer markers={markersFor(manifest, active)} a0={ax0[0] ?? 0} a1={ax0[ax0.length - 1] ?? 1} b0={ax1[0] ?? 0} b1={ax1[ax1.length - 1] ?? 1} lang={lang} />
         </div>

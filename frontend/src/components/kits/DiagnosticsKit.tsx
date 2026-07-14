@@ -21,6 +21,7 @@ export function DiagnosticsKit({ manifest, lang }: { manifest: CaseManifest; lan
   const path = manifest.diagnostics?.path;
   const [d, setD] = useState<Diagnostics | null>(null);
   const [err, setErr] = useState<string | null>(null);
+  const [active, setActive] = useState(0); // pager index (plan §2.2.7)
 
   useEffect(() => {
     if (!path) return;
@@ -33,47 +34,51 @@ export function DiagnosticsKit({ manifest, lang }: { manifest: CaseManifest; lan
   if (err) return <div className="banner error">⚠ {err}</div>;
   if (!d) return <div className="loading">{es ? "Cargando diagnósticos…" : "Loading diagnostics…"}</div>;
 
+  // Collect every diagnostic chart into ONE list and show them via a pager (plan §2.2.7): 3+ charts never
+  // stack into a scroll; each fills the stage, switched by a pill.
+  const blocks: { title: string; node: React.ReactNode }[] = [];
+  if (d.wavenumber_sweep) {
+    blocks.push({
+      title: es ? "Barrido de número de onda" : "Wavenumber sweep",
+      node: (
+        <>
+          <LineChart xs={d.wavenumber_sweep.n}
+            series={[{ label: es ? "PINN ingenua" : "naive PINN", color: "var(--bad)", ys: d.wavenumber_sweep.naive }, { label: es ? "PINN Fourier" : "Fourier PINN", color: "var(--good)", ys: d.wavenumber_sweep.adapted }]}
+            xLabel={es ? "número de onda n (k0 = 2πn)" : "wavenumber n (k0 = 2πn)"} yLabel={es ? "L2 relativa vs exacta" : "relative L2 vs exact"} logY />
+          <p className="hint">{es ? "La PINN ingenua (tanh) empeora al subir n (sesgo espectral); la de Fourier se mantiene baja." : "The naive tanh PINN gets worse as n grows (spectral bias); the Fourier PINN stays low. Real numbers."}</p>
+        </>
+      ),
+    });
+  }
+  if (d.radial_spectrum) {
+    blocks.push({
+      title: es ? "Energía espectral radial" : "Radial spectral energy",
+      node: (
+        <LineChart xs={d.radial_spectrum.k}
+          series={[{ label: es ? "estándar (FDM)" : "standard (FDM)", color: "var(--muted)", ys: d.radial_spectrum.standard }, { label: es ? "PINN ingenua" : "naive PINN", color: "var(--bad)", ys: d.radial_spectrum.naive }, { label: es ? "PINN Fourier" : "Fourier PINN", color: "var(--good)", ys: d.radial_spectrum.adapted }]}
+          xLabel={es ? "|k| radial" : "radial |k|"} yLabel={es ? "energía |FFT|" : "|FFT| energy"} />
+      ),
+    });
+  }
+  d.line_comparisons?.forEach((lc, i) => {
+    blocks.push({
+      title: (es ? lc.title_es : lc.title_en).slice(0, 42),
+      node: <><div className="diag-blocktitle">{es ? lc.title_es : lc.title_en}<SnapBtn name={`${manifest.case_id}-diag-${i}`} /></div><XYChart series={lc.series} xLabel={lc.xLabel} yLabel={lc.yLabel} yLog={lc.yLog} /></>,
+    });
+  });
+  if (!blocks.length) return <div className="loading">{es ? "Sin diagnósticos" : "No diagnostics"}</div>;
+  const cur = blocks[Math.min(active, blocks.length - 1)];
+
   return (
     <div className="diag-kit">
-      {d.wavenumber_sweep && (
-        <div className="diag-block">
-          <h4>{es ? "Barrido de número de onda: dónde la PINN ingenua colapsa" : "Wavenumber sweep: where the naive PINN collapses"}<SnapBtn name={`${manifest.case_id}-sweep`} /></h4>
-          <LineChart
-            xs={d.wavenumber_sweep.n}
-            series={[
-              { label: es ? "PINN ingenua" : "naive PINN", color: "var(--bad)", ys: d.wavenumber_sweep.naive },
-              { label: es ? "PINN Fourier" : "Fourier PINN", color: "var(--good)", ys: d.wavenumber_sweep.adapted },
-            ]}
-            xLabel={es ? "número de onda n (k0 = 2πn)" : "wavenumber n (k0 = 2πn)"}
-            yLabel={es ? "L2 relativa vs exacta" : "relative L2 vs exact"}
-            logY
-
-          />
-          <p className="hint">{es ? "La PINN ingenua (tanh) empeora al subir n (sesgo espectral); la de Fourier se mantiene baja. Números reales del barrido." : "The naive tanh PINN gets worse as n grows (spectral bias); the Fourier PINN stays low. Real numbers from the sweep."}</p>
+      {blocks.length > 1 && (
+        <div className="pl-subnav" role="tablist">
+          {blocks.map((bk, i) => (
+            <button key={i} type="button" role="tab" className={"pl-secbtn" + (i === active ? " on" : "")} aria-selected={i === active} onClick={() => setActive(i)}>{bk.title}</button>
+          ))}
         </div>
       )}
-      {d.radial_spectrum && (
-        <div className="diag-block">
-          <h4>{es ? "Energía espectral radial: la banda de alta frecuencia que la ingenua no alcanza" : "Radial spectral energy: the high-frequency band the naive lane misses"}<SnapBtn name={`${manifest.case_id}-spectrum`} /></h4>
-          <LineChart
-            xs={d.radial_spectrum.k}
-            series={[
-              { label: es ? "estándar (FDM)" : "standard (FDM)", color: "var(--muted)", ys: d.radial_spectrum.standard },
-              { label: es ? "PINN ingenua" : "naive PINN", color: "var(--bad)", ys: d.radial_spectrum.naive },
-              { label: es ? "PINN Fourier" : "Fourier PINN", color: "var(--good)", ys: d.radial_spectrum.adapted },
-            ]}
-            xLabel={es ? "|k| radial" : "radial |k|"}
-            yLabel={es ? "energía |FFT|" : "|FFT| energy"}
-
-          />
-        </div>
-      )}
-      {d.line_comparisons?.map((lc, i) => (
-        <div key={i} className="diag-block">
-          <h4>{es ? lc.title_es : lc.title_en}<SnapBtn name={`${manifest.case_id}-diag-${i}`} /></h4>
-          <XYChart series={lc.series} xLabel={lc.xLabel} yLabel={lc.yLabel} yLog={lc.yLog} />
-        </div>
-      ))}
+      <div className="diag-block">{cur.node}</div>
     </div>
   );
 }
