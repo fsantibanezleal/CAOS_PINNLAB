@@ -618,7 +618,7 @@ ol li, ul li { margin: 4px 0; }
 .pl-railregime .variant-note { font-size: 11.5px; }
 
 /* the Results tab: answer left, key graph right, one screen */
-.pl-results { display: grid; grid-template-columns: minmax(300px, 2fr) minmax(0, 3fr); grid-template-rows: minmax(0, 1fr); align-items: stretch; gap: 16px; height: 100%; min-height: 0; }
+.pl-results { display: grid; grid-template-columns: minmax(320px, 1fr) minmax(0, 1.15fr); grid-template-rows: minmax(0, 1fr); align-items: stretch; gap: 16px; height: 100%; min-height: 0; }
 .pl-res-answer { min-height: 0; overflow-y: auto; scrollbar-width: thin; border: 1px solid color-mix(in srgb, var(--accent) 50%, var(--border)); border-radius: 12px; background: color-mix(in srgb, var(--accent) 5%, var(--panel)); padding: 12px 14px; }
 .pl-res-viz { min-height: 0; display: flex; flex-direction: column; overflow: hidden; }
 .pl-res-viz > * { flex: 1 1 auto; min-height: 0; }
@@ -797,16 +797,17 @@ ol li, ul li { margin: 4px 0; }
 
 /* Results key-viz: one fitted heatmap + colorbar + readout (plan §2.2.1) */
 .rkv { display: flex; flex-direction: column; height: 100%; min-height: 0; gap: 5px; }
-.rkv-caption { flex: none; font-size: 10.5px; }
+.rkv-caption { flex: none; font-size: 10px; margin: 0; opacity: .7; }
 .rkv-area { flex: 1 1 auto; min-height: 0; display: flex; gap: 8px; align-items: stretch; justify-content: center; }
 .rkv-map { height: 100%; width: auto; max-width: 100%; }
+.rkv { gap: 3px; }
 .rkv-cbar { height: 100%; }
 .rkv-map .heatcanvas, .rkv-map canvas { width: 100%; height: 100%; border-radius: 8px; border: 1px solid var(--border); }
 .rkv-cbar { display: flex; gap: 4px; align-items: stretch; }
 .rkv-cbar-scale { width: 12px; display: flex; flex-direction: column; border-radius: 3px; overflow: hidden; }
 .rkv-cbar-scale > div { flex: 1; }
 .rkv-cbar-labels { display: flex; flex-direction: column; justify-content: space-between; font-size: 9px; }
-.rkv-readout { flex: none; font-size: 11px; }
+.rkv-readout { flex: none; font-size: 10.5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 /* field residual: let the lower profile clip its 1px baseline rather than force a row */
 .fv2-side { overflow: hidden; }
 .fv2-mapcol { overflow: hidden; }
@@ -817,3 +818,19 @@ ol li, ul li { margin: 4px 0; }
 /* clip residual hint lines cleanly (no scrollbar) on the map-heavy Field kits */
 .fieldview2, .st-kit, .traj-kit, .vf-kit { overflow: hidden; }
 .st-kit .st-readout, .st-kit .hint { max-height: 2.4em; overflow: hidden; }
+
+/* ===== Results answer column, enriched (2026-07-15) ===== */
+.pl-res-answer { display: flex; flex-direction: column; gap: 9px; }
+.pl-res-qrow { }
+.pl-res-question { margin: 2px 0 0; font-size: 14px; font-weight: 650; line-height: 1.35; color: var(--text); }
+.pl-res-answertext { margin: 0; font-size: 13px; line-height: 1.5; color: var(--text); }
+.pl-res-tiles { display: flex; flex-wrap: wrap; gap: 8px; }
+.pl-res-tile { flex: 1 1 130px; min-width: 0; border: 1px solid color-mix(in srgb, var(--accent) 40%, var(--border)); border-radius: 10px; background: color-mix(in srgb, var(--accent) 8%, var(--panel)); padding: 8px 11px; display: flex; flex-direction: column; gap: 2px; }
+.pl-res-tileval { font-size: 16px; font-weight: 700; color: var(--accent); line-height: 1.15; }
+.pl-res-tilelabel { font-size: 10.5px; line-height: 1.3; color: var(--muted); }
+.pl-res-verdictbox { border-left: 3px solid var(--good); padding: 2px 0 2px 10px; }
+.pl-res-verdict { margin: 3px 0 0; font-size: 12px; line-height: 1.5; color: var(--text); }
+.pl-ans-eyebrow.good { color: var(--good); }
+.pl-res-evidence { margin-top: 2px; }
+.pl-res-evidence ul { list-style: none; margin: 4px 0 0; padding: 0; font-size: 12px; line-height: 1.55; }
+.pl-res-evidence li { margin: 3px 0; }

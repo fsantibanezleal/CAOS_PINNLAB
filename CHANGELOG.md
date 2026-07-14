@@ -3,6 +3,16 @@
 All notable changes to **PINN-Lab**. Format: `X.XX.XXX` (display), see `pinnlab.__version__`. Keep `0.x` while on
 synthetic/benchmark data. Tag every release.
 
+## [0.25.002] (2026-07-15) RESULTS made rich again: the full interactive viz + an enriched answer (issue #49)
+
+The interim v0.25.001 Results showed ONE static key image (a regression). Restored: the Results tab now shows
+the case's FULL interactive visualization (the real fitted kit: hover/pin/zoom fields, animated spatiotemporal
+spills, the multi-panel hidden-flow / inverse overlays, etc.) beside a substantially richer answer column: THE
+QUESTION, THE ANSWER, the computed values as prominent stat tiles, THE VERDICT (from the baked numbers), and
+the evidence links. Both fit the stage at 1366x768 and 1920x1080 (no scroll). The space is now used: columns
+rebalanced, the visualization gets the width. (Context already carries the Summary cards + the deep sectioned
+theory; verified rich for all 21 cases.)
+
 ## [0.25.001] (2026-07-15) CONTENT ARC + Results key-graph fix (issue #49)
 
 - **The five doc pages made faithful to v0.25 and deepened**: Introduction drops the removed "story selector"
