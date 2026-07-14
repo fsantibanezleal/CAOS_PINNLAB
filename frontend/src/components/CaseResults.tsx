@@ -2,6 +2,7 @@ import type { ReactNode } from "react";
 
 import type { CaseManifest, FieldTrace, VariantEntry } from "../lib/contract";
 import { RESULTS } from "../content/results";
+import { ResultKeyViz } from "./ResultKeyViz";
 
 /** THE RESULTS TAB (real-review plan §2.2.1): the result itself, nothing else, at full view with no scroll.
  *  LEFT: THE ANSWER as a plain sentence, its computed values, THE VERDICT (from the baked numbers), and the
@@ -23,6 +24,7 @@ export function CaseResults({
   kit: (p: { manifest: CaseManifest; trace: FieldTrace | null; active: VariantEntry; lang: "en" | "es" }) => ReactNode;
   onGoto: (view: string) => void;
 }) {
+  void Kit;
   const es = lang === "es";
   const r = RESULTS[manifest.case_id];
   const e = manifest.estimate;
@@ -76,7 +78,7 @@ export function CaseResults({
         </div>
       </section>
       <section className="pl-res-viz">
-        <Kit manifest={manifest} trace={trace} active={active} lang={lang} />
+        <ResultKeyViz manifest={manifest} trace={trace} active={active} lang={lang} />
       </section>
     </div>
   );

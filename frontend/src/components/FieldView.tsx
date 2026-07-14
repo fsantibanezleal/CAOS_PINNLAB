@@ -2,8 +2,6 @@ import { useEffect, useMemo, useRef, useState } from "react";
 
 import { viridis } from "../lib/colormap";
 import { fmtTick, fmtVal, niceTicks } from "../lib/plot";
-import { snapshotElement } from "../lib/snapshot";
-import { LineProfile } from "./kits/LineProfile";
 import { MarkerLayer } from "./kits/MarkerLayer";
 import { Transport } from "./kits/Transport";
 import { useAnimator } from "./kits/useAnimator";
@@ -164,8 +162,9 @@ export function FieldView({
   // crosshair mapped through the zoom window (clamped to its edges when the pin is outside the view)
   const cx = Math.max(0, Math.min(1, (cur.ix - wx0) / Math.max(1, wnx - 1)));
   const cy = 1 - Math.max(0, Math.min(1, (cur.iy - wy0) / Math.max(1, wny - 1)));
-  // the map box sizes EXACTLY to the zoom window's aspect within the available area (plan E2): overlays stay truthful
-  const fit = useFitBox<HTMLDivElement>(wnx / Math.max(1, wny), 4);
+  // the map box sizes EXACTLY to the zoom window's aspect within the available area (plan E2): overlays stay
+  // truthful. Reserve ~44px per cell for the colorbar row's axis-hint label + gap.
+  const fit = useFitBox<HTMLDivElement>(wnx / Math.max(1, wny), 44);
   const tVal = hasTime ? (timeIsY ? axVal(curTime, axisY, ny): axVal(curTime, axisX, nx)): 0;
   const timeLabel = timeIsY ? axisY.label: axisX.label;
 
@@ -186,38 +185,26 @@ export function FieldView({
     g2 = { xLabel: axisY.label, n: ny, values: field[cur.ix] ?? [], cursor: cur.iy };
   }
 
-  // the space-axis coordinate array for the animated hero (LineProfile ticks + hover read-out)
+  // the animated hero cut runs along the SPACE axis (the non-time field axis)
   const heroAxis = timeIsY ? axisX : axisY;
-  const heroArr = Array.from({ length: g1.n }, (_, i) => axVal(i, heroAxis, g1.n));
 
   return (
-    <div className="fieldview">
+    <div className="fieldview2">
       {hasTime && (
-        <div className="fieldview-transport">
+        <div className="fv2-transport">
           <Transport anim={anim} lang={lang} axisLabel={timeLabel} axisValue={tVal} />
         </div>
       )}
-      {hasTime && (
-        <div className="fieldview-hero">
-          <div className="fv-hero-title">
-            {outputLabel}({g1.xLabel}) {es ? "en" : "at"} {timeLabel} = <span className="mono">{fmtVal(tVal)}</span>
-            <span className="profile-legend"> &nbsp; <span className="pl-sel">— {es ? "actual" : "current"}</span> &nbsp; <span className="pl-ref">┄ {es ? "inicial" : "initial"} ({timeLabel}=0)</span></span>
-            <button type="button" className="snap-btn" title="Save PNG"
-              onClick={(e) => snapshotElement((e.currentTarget as HTMLElement).closest(".fieldview-hero") as HTMLElement, `${outputLabel}-evolution`)}>⤓</button>
-          </div>
-          <LineProfile values={g1.values} ghost={g1.init} spaceArr={heroArr} yRange={[lo, hi]} spaceLabel={dimTag(g1.xLabel)} outLabel={outputLabel} />
-        </div>
-      )}
-      <div className="fieldview-map">
-        <div className="axis-y-label">{dimTag(axisY.label)}</div>
-        <div className="fw-stack">
-          <div className="fw-row" ref={fit.areaRef}>
+      <div className="fv2-body">
+        {/* LEFT: the map, sized square to the available height (fitted); colorbar beside it */}
+        <div className="fv2-mapcol" ref={fit.areaRef}>
+          <div className="fv2-maprow" style={fit.h ? { height: fit.h } : undefined}>
             <div className="field-wrap" style={fit.w ? { width: fit.w, height: fit.h } : undefined}
               onMouseMove={onMove} onMouseLeave={() => setHov(null)} onClick={onClick} onWheel={onWheel}
               onDoubleClick={() => { onDblClick(); setWin(null); }}
               title={es ? (pinned ? "Fijado. Doble clic para soltar y restablecer el zoom. Rueda = zoom." : "Clic para fijar; rueda = zoom; doble clic restablece") : (pinned ? "Pinned. Double-click releases + resets zoom. Wheel = zoom." : "Click to pin; wheel = zoom; double-click resets")}>
               <canvas ref={canvasRef} className="field-canvas" style={{ width: "100%", height: "100%" }} />
-              {win && <span className="fw-zoombadge mono">{es ? "zoom" : "zoom"} {Math.round(((nx - 1) / Math.max(1, wnx - 1)) * 10) / 10}x · {es ? "doble clic restablece" : "dbl-click resets"}</span>}
+              {win && <span className="fw-zoombadge mono">zoom {Math.round(((nx - 1) / Math.max(1, wnx - 1)) * 10) / 10}x · {es ? "doble clic restablece" : "dbl-click resets"}</span>}
               <div className="xhair xhair-v" style={{ left: `${cx * 100}%` }} />
               <div className="xhair xhair-h" style={{ top: `${cy * 100}%` }} />
               <div className="xhair-dot" style={{ left: `${cx * 100}%`, top: `${cy * 100}%` }} />
@@ -227,58 +214,41 @@ export function FieldView({
             </div>
             <Colorbar lo={lo} hi={hi} value={readVal} label={outputLabel} />
           </div>
-          <div className="axis-x-label">{dimTag(axisX.label)}</div>
+          <div className="fv2-axhint muted mono">{dimTag(axisX.label)} × {dimTag(axisY.label)}</div>
         </div>
-      </div>
 
-      <div className="fieldview-side">
-        <div className="readout">
-          <span className="mono">
+        {/* RIGHT: the read-out + the profile cuts, filling the remaining width and height */}
+        <div className="fv2-side">
+          <div className="readout mono">
             {axisX.label}={axVal(readIx, axisX, nx).toFixed(3)} &nbsp; {axisY.label}={axVal(readIy, axisY, ny).toFixed(3)}
             &nbsp; → &nbsp; <strong>{outputLabel}={readVal != null ? fmtVal(readVal): "-"}</strong>
-            <span className="muted"> &nbsp;({pinned ? (es ? "fijado · doble clic para soltar": "pinned · double-click to release") : (es ? "sigue el cursor · clic para fijar": "follows cursor · click to pin")})</span>
-          </span>
-        </div>
-
-        <div className="profiles">
+          </div>
+          {hasTime && (
+            <Profile
+              title={`${outputLabel}(${g1.xLabel}) ${es ? "en" : "at"} ${timeLabel}=${fmtVal(tVal)}`}
+              legend={g1.init ? { tVal, timeLabel }: undefined}
+              xLabel={dimTag(g1.xLabel)} yLabel={outputLabel} n={g1.n} values={g1.values} reference={g1.init}
+              cursorIdx={g1.cursor} yLo={lo} yHi={hi} xLo={heroAxis.lo} xHi={heroAxis.hi} es={es} grow
+            />
+          )}
           {!hasTime && (
             <Profile
               title={`${outputLabel} vs ${dimTag(g1.xLabel)}`}
-              legend={g1.init ? { tVal, timeLabel }: undefined}
-              xLabel={dimTag(g1.xLabel)}
-              yLabel={outputLabel}
-              n={g1.n}
-              values={g1.values}
-              reference={g1.init}
-              cursorIdx={g1.cursor}
-              yLo={lo}
-              yHi={hi}
-              es={es}
+              xLabel={dimTag(g1.xLabel)} yLabel={outputLabel} n={g1.n} values={g1.values} reference={g1.init}
+              cursorIdx={g1.cursor} yLo={lo} yHi={hi} xLo={axisX.lo} xHi={axisX.hi} es={es} grow
             />
           )}
           <Profile
             title={`${outputLabel} vs ${dimTag(g2.xLabel)}${hasTime ? (es ? " (en el punto fijado)" : " (at the pinned spot)") : ""}`}
-            xLabel={dimTag(g2.xLabel)}
-            yLabel={outputLabel}
-            n={g2.n}
-            values={g2.values}
-            cursorIdx={g2.cursor}
-            yLo={lo}
-            yHi={hi}
-            xLo={timeIsY ? axisY.lo : axisX.lo}
-            xHi={timeIsY ? axisY.hi : axisX.hi}
-            es={es}
+            xLabel={dimTag(g2.xLabel)} yLabel={outputLabel} n={g2.n} values={g2.values}
+            cursorIdx={g2.cursor} yLo={lo} yHi={hi} xLo={timeIsY ? axisY.lo : axisX.lo} xHi={timeIsY ? axisY.hi : axisX.hi} es={es} grow
           />
+          <p className="fv2-hint muted">
+            {hasTime
+              ? (es ? "Los gráficos siguen el cursor; clic FIJA, doble clic suelta. ▶ anima el tiempo (discontinua = t=0). Rueda sobre el mapa = zoom." : "Graphs follow the cursor; click PINS, double-click releases. ▶ animates time (dashed = t=0). Wheel over the map = zoom.")
+              : (es ? "Clic en el mapa para fijar; los cortes son fila y columna del campo. Rueda = zoom." : "Click the map to pin; the cuts are the field's row and column. Wheel = zoom.")}
+          </p>
         </div>
-        <p className="fieldview-hint muted">
-          {hasTime
-            ? es
-              ? "Los dos gráficos SIGUEN el cursor. Un clic los FIJA en un punto, doble clic los suelta. Pulsa ▶ para ver la evolución (discontinua = estado inicial t=0)."
-             : "The two graphs FOLLOW the cursor. Single-click to PIN them at a spot, double-click to release. Press ▶ to watch it evolve in time (dashed = initial state t=0)."
-           : es
-              ? "Clic en el mapa para fijar la ubicación; los dos gráficos son cortes del campo en esa fila y esa columna."
-             : "Click the map to pin a location; the two graphs are cuts of the field along that row and column."}
-        </p>
       </div>
     </div>
   );
@@ -318,6 +288,7 @@ function Profile({
   xLo,
   xHi,
   es,
+  grow,
 }: {
   title: string;
   legend?: { tVal: number; timeLabel: string };
@@ -332,6 +303,7 @@ function Profile({
   xLo?: number;
   xHi?: number;
   es: boolean;
+  grow?: boolean;
 }) {
   const W = 280;
   const H = 108;
@@ -357,7 +329,7 @@ function Profile({
   const sy = (v: number) => H - padB - ((v - lo) / span) * (H - padT - padB);
   const cxFrac = cursorIdx >= 0 ? cursorIdx / Math.max(1, n - 1): null;
   return (
-    <div className="profile">
+    <div className={"profile" + (grow ? " profile-grow" : "")}>
       <div className="profile-title muted">
         {title}
         {legend && (
@@ -370,7 +342,7 @@ function Profile({
       </div>
       <div className="profile-plot">
         <span className="profile-ylabel">{yLabel}</span>
-        <svg viewBox={`0 0 ${W} ${H}`} className="profile-svg">
+        <svg viewBox={`0 0 ${W} ${H}`} preserveAspectRatio="none" className="profile-svg">
           {yTicks.map((v) => (
             <g key={v}>
               <line x1={padL} y1={sy(v)} x2={W - padR} y2={sy(v)} stroke="var(--border)" strokeWidth="0.5" opacity="0.7" />

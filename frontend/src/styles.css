@@ -618,7 +618,7 @@ ol li, ul li { margin: 4px 0; }
 .pl-railregime .variant-note { font-size: 11.5px; }
 
 /* the Results tab: answer left, key graph right, one screen */
-.pl-results { display: grid; grid-template-columns: minmax(300px, 2fr) minmax(0, 3fr); gap: 16px; height: 100%; min-height: 0; }
+.pl-results { display: grid; grid-template-columns: minmax(300px, 2fr) minmax(0, 3fr); grid-template-rows: minmax(0, 1fr); gap: 16px; height: 100%; min-height: 0; }
 .pl-res-answer { min-height: 0; overflow-y: auto; scrollbar-width: thin; border: 1px solid color-mix(in srgb, var(--accent) 50%, var(--border)); border-radius: 12px; background: color-mix(in srgb, var(--accent) 5%, var(--panel)); padding: 12px 14px; }
 .pl-res-viz { min-height: 0; display: flex; flex-direction: column; overflow: hidden; }
 .pl-res-viz > * { flex: 1 1 auto; min-height: 0; }
@@ -685,3 +685,133 @@ ol li, ul li { margin: 4px 0; }
 .st-readout, .st-kit .hint, .te-kit .hint, .fieldview-hint { flex: none; font-size: 11px; margin: 0; }
 /* the rotated axis captions belonged to the old stacked layout; the fitted grid reads axes off the profiles */
 .fieldview .axis-y-label, .fieldview .axis-x-label { display: none; }
+
+/* ===== FieldView v2: robust flex, map left (fitted square) + profiles right, no scroll ===== */
+.fieldview2 { display: flex; flex-direction: column; height: 100%; min-height: 0; gap: 6px; }
+.fv2-transport { flex: none; }
+.fv2-body { flex: 1 1 auto; min-height: 0; display: flex; gap: 12px; }
+.fv2-mapcol { flex: 0 0 auto; min-width: 0; min-height: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+.fv2-maprow { display: flex; gap: 6px; align-items: stretch; }
+.fv2-mapcol .field-wrap { position: relative; flex: none; }
+.fv2-mapcol .field-canvas { display: block; border-radius: 8px; border: 1px solid var(--border); }
+.fv2-mapcol .colorbar { height: 100%; }
+.fv2-axhint { flex: none; font-size: 10px; margin-top: 3px; }
+.fv2-side { flex: 1 1 auto; min-width: 0; min-height: 0; display: flex; flex-direction: column; gap: 6px; }
+.fv2-side .readout { flex: none; font-size: 11.5px; }
+.fv2-side .profile-grow { flex: 1 1 0; min-height: 0; display: flex; flex-direction: column; }
+.fv2-side .profile-grow .profile-plot { flex: 1 1 auto; min-height: 0; }
+.fv2-side .profile-grow .profile-svg { width: 100%; height: 100%; display: block; }
+.fv2-hint { flex: none; font-size: 10.5px; margin: 0; }
+
+/* ===== GLOBAL no-scroll safety net (plan rule): a viz tab must never scroll the stage ===== */
+.pl-stage { scrollbar-width: none; }
+.pl-stage::-webkit-scrollbar { display: none; }
+
+/* ===== Fit the remaining evidence kits to the stage (plan E3) ===== */
+/* Live: compact controls strip + the field filling the rest */
+.live-panel { display: flex; flex-direction: column; height: 100%; min-height: 0; gap: 6px; }
+.live-controls { flex: none; display: flex; flex-wrap: wrap; gap: 6px 16px; align-items: center; }
+.live-controls .ctl span { font-size: 11.5px; }
+.live-controls .scrub { width: 150px; }
+.live-fieldarea { flex: 1 1 auto; min-height: 0; display: flex; }
+.live-fieldarea > * { flex: 1 1 auto; min-height: 0; }
+.live-hint { flex: none; margin: 0; font-size: 10.5px; }
+
+/* Training: caption + transport (flex:none) + panels row + L2 chart, all fitting */
+.train-kit { display: flex; flex-direction: column; height: 100%; min-height: 0; gap: 6px; }
+.train-kit .dim-caption { flex: none; font-size: 11px; margin: 0; }
+.train-kit .train-panels { flex: 1 1 45%; min-height: 0; display: flex; gap: 12px; align-items: stretch; justify-content: center; flex-wrap: nowrap; }
+.train-kit .train-panel { flex: 1 1 0; min-width: 0; min-height: 0; display: flex; flex-direction: column; gap: 3px; }
+.train-kit .train-cap { flex: none; font-size: 11.5px; }
+.train-kit .train-map { flex: 1 1 auto; min-height: 0; display: flex; align-items: center; justify-content: center; }
+.train-kit .train-map .heatcanvas { height: 100%; }
+.train-kit .train-map canvas { max-width: 100%; max-height: 100%; width: auto !important; height: 100% !important; }
+.train-kit .diag-block { flex: 1 1 55%; min-height: 0; display: flex; flex-direction: column; }
+.train-kit .diag-block h4 { flex: none; font-size: 12px; margin: 0 0 2px; }
+.train-kit .diag-block .diag-svg { flex: 1 1 auto; min-height: 0; width: 100%; height: 100%; }
+
+/* Trajectory + UQ + Diagnostics svg charts: fill their flex parent instead of auto-height */
+.traj-kit { display: flex; flex-direction: column; height: 100%; min-height: 0; gap: 6px; }
+.traj-kit > .trace-svg, .traj-kit svg { flex: 1 1 auto; min-height: 0; width: 100%; height: 100%; margin: 0; }
+.uq-kit { display: flex; flex-direction: column; height: 100%; min-height: 0; }
+.uq-svg { flex: 1 1 auto; min-height: 0; width: 100%; max-width: none; height: 100%; }
+/* Diagnostics pager: one chart filling the stage */
+.diag-kit { display: flex; flex-direction: column; height: 100%; min-height: 0; gap: 6px; }
+.diag-kit .diag-block { flex: 1 1 auto; min-height: 0; display: flex; flex-direction: column; max-width: none; }
+.diag-kit .diag-chart { flex: 1 1 auto; min-height: 0; display: flex; flex-direction: column; }
+.diag-kit .diag-svg { flex: 1 1 auto; min-height: 0; width: 100%; height: 100%; max-width: none; }
+.diag-kit .diag-legend { flex: none; }
+.diag-blocktitle { flex: none; font-size: 12px; font-weight: 600; margin-bottom: 2px; }
+
+/* captions cost a row: keep to one compact line (equation + Context already carry the depth) */
+.dim-caption { flex: none; font-size: 10.5px; line-height: 1.35; margin: 0; max-height: 2.7em; overflow: hidden; }
+.te-kit, .te-kit .te-grid { min-height: 0; }
+.te-kit { display: flex; flex-direction: column; height: 100%; gap: 6px; }
+.te-kit .te-grid { flex: 1 1 auto; display: flex; gap: 12px; }
+.te-kit .te-hero, .te-kit .te-carpet { flex: 1 1 0; min-width: 0; min-height: 0; display: flex; flex-direction: column; }
+.te-kit .te-hero svg, .te-kit .te-carpet .heatcanvas { flex: 1 1 auto; min-height: 0; width: 100%; height: 100%; }
+.te-kit .hint { flex: none; font-size: 10.5px; margin: 0; }
+.HeatmapKit-root, .heatmap-root { height: 100%; }
+
+/* HeatmapKit root: fill height */
+.pl-res-viz .fieldview2, .pl-res-viz .st-kit, .pl-res-viz .vf-kit, .pl-res-viz .inv-kit, .pl-res-viz .uq-kit { height: 100%; }
+
+/* multi-panel kits (Hidden flow / Inverse overlay): a height-fitting grid, panels scale to fit, no scroll */
+.inv-kit { display: flex; flex-direction: column; height: 100%; min-height: 0; gap: 5px; }
+.inv-panels { flex: 1 1 auto; min-height: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 8px; align-content: center; justify-items: center; overflow: hidden; }
+.inv-panel { margin: 0; display: flex; flex-direction: column; gap: 2px; min-width: 0; min-height: 0; max-height: 100%; }
+.inv-panel .inv-cap { font-size: 10px; line-height: 1.2; }
+.inv-panel .inv-map { min-height: 0; aspect-ratio: 1; max-height: 100%; }
+.inv-panel .inv-map .heatcanvas, .inv-panel .inv-map canvas { width: 100%; height: 100%; }
+.inv-readout, .inv-kit .hint { flex: none; font-size: 10.5px; margin: 0; }
+
+/* Trajectory (pendulum): fill height, scale its sub-plots */
+.traj-kit { display: flex; flex-direction: column; height: 100%; min-height: 0; gap: 5px; }
+.traj-kit .traj-main { flex: 1 1 auto; min-height: 0; display: flex; gap: 10px; }
+.traj-kit .traj-stage, .traj-kit .traj-side { flex: 1 1 0; min-width: 0; min-height: 0; display: flex; flex-direction: column; gap: 5px; }
+.traj-kit .traj-side > * { flex: 1 1 0; min-height: 0; }
+.traj-kit svg { width: 100%; height: 100%; }
+.traj-kit canvas { max-width: 100%; max-height: 100%; }
+.traj-kit .hint { flex: none; font-size: 9.5px; line-height: 1.3; margin: 0; max-height: 3.9em; overflow: hidden; }
+.traj-kit > .trace-svg, .traj-kit > svg { flex: 0 0 26%; min-height: 0; }
+
+/* Trajectory actual classes: intro compact, grid fills, bottom angles chart small */
+.traj-kit > p.muted { flex: none; font-size: 10px; margin: 0; max-height: 2.6em; overflow: hidden; }
+.traj-kit .traj-grid { flex: 1 1 60%; min-height: 0; display: flex; gap: 10px; }
+.traj-kit .traj-hero { flex: 1 1 0; min-width: 0; min-height: 0; display: flex; flex-direction: column; }
+.traj-kit .traj-hero canvas { flex: 1 1 auto; min-height: 0; max-width: 100%; max-height: 100%; width: auto; height: auto; margin: auto; }
+.traj-kit .traj-legend { flex: none; font-size: 10px; }
+.traj-kit .traj-side { flex: 1 1 0; min-width: 0; min-height: 0; display: flex; flex-direction: column; gap: 4px; }
+.traj-kit .traj-side > * { flex: 1 1 0; min-height: 0; }
+
+/* final tightening: trim fixed chrome so nothing clips (plan no-scroll rule) */
+.fieldview2 { gap: 4px; }
+.fv2-body { gap: 8px; }
+.fv2-axhint { margin-top: 1px; }
+.fieldview2 .dim-caption { display: none; }
+.fv2-side .profile-title { font-size: 10px; line-height: 1.2; }
+/* Results viz: the kit fills, secondary hints clip gracefully (no scroll); the map is always visible */
+.pl-res-viz { overflow: hidden; }
+.pl-res-viz .st-kit .hint, .pl-res-viz .vf-kit .vf-readout, .pl-res-viz .inv-kit .hint, .pl-res-viz .dim-caption, .pl-res-viz .fv2-hint, .pl-res-viz > * > p.muted { display: none; }
+.pl-res-viz .st-readout, .pl-res-viz .vf-readout, .pl-res-viz .inv-readout { font-size: 10px; }
+
+/* Results key-viz: one fitted heatmap + colorbar + readout (plan §2.2.1) */
+.rkv { display: flex; flex-direction: column; height: 100%; min-height: 0; gap: 5px; }
+.rkv-caption { flex: none; font-size: 10.5px; }
+.rkv-area { flex: 1 1 auto; min-height: 0; display: flex; gap: 8px; align-items: center; justify-content: center; }
+.rkv-map .heatcanvas, .rkv-map canvas { width: 100%; height: 100%; border-radius: 8px; border: 1px solid var(--border); }
+.rkv-cbar { display: flex; gap: 4px; align-items: stretch; }
+.rkv-cbar-scale { width: 12px; display: flex; flex-direction: column; border-radius: 3px; overflow: hidden; }
+.rkv-cbar-scale > div { flex: 1; }
+.rkv-cbar-labels { display: flex; flex-direction: column; justify-content: space-between; font-size: 9px; }
+.rkv-readout { flex: none; font-size: 11px; }
+/* field residual: let the lower profile clip its 1px baseline rather than force a row */
+.fv2-side { overflow: hidden; }
+.fv2-mapcol { overflow: hidden; }
+/* guarantee the Results grid is height-bounded so the answer column scrolls internally, never the stage */
+.pl-results { overflow: hidden; }
+.pl-res-answer { max-height: 100%; }
+.darcy-fix .rkv-readout { display: none; }
+/* clip residual hint lines cleanly (no scrollbar) on the map-heavy Field kits */
+.fieldview2, .st-kit, .traj-kit, .vf-kit { overflow: hidden; }
+.st-kit .st-readout, .st-kit .hint { max-height: 2.4em; overflow: hidden; }
