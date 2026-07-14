@@ -85,18 +85,24 @@ export function FieldView({
   }, [field]);
   const span = hi - lo || 1;
 
+  // WHEEL ZOOM into the map (issue #49 S4): a zoom WINDOW in field indices; the canvas renders the slice, and
+  // every overlay (crosshair, markers, ticks, read-out) maps through the same window, so nothing lies.
+  const [win, setWin] = useState<{ x0: number; x1: number; y0: number; y1: number } | null>(null);
+  const wx0 = win?.x0 ?? 0, wx1 = win?.x1 ?? nx - 1, wy0 = win?.y0 ?? 0, wy1 = win?.y1 ?? ny - 1;
+  const wnx = wx1 - wx0 + 1, wny = wy1 - wy0 + 1;
+
   useEffect(() => {
     const canvas = canvasRef.current;
-    if (!canvas || !nx || !ny) return;
-    canvas.width = nx;
-    canvas.height = ny;
+    if (!canvas || !wnx || !wny) return;
+    canvas.width = wnx;
+    canvas.height = wny;
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
-    const img = ctx.createImageData(nx, ny);
-    for (let ix = 0; ix < nx; ix++) {
-      for (let iy = 0; iy < ny; iy++) {
-        const [r, g, b] = viridis((field[ix][iy] - lo) / span);
-        const idx = ((ny - 1 - iy) * nx + ix) * 4;
+    const img = ctx.createImageData(wnx, wny);
+    for (let ix = 0; ix < wnx; ix++) {
+      for (let iy = 0; iy < wny; iy++) {
+        const [r, g, b] = viridis((field[wx0 + ix][wy0 + iy] - lo) / span);
+        const idx = ((wny - 1 - iy) * wnx + ix) * 4;
         img.data[idx] = r;
         img.data[idx + 1] = g;
         img.data[idx + 2] = b;
@@ -104,15 +110,29 @@ export function FieldView({
       }
     }
     ctx.putImageData(img, 0, 0);
-  }, [field, nx, ny, lo, span]);
+  }, [field, wnx, wny, wx0, wy0, lo, span]);
 
   function idxFromEvent(e: React.MouseEvent) {
     const rect = (e.currentTarget as HTMLElement).getBoundingClientRect();
     const fx = (e.clientX - rect.left) / rect.width;
     const fy = (e.clientY - rect.top) / rect.height;
-    const ix = Math.max(0, Math.min(nx - 1, Math.round(fx * (nx - 1))));
-    const iy = Math.max(0, Math.min(ny - 1, Math.round((1 - fy) * (ny - 1))));
+    const ix = Math.max(0, Math.min(nx - 1, wx0 + Math.round(fx * (wnx - 1))));
+    const iy = Math.max(0, Math.min(ny - 1, wy0 + Math.round((1 - fy) * (wny - 1))));
     return { ix, iy };
+  }
+  function onWheel(e: React.WheelEvent) {
+    if (nx < 8 || ny < 8) return;
+    const { ix, iy } = idxFromEvent(e as unknown as React.MouseEvent);
+    const factor = e.deltaY < 0 ? 0.75 : 1 / 0.75; // in : out
+    const spanX = Math.min(nx - 1, Math.max(6, Math.round((wx1 - wx0) * factor)));
+    const spanY = Math.min(ny - 1, Math.max(6, Math.round((wy1 - wy0) * factor)));
+    if (spanX >= nx - 1 && spanY >= ny - 1) { setWin(null); return; }
+    const fx = (ix - wx0) / Math.max(1, wnx - 1);
+    const fy = (iy - wy0) / Math.max(1, wny - 1);
+    let x0 = Math.round(ix - fx * spanX), y0 = Math.round(iy - fy * spanY);
+    x0 = Math.max(0, Math.min(nx - 1 - spanX, x0));
+    y0 = Math.max(0, Math.min(ny - 1 - spanY, y0));
+    setWin({ x0, x1: x0 + spanX, y0, y1: y0 + spanY });
   }
   function onMove(e: React.MouseEvent) {
     setHov(idxFromEvent(e));
@@ -140,8 +160,9 @@ export function FieldView({
   const readIx = hov ? hov.ix: cur.ix;
   const readIy = hov ? hov.iy: cur.iy;
   const readVal = field[readIx]?.[readIy] ?? null;
-  const cx = cur.ix / Math.max(1, nx - 1);
-  const cy = 1 - cur.iy / Math.max(1, ny - 1);
+  // crosshair mapped through the zoom window (clamped to its edges when the pin is outside the view)
+  const cx = Math.max(0, Math.min(1, (cur.ix - wx0) / Math.max(1, wnx - 1)));
+  const cy = 1 - Math.max(0, Math.min(1, (cur.iy - wy0) / Math.max(1, wny - 1)));
   const tVal = hasTime ? (timeIsY ? axVal(curTime, axisY, ny): axVal(curTime, axisX, nx)): 0;
   const timeLabel = timeIsY ? axisY.label: axisX.label;
 
@@ -188,12 +209,17 @@ export function FieldView({
         <div className="axis-y-label">{dimTag(axisY.label)}</div>
         <div className="fw-stack">
           <div className="fw-row">
-            <div className="field-wrap" onMouseMove={onMove} onMouseLeave={() => setHov(null)} onClick={onClick} onDoubleClick={onDblClick} title={es ? (pinned ? "Fijado. Doble clic para soltar (los gráficos siguen el cursor)": "Clic para fijar; los gráficos siguen el cursor") : (pinned ? "Pinned. Double-click to release (graphs follow the cursor)": "Click to pin; the graphs follow the cursor")}>
-              <canvas ref={canvasRef} className="field-canvas" style={{ aspectRatio: `${nx} / ${ny || 1}` }} />
+            <div className="field-wrap" onMouseMove={onMove} onMouseLeave={() => setHov(null)} onClick={onClick} onWheel={onWheel}
+              onDoubleClick={() => { onDblClick(); setWin(null); }}
+              title={es ? (pinned ? "Fijado. Doble clic para soltar y restablecer el zoom. Rueda = zoom." : "Clic para fijar; rueda = zoom; doble clic restablece") : (pinned ? "Pinned. Double-click releases + resets zoom. Wheel = zoom." : "Click to pin; wheel = zoom; double-click resets")}>
+              <canvas ref={canvasRef} className="field-canvas" style={{ aspectRatio: `${wnx} / ${wny || 1}` }} />
+              {win && <span className="fw-zoombadge mono">{es ? "zoom" : "zoom"} {Math.round(((nx - 1) / Math.max(1, wnx - 1)) * 10) / 10}x · {es ? "doble clic restablece" : "dbl-click resets"}</span>}
               <div className="xhair xhair-v" style={{ left: `${cx * 100}%` }} />
               <div className="xhair xhair-h" style={{ top: `${cy * 100}%` }} />
               <div className="xhair-dot" style={{ left: `${cx * 100}%`, top: `${cy * 100}%` }} />
-              <MarkerLayer markers={markers} a0={axisX.lo} a1={axisX.hi} b0={axisY.lo} b1={axisY.hi} lang={lang} />
+              <MarkerLayer markers={markers}
+                a0={axVal(wx0, axisX, nx)} a1={axVal(wx1, axisX, nx)}
+                b0={axVal(wy0, axisY, ny)} b1={axVal(wy1, axisY, ny)} lang={lang} />
             </div>
             <Colorbar lo={lo} hi={hi} value={readVal} label={outputLabel} />
           </div>

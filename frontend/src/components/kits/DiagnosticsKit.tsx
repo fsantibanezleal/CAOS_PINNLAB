@@ -78,20 +78,54 @@ export function DiagnosticsKit({ manifest, lang }: { manifest: CaseManifest; lan
   );
 }
 
-/** A chart where each series carries its OWN x,y (a benchmark scatter of points vs a model curve). */
+/** A chart where each series carries its OWN x,y (a benchmark scatter of points vs a model curve).
+ *  INTERACTIVE (issue #49 S4): drag horizontally to zoom into an x-range (double-click resets); click a
+ *  legend entry to SOLO that series (click it again to show all); hover for a crosshair with values. */
 function XYChart({ series, xLabel, yLabel, yLog }: { series: { label: string; color: string; scatter?: boolean; x: number[]; y: number[] }[]; xLabel: string; yLabel: string; yLog?: boolean }) {
   const W = 640;
   const H = 300;
   const pad = { l: 52, r: 12, t: 12, b: 40 };
-  const all = series.flatMap((s) => s.x.map((xv, i) => ({ x: xv, y: s.y[i] }))).filter((p) => Number.isFinite(p.x) && Number.isFinite(p.y));
+  const [solo, setSolo] = useState<string | null>(null);
+  const [zoom, setZoom] = useState<[number, number] | null>(null);
+  const [drag, setDrag] = useState<[number, number] | null>(null);
+  const [hx, setHx] = useState<number | null>(null); // hover x in data units
+
+  const visible = series.filter((s) => !solo || s.label === solo);
+  const all = visible.flatMap((s) => s.x.map((xv, i) => ({ x: xv, y: s.y[i] }))).filter((p) => Number.isFinite(p.x) && Number.isFinite(p.y));
+  if (!all.length) return null;
   const tf = (v: number) => (yLog ? Math.log10(Math.max(v, 1e-6)) : v);
-  const xMin = Math.min(...all.map((p) => p.x)), xMax = Math.max(...all.map((p) => p.x));
-  const yMin = Math.min(...all.map((p) => tf(p.y))), yMax = Math.max(...all.map((p) => tf(p.y)));
+  const xMinF = Math.min(...all.map((p) => p.x)), xMaxF = Math.max(...all.map((p) => p.x));
+  const [xMin, xMax] = zoom ?? [xMinF, xMaxF];
+  const inX = all.filter((p) => p.x >= xMin && p.x <= xMax);
+  const ysIn = (inX.length ? inX : all).map((p) => tf(p.y));
+  const yMin = Math.min(...ysIn), yMax = Math.max(...ysIn);
   const px = (x: number) => pad.l + ((x - xMin) / (xMax - xMin || 1)) * (W - pad.l - pad.r);
   const py = (y: number) => H - pad.b - ((tf(y) - yMin) / (yMax - yMin || 1)) * (H - pad.t - pad.b);
+  const dataX = (clientX: number, el: SVGElement) => {
+    const r = el.getBoundingClientRect();
+    const fx = ((clientX - r.left) / r.width) * W;
+    return xMin + ((fx - pad.l) / (W - pad.l - pad.r)) * (xMax - xMin);
+  };
+  const nearestY = (s: { x: number[]; y: number[] }, xv: number) => {
+    let bi = 0, bd = Infinity;
+    for (let i = 0; i < s.x.length; i++) { const d = Math.abs(s.x[i] - xv); if (d < bd) { bd = d; bi = i; } }
+    return s.y[bi];
+  };
   return (
     <div className="diag-chart">
-      <svg viewBox={`0 0 ${W} ${H}`} className="diag-svg">
+      <svg viewBox={`0 0 ${W} ${H}`} className="diag-svg" style={{ cursor: "crosshair" }}
+        onMouseDown={(e) => { const xv = dataX(e.clientX, e.currentTarget); setDrag([xv, xv]); }}
+        onMouseMove={(e) => {
+          const xv = dataX(e.clientX, e.currentTarget);
+          setHx(xv);
+          if (drag) setDrag([drag[0], xv]);
+        }}
+        onMouseUp={() => {
+          if (drag && Math.abs(drag[1] - drag[0]) > (xMax - xMin) * 0.02) setZoom([Math.min(...drag), Math.max(...drag)]);
+          setDrag(null);
+        }}
+        onMouseLeave={() => { setDrag(null); setHx(null); }}
+        onDoubleClick={() => { setZoom(null); setDrag(null); }}>
         <text className="diag-ylab" x={14} y={H / 2} transform={`rotate(-90 14 ${H / 2})`} textAnchor="middle">{yLabel}</text>
         <text className="diag-xlab" x={(pad.l + W - pad.r) / 2} y={H - 6} textAnchor="middle">{xLabel}</text>
         {Array.from({ length: 5 }, (_, i) => {
@@ -109,18 +143,26 @@ function XYChart({ series, xLabel, yLabel, yLog }: { series: { label: string; co
           const xv = xMin + f * (xMax - xMin);
           return <text key={f} className="diag-tick" x={px(xv)} y={H - pad.b + 16} textAnchor="middle">{xv.toFixed(2)}</text>;
         })}
-        {series.map((s) =>
+        {visible.map((s) =>
           s.scatter ? (
-            s.x.map((xv, i) => <circle key={s.label + i} cx={px(xv)} cy={py(s.y[i])} r={3} fill={s.color} />)
+            s.x.map((xv, i) => (xv >= xMin && xv <= xMax ? <circle key={s.label + i} cx={px(xv)} cy={py(s.y[i])} r={3} fill={s.color} /> : null))
           ) : (
-            <polyline key={s.label} fill="none" stroke={s.color} strokeWidth="2" points={s.x.map((xv, i) => `${px(xv)},${py(s.y[i])}`).join(" ")} />
+            <polyline key={s.label} fill="none" stroke={s.color} strokeWidth="2" points={s.x.map((xv, i) => (xv >= xMin && xv <= xMax ? `${px(xv)},${py(s.y[i])}` : "")).filter(Boolean).join(" ")} />
           ),
         )}
+        {drag && <rect x={Math.min(px(drag[0]), px(drag[1]))} y={pad.t} width={Math.abs(px(drag[1]) - px(drag[0]))} height={H - pad.t - pad.b} fill="var(--accent)" opacity="0.15" />}
+        {hx !== null && hx >= xMin && hx <= xMax && <line x1={px(hx)} y1={pad.t} x2={px(hx)} y2={H - pad.b} stroke="var(--accent-2)" strokeDasharray="3 2" strokeWidth="1" />}
       </svg>
       <div className="diag-legend">
         {series.map((s) => (
-          <span key={s.label} className="diag-leg"><span className="diag-swatch" style={{ background: s.color, height: s.scatter ? "8px" : "3px", width: s.scatter ? "8px" : "12px", borderRadius: s.scatter ? "50%" : "2px" }} />{s.label}</span>
+          <button key={s.label} type="button" className={"diag-leg diag-leg-btn" + (solo && s.label !== solo ? " off" : "")}
+            title={solo === s.label ? "show all series" : "solo this series"}
+            onClick={() => setSolo(solo === s.label ? null : s.label)}>
+            <span className="diag-swatch" style={{ background: s.color, height: s.scatter ? "8px" : "3px", width: s.scatter ? "8px" : "12px", borderRadius: s.scatter ? "50%" : "2px" }} />{s.label}
+            {hx !== null && !s.scatter && <span className="mono muted"> · {(() => { const v = nearestY(s, hx); return Number.isFinite(v) ? v.toFixed(3) : "-"; })()}</span>}
+          </button>
         ))}
+        {(zoom || solo) && <button type="button" className="diag-leg diag-leg-btn" onClick={() => { setZoom(null); setSolo(null); }}>⟲ reset</button>}
       </div>
     </div>
   );
@@ -133,6 +175,7 @@ function LineChart({ xs, series, xLabel, yLabel, logY }: { xs: number[]; series:
   const H = 300;
   const pad = { l: 56, r: 12, t: 12, b: 40 };
   const [hi, setHi] = useState<number | null>(null);
+  const [soloL, setSoloL] = useState<string | null>(null); // legend click = solo (issue #49 S4)
 
   const { xMin, xMax, yMin, yMax, tf } = useMemo(() => {
     const all = series.flatMap((s) => s.ys).filter((v) => Number.isFinite(v));
@@ -174,17 +217,20 @@ function LineChart({ xs, series, xLabel, yLabel, logY }: { xs: number[]; series:
           <text key={x} className="diag-tick" x={px(x)} y={H - pad.b + 16} textAnchor="middle">{x}</text>
         ))}
         {series.map((sr) => (
-          <polyline key={sr.label} fill="none" stroke={sr.color} strokeWidth="2"
+          (!soloL || sr.label === soloL) && <polyline key={sr.label} fill="none" stroke={sr.color} strokeWidth="2"
             points={sr.ys.map((v, i) => `${px(xs[i])},${py(v)}`).join(" ")} />
         ))}
-        {series.map((sr) => sr.ys.map((v, i) => <circle key={sr.label + i} cx={px(xs[i])} cy={py(v)} r={hi === i ? 4 : 2.5} fill={sr.color} />))}
+        {series.map((sr) => (!soloL || sr.label === soloL) ? sr.ys.map((v, i) => <circle key={sr.label + i} cx={px(xs[i])} cy={py(v)} r={hi === i ? 4 : 2.5} fill={sr.color} />) : null)}
         {hi !== null && <line x1={px(xs[hi])} y1={pad.t} x2={px(xs[hi])} y2={H - pad.b} stroke="var(--accent-2)" strokeDasharray="3 2" strokeWidth="1" />}
       </svg>
       <div className="diag-legend">
         {series.map((sr) => (
-          <span key={sr.label} className="diag-leg"><span className="diag-swatch" style={{ background: sr.color }} />{sr.label}
+          <button key={sr.label} type="button" className={"diag-leg diag-leg-btn" + (soloL && sr.label !== soloL ? " off" : "")}
+            title={soloL === sr.label ? "show all series" : "solo this series"}
+            onClick={() => setSoloL(soloL === sr.label ? null : sr.label)}>
+            <span className="diag-swatch" style={{ background: sr.color }} />{sr.label}
             {hi !== null && <span className="mono muted"> · {Number.isFinite(sr.ys[hi]) ? sr.ys[hi].toExponential(2) : "-"}</span>}
-          </span>
+          </button>
         ))}
       </div>
     </div>

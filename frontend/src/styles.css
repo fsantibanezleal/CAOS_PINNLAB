@@ -586,3 +586,16 @@ ol li, ul li { margin: 4px 0; }
 .pl-marker-label { font-size: 10px; font-weight: 700; color: #fff; background: rgba(0,0,0,.62); padding: 1px 6px; border-radius: 6px; white-space: nowrap; text-shadow: 0 1px 2px rgba(0,0,0,.8); }
 .pl-marker.below { flex-direction: column; align-items: flex-start; gap: 2px; }
 .pl-marker.below .pl-marker-dot { margin-left: 0; }
+/* interactive chart legends (issue #49 S4): click to solo/toggle */
+.diag-leg-btn { font-family: inherit; font-size: inherit; background: none; border: 1px solid transparent; border-radius: 6px; padding: 1px 6px; cursor: pointer; color: inherit; display: inline-flex; align-items: center; gap: 5px; }
+.diag-leg-btn:hover { border-color: var(--accent); }
+.diag-leg-btn.off { opacity: .35; }
+.fw-zoombadge { position: absolute; top: 6px; right: 6px; z-index: 6; font-size: 10px; background: rgba(0,0,0,.55); color: #fff; padding: 1px 7px; border-radius: 6px; pointer-events: none; }
+/* responsive workbench (issue #49 S5): below 900px the rail stacks above the stage */
+@media (max-width: 900px) {
+  .pl-work { grid-template-columns: 1fr; height: auto; min-height: 0; }
+  .pl-rail { max-height: 300px; }
+  .pl-stage { min-height: 420px; }
+  .pl-stepper-row { flex-wrap: wrap; }
+  .pl-step { flex: 1 1 140px; }
+}
