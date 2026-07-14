@@ -1,0 +1,143 @@
+/** THE SITUATION layer (the owner's core critique, 2026-07-14): the app must establish WHAT is being evaluated
+ *  and WHY before showing any solver mechanics. Each case gets a concrete scenario with stakes: who is asking,
+ *  what hangs on the answer, and what can actually be measured. The workbench leads with this; the PDE-vs-PINN
+ *  comparison is EVIDENCE inside the investigation, not the show. All claims consistent with each case's baked
+ *  content and honesty labels (synthetic scenarios are illustrative framings of the physics, and say so). */
+
+export interface Scenario {
+  /** the concrete situation, one or two sentences with stakes (who needs this and what happens if unknown) */
+  situation_en: string;
+  situation_es: string;
+  /** what we can actually measure or know in this situation (the information at hand) */
+  measured_en: string;
+  measured_es: string;
+}
+
+export const SCENARIOS: Record<string, Scenario> = {
+  "bench-heat1d": {
+    situation_en: "A quenched steel bar leaves the bath and must not be handled until its core has cooled. Holding it too long wastes line time; too short burns someone. The plant needs the cooling time for EVERY alloy it runs, not one lab measurement.",
+    situation_es: "Una barra de acero templada sale del baño y no puede manipularse hasta que su núcleo se enfríe. Retenerla de más pierde tiempo de línea; de menos, quema a alguien. La planta necesita el tiempo de enfriamiento para CADA aleación que procesa, no una medición de laboratorio.",
+    measured_en: "The bar's surface is held at bath temperature (the boundary), the initial heat profile is known, and each alloy's diffusivity α is tabulated. Nothing inside the bar is measured.",
+    measured_es: "La superficie queda a la temperatura del baño (el borde), el perfil inicial de calor se conoce, y la difusividad α de cada aleación está tabulada. Nada dentro de la barra se mide.",
+  },
+  "bench-poisson2d": {
+    situation_en: "A membrane, an electrostatic potential, a steady temperature over a plate: the same elliptic balance appears everywhere a field settles under a fixed load. Before trusting any new solver on hard problems, you make it prove itself where the exact answer is known.",
+    situation_es: "Una membrana, un potencial electrostático, una temperatura estacionaria sobre una placa: el mismo balance elíptico aparece donde un campo se asienta bajo una carga fija. Antes de confiar en un solucionador nuevo en problemas difíciles, se le exige demostrar donde la respuesta exacta se conoce.",
+    measured_en: "The load (source term) and the clamped edges are fully known: mathematically complete information, zero data needed. The closed-form solution exists to grade against.",
+    measured_es: "La carga (término fuente) y los bordes fijos se conocen por completo: información matemáticamente completa, cero datos. Existe la solución cerrada para calificar.",
+  },
+  "bench-wave1d": {
+    situation_en: "A tensioned cable or string is plucked: its oscillation period sets resonance risk for whatever it is attached to. Get the period wrong and a driven structure can be excited at exactly the wrong frequency.",
+    situation_es: "Un cable o cuerda tensada se pulsa: su período de oscilación fija el riesgo de resonancia de lo que tenga conectado. Errar el período y una estructura forzada puede excitarse justo en la frecuencia equivocada.",
+    measured_en: "The end anchors (fixed), the initial pluck shape, and the wave speed c from tension and density. The question is what motion follows.",
+    measured_es: "Los anclajes (fijos), la forma inicial del pulso, y la velocidad de onda c desde tensión y densidad. La pregunta es qué movimiento sigue.",
+  },
+  "bench-burgers1d": {
+    situation_en: "A steep front races down a line: traffic compressing into a jam, gas piling into a shock. The operator's question is when it ARRIVES at a checkpoint: the warning time available before the front hits.",
+    situation_es: "Un frente abrupto avanza por una línea: tráfico comprimiéndose en un taco, gas apilándose en un choque. La pregunta del operador es cuándo LLEGA a un punto de control: el tiempo de aviso antes de que golpee.",
+    measured_en: "The initial profile and the viscosity are known; the nonlinearity does the rest. The front position at every time follows from the solve.",
+    measured_es: "El perfil inicial y la viscosidad se conocen; la no linealidad hace el resto. La posición del frente en cada instante sale de la solución.",
+  },
+  "bench-allencahn": {
+    situation_en: "Two phases of a material separate and their walls creep as the microstructure coarsens: where the walls END UP determines grain size, and grain size determines strength. Simulating this wrongly predicts the wrong material.",
+    situation_es: "Dos fases de un material se separan y sus paredes migran mientras la microestructura se engrosa: dónde TERMINAN las paredes determina el tamaño de grano, y el grano la resistencia. Simular esto mal predice el material equivocado.",
+    measured_en: "The initial phase mixture and the interface energy are known. The trap: the equation has metastable states, and a lazy solver settles into the WRONG one while looking converged.",
+    measured_es: "La mezcla inicial de fases y la energía de interfaz se conocen. La trampa: la ecuación tiene estados metaestables, y un solucionador perezoso cae en el INCORRECTO pareciendo convergido.",
+  },
+  "dyn-double-pendulum": {
+    situation_en: "A crane hook swinging under its load, a robot's double joint: chaotic mechanics. Any digital twin of such a machine has an expiry date, and deploying one WITHOUT knowing that date is how surrogates fail silently in production.",
+    situation_es: "Un gancho de grúa oscilando bajo su carga, la articulación doble de un robot: mecánica caótica. Cualquier gemelo digital de esa máquina tiene fecha de expiración, y desplegarlo SIN conocer esa fecha es cómo los sustitutos fallan en silencio en producción.",
+    measured_en: "The exact initial state and the equations of motion: perfect information. Chaos still wins past the divergence horizon; the case MEASURES that horizon (~2 s here).",
+    measured_es: "El estado inicial exacto y las ecuaciones de movimiento: información perfecta. El caos igual gana pasado el horizonte de divergencia; el caso MIDE ese horizonte (~2 s aquí).",
+  },
+  "bench-navier-cavity": {
+    situation_en: "Every stirred tank, coating bath and cooling channel hides recirculation: WHERE the vortex sits decides what gets mixed and what stagnates. The lid-driven cavity is the standardized version every CFD code is graded on.",
+    situation_es: "Todo estanque agitado, baño de recubrimiento y canal de refrigeración esconde recirculación: DÓNDE queda el vórtice decide qué se mezcla y qué se estanca. La cavidad de tapa móvil es la versión estandarizada con la que se califica todo código CFD.",
+    measured_en: "The moving lid speed and the no-slip walls; Reynolds number set. Graded against the published Ghia benchmark centerlines.",
+    measured_es: "La velocidad de la tapa y las paredes sin deslizamiento; número de Reynolds fijo. Calificado contra las líneas centrales publicadas de Ghia.",
+  },
+  "ind-helmholtz": {
+    situation_en: "An acoustic source drives a cavity at a fixed frequency: what amplitude reaches a receiver across the room? Speaker placement, ultrasound focusing and EM antenna design all live on this answer, and it gets HARDER as frequency rises.",
+    situation_es: "Una fuente acústica excita una cavidad a frecuencia fija: ¿qué amplitud llega a un receptor al otro lado? La ubicación de parlantes, el enfoque de ultrasonido y el diseño de antenas EM viven de esta respuesta, y se hace MÁS difícil al subir la frecuencia.",
+    measured_en: "The source, the walls, the frequency: complete information. The failure is not missing data but spectral bias: a plain network cannot even represent the oscillation (watch it in Training).",
+    measured_es: "La fuente, las paredes, la frecuencia: información completa. La falla no es falta de datos sino sesgo espectral: una red simple ni siquiera representa la oscilación (míralo en Entrenamiento).",
+  },
+  "ind-heat2d-inverse": {
+    situation_en: "A plate somewhere in service is insulating where it should conduct: a delamination, a void, moisture. You cannot cut it open. Maintenance needs a MAP of the defect from the outside, from a scatter of point temperature readings.",
+    situation_es: "Una placa en servicio aísla donde debería conducir: una delaminación, un vacío, humedad. No se puede abrir. Mantenimiento necesita un MAPA del defecto desde afuera, desde un puñado de lecturas puntuales de temperatura.",
+    measured_en: "~100 noisy temperature points and the known heating. The unknown is an entire FIELD k(x,y): without the physics prior, 100 points cannot determine it; without the data, nothing can (356%, computed).",
+    measured_es: "~100 puntos de temperatura con ruido y el calentamiento conocido. La incógnita es un CAMPO entero k(x,y): sin el prior físico, 100 puntos no lo determinan; sin los datos, nada puede (356%, computado).",
+  },
+  "ind-hidden-velocity": {
+    situation_en: "A harbor current, blood in a vessel, gas in a furnace: you cannot put a velocity probe everywhere, but you can SEE what the flow carries: dye, contrast agent, smoke. The whole current field must come from those images alone (the Science 2020 Hidden Fluid Mechanics setting).",
+    situation_es: "Una corriente de puerto, sangre en un vaso, gas en un horno: no puedes poner una sonda de velocidad en todas partes, pero puedes VER lo que el flujo arrastra: tinte, contraste, humo. Todo el campo de corriente debe salir de esas imágenes solamente (el escenario de Hidden Fluid Mechanics, Science 2020).",
+    measured_en: "~640 sparse noisy dye samples over time. NO velocity data anywhere, no boundary or initial conditions assumed: the transport physics plus a declared steady-current assumption do all the bridging.",
+    measured_es: "~640 muestras dispersas y ruidosas de tinte en el tiempo. NINGÚN dato de velocidad, sin condiciones de borde o iniciales asumidas: la física del transporte más un supuesto declarado de corriente estacionaria hacen todo el puente.",
+  },
+  "poll-ocean-transport": {
+    situation_en: "A spill is drifting toward the coast. The emergency team gets ONE question: when does it reach the water intake, and how concentrated? Every response decision: closures, booms, warnings: hangs on that arrival time.",
+    situation_es: "Un derrame deriva hacia la costa. El equipo de emergencia recibe UNA pregunta: ¿cuándo llega a la toma de agua, y cuán concentrado? Cada decisión de respuesta: cierres, barreras, avisos: cuelga de ese tiempo de llegada.",
+    measured_en: "The release point, the current, and the eddy diffusion. The exact drifting-spreading solution exists here, so the transport answer is exactly gradeable.",
+    measured_es: "El punto de vertido, la corriente y la difusión turbulenta. La solución exacta de deriva y esparcimiento existe aquí, así que la respuesta de transporte es calificable exactamente.",
+  },
+  "poll-soil-barrier": {
+    situation_en: "A contaminated site got a cutoff wall. The regulator's question is blunt: how many YEARS does the wall actually buy downstream? Design the wall on a wrong delay and the plume arrives while everyone believes it is contained.",
+    situation_es: "Un sitio contaminado recibió un muro pantalla. La pregunta del regulador es directa: ¿cuántos AÑOS compra realmente el muro aguas abajo? Diseñar el muro con un retraso errado y el penacho llega mientras todos lo creen contenido.",
+    measured_en: "The soil and wall permeabilities and the source history. The sharp material jump at the wall is exactly what breaks smooth single-network solvers (hence the domain decomposition).",
+    measured_es: "Las permeabilidades del suelo y del muro y la historia de la fuente. El salto brusco de material en el muro es justo lo que rompe a los solucionadores suaves de una sola red (de ahí la descomposición de dominio).",
+  },
+  "poll-tailings-seepage": {
+    situation_en: "A tailings deposit's stability depends on suction in the unsaturated zone: lose suction and strength goes with it. Dam-safety screening must ask the same question across every material the deposit might contain: a family, not one case.",
+    situation_es: "La estabilidad de un depósito de relaves depende de la succión en la zona no saturada: se pierde la succión y la resistencia se va con ella. El cribado de seguridad debe hacer la misma pregunta para cada material posible del depósito: una familia, no un caso.",
+    measured_en: "Surface infiltration, the water table, and each candidate material's sorptive number α: the parametric axis one network carries whole.",
+    measured_es: "La infiltración superficial, el nivel freático, y el número sortivo α de cada material candidato: el eje paramétrico que una sola red lleva completo.",
+  },
+  "poll-source-uq-bpinn": {
+    situation_en: "Someone is discharging into the channel upstream: sensors are few and noisy, and the compliance ruling ('is the limit exceeded at the checkpoint?') will be challenged. An estimate WITHOUT error bars is legally and scientifically worthless here.",
+    situation_es: "Alguien descarga al canal aguas arriba: los sensores son pocos y ruidosos, y el veredicto de cumplimiento ('¿se supera el límite en el punto de control?') será impugnado. Una estimación SIN barras de error es legal y científicamente inútil aquí.",
+    measured_en: "Sparse noisy concentration readings plus the transport physics. The ensemble's sigma marks exactly where the answer should NOT be trusted: where sensors are absent.",
+    measured_es: "Lecturas dispersas y ruidosas de concentración más la física del transporte. La sigma del ensamble marca exactamente dónde NO confiar en la respuesta: donde no hay sensores.",
+  },
+  "env-soil-heat-real": {
+    situation_en: "Ground-source heat pumps, buried cables and permafrost models all need ONE soil property: thermal diffusivity. There is no instrument you can push into the ground to read it. This case recovers it from REAL NOAA station temperatures: the one case here on real data.",
+    situation_es: "Las bombas de calor geotérmicas, los cables enterrados y los modelos de permafrost necesitan UNA propiedad del suelo: la difusividad térmica. No existe instrumento que se entierre y la lea. Este caso la recupera desde temperaturas REALES de una estación NOAA: el único caso aquí con datos reales.",
+    measured_en: "Two REAL boundary temperature series (5 cm and 100 cm). Validation is out-of-sample: three interior depths the optimizer never saw, reconstructed to ~1 degC.",
+    measured_es: "Dos series REALES de temperatura de borde (5 y 100 cm). La validación es fuera de muestra: tres profundidades interiores que el optimizador nunca vio, reconstruidas a ~1 °C.",
+  },
+  "mine-thickener-settling": {
+    situation_en: "Every concentrator ends in thickeners: size them wrong and the plant either overflows fines to the dam or starves the filters. Sizing runs on settling curves: how fast the mudline falls for THIS ore at THIS flocculant dose.",
+    situation_es: "Toda concentradora termina en espesadores: dimensiónalos mal y la planta rebosa finos a la presa o mata de hambre a los filtros. El dimensionamiento corre sobre curvas de sedimentación: qué tan rápido cae la línea de lodo para ESTE mineral con ESTA dosis de floculante.",
+    measured_en: "The initial slurry and the flux law with its rate parameter R: the family axis. One network carries the whole design chart of settling curves.",
+    measured_es: "La pulpa inicial y la ley de flujo con su parámetro R: el eje de la familia. Una red lleva la carta de diseño completa de curvas de sedimentación.",
+  },
+  "mine-flotation-kinetics": {
+    situation_en: "Flotation circuit design asks one thing of each cell: what recovery in what residence time, for ores whose rate constant k varies day to day. The design chart R(k, t) is what gets a circuit sized.",
+    situation_es: "El diseño de circuitos de flotación pide una cosa por celda: qué recuperación en qué tiempo de residencia, para minerales cuyo k varía día a día. La carta de diseño R(k, t) es lo que dimensiona un circuito.",
+    measured_en: "First-order kinetics with k as a network input: the whole ore family in one net, recovery and t90 readable for any k without re-solving.",
+    measured_es: "Cinética de primer orden con k como entrada de la red: toda la familia de minerales en una red, recuperación y t90 legibles para cualquier k sin re-resolver.",
+  },
+  "mine-heap-leach-rt": {
+    situation_en: "A heap leach only pays when the reagent front actually reaches the bottom: irrigate too fast and reagent is wasted, too slow and recovery is months late. The schedule hangs on the breakthrough time at the base.",
+    situation_es: "Una pila de lixiviación solo paga cuando el frente de reactivo llega realmente al fondo: regar muy rápido malgasta reactivo, muy lento atrasa la recuperación por meses. El calendario cuelga del tiempo de ruptura en la base.",
+    measured_en: "Irrigation at the top, the heap's transport and reaction parameters. The 2-D reactive-transport field over time gives the breakthrough curve at any depth.",
+    measured_es: "El riego en la cima, los parámetros de transporte y reacción de la pila. El campo 2-D de transporte reactivo en el tiempo entrega la curva de ruptura a cualquier profundidad.",
+  },
+  "mine-comminution-pbe": {
+    situation_en: "Grinding is the single largest energy cost of a concentrator, and it is controlled by one curve: the passing fraction below target size versus grind time. Overgrind and you burn power; undergrind and flotation downstream loses metal.",
+    situation_es: "La molienda es el mayor costo energético de una concentradora, y la controla una curva: la fracción pasante bajo el tamaño objetivo versus el tiempo de molienda. Sobremoler quema energía; submoler pierde metal en la flotación siguiente.",
+    measured_en: "The feed size distribution and the breakage law with grind rate g as the family axis: the operating chart in one network.",
+    measured_es: "La distribución de tamaños de alimentación y la ley de rotura con la tasa g como eje de familia: la carta de operación en una red.",
+  },
+  "ctrl-zero-source": {
+    situation_en: "Every measuring instrument gets a null test: feed it a case whose true answer is exactly zero and check it reads zero. An estimator that invents structure from nothing cannot be trusted on anything else.",
+    situation_es: "Todo instrumento de medida recibe una prueba nula: dale un caso cuya respuesta verdadera es exactamente cero y verifica que lee cero. Un estimador que inventa estructura desde la nada no es confiable en nada más.",
+    measured_en: "Zero source, zero boundary: the only solution is u = 0. The machinery must find it (RMS 5e-4, computed).",
+    measured_es: "Fuente cero, borde cero: la única solución es u = 0. La maquinaria debe encontrarla (RMS 5e-4, computado).",
+  },
+  "bench-darcy-operator": {
+    situation_en: "Groundwater screening needs the pressure response of THOUSANDS of candidate geology maps: one classical solve each is the bottleneck. An operator surrogate answers each NEW map in a single forward pass.",
+    situation_es: "El cribado de aguas subterráneas necesita la respuesta de presión de MILES de mapas geológicos candidatos: una resolución clásica por mapa es el cuello de botella. Un surrogate de operador responde cada mapa NUEVO en una sola pasada.",
+    measured_en: "A training set of permeability-pressure pairs from a classical solver; graded on held-out maps it never saw (2.5% vs finite differences).",
+    measured_es: "Un set de entrenamiento de pares permeabilidad-presión de un solucionador clásico; calificado en mapas retenidos que nunca vio (2.5% vs diferencias finitas).",
+  },
+};
