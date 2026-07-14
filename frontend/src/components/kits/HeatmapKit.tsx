@@ -41,11 +41,11 @@ export function HeatmapKit({ manifest, trace, active, lang }: KitProps) {
   }
 
   return (
-    <div>
+    <div className="heatmap-kit">
       <p className="dim-caption">{caption}</p>
       {manifest.outputs.length > 1 && (
-        <div className="row" style={{ gap: 8, marginBottom: 8 }}>
-          <span className="muted" style={{ fontSize: 13 }}>{es ? "Campo": "Field"}</span>
+        <div className="hk-outputs row" style={{ gap: 8 }}>
+          <span className="muted" style={{ fontSize: 12 }}>{es ? "Campo": "Field"}</span>
           <div className="variant-chips">
             {manifest.outputs.map((o, i) => (
               <button key={o} className={"variant-chip" + (i === outIdx ? " active": "")} onClick={() => setOutIdx(i)}>{o}</button>

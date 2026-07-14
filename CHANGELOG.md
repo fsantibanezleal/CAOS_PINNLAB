@@ -3,6 +3,23 @@
 All notable changes to **PINN-Lab**. Format: `X.XX.XXX` (display), see `pinnlab.__version__`. Keep `0.x` while on
 synthetic/benchmark data. Tag every release.
 
+## [0.26.000] (2026-07-15) THE REVIEW PLAN COMPLETE: fit gate + content arc closed (issue #49)
+
+Closes the real-review remediation plan (wip/web-review/real-review-and-plan-2026-07-15.md), E1-E6.
+
+- **E5 the standing fit gate**: tools/visual-verify/pl-fit-audit.mjs is committed and PASSES 508 tab-checks
+  (21 cases x every tab x 1366x768 AND 1920x1080 x dark+light): every tab fits with no scroll, Results-first
+  order, rail non-overflow, and every visualization tab renders a viz. The last fit residuals were fixed:
+  the HeatmapKit output-chip row now shares the fitted column (darcy), the field hint lines were dropped,
+  and the replay-only cases (darcy operator, chaotic pendulum) no longer show an empty Live tab (Live is
+  absent for the precompute lane, honestly).
+- **E4 content arc closed**: Experiments gains a "what was actually run" section narrating the real runs
+  (the fair-budget protocol and the wave1d inversion it caught, the identifiability sweep 356%->12.6%, the
+  soil real-data out-of-sample holdout, the flagship dye holdout 0.78% with the swept/dead honesty split, the
+  captured training dynamics, and the published negative results). With Introduction (destaled), Methodology
+  (the win/lose scope + estimators-in-the-wild), Implementation (the two worlds + Engineering lessons) and
+  Benchmark (how-to-read-these-numbers), the five pages are now one honest reading arc with hand-offs.
+- 51 contract tests green.
 ## [0.25.003] (2026-07-15) Header/footer font aligned to the shell ADR
 
 The header and footer declared "Inter"/"JetBrains Mono" (never loaded), so on viewers with those fonts

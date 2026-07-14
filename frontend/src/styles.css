@@ -836,3 +836,16 @@ ol li, ul li { margin: 4px 0; }
 .pl-res-evidence { margin-top: 2px; }
 .pl-res-evidence ul { list-style: none; margin: 4px 0 0; padding: 0; font-size: 12px; line-height: 1.55; }
 .pl-res-evidence li { margin: 3px 0; }
+/* field: drop the low-value hint line entirely so the map + profiles fill the stage exactly (no clip) */
+.fv2-hint { display: none; }
+.fv2-axhint { display: none; }
+/* hard-clamp the profile plots so the side column never exceeds the map height (audit fit) */
+.fv2-side .profile { overflow: hidden; min-height: 0; }
+.fv2-side .profile-plot { overflow: hidden; min-height: 0; }
+.fv2-side .profile-svg { display: block; }
+.fv2-side { overflow: hidden; }
+/* HeatmapKit root fills the stage: caption + output chips flex:none, the field fills the rest */
+.heatmap-kit { display: flex; flex-direction: column; height: 100%; min-height: 0; gap: 4px; }
+.heatmap-kit > .dim-caption { flex: none; }
+.heatmap-kit .hk-outputs { flex: none; margin: 0; }
+.heatmap-kit > .fieldview2 { flex: 1 1 auto; min-height: 0; }

@@ -49,7 +49,8 @@ export function CaseExperiment({
 
   useEffect(() => {
     if (!manifest) return;
-    const avail = new Set<TabId>(["results", "context", "field", "live", "charts"]);
+    const avail = new Set<TabId>(["results", "context", "field", "charts"]);
+    if (manifest.lane === "live") avail.add("live");
     if (manifest.comparison) avail.add("compare");
     if (manifest.training) avail.add("training");
     if (manifest.diagnostics) avail.add("diagnostics");
@@ -96,7 +97,9 @@ export function CaseExperiment({
     { id: "results", label: es ? "Resultados" : "Results", sub: es ? "la respuesta" : "the answer" },
     { id: "context", label: es ? "Contexto" : "Context", sub: es ? "resumen, teoría y método" : "summary, theory + method" },
     { id: "field", label: es ? "Campo" : "Field", sub: es ? "campo interactivo" : "interactive field" },
-    { id: "live", label: "Live", sub: es ? "inferencia en el navegador" : "in-browser inference" },
+    // Live only for the live lane: a precompute (field->field operator / chaotic ODE) case has no coordinate-driven
+    // in-browser inference, so it does not get an empty Live tab (issue #49 E5 audit).
+    ...(manifest?.lane === "live" ? [{ id: "live" as TabId, label: "Live", sub: es ? "inferencia en el navegador" : "in-browser inference" }] : []),
     ...(manifest?.comparison ? [{ id: "compare" as TabId, label: es ? "Comparar" : "Compare", sub: es ? "estándar vs PINN" : "standard vs PINN" }] : []),
     ...(manifest?.training ? [{ id: "training" as TabId, label: es ? "Entrenamiento" : "Training", sub: es ? "míralo aprender" : "watch it learn" }] : []),
     ...(manifest?.diagnostics ? [{ id: "diagnostics" as TabId, label: es ? "Diagnóstico" : "Diagnostics", sub: es ? "validación independiente" : "independent validation" }] : []),
