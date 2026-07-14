@@ -154,3 +154,24 @@ E5 Validator v2 + full QA (fit audit all-green at both viewports, both themes) +
 E6 Release v0.25.000; close #49; CAOS_MANAGE close-out (products/plans/heartbeat).
 
 No deferrals: every item above ships in this arc.
+
+## EXECUTION STATUS: COMPLETE (2026-07-15, v0.26.000 LIVE)
+
+All of E1-E6 shipped and verified on prod (pinnlab.fasl-work.com), across releases v0.25.000 -> v0.26.000:
+- E1 shell: story stepper removed; rail = search + Domain/Case dropdowns + case card + pins + regime(once);
+  equation full-width strip above the tabs; single-line header. DONE (v0.25.000).
+- E2 sizing engine: useFitBox contain-fit; all fixed pixel caps removed; every map/chart sizes to the stage box.
+  DONE.
+- E3 per-tab layouts: Results (answer + rich interactive kit, after correcting an interim single-image
+  regression), Context (SectionPager: Summary cards + auto-split deep prose full-width), Field (robust flex),
+  Live (compact + absent for replay-only lane), Compare (fitted row, Fields/Errors/Evolution sub-views),
+  Training, Diagnostics (pager), Regimes, HeatmapKit chip-row fit. DONE (v0.25.000-002, .26.000).
+- E4 content arc: Introduction destaled + real tab structure; Methodology win/lose scope + estimators-in-the-wild;
+  Implementation two-worlds + Engineering-lessons; Experiments what-was-actually-run; Benchmark
+  how-to-read-these-numbers; hand-offs across the five pages. DONE (v0.25.001, .26.000).
+- E5 fit gate: tools/visual-verify/pl-fit-audit.mjs committed; PASSES 508 tab-checks (21 x every tab x 2
+  viewports x 2 themes) on prod: no scroll, Results-first, rail non-overflow, viz present. pytest 51 green.
+  DONE (v0.26.000).
+- E6 release + close-out: v0.26.000 tagged + LIVE + prod-verified; issue #49 closed; product doc + plans +
+  heartbeat updated. DONE.
+- Bonus per owner review during execution: header/footer font aligned to the ADR-0016 system stack (v0.25.003).
