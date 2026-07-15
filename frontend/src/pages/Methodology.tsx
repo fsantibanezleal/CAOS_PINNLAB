@@ -328,26 +328,19 @@ export function Methodology() {
               )}
             </div>
           )}
-          <p className="muted" style={{ fontSize: 12, marginTop: 6 }}>
-            {REFS[m.ref - 1]?.cite}{" "}
-            <a href={`https://doi.org/${REFS[m.ref - 1]?.doi}`} target="_blank" rel="noreferrer noopener">
-              doi:{REFS[m.ref - 1]?.doi}
-            </a>
-          </p>
+          {/* Per-section references (ADR-0016 §7.5): each section shows ONLY its own refs; there is NO
+              bottom-of-page bibliography dump (the banned ReferenceList pattern was removed). */}
+          <div className="refs">
+            <span className="refs-label">{es ? "Referencias de esta sección" : "References for this section"}</span>
+            <ul>
+              <li>{REFS[m.ref - 1]?.cite}{" "}<a href={`https://doi.org/${REFS[m.ref - 1]?.doi}`} target="_blank" rel="noreferrer noopener">doi:{REFS[m.ref - 1]?.doi}</a></li>
+              {BEYOND[m.group]?.ref != null && BEYOND[m.group]!.ref !== m.ref && (
+                <li>{REFS[BEYOND[m.group]!.ref! - 1]?.cite}{" "}<a href={`https://doi.org/${REFS[BEYOND[m.group]!.ref! - 1]?.doi}`} target="_blank" rel="noreferrer noopener">doi:{REFS[BEYOND[m.group]!.ref! - 1]?.doi}</a></li>
+              )}
+            </ul>
+          </div>
         </section>
       ))}
-
-      <h2>{es ? "Referencias": "References"}</h2>
-      <ol style={{ fontSize: 12.5 }}>
-        {REFS.map((r, i) => (
-          <li key={i} style={{ margin: "5px 0" }}>
-            {r.cite}{" "}
-            <a href={`https://doi.org/${r.doi}`} target="_blank" rel="noreferrer noopener">
-              doi:{r.doi}
-            </a>
-          </li>
-        ))}
-      </ol>
     </div>
   );
 }

@@ -947,3 +947,10 @@ ol li, ul li { margin: 4px 0; }
 
 /* --- active tab: a stronger, luminous selected state --- */
 .pl-stagetabs .pl-viewbtn.on { box-shadow: 0 -2px 12px color-mix(in srgb, var(--accent) 22%, transparent); font-weight: 700; }
+/* per-section references (ADR-0016 §7.5): compact, linked, NOT a bottom bibliography dump */
+.refs { margin-top: 10px; padding-top: 8px; border-top: 1px dashed color-mix(in srgb, var(--accent) 25%, var(--border)); }
+.refs-label { display: block; font-size: 9.5px; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); font-weight: 700; margin-bottom: 3px; }
+.refs ul { list-style: none; margin: 0; padding: 0; }
+.refs li { font-size: 11.5px; line-height: 1.5; color: var(--muted); margin: 2px 0; }
+.cite { color: var(--accent); font-weight: 600; text-decoration: none; }
+.cite:hover { text-decoration: underline; }
