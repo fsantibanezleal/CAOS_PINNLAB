@@ -12,8 +12,9 @@ export function Equation({ tex, caption }: { tex: string; caption?: ReactNode })
   );
 }
 
-/** Inline math for use within a sentence. */
+/** Inline math for use within a sentence. The `inline-math` class adds a thin side margin so the symbol never
+ *  jams against the surrounding words (the "equation$u_t$models" bug) regardless of how the source spaces it. */
 export function InlineMath({ tex }: { tex: string }) {
   const html = katex.renderToString(tex, { displayMode: false, throwOnError: false });
-  return <span dangerouslySetInnerHTML={{ __html: html }} />;
+  return <span className="inline-math" dangerouslySetInnerHTML={{ __html: html }} />;
 }
