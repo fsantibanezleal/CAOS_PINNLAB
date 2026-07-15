@@ -1,9 +1,19 @@
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 
+import { SubTabs } from "../components/SubTabs";
 import { CATEGORY_LABELS, type CaseManifest } from "../lib/contract";
 import { loadIndex, loadManifest } from "../lib/data";
 import { useUI } from "../store";
+
+/** short tab label per category (the full CATEGORY_LABELS are long sentences unsuited to a tab strip). */
+const CAT_TAB: Record<string, { en: string; es: string }> = {
+  "canonical-benchmark": { en: "Benchmarks", es: "Benchmarks" },
+  "mining-mineral-processing": { en: "Mining", es: "Minería" },
+  "pollution-environmental": { en: "Pollution", es: "Polución" },
+  "industrial-fluids-heat": { en: "Industrial", es: "Industrial" },
+  control: { en: "Control", es: "Control" },
+};
 
 /** Per-category narrative: what the group explores, which SOTA methods it exercises, and the honest caveat. */
 const CATEGORY_INTRO: Record<string, { en: string; es: string }> = {
@@ -37,15 +47,9 @@ export function Experiments() {
   const byCat: Record<string, CaseManifest[]> = {};
   for (const m of rows) (byCat[m.category] ||= []).push(m);
 
-  return (
-    <div className="prose" style={{ maxWidth: 1040 }}>
-      <h1>{lang === "es" ? "Experimentos": "Experiments"}</h1>
-      <p className="muted">
-        {lang === "es"
-          ? "Resumen por categoría de los casos horneados: método, motor, lane y error relativo vs la referencia."
-         : "Per-category summary of the baked cases: method, engine, lane, and relative error vs the reference."}
-      </p>
-      <div className="panel" style={{ marginBottom: 16, borderColor: "var(--accent)" }}>
+  const ladder = (
+    <>
+      <div className="panel" style={{ marginBottom: 0, borderColor: "var(--accent)" }}>
         <h3>{lang === "es" ? "La escalera de métodos: estándar vs PINN ingenua vs la corrección" : "The method ladder: standard vs naive vs adapted PINN"}</h3>
         <p style={{ fontSize: 14 }}>
           {lang === "es"
@@ -70,7 +74,12 @@ export function Experiments() {
             : "Honest: where a fair test shows no real contrast (wave1d) or a solver diverged (a rushed FDM cavity), no fabricated result is shown. Open a case's Compare view for the fields + error maps."}
         </p>
       </div>
-      <div className="panel" style={{ marginBottom: 16 }}>
+    </>
+  );
+
+  const whatRun = (
+    <>
+      <div className="panel" style={{ marginBottom: 0 }}>
         <h3>{lang === "es" ? "Qué se corrió de verdad (y cómo se mantiene honesto)" : "What was actually run (and how it stays honest)"}</h3>
         <ul style={{ fontSize: 13.5, lineHeight: 1.6 }}>
           <li>{lang === "es"
@@ -98,40 +107,63 @@ export function Experiments() {
             : "Continue to Benchmark for the full numbers and how to read them."}
         </p>
       </div>
-      {Object.entries(byCat).map(([cat, ms]) => (
-        <div key={cat} className="panel" style={{ marginBottom: 16 }}>
-          <h3>{CATEGORY_LABELS[cat]?.[lang] ?? cat}</h3>
-          {CATEGORY_INTRO[cat] && (
-            <p style={{ fontSize: 14 }}>{CATEGORY_INTRO[cat][lang]}</p>
-          )}
-          <table className="tbl">
-            <thead>
-              <tr>
-                <th>case</th>
-                <th>{t("app.method")}</th>
-                <th>{t("app.engine")}</th>
-                <th>{t("app.lane")}</th>
-                <th>{t("app.relL2")}</th>
-              </tr>
-            </thead>
-            <tbody>
-              {ms.map((m) => (
-                <tr key={m.case_id}>
-                  <td className="mono">{m.case_id}</td>
-                  <td>{m.method}</td>
-                  <td>{m.engine.framework}</td>
-                  <td>
-                    <span className={`tag ${m.lane}`}>{m.lane}</span>
-                  </td>
-                  <td className="mono">
-                    {m.variants[0]?.metrics?.l2_relative !== undefined ? Number(m.variants[0].metrics.l2_relative).toExponential(2): ": "}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      ))}
+    </>
+  );
+
+  const catPanel = (cat: string, ms: CaseManifest[]) => (
+    <div className="panel" style={{ marginBottom: 0 }}>
+      <h3>{CATEGORY_LABELS[cat]?.[lang] ?? cat}</h3>
+      {CATEGORY_INTRO[cat] && <p style={{ fontSize: 14 }}>{CATEGORY_INTRO[cat][lang]}</p>}
+      <table className="tbl">
+        <thead>
+          <tr>
+            <th>case</th>
+            <th>{t("app.method")}</th>
+            <th>{t("app.engine")}</th>
+            <th>{t("app.lane")}</th>
+            <th>{t("app.relL2")}</th>
+          </tr>
+        </thead>
+        <tbody>
+          {ms.map((m) => (
+            <tr key={m.case_id}>
+              <td className="mono">{m.case_id}</td>
+              <td>{m.method}</td>
+              <td>{m.engine.framework}</td>
+              <td><span className={`tag ${m.lane}`}>{m.lane}</span></td>
+              <td className="mono">
+                {m.variants[0]?.metrics?.l2_relative !== undefined ? Number(m.variants[0].metrics.l2_relative).toExponential(2): ": "}
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+
+  const tabs = [
+    { id: "ladder", label: lang === "es" ? "Escalera de métodos" : "Method ladder", content: ladder },
+    { id: "whatrun", label: lang === "es" ? "Qué se corrió" : "What was run", content: whatRun },
+    ...Object.entries(byCat).map(([cat, ms]) => ({
+      id: cat,
+      label: CAT_TAB[cat]?.[lang] ?? cat,
+      content: catPanel(cat, ms),
+    })),
+  ];
+
+  return (
+    <div className="prose" style={{ maxWidth: 1040 }}>
+      <h1>{lang === "es" ? "Experimentos": "Experiments"}</h1>
+      <p className="muted">
+        {lang === "es"
+          ? "Resumen por categoría de los casos horneados: la escalera de métodos, qué se corrió de verdad, y método/motor/lane/error por grupo."
+         : "Per-category summary of the baked cases: the method ladder, what was actually run, and method/engine/lane/error by group."}
+      </p>
+      {rows.length === 0 ? (
+        <div className="loading">{lang === "es" ? "Cargando…" : "Loading…"}</div>
+      ) : (
+        <SubTabs ariaLabel={lang === "es" ? "Secciones de experimentos" : "Experiments sections"} tabs={tabs} />
+      )}
     </div>
   );
 }
