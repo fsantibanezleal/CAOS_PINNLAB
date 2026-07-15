@@ -1,20 +1,25 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 /** Deterministic contain-fit (real-review plan E2): measures a container and returns the largest {w, h}
  *  with the given aspect ratio that fits it. Used to size map boxes EXACTLY (the box = the canvas), so the
  *  %-positioned overlays (crosshair, markers, observation dots) stay truthful: no CSS letterboxing guesswork.
- *  Re-measures on resize. */
+ *
+ *  The ref is a CALLBACK ref: the ResizeObserver attaches the moment the measured node MOUNTS, not when the
+ *  hook first runs. This matters because several kits render the measured element only AFTER their data loads
+ *  async (the element is behind an `if (!data) return`), and for a square field the aspect never changes across
+ *  that transition, so a deps-gated effect would never re-attach the observer and the map would collapse. The
+ *  callback ref makes mount itself the trigger. */
 export function useFitBox<T extends HTMLElement>(
   aspect: number,
   pad = 0,
   cols = 1,
   reservedPerCell = 0,
-): { areaRef: React.RefObject<T | null>; w: number; h: number } {
-  const areaRef = useRef<T | null>(null);
+): { areaRef: (node: T | null) => void; w: number; h: number } {
+  const [el, setEl] = useState<T | null>(null);
+  const areaRef = useCallback((node: T | null) => setEl(node), []);
   const [size, setSize] = useState({ w: 0, h: 0 });
 
   useEffect(() => {
-    const el = areaRef.current;
     if (!el) return;
     const measure = () => {
       const r = el.getBoundingClientRect();
@@ -34,7 +39,7 @@ export function useFitBox<T extends HTMLElement>(
     const ro = new ResizeObserver(measure);
     ro.observe(el);
     return () => ro.disconnect();
-  }, [aspect, pad, cols, reservedPerCell]);
+  }, [el, aspect, pad, cols, reservedPerCell]);
 
   return { areaRef, w: size.w, h: size.h };
 }

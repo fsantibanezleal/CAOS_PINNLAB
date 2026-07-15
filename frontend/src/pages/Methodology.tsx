@@ -1,6 +1,7 @@
 import katex from "katex";
 import { useMemo } from "react";
 
+import { SubTabs } from "../components/SubTabs";
 import { useUI } from "../store";
 
 function Eq({ tex }: { tex: string }) {
@@ -260,19 +261,25 @@ const BEYOND: Record<string, { en: string; es: string; ref?: number }> = {
   },
 };
 
+/** Short tab label from a long method-family title: cut at ":" or "(" (the elaboration), clamp at a word
+ *  boundary. Keeps the SubTabs strip scannable ("Adaptive sampling", "Hybrid data + physics"). */
+function mLabel(s: string): string {
+  let t = s.split(/[:(]/)[0].trim();
+  if (t.length > 26) {
+    t = t.slice(0, 26);
+    const sp = t.lastIndexOf(" ");
+    if (sp > 12) t = t.slice(0, sp);
+    t = t.replace(/[\s,;:.&]+$/, "") + "…";
+  }
+  return t;
+}
+
 export function Methodology() {
   const lang = useUI((s) => s.lang);
   const es = lang === "es";
-  return (
-    <div className="prose" style={{ maxWidth: 1100 }}>
-      <h1>{es ? "Metodología: métodos SOTA": "Methodology: SOTA methods"}</h1>
-      <p className="muted">
-        {es
-          ? "Cada familia de métodos del estado del arte se EJERCE en al menos un caso de PINN-Lab (no solo se nombra). Abajo: la idea, su formulación, los casos que la ejercitan y la referencia primaria revisada por pares. La receta base Adam→L-BFGS se usa en todos."
-         : "Each state-of-the-art method family is EXERCISED in at least one PINN-Lab case (not merely named). Below, each family is a ladder: the idea + its formulation, the cases that exercise it, the primary peer-reviewed reference, and the SOTA frontier + a candidate-novel proposal with its honest limit. The Adam→L-BFGS base recipe is used everywhere."}
-      </p>
 
-      <section className="panel scope-panel" style={{ marginBottom: 16 }}>
+  const scope = (
+    <section className="panel scope-panel" style={{ marginBottom: 0 }}>
         <h3 style={{ marginTop: 0 }}>{es ? "Alcance honesto: dónde ganan (y no) las PINN": "Honest scope: where PINNs win (and don't)"}</h3>
         <p style={{ fontSize: 13.5 }}>
           {es
@@ -283,8 +290,10 @@ export function Methodology() {
           <a href="https://doi.org/10.1126/science.aaw4741" target="_blank" rel="noreferrer noopener">HFM (Raissi 2020)</a>
         </p>
       </section>
+  );
 
-      <section className="panel" style={{ marginBottom: 16, borderColor: "var(--accent-2)" }}>
+  const estimators = (
+    <section className="panel" style={{ marginBottom: 0, borderColor: "var(--accent-2)" }}>
         <h3 style={{ marginTop: 0 }}>{es ? "PINNs como estimadores en el mundo real" : "PINNs as estimators in the wild"}</h3>
         <p style={{ fontSize: 13.5 }}>
           {es
@@ -303,9 +312,10 @@ export function Methodology() {
           ))}
         </ul>
       </section>
+  );
 
-      {METHODS.map((m) => (
-        <section key={m.group} className="panel" style={{ marginBottom: 14 }}>
+  const methodPanel = (m: Method) => (
+        <section className="panel" style={{ marginBottom: 0 }}>
           <h3 style={{ color: "var(--accent)", marginTop: 0 }}>{es ? m.es: m.en}</h3>
           <p style={{ fontSize: 14 }}>{es ? m.bodyEs: m.bodyEn}</p>
           {m.eq && <Eq tex={m.eq} />}
@@ -317,7 +327,7 @@ export function Methodology() {
           </div>
           {BEYOND[m.group] && (
             <div className="beyond-note">
-              <strong>{es ? "→ Frontera SOTA + propuesta": "→ SOTA frontier + proposal"}:</strong>{" "}
+              <strong>{es ? "Frontera SOTA + propuesta": "SOTA frontier + proposal"}:</strong>{" "}
               {es ? BEYOND[m.group]!.es: BEYOND[m.group]!.en}
               {BEYOND[m.group]!.ref != null && (
                 <>{" "}
@@ -328,26 +338,35 @@ export function Methodology() {
               )}
             </div>
           )}
-          <p className="muted" style={{ fontSize: 12, marginTop: 6 }}>
-            {REFS[m.ref - 1]?.cite}{" "}
-            <a href={`https://doi.org/${REFS[m.ref - 1]?.doi}`} target="_blank" rel="noreferrer noopener">
-              doi:{REFS[m.ref - 1]?.doi}
-            </a>
-          </p>
+          {/* Per-section references (ADR-0016 §7.5): each section shows ONLY its own refs; there is NO
+              bottom-of-page bibliography dump (the banned ReferenceList pattern was removed). */}
+          <div className="refs">
+            <span className="refs-label">{es ? "Referencias de esta sección" : "References for this section"}</span>
+            <ul>
+              <li>{REFS[m.ref - 1]?.cite}{" "}<a href={`https://doi.org/${REFS[m.ref - 1]?.doi}`} target="_blank" rel="noreferrer noopener">doi:{REFS[m.ref - 1]?.doi}</a></li>
+              {BEYOND[m.group]?.ref != null && BEYOND[m.group]!.ref !== m.ref && (
+                <li>{REFS[BEYOND[m.group]!.ref! - 1]?.cite}{" "}<a href={`https://doi.org/${REFS[BEYOND[m.group]!.ref! - 1]?.doi}`} target="_blank" rel="noreferrer noopener">doi:{REFS[BEYOND[m.group]!.ref! - 1]?.doi}</a></li>
+              )}
+            </ul>
+          </div>
         </section>
-      ))}
+  );
 
-      <h2>{es ? "Referencias": "References"}</h2>
-      <ol style={{ fontSize: 12.5 }}>
-        {REFS.map((r, i) => (
-          <li key={i} style={{ margin: "5px 0" }}>
-            {r.cite}{" "}
-            <a href={`https://doi.org/${r.doi}`} target="_blank" rel="noreferrer noopener">
-              doi:{r.doi}
-            </a>
-          </li>
-        ))}
-      </ol>
+  const tabs = [
+    { id: "scope", label: es ? "Alcance honesto" : "Honest scope", content: scope },
+    { id: "estimators", label: es ? "Estimadores" : "Estimators", content: estimators },
+    ...METHODS.map((m) => ({ id: m.group, label: mLabel(es ? m.es : m.en), content: methodPanel(m) })),
+  ];
+
+  return (
+    <div className="prose" style={{ maxWidth: 1100 }}>
+      <h1>{es ? "Metodología: métodos SOTA": "Methodology: SOTA methods"}</h1>
+      <p className="muted">
+        {es
+          ? "Cada familia de métodos del estado del arte se EJERCE en al menos un caso de PINN-Lab (no solo se nombra). Cada pestaña es una familia: la idea, su formulación, los casos que la ejercitan, la referencia primaria revisada por pares y la frontera SOTA con una propuesta candidata y su límite honesto. La receta base Adam, L-BFGS se usa en todos."
+         : "Each state-of-the-art method family is EXERCISED in at least one PINN-Lab case (not merely named). Each tab is a family: the idea, its formulation, the cases that exercise it, the primary peer-reviewed reference, and the SOTA frontier with a candidate-novel proposal and its honest limit. The Adam then L-BFGS base recipe is used everywhere."}
+      </p>
+      <SubTabs ariaLabel={es ? "Familias de métodos" : "Method families"} tabs={tabs} />
     </div>
   );
 }

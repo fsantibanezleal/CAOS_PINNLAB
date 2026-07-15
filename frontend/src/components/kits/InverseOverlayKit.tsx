@@ -2,13 +2,16 @@ import { useMemo, useState } from "react";
 
 import { fieldRange } from "../../lib/colormap";
 import { HeatCanvas } from "./HeatCanvas";
+import { useGridFit } from "./useGridFit";
 import type { KitProps } from "./types";
 
 /** InverseOverlayKit: an INVERSE case: a hidden field (here the conductivity `k(x,y)`) is recovered from
  *  sparse noisy sensor data. Instead of one heatmap it shows the comparison that MAKES it an inverse result:
  *  the recovered field with the sparse OBSERVATION markers overlaid (the evidence the PDE prior interpolates
  *  between), the true field `k*` on the SAME color scale, the pointwise error `|k-k*|`, and the measured `T`,
- *  all side by side. Hover any map for the value read-out. Static. (ADR-0063.) */
+ *  all side by side. The panels are sized by a deterministic grid-fit so they FILL the stage (1x4 large maps in
+ *  the wide App stage, 2x2 in the narrower Results column) instead of collapsing to tiny floating canvases.
+ *  Hover any map for the value read-out. Static. (ADR-0063.) */
 export function InverseOverlayKit({ manifest, trace, lang }: KitProps) {
   const es = lang === "es";
   const [hover, setHover] = useState<{ which: string; x: number; y: number; v: number } | null>(null);
@@ -32,6 +35,11 @@ export function InverseOverlayKit({ manifest, trace, lang }: KitProps) {
     const kRange = fieldRange(kt ? k.concat(kt): k);
     return { k, kt, T, err, nx, ny, xs, ys, obs, kRange, kL2: s.l2_relative, tL2: s.T_l2_relative };
   }, [trace, fa]);
+
+  // hooks run unconditionally: derive panel count + aspect with safe fallbacks so the grid-fit is stable.
+  const nPanels = d ? 1 + (d.kt ? 1 : 0) + (d.err ? 1 : 0) + (d.T ? 1 : 0) : 4;
+  const aspect = d ? d.nx / Math.max(1, d.ny) : 1;
+  const grid = useGridFit<HTMLDivElement>(nPanels, aspect, { gap: 12, capH: 20 });
 
   if (!d) return <div className="loading">{es ? "Cargando…": "Loading…"}</div>;
   const { k, kt, T, err, nx, ny, xs, ys, obs, kRange, kL2, tL2 } = d;
@@ -60,11 +68,21 @@ export function InverseOverlayKit({ manifest, trace, lang }: KitProps) {
 
   return (
     <div className="inv-kit">
-      <div className="inv-panels">
+      {/* the fit ref is on the STABLE panels wrapper; the cells are sized from the result, so no feedback loop. */}
+      <div
+        className="inv-panels"
+        ref={grid.areaRef}
+        style={{ gridTemplateColumns: grid.cellW ? `repeat(${grid.cols}, ${grid.cellW}px)` : undefined }}
+      >
         {panels.map((p) => (
           <figure key={p.id} className="inv-panel">
             <figcaption className="inv-cap muted">{p.label}</figcaption>
-            <div className="inv-map" onMouseMove={mkMove(p.id, p.field)} onMouseLeave={() => setHover(null)}>
+            <div
+              className="inv-map"
+              onMouseMove={mkMove(p.id, p.field)}
+              onMouseLeave={() => setHover(null)}
+              style={grid.cellW ? { width: grid.cellW, height: grid.cellH } : undefined}
+            >
               <HeatCanvas field={p.field} range={p.range ?? fieldRange(p.field)} ariaLabel={`${p.id} field`} />
               {p.dots &&
                 obs.map((o, i) => (

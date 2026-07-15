@@ -70,7 +70,10 @@ export function SpatioTemporalKit({ manifest, active, lang }: KitProps) {
   }, [traces, ev, outName, fa, tKey, manifest.variants]);
 
   const nF = data?.frames.length ?? manifest.variants.length;
-  const fit = useFitBox<HTMLDivElement>(1, 4);
+  // real field aspect (nH/nV) so the map is contained, not forced square; ref goes on a map-ONLY wrapper below
+  // (excluding the colorbar) so fit.w never overflows into the colorbar (the "map runs off the edge" bug).
+  const aspect0 = data && data.frames[0] ? data.frames[0].length / Math.max(1, data.frames[0][0]?.length ?? 1) : 1;
+  const fit = useFitBox<HTMLDivElement>(aspect0, 6);
   const anim = useAnimator(nF, { fps: 6 });
   const f = Math.min(anim.frame, nF - 1);
   const [hover, setHover] = useState<{ x: number; y: number; v: number } | null>(null);
@@ -105,10 +108,14 @@ export function SpatioTemporalKit({ manifest, active, lang }: KitProps) {
         </div>
       )}
       <Transport anim={anim} lang={lang} axisLabel={tKey} axisValue={tVals[f] ?? 0} />
-      <div className="st-grid" ref={fit.areaRef}>
-        <div className="st-map fitted" onMouseMove={onMove} onMouseLeave={() => setHover(null)} style={{ position: "relative", width: fit.w || undefined, height: fit.h || undefined }}>
-          <HeatCanvas field={frame} range={range} ariaLabel={`${outName} at ${tKey}=${(tVals[f] ?? 0).toFixed(2)}`} />
-          <MarkerLayer markers={markersFor(manifest, active)} a0={ax0[0] ?? 0} a1={ax0[ax0.length - 1] ?? 1} b0={ax1[0] ?? 0} b1={ax1[ax1.length - 1] ?? 1} lang={lang} />
+      <div className="st-grid">
+        {/* the fit ref measures the map area ONLY (colorbar is a separate flex child), so fit.w can never spill
+            into the colorbar and overflow the stage. */}
+        <div className="st-mapwrap" ref={fit.areaRef}>
+          <div className="st-map fitted" onMouseMove={onMove} onMouseLeave={() => setHover(null)} style={{ position: "relative", width: fit.w || undefined, height: fit.h || undefined }}>
+            <HeatCanvas field={frame} range={range} ariaLabel={`${outName} at ${tKey}=${(tVals[f] ?? 0).toFixed(2)}`} />
+            <MarkerLayer markers={markersFor(manifest, active)} a0={ax0[0] ?? 0} a1={ax0[ax0.length - 1] ?? 1} b0={ax1[0] ?? 0} b1={ax1[ax1.length - 1] ?? 1} lang={lang} />
+          </div>
         </div>
         <div className="st-cbar" aria-hidden>
           <div className="st-cbar-scale">

@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 
+import { SubTabs } from "../components/SubTabs";
 import type { CaseManifest } from "../lib/contract";
 import { loadIndex, loadManifest } from "../lib/data";
 import { useUI } from "../store";
@@ -27,7 +28,14 @@ export function Benchmark() {
           ? "Honestidad: qué estima cada caso (la cantidad de interés computada offline), error relativo vs la referencia (analítica/dataset/numérica), paridad ONNX-vs-modelo, y etiqueta de datos sintéticos vs reales. Sin números maquillados."
          : "Honesty: what each case estimates (the quantity of interest, computed offline), relative error vs the reference (analytic/dataset/numerical), ONNX-vs-model parity, and the synthetic-vs-real data label. No dressed-up numbers."}
       </p>
-      <div className="panel">
+      {rows.length === 0 ? (
+        <div className="loading">{es ? "Cargando…" : "Loading…"}</div>
+      ) : (
+      <SubTabs
+        ariaLabel={es ? "Secciones del benchmark" : "Benchmark sections"}
+        tabs={[
+          { id: "numbers", label: es ? "Los números" : "The numbers", content: (
+      <div className="panel" style={{ marginBottom: 0 }}>
         <table className="tbl">
           <thead>
             <tr>
@@ -83,8 +91,9 @@ export function Benchmark() {
             : "The ladder columns come from the baked comparisons (each case's Compare view); a dash means that lane does not exist for the case (a contrast is never fabricated). Click a case to open its comparison."}
         </p>
       </div>
-
-      <div className="panel" style={{ marginTop: 16 }}>
+          ) },
+          { id: "howto", label: es ? "Cómo leerlos" : "How to read them", content: (
+      <div className="panel" style={{ marginBottom: 0 }}>
         <h3>{es ? "Cómo leer estos números" : "How to read these numbers"}</h3>
         <ul style={{ fontSize: 13.5, lineHeight: 1.6 }}>
           <li>{es
@@ -105,10 +114,14 @@ export function Benchmark() {
         </ul>
         <p className="muted" style={{ fontSize: 12.5, marginTop: 6 }}>
           {es
-            ? "Cierre del arco: Introducción (por qué las EDPs y las PINN) → Metodología (los métodos y cuándo ganan) → Implementación (cómo se construyó, con las lecciones) → Experimentos (qué se corrió) → Benchmark (los números y su lectura honesta)."
-            : "Closing the arc: Introduction (why PDEs and PINNs) → Methodology (the methods and when they win) → Implementation (how it was built, with the lessons) → Experiments (what was run) → Benchmark (the numbers and their honest reading)."}
+            ? "Cierre del arco: Introducción (por qué las EDPs y las PINN), Metodología (los métodos y cuándo ganan), Implementación (cómo se construyó, con las lecciones), Experimentos (qué se corrió) y Benchmark (los números y su lectura honesta)."
+            : "Closing the arc: Introduction (why PDEs and PINNs), Methodology (the methods and when they win), Implementation (how it was built, with the lessons), Experiments (what was run), and Benchmark (the numbers and their honest reading)."}
         </p>
       </div>
+          ) },
+        ]}
+      />
+      )}
     </div>
   );
 }

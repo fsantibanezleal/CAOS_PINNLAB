@@ -1,5 +1,21 @@
 import { useEffect, useRef, useState, type ReactNode } from "react";
 
+/** A deep-prose section heading is a full sentence ("The problem: phase separation with sharp interfaces: the
+ *  Allen-Cahn equation"); as a TAB label it must be short and never cut mid-word. Take the lead clause (before
+ *  the first colon, when short enough), else clamp at a word boundary with an ellipsis. */
+function shortLabel(s: string): string {
+  const raw = s.trim();
+  const colon = raw.indexOf(":");
+  let t = colon > 2 && colon <= 34 ? raw.slice(0, colon) : raw;
+  if (t.length > 32) {
+    t = t.slice(0, 32);
+    const sp = t.lastIndexOf(" ");
+    if (sp > 14) t = t.slice(0, sp);
+    t = t.replace(/[\s,;:.]+$/, "") + "…";
+  }
+  return t;
+}
+
 /** In-tab section switcher (real-review plan §2.2): long content is NEVER a scroll: it is split into
  *  sections shown one at a time at full width, switched by a pill row. The split is taken from the content's
  *  own h2/h3 headings after render (the deep Context pages already carry exactly these sections). Extra
@@ -17,7 +33,7 @@ export function SectionPager({ children, extra, lang }: { children: ReactNode; e
     const kids = Array.from(el.children);
     const bounds: { title: string; start: number }[] = [];
     kids.forEach((k, i) => {
-      if (/^H[123]$/.test(k.tagName)) bounds.push({ title: (k.textContent ?? "").slice(0, 60), start: i });
+      if (/^H[123]$/.test(k.tagName)) bounds.push({ title: shortLabel(k.textContent ?? ""), start: i });
     });
     if (!bounds.length) {
       setSections([]);

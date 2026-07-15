@@ -26,9 +26,10 @@ export function HeatmapKit({ manifest, trace, active, lang }: KitProps) {
   let caption: string;
   if (timeAxis) {
     const spaceAxis = fa.find((a) => a !== timeAxis) ?? fa[0];
+    // one concise line (the depth lives in Context) so the caption never wraps to 3 lines and clips (issue #57).
     caption = es
-      ? `Campo ESPACIO-TIEMPO ${outName}(${spaceAxis}, ${timeAxis}): toda la evolución en una imagen. El eje ${timeAxis} es el TIEMPO: cada línea horizontal es el perfil en ese instante; leer hacia arriba en el tiempo muestra cómo evoluciona. NO es un estado final estático.`
-     : `SPACE-TIME field ${outName}(${spaceAxis}, ${timeAxis}): the whole evolution in one image. The ${timeAxis} axis is TIME: each horizontal line is the profile at that instant; reading up the time axis shows how it evolves. It is NOT a static final state.`;
+      ? `Campo espacio-tiempo ${outName}(${spaceAxis}, ${timeAxis}): toda la evolución en una imagen, ${timeAxis} = tiempo (hacia arriba). No es un estado final estático.`
+     : `Space-time field ${outName}(${spaceAxis}, ${timeAxis}): the whole evolution in one image, ${timeAxis} = time (upward). Not a static final state.`;
   } else if (timeParam) {
     const tv = active?.params?.[timeParam.key];
     caption = es

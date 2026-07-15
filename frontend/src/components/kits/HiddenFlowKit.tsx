@@ -3,6 +3,7 @@ import { useMemo, useState } from "react";
 import { fieldRange } from "../../lib/colormap";
 import { HeatCanvas } from "./HeatCanvas";
 import { markersFor, MarkerLayer } from "./MarkerLayer";
+import { useGridFit } from "./useGridFit";
 import type { KitProps } from "./types";
 
 /** HiddenFlowKit (issue #48): the HFM mechanism made visible. The case recovers a hidden VELOCITY field from
@@ -40,6 +41,12 @@ export function HiddenFlowKit({ manifest, trace, active, lang }: KitProps) {
     };
   }, [trace, fa]);
 
+  // hooks run unconditionally: derive panel count + aspect with safe fallbacks so the grid-fit is stable, so the
+  // maps FILL the stage (deterministic grid-fit) instead of collapsing to tiny floating canvases (issue #57).
+  const nPanels = d ? 1 + (d.speedTrue ? 1 : 0) + (d.err ? 1 : 0) + (d.c ? 1 : 0) + (d.swept ? 1 : 0) : 5;
+  const aspect = d ? d.speed.length / Math.max(1, d.speed[0]?.length ?? 1) : 1;
+  const grid = useGridFit<HTMLDivElement>(nPanels, aspect, { gap: 12, capH: 22 });
+
   if (!d) return <div className="loading">{es ? "Cargando…" : "Loading…"}</div>;
   const { speed, speedTrue, err, c, swept, xs, ys, obs, range, uL2, swRmse, deadRmse, sweptFrac } = d;
   const nx = speed.length;
@@ -71,11 +78,20 @@ export function HiddenFlowKit({ manifest, trace, active, lang }: KitProps) {
 
   return (
     <div className="inv-kit">
-      <div className="inv-panels">
+      <div
+        className="inv-panels"
+        ref={grid.areaRef}
+        style={{ gridTemplateColumns: grid.cellW ? `repeat(${grid.cols}, ${grid.cellW}px)` : undefined }}
+      >
         {panels.map((p) => (
           <figure key={p.id} className="inv-panel">
             <figcaption className="inv-cap muted">{p.label}</figcaption>
-            <div className="inv-map" onMouseMove={mkMove(p.id, p.field)} onMouseLeave={() => setHover(null)}>
+            <div
+              className="inv-map"
+              onMouseMove={mkMove(p.id, p.field)}
+              onMouseLeave={() => setHover(null)}
+              style={grid.cellW ? { width: grid.cellW, height: grid.cellH } : undefined}
+            >
               <HeatCanvas field={p.field} range={p.range ?? fieldRange(p.field)} ariaLabel={`${p.id} field`} />
               {p.dots &&
                 obs.map((o, i) => (
