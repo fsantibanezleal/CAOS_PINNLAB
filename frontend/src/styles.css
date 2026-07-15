@@ -1055,3 +1055,18 @@ ol li, ul li { margin: 4px 0; }
 .pl-railregime { margin-top: 16px; }
 .pl-railregime .variant-chip { font-size: 12.5px; padding: 5px 12px; }
 .pl-railregime .variant-note { font-size: 12.5px; line-height: 1.5; margin-top: 7px; }
+
+/* --- Regimes tab: for a single-regime case it showed 3 small stat cards at the top over a big void. Fill the
+       stage: bigger heading + intro, and the measured numbers become large centered HERO-number tiles. --- */
+.pl-stage > .charts { height: 100%; display: flex; flex-direction: column; min-height: 0; gap: 10px; }
+.charts h3 { font-size: 21px; margin: 0; }
+.charts > p.muted { font-size: 15px; line-height: 1.6; margin: 0; max-width: 90ch; }
+.charts .pl-ans-grid { flex: 1 1 auto; align-content: center; justify-content: center; gap: 18px; }
+.charts .pl-ans-item {
+  flex: 1 1 300px; max-width: 460px; padding: 22px 26px; gap: 10px; border-radius: 14px;
+  border-color: color-mix(in srgb, var(--accent) 28%, var(--border));
+  background: color-mix(in srgb, var(--accent) 5%, var(--panel-2));
+}
+.charts .pl-ans-label { font-size: 14px; line-height: 1.45; color: var(--muted); }
+.charts .pl-ans-value { font-size: 30px; font-weight: 750; letter-spacing: -0.01em; color: var(--accent); }
+.charts .cmp-bars { flex: 1 1 auto; min-height: 0; }
