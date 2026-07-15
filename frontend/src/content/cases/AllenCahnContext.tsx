@@ -45,16 +45,35 @@ export function AllenCahnContext({ lang }: { lang: "en" | "es" }) {
       <p>
         Un PINN con IC/BC <em>blandas</em> (como términos de pérdida) colapsa: el mínimo trivial
         <InlineMath tex={String.raw`u\equiv0`} /> o un estado metastable tiene residual pequeño y la optimización se
-        queda atascada ahí. La receta robusta combina dos ideas:
+        queda atascada ahí (<strong>95,4%</strong> de L2-relativo frente a la referencia espectral; las vistas Compare y
+        Training lo muestran). La receta robusta combina dos ideas:
       </p>
       <Equation tex={String.raw`u_\theta = \underbrace{x^2\cos(\pi x)}_{=\,u(x,0)} + \underbrace{t\,(1-x^2)}_{\text{se anula en }t=0,\ x=\pm1}\,\mathcal{N}_\theta(x,t).`} />
       <ul>
         <li><strong>Restricción dura (hard constraint):</strong> la IC se hornea en el ansatz, así <InlineMath tex={String.raw`u_\theta(x,0)=u(x,0)`} /> <em>exactamente</em> y los bordes quedan acoplados: sin términos de pérdida de IC/BC que compitan.</li>
-        <li><strong>RAR (refinamiento adaptativo por residual):</strong> tras el ajuste base, se añaden puntos de colocación donde el residual es mayor: justo sobre las interfaces móviles: varias rondas, persiguiendo el frente.</li>
+        <li><strong>RAR (refinamiento adaptativo por residual):</strong> tras el ajuste base Adam y luego L-BFGS, <strong>4 rondas</strong> de refinamiento voraz: cada ronda muestrea un pool de 100.000 puntos, añade los <strong>600 puntos</strong> de mayor residual como anclas, y reajusta (5.000 iteraciones de Adam); un <strong>L-BFGS final único</strong> pule tras el bucle, concentrando la densidad de colocación justo sobre la capa delgada móvil.</li>
       </ul>
       <p>
         El techo SOTA (PirateNets, <InlineMath tex={String.raw`\sim2\times10^{-5}`} />, jaxpi) se <em>cita</em>, no se
         reclama; esta es la receta DeepXDE en CPU.
+      </p>
+      <p>
+        Arquitectura: una FNN tanh <InlineMath tex={String.raw`[2,64,64,64,1]`} /> con 8.000 puntos de dominio / 400 de
+        borde / 800 iniciales, Adam (lr 1e-3, 20.000 iteraciones) y luego L-BFGS antes del bucle RAR. El RAR recortado
+        (4 rondas más un L-BFGS final único en vez de 6 L-BFGS por ronda) hornea mucho más rápido para la misma
+        precisión honesta sub-1%.
+      </p>
+
+      <h3>Resultado medido (semilla 42)</h3>
+      <p>
+        Validado contra la referencia espectral <InlineMath tex={String.raw`u_{\mathrm{ref}}(x,t)`} /> (<code>Allen_Cahn.npz</code>,
+        DeepXDE/Raissi) en la grilla del campo <InlineMath tex={String.raw`201\times101`} />, la red con restricción dura
+        más RAR alcanza <strong>0,41% de L2-relativo</strong> (0.004106): sub-1%, superando la banda esperada (por
+        debajo de <InlineMath tex={String.raw`10^{-2}`} />) por unas 2,4x, así la receta resuelve genuinamente las capas
+        de transición en vez de colapsar al estado metastable. El PINN suave ingenuo, en cambio, difumina las capas
+        afiladas <InlineMath tex={String.raw`\pm1`} /> con <strong>95,4% de L2-relativo</strong>: las vistas Compare y
+        Training muestran ambas lado a lado con sus mapas de error. El modelo entrenado se publica <strong>en vivo</strong>
+        (ONNX de 49 KB, opset 18; paridad ONNX 1.16e-06 máx. abs).
       </p>
 
       <h3>Alcances y supuestos</h3>
@@ -126,16 +145,34 @@ export function AllenCahnContext({ lang }: { lang: "en" | "es" }) {
       <p>
         A PINN with <em>soft</em> IC/BC (as loss terms) collapses: the trivial minimum
         <InlineMath tex={String.raw`u\equiv0`} /> or a metastable state has small residual and the optimiser gets stuck
-        there. The robust recipe combines two ideas:
+        there (<strong>95.4%</strong> relative-L2 against the spectral reference; the Compare and Training views show it).
+        The robust recipe combines two ideas:
       </p>
       <Equation tex={String.raw`u_\theta = \underbrace{x^2\cos(\pi x)}_{=\,u(x,0)} + \underbrace{t\,(1-x^2)}_{\text{vanishes at }t=0,\ x=\pm1}\,\mathcal{N}_\theta(x,t).`} />
       <ul>
         <li><strong>Hard constraint:</strong> the IC is baked into the ansatz, so <InlineMath tex={String.raw`u_\theta(x,0)=u(x,0)`} /> <em>exactly</em> and the ends are coupled: no competing IC/BC loss terms.</li>
-        <li><strong>RAR (residual-based adaptive refinement):</strong> after the base fit, collocation points are added where the residual is largest: right on the moving interfaces: over several rounds, chasing the front.</li>
+        <li><strong>RAR (residual-based adaptive refinement):</strong> after the Adam then L-BFGS base fit, <strong>4 rounds</strong> of greedy refinement: each round draws a 100,000-point pool, adds the <strong>top-600</strong> highest-residual points as anchors, and re-fits (5,000 Adam iters); a <strong>single final L-BFGS</strong> polishes after the loop, concentrating collocation density exactly on the thin moving layer.</li>
       </ul>
       <p>
         The SOTA ceiling (PirateNets, <InlineMath tex={String.raw`\sim2\times10^{-5}`} />, jaxpi) is <em>cited</em>, not
         claimed; this is the DeepXDE recipe on CPU.
+      </p>
+      <p>
+        Architecture: a <InlineMath tex={String.raw`[2,64,64,64,1]`} /> tanh FNN with 8,000 domain / 400 boundary /
+        800 initial points, Adam (lr 1e-3, 20,000 iters) then L-BFGS before the RAR loop. The trimmed RAR (4 rounds
+        plus one final L-BFGS instead of 6 per-round L-BFGS) bakes far faster for the same honest sub-1% accuracy.
+      </p>
+
+      <h3>Measured result (seed 42)</h3>
+      <p>
+        Validated against the spectral reference <InlineMath tex={String.raw`u_{\mathrm{ref}}(x,t)`} /> (<code>Allen_Cahn.npz</code>,
+        DeepXDE/Raissi) on the <InlineMath tex={String.raw`201\times101`} /> field grid, the hard-constraint plus RAR
+        network reaches <strong>0.41% relative-L2</strong> (0.004106): sub-1%, clearing the expected band (below
+        <InlineMath tex={String.raw`10^{-2}`} />) by about 2.4x, so the recipe genuinely resolves the transition layers
+        rather than collapsing to the metastable state. The naive soft PINN, by contrast, smears the sharp
+        <InlineMath tex={String.raw`\pm1`} /> layers at <strong>95.4% relative-L2</strong>: the Compare and Training
+        views show the two side by side with their error maps. The trained model ships <strong>live</strong> (49 KB
+        ONNX, opset 18; ONNX parity 1.16e-06 max abs).
       </p>
 
       <h3>Scope &amp; assumptions</h3>

@@ -54,12 +54,21 @@ export function TailingsSeepageContext({ lang }: { lang: "en" | "es" }) {
       <p>
         La <strong>relación de dispersión</strong> <InlineMath tex={String.raw`\lambda(\alpha)`} /> es exactamente la
         condición que anula el residual lineal en <InlineMath tex={String.raw`m`} /> (por eso es solución{" "}
-        <em>exacta</em>, no por una fuente añadida). Con <InlineMath tex={String.raw`\kappa=0.9<\alpha`} /> se tiene{" "}
+        <em>exacta</em>, no por una fuente añadida; el invariante <InlineMath tex={String.raw`\psi<0`} /> se verifica en
+        todo el cubo y el residual por diferencias finitas de la forma cerrada es{" "}
+        <InlineMath tex={String.raw`\le10^{-6}`} />). Con <InlineMath tex={String.raw`\kappa=0.9<\alpha`} /> se tiene{" "}
         <InlineMath tex={String.raw`\lambda>0`} />: un transitorio de <em>secado</em> (la succión se profundiza en el
         tiempo). La PINN <InlineMath tex={String.raw`\psi_\theta(z,t,\alpha)`} /> minimiza el residual de Richards en
         puntos de colocación, con la IC y las condiciones de borde en <InlineMath tex={String.raw`z=0,1`} /> impuestas de
         forma <em>blanda</em> (iguales a <InlineMath tex={String.raw`\psi^*`} />), de modo que el L2 reportado es el
-        error real del PINN frente a la solución exacta.
+        error real del PINN frente a la solución exacta. La red es <InlineMath tex={String.raw`[3,48,48,48,48,1]`} />
+        tanh (DeepXDE), entrenada con Adam (18000 pasos, lr <InlineMath tex={String.raw`10^{-3}`} />) y luego L-BFGS,
+        con pesos de pérdida <InlineMath tex={String.raw`[1,10]`} /> sobre los términos de PDE y ancla;{" "}
+        <InlineMath tex={String.raw`\alpha`} /> entra como input de la red, de modo que una sola red entrenada abarca
+        toda la familia. En las seis variantes (<InlineMath tex={String.raw`\alpha=1.0,1.3,1.6,1.9,2.2,2.5`} />) el L2
+        relativo frente a <InlineMath tex={String.raw`\psi^*`} /> se mantiene <InlineMath tex={String.raw`\le0.26\%`} />,
+        y el ONNX exportado coincide con la red entrenada a <InlineMath tex={String.raw`3.6\times10^{-7}`} /> (máx abs),
+        de modo que el tab Live corre la misma física en tu navegador.
       </p>
 
       <h3>El método: cierre de Gardner y por qué la familia es honesta</h3>
@@ -156,13 +165,22 @@ export function TailingsSeepageContext({ lang }: { lang: "en" | "es" }) {
       <p>
         The <strong>dispersion relation</strong> <InlineMath tex={String.raw`\lambda(\alpha)`} /> is exactly the
         condition that zeroes the linear residual in <InlineMath tex={String.raw`m`} /> (which is why it is an{" "}
-        <em>exact</em> solution, not one propped up by an added source). With{" "}
+        <em>exact</em> solution, not one propped up by an added source; the <InlineMath tex={String.raw`\psi<0`} />{" "}
+        invariant is verified across the cube and a finite-difference residual of the closed form is{" "}
+        <InlineMath tex={String.raw`\le10^{-6}`} />). With{" "}
         <InlineMath tex={String.raw`\kappa=0.9<\alpha`} /> we get <InlineMath tex={String.raw`\lambda>0`} />: a{" "}
         <em>drying</em> transient (the suction deepens in time). The PINN{" "}
         <InlineMath tex={String.raw`\psi_\theta(z,t,\alpha)`} /> minimises the Richards residual at collocation points,
         with the IC and the boundary conditions at <InlineMath tex={String.raw`z=0,1`} /> imposed <em>softly</em> (equal
         to <InlineMath tex={String.raw`\psi^*`} />), so the reported L2 is the true PINN error against the exact
-        solution.
+        solution. The net is <InlineMath tex={String.raw`[3,48,48,48,48,1]`} /> tanh (DeepXDE), trained with Adam
+        (18000 steps, lr <InlineMath tex={String.raw`10^{-3}`} />) then L-BFGS, with loss weights{" "}
+        <InlineMath tex={String.raw`[1,10]`} /> on the PDE and anchor terms; <InlineMath tex={String.raw`\alpha`} />{" "}
+        enters as a network input, so one trained net spans the whole family. Across the six variants{" "}
+        (<InlineMath tex={String.raw`\alpha=1.0,1.3,1.6,1.9,2.2,2.5`} />) the relative-L2 against{" "}
+        <InlineMath tex={String.raw`\psi^*`} /> stays <InlineMath tex={String.raw`\le0.26\%`} />, and the exported ONNX
+        matches the trained net to <InlineMath tex={String.raw`3.6\times10^{-7}`} /> (max abs), so the Live tab runs the
+        same physics in your browser.
       </p>
 
       <h3>The method: the Gardner closure and why the family is honest</h3>

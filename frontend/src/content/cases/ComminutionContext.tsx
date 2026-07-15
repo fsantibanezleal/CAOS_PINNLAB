@@ -46,9 +46,13 @@ export function ComminutionContext({ lang }: { lang: "en" | "es" }) {
         sustituir <InlineMath tex={String.raw`n^*`} /> en la EDP el residual es idénticamente cero para
         <em> cualquier</em> <InlineMath tex={String.raw`g`} />: la velocidad de arrastre del centro,
         <InlineMath tex={String.raw`-g`} />, equilibra exactamente al término de transporte. La PINN
-        <InlineMath tex={String.raw`n_\theta(s,t,g)`} /> minimiza el residual de transporte en puntos de colocación, con
-        la IC (la alimentación) y la BC (<InlineMath tex={String.raw`n^*`} /> en el borde) impuestas de forma blanda y
-        ponderada: así la red aprende de verdad el campo interior y el L2 reportado es el error real del PINN.
+        usa una <strong>transformada de salida con IC dura</strong> (el patrón burgers/flotación):
+        <InlineMath tex={String.raw`n_\theta(s,t,g)=g_0(s)+t\,\mathcal{N}_\theta(s,t,g)`} /> con
+        <InlineMath tex={String.raw`g_0(s)=n^*(s,0)`} /> la gaussiana inicial independiente de la tasa de molienda, de
+        modo que la <strong>condición inicial se cumple de forma exacta por construcción</strong> y la red solo debe
+        aprender la evolución interior. Minimiza el residual de transporte en puntos de colocación y se ancla al campo
+        exacto (la solución analítica), <strong>sin un término de pérdida de frontera aparte</strong>, así el L2 relativo
+        reportado es el error real del PINN.
       </p>
 
       <h3>El método: balance poblacional reducido</h3>
@@ -60,7 +64,9 @@ export function ComminutionContext({ lang }: { lang: "en" | "es" }) {
         tamaños menores y el segundo momento, una <em>dispersión</em>: la aproximación de Fokker-Planck del operador de
         fragmentación. Esto convierte una ecuación íntegro-diferencial en una EDP de deriva-difusión con
         <strong> ancla cerrada exacta</strong>, ideal para un banco de pruebas de PINN; el modelo de núcleos completo se
-        documenta como el modelo verdadero.
+        documenta como el modelo verdadero. La red sustituta es un MLP tanh pequeño
+        <InlineMath tex={String.raw`[3,48,48,48,48,1]`} /> (DeepXDE) entrenado con Adam y luego L-BFGS sobre un hipercubo
+        <InlineMath tex={String.raw`(s,t,g)`} />; el ONNX exportado coincide con el modelo entrenado a 9.5e-7 (máx. abs).
       </p>
 
       <h3>Alcances y supuestos</h3>
@@ -81,7 +87,9 @@ export function ComminutionContext({ lang }: { lang: "en" | "es" }) {
         <em> g=0.12/0.24/0.36</em> la corren progresivamente hacia tamaños menores; <em>g=0.48</em> y <em>g=0.6</em>
         (molienda intensa) la llevan muy abajo, con el grueso de la masa ya en los finos al final de la residencia. En
         todas, la distribución <strong>se ensancha al mismo ritmo</strong> <InlineMath tex={String.raw`\sigma\propto\sqrt{\sigma_0^2+2Dt}`} />
-        (la tasa cambia el desplazamiento, no el ensanchamiento).
+        (la tasa cambia el desplazamiento, no el ensanchamiento). La precisión no es uniforme en el barrido: las variantes de
+        baja molienda quedan muy por debajo del 1% de L2 relativo, mientras que la esquina de molienda intensa
+        <em>g=0.6</em> se vuelve dominada por advección (Péclet ~50) y llega a ~2%, el borde honesto de la banda esperada.
       </p>
       <p>
         <strong>Cómo leer y usar la viz.</strong> El <strong>heatmap</strong> de <InlineMath tex={String.raw`n(s,t)`} />
@@ -133,10 +141,14 @@ export function ComminutionContext({ lang }: { lang: "en" | "es" }) {
         the fragmentation broadening) and the <em>peak</em> decays as <InlineMath tex={String.raw`\sigma_0/\sigma`} />
         because total mass is conserved. Substituting <InlineMath tex={String.raw`n^*`} /> into the PDE makes the
         residual identically zero for <em>any</em> <InlineMath tex={String.raw`g`} />: the center's drift velocity,
-        <InlineMath tex={String.raw`-g`} />, exactly balances the transport term. The PINN
-        <InlineMath tex={String.raw`n_\theta(s,t,g)`} /> minimises the transport residual at collocation points, with the
-        IC (the feed) and BC (<InlineMath tex={String.raw`n^*`} /> on the boundary) imposed softly and weighted: so the
-        network genuinely learns the interior field and the reported L2 is the true PINN error.
+        <InlineMath tex={String.raw`-g`} />, exactly balances the transport term. The PINN uses a <strong>hard-IC output
+        transform</strong> (the burgers/flotation pattern):
+        <InlineMath tex={String.raw`n_\theta(s,t,g)=g_0(s)+t\,\mathcal{N}_\theta(s,t,g)`} /> with
+        <InlineMath tex={String.raw`g_0(s)=n^*(s,0)`} /> the grind-rate-independent initial Gaussian, so the
+        <strong> initial condition is satisfied exactly by construction</strong> and the network only has to learn the
+        interior evolution. It minimises the transport residual at collocation points and is anchored to the exact field
+        (the analytic solution), with <strong>no separate boundary-loss term</strong>, so the reported relative-L2 is the
+        true PINN error.
       </p>
 
       <h3>The method: reduced population balance</h3>
@@ -147,7 +159,10 @@ export function ComminutionContext({ lang }: { lang: "en" | "es" }) {
         its <strong>transport reduction</strong>: the first moment of the breakage kernel is a <em>drift</em> toward
         smaller sizes and the second moment a <em>dispersion</em>: the Fokker-Planck approximation of the fragmentation
         operator. This turns an integro-differential equation into a drift-diffusion PDE with an <strong>exact
-        closed-form anchor</strong>, ideal for a PINN test bed; the full kernel model is documented as the true model.
+        closed-form anchor</strong>, ideal for a PINN test bed; the full kernel model is documented as the true model. The
+        surrogate net is a small tanh MLP <InlineMath tex={String.raw`[3,48,48,48,48,1]`} /> (DeepXDE) trained with Adam
+        then L-BFGS on a <InlineMath tex={String.raw`(s,t,g)`} /> hypercube; the exported ONNX matches the trained model
+        to 9.5e-7 (max abs).
       </p>
 
       <h3>Scope &amp; assumptions</h3>
@@ -167,7 +182,9 @@ export function ComminutionContext({ lang }: { lang: "en" | "es" }) {
         progressively toward smaller sizes; <em>g=0.48</em> and <em>g=0.6</em> (hard grinding) drive it far down, with
         the bulk of the mass already in the fines by the end of residence. In all of them the distribution
         <strong> broadens at the same rate</strong> <InlineMath tex={String.raw`\sigma\propto\sqrt{\sigma_0^2+2Dt}`} />
-        (the rate changes the shift, not the broadening).
+        (the rate changes the shift, not the broadening). Accuracy is not uniform across the sweep: the low-grind
+        variants sit well under 1% relative-L2, while the high-grind corner <em>g=0.6</em> becomes advection-leaning
+        (Péclet ~50) and reaches ~2%, the honest edge of the expected band.
       </p>
       <p>
         <strong>How to read &amp; use the viz.</strong> The <strong>heatmap</strong> of

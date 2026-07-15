@@ -86,8 +86,12 @@ export function SourceUqBpinnContext({ lang }: { lang: "en" | "es" }) {
         <InlineMath tex={String.raw`t`} /> (factor <InlineMath tex={String.raw`e^{-D\pi^2 t}`} />). El campo de la
         <strong> incertidumbre</strong> cuenta la historia complementaria: es <em>casi cero en las paredes</em> (la
         física dura no deja margen) y <em>cerca de los sensores</em>, y <strong>crece en las regiones sin datos</strong>
-      : típicamente la franja interior a tiempos intermedios, lejos de cualquier lectura. Ese contraste es la lección:
-        <em> dónde confiar</em> en la estimación y <em>dónde colocar el próximo sensor</em>.
+      : el interior, lejos de cualquier pared o lectura, donde el campo no está restringido. Ese contraste es la lección:
+        <em> dónde confiar</em> en la estimación y <em>dónde colocar el próximo sensor</em>. Medido (semilla 42), la
+        media alcanza un 1.2% de <InlineMath tex={String.raw`L^2`} /> relativo contra el modo analítico, y la banda 2σ
+        envuelve prácticamente toda la verdad (100% de cobertura, algo conservadora frente al ~95% ideal); la desviación
+        estándar media y máxima del ensemble son 0.0068 y 0.0186, con la banda más ancha cerca de 2.7× la media, en el
+        interior sin datos.
       </p>
       <p>
         <strong>Cómo leer y usar la viz.</strong> El <strong>heatmap</strong> por defecto muestra la media
@@ -184,8 +188,11 @@ export function SourceUqBpinnContext({ lang }: { lang: "en" | "es" }) {
         <InlineMath tex={String.raw`t`} /> (factor <InlineMath tex={String.raw`e^{-D\pi^2 t}`} />). The
         <strong> uncertainty</strong> field tells the complementary story: it is <em>near zero at the walls</em> (the
         hard physics leaves no slack) and <em>near the sensors</em>, and it <strong>grows in the data-sparse
-        regions</strong>: typically the interior band at intermediate times, away from any reading. That contrast is the
-        lesson: <em>where to trust</em> the estimate and <em>where to place the next sensor</em>.
+        regions</strong>: the interior, away from any wall or reading, where the field is unconstrained. That contrast is
+        the lesson: <em>where to trust</em> the estimate and <em>where to place the next sensor</em>. Measured (seed 42),
+        the mean lands at 1.2% relative <InlineMath tex={String.raw`L^2`} /> against the analytic mode, and the 2σ band
+        brackets essentially all of the truth (100% coverage, slightly conservative next to the ~95% ideal); the mean and
+        max ensemble std are 0.0068 and 0.0186, with the widest band about 2.7× the mean, in the data-sparse interior.
       </p>
       <p>
         <strong>How to read &amp; use the viz.</strong> The default <strong>heatmap</strong> shows the mean

@@ -1,7 +1,7 @@
 import { Equation, InlineMath } from "../../components/Equation";
 
 /** Deep bilingual Context for bench-poisson2d, mirroring CAOS_SIMLAB's S0XDesc structure:
- *  The problem → Components & variables → Formalization → Scope & assumptions → What each variant shows →
+ *  The problem to Components & variables to Formalization to Scope & assumptions to What each variant shows to 
  *  How to read & use the viz. */
 export function PoissonContext({ lang }: { lang: "en" | "es" }) {
   const es = lang === "es";
@@ -52,9 +52,9 @@ export function PoissonContext({ lang }: { lang: "en" | "es" }) {
       <h3>Alcances y supuestos</h3>
       <p>
         <strong>Se modela:</strong> Poisson lineal en 2-D, Dirichlet homogéneo, fuente sinusoidal de modo continuo
-        <InlineMath tex={String.raw`k\in[1,3]`} />, una red FNN tanh entrenada Adam→L-BFGS. La restricción dura
+        <InlineMath tex={String.raw`k\in[1,3]`} />, una red FNN tanh entrenada Adam to L-BFGS. La restricción dura
         sobrevive intacta a la exportación a ONNX (es álgebra tensorial pura), por eso el tab Live re-evalúa el campo
-        exacto en el navegador. <strong>Fuera de alcance:</strong> coeficientes variables/anisótropos, bordes no
+        exacto en el navegador; la salida ONNX coincide con la red offline a 1.2e-7 (máx abs). <strong>Fuera de alcance:</strong> coeficientes variables/anisótropos, bordes no
         rectangulares, Neumann/Robin, y modos <InlineMath tex={String.raw`k>3`} /> (el sesgo espectral de una red suave
         encarece las frecuencias altas: el régimen <InlineMath tex={String.raw`k=3`} /> ya es el test de estrés).
       </p>
@@ -63,8 +63,8 @@ export function PoissonContext({ lang }: { lang: "en" | "es" }) {
         <strong>Qué muestra cada variante.</strong> El barrido de modo recorre el sesgo espectral: <em>k=1</em> es el
         modo fundamental (un único lóbulo); <em>k=1.5</em> empieza a subdividir; <em>k=2</em> da un patrón de 2×2
         lóbulos; <em>k=2.25</em> y <em>k=2.5</em> son modos no enteros (siguen anulándose en el borde por el MMS) que
-        afinan la oscilación; <em>k=3</em> es el patrón 3×3, el régimen más exigente para una red suave. Que el L2 se
-        mantenga &lt;0.2% en todos demuestra que UNA red cubre toda la familia.
+        afinan la oscilación; <em>k=3</em> es el patrón 3×3, el régimen más exigente para una red suave. Que la L2 relativa se
+        mantenga ≤ 0.16% en los seis demuestra que UNA red cubre toda la familia.
       </p>
       <p>
         <strong>Cómo leer y usar la viz.</strong> El <strong>heatmap</strong> pinta <InlineMath tex={String.raw`u`} />
@@ -123,9 +123,9 @@ export function PoissonContext({ lang }: { lang: "en" | "es" }) {
       <h3>Scope &amp; assumptions</h3>
       <p>
         <strong>Modeled:</strong> linear 2-D Poisson, homogeneous Dirichlet, a sinusoidal source of continuous mode
-        <InlineMath tex={String.raw`k\in[1,3]`} />, a tanh FNN trained Adam→L-BFGS. The hard constraint survives the
+        <InlineMath tex={String.raw`k\in[1,3]`} />, a tanh FNN trained Adam to L-BFGS. The hard constraint survives the
         ONNX export intact (it is pure tensor algebra), which is why the Live tab re-evaluates the exact field in the
-        browser. <strong>Out of scope:</strong> variable/anisotropic coefficients, non-rectangular domains, Neumann/Robin
+        browser; the ONNX output matches the offline net to 1.2e-7 (max abs). <strong>Out of scope:</strong> variable/anisotropic coefficients, non-rectangular domains, Neumann/Robin
         conditions, and modes <InlineMath tex={String.raw`k>3`} /> (a smooth network's spectral bias makes high
         frequencies costly: the <InlineMath tex={String.raw`k=3`} /> regime is already the stress test).
       </p>
@@ -134,8 +134,8 @@ export function PoissonContext({ lang }: { lang: "en" | "es" }) {
         <strong>What each variant shows.</strong> The mode sweep walks the spectral bias: <em>k=1</em> is the
         fundamental mode (a single lobe); <em>k=1.5</em> begins to subdivide; <em>k=2</em> gives a 2×2 lobe pattern;
         <em>k=2.25</em> and <em>k=2.5</em> are off-integer modes (still boundary-vanishing thanks to the MMS) that
-        sharpen the oscillation; <em>k=3</em> is the 3×3 pattern, the hardest regime for a smooth net. Keeping the L2
-        &lt;0.2% across all of them shows ONE network covers the whole family.
+        sharpen the oscillation; <em>k=3</em> is the 3×3 pattern, the hardest regime for a smooth net. Keeping the relative-L2
+        ≤ 0.16% across all six shows ONE network covers the whole family.
       </p>
       <p>
         <strong>How to read &amp; use the viz.</strong> The <strong>heatmap</strong> paints <InlineMath tex={String.raw`u`} />

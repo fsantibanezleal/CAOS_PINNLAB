@@ -68,9 +68,9 @@ export function DarcyOperatorContext({ lang }: { lang: "en" | "es" }) {
         <InlineMath tex={String.raw`\mathcal{F}`} /> es la FFT, <InlineMath tex={String.raw`R_\ell`} /> son pesos
         complejos aprendidos que multiplican solo los <strong>modos de Fourier más bajos</strong> (el resto se trunca) y
         <InlineMath tex={String.raw`W_\ell`} /> es la conexión local <InlineMath tex={String.raw`1\times1`} />. Se entrena
-        minimizando la <strong>L2 relativa</strong> en pares <InlineMath tex={String.raw`(a,u_{\mathrm{ref}})`} /> de
+        minimizando la <strong>L2 relativa</strong> en 256 pares <InlineMath tex={String.raw`(a,u_{\mathrm{ref}})`} /> de
         entrenamiento; la métrica titular es la L2 relativa sobre el conjunto de <strong>prueba retenido</strong>: el
-        número real de <em>generalización del operador</em>.
+        número real de <em>generalización del operador</em>, 5.5% sobre los 64 campos retenidos.
       </p>
 
       <h3>Alcances y supuestos</h3>
@@ -82,7 +82,7 @@ export function DarcyOperatorContext({ lang }: { lang: "en" | "es" }) {
         numérica (diferencias finitas), no datos de campo reales. <strong>Fuera de alcance:</strong> permeabilidad
         continua/log-normal, anisotropía o tensores de permeabilidad, fuentes no unitarias, 3D, transitorios, y
         cuantificación de incertidumbre del operador. Los números son de <strong>generalización de operador</strong>
-        (L2 ~5-12%), NO los <InlineMath tex={String.raw`10^{-2}`} /> de un PINN ajustado a una instancia: etiquetados
+        (L2 ~5.5% media sobre el conjunto retenido, por muestra mayormente 2-10%), NO los <InlineMath tex={String.raw`10^{-2}`} /> de un PINN ajustado a una instancia: etiquetados
         como tales, sin inflar.
       </p>
 
@@ -104,9 +104,9 @@ export function DarcyOperatorContext({ lang }: { lang: "en" | "es" }) {
         ver dónde el operador acierta y dónde se desvía (típicamente en las interfaces más afiladas). Pasa el cursor para
         leer valores exactos y mira los <strong>perfiles de corte</strong>. Los <strong>chips</strong> saltan entre
         instancias retenidas; cada uno reporta su propia L2 además de la L2 del conjunto de prueba (la métrica titular,
-        igual en todos los chips). Como el FNO es un mapa <strong>campo→campo</strong> (no de coordenadas), el tab
+        igual en todos los chips). Como el FNO es un mapa <strong>campo to campo</strong> (no de coordenadas), el tab
         <strong> Live</strong> reproduce los campos horneados: no hay deslizador de coordenadas, y eso es correcto para
-        un operador: el ONNX horneado es el propio grafo del FNO, verificado por paridad.
+        un operador: el ONNX horneado es el propio grafo del FNO, verificado por paridad a 1.8e-6 (máx abs).
       </p>
     </>
   ): (
@@ -173,9 +173,9 @@ export function DarcyOperatorContext({ lang }: { lang: "en" | "es" }) {
         <InlineMath tex={String.raw`\mathcal{F}`} /> is the FFT, <InlineMath tex={String.raw`R_\ell`} /> are learned
         complex weights that multiply only the <strong>lowest Fourier modes</strong> (the rest are truncated) and
         <InlineMath tex={String.raw`W_\ell`} /> is the local <InlineMath tex={String.raw`1\times1`} /> skip. It is trained
-        by minimising the <strong>relative L2</strong> on training <InlineMath tex={String.raw`(a,u_{\mathrm{ref}})`} />
+        by minimising the <strong>relative L2</strong> on 256 training <InlineMath tex={String.raw`(a,u_{\mathrm{ref}})`} />
         pairs; the headline metric is the relative L2 on the <strong>held-out test set</strong>: the true
-        <em> operator-generalization</em> number.
+        <em> operator-generalization</em> number, 5.5% over the 64 held-out fields.
       </p>
 
       <h3>Scope &amp; assumptions</h3>
@@ -186,7 +186,7 @@ export function DarcyOperatorContext({ lang }: { lang: "en" | "es" }) {
         2021) and the reference pressure is a numerical (finite-difference) solve, not real field data.
         <strong> Out of scope:</strong> continuous / log-normal permeability, anisotropy or permeability tensors,
         non-unit sources, 3D, transients, and operator uncertainty quantification. The numbers are
-        <strong> operator-generalization</strong> figures (L2 ~5-12%), NOT the <InlineMath tex={String.raw`10^{-2}`} /> of
+        <strong> operator-generalization</strong> figures (L2 ~5.5% held-out mean, per-sample mostly 2-10%), NOT the <InlineMath tex={String.raw`10^{-2}`} /> of
         a PINN fit to one instance: labeled as such, not inflated.
       </p>
 
@@ -208,9 +208,9 @@ export function DarcyOperatorContext({ lang }: { lang: "en" | "es" }) {
         see where the operator is right and where it drifts (typically at the sharpest interfaces). Hover to read exact
         values and watch the <strong>line-cut profiles</strong>. The <strong>chips</strong> jump between held-out
         instances; each reports its own L2 alongside the test-set L2 (the headline metric, the same on every chip).
-        Because the FNO is a <strong>field→field</strong> map (not a coordinate map), the <strong>Live</strong> tab
+        Because the FNO is a <strong>field to field</strong> map (not a coordinate map), the <strong>Live</strong> tab
         replays the baked fields: there is no coordinate slider, and that is correct for an operator: the baked ONNX is
-        the FNO's own graph, parity-checked.
+        the FNO's own graph, parity-checked to 1.8e-6 (max abs).
       </p>
     </>
   );

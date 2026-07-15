@@ -73,15 +73,24 @@ u_x + v_y &= 0,
       <Equation tex={String.raw`\mathcal L = \underbrace{\|r_x\|^2+\|r_y\|^2+\|\nabla\cdot\mathbf u\|^2}_{\text{residuos PDE}}\;+\;\lambda\!\!\sum_{\text{borde}}\!\|\,\mathbf u-\mathbf u_{\text{bc}}\,\|^2\;+\;\lambda\,|p(0,0)|^2.`} />
       <ul>
         <li><strong>Salidas acopladas:</strong> una sola FNN <InlineMath tex={String.raw`\mathcal N_\theta(x,y)\to(u,v,p)`} /> aprende los tres campos a la vez; la diferenciación automática entrega <InlineMath tex={String.raw`u_x,v_y,p_x,\dots`} /> para armar los residuos.</li>
+        <li><strong>Arquitectura y entrenamiento:</strong> una red <InlineMath tex={String.raw`2\to[64]\times5\to3`} /> tanh/Glorot, optimizada con Adam (20 000 pasos, tasa de aprendizaje <InlineMath tex={String.raw`10^{-3}`} />) y luego un pulido L-BFGS, sobre 2601 puntos de colocación interiores + 400 de borde.</li>
         <li><strong>Tapa regularizada:</strong> el perfil <InlineMath tex={String.raw`16\,x^2(1-x)^2`} /> se anula con derivada nula en las esquinas, eliminando la discontinuidad <InlineMath tex={String.raw`u=1`} /> vs <InlineMath tex={String.raw`u=0`} /> que de otro modo arruinaría la convergencia.</li>
-        <li><strong>Pesos de pérdida (BC y gauge x10):</strong> las condiciones de borde y el calibre de presión se sobre-ponderan <InlineMath tex={String.raw`\lambda=10`} /> respecto a los residuos interiores, para que la red no los ignore: el truco práctico clave en PINNs multi-salida.</li>
+        <li><strong>Pesos de pérdida (BC y gauge x10):</strong> las condiciones de borde y el calibre de presión se sobre-ponderan <InlineMath tex={String.raw`\lambda=10`} /> respecto a los residuos interiores, con el vector exacto <InlineMath tex={String.raw`[1,1,1,10,10,10,10,10]`} /> (los tres residuos en 1; tapa-<InlineMath tex={String.raw`u`} />, tapa-<InlineMath tex={String.raw`v`} />, pared-<InlineMath tex={String.raw`u`} />, pared-<InlineMath tex={String.raw`v`} /> y el calibre de presión en 10), para que la red no los ignore: el truco práctico clave en PINNs multi-salida.</li>
         <li><strong>Pulido L-BFGS:</strong> tras Adam, un paso de L-BFGS afina el mínimo.</li>
       </ul>
       <p>
-        Cabe ser <strong>honesto</strong> sobre el techo de precisión: un PINN suave de variables primitivas en CPU
-        alcanza un error relativo de unos pocos por ciento frente a Ghia: competente y cualitativamente correcto, pero
-        no de precisión espectral. Formulaciones más fuertes (función de corriente-vorticidad, restricciones duras de
-        incompresibilidad, o una pasada en GPU) reducen ese error; se <em>citan</em> como horizonte, no se reclaman aquí.
+        Cabe ser <strong>honesto</strong> sobre el techo de precisión. En el lane CPU este PINN suave de variables
+        primitivas obtiene un relativo-L2 de <strong>0.1675 (~17%)</strong> frente a las líneas centrales de Ghia
+        (<InlineMath tex={String.raw`u`} /> central <strong>0.117</strong>,{" "}
+        <InlineMath tex={String.raw`v`} /> central <strong>0.218</strong>). La red captura el vórtice primario y la
+        estructura cualitativa de remolinos de esquina, pero el ajuste de las líneas centrales, <strong>en especial la
+        velocidad vertical <InlineMath tex={String.raw`v`} /> en 0.22, es grueso</strong>, porque el lane CPU no puede
+        costear la cantidad de iteraciones que una cavidad nítida a{" "}
+        <InlineMath tex={String.raw`\mathrm{Re}=100`} /> necesita. Esto es <strong>fidelidad reducida, no una solución
+        de precisión de publicación</strong>, y la brecha con Ghia se reporta como el número principal, no como una nota
+        al pie. Formulaciones más fuertes (función de corriente-vorticidad, restricciones duras de incompresibilidad, o
+        una pasada en GPU sobre <strong>PhysicsNeMo</strong>) la reducen; se <em>citan</em> como horizonte, no se
+        reclaman aquí.
       </p>
 
       <h3>Alcances y supuestos</h3>
@@ -113,8 +122,10 @@ u_x + v_y &= 0,
         secundarios</strong> contrarrotantes, débiles pero presentes. El campo de presión muestra un mínimo en el núcleo
         del vórtice y máximos donde la corriente impacta las paredes. La validación cuantitativa es directa: el perfil
         <InlineMath tex={String.raw`u(0.5,y)`} /> sobre la línea central vertical y <InlineMath tex={String.raw`v(x,0.5)`} />
-        sobre la horizontal deben caer sobre los puntos digitalizados de Ghia 1982; el error relativo-L2 contra esos
-        puntos es la métrica reportada.
+        sobre la horizontal deben caer sobre los puntos digitalizados de Ghia 1982; la métrica reportada es el
+        relativo-L2 contra esos puntos, <strong>0.1675</strong> (promedio de ambas líneas centrales), y el modelo ONNX
+        exportado coincide con la red entrenada con una paridad máxima absoluta de{" "}
+        <InlineMath tex={String.raw`1.237\times10^{-6}`} />.
       </p>
 
       <h3>Cómo leer y usar la viz</h3>
@@ -196,15 +207,22 @@ u_x + v_y &= 0,
       <Equation tex={String.raw`\mathcal L = \underbrace{\|r_x\|^2+\|r_y\|^2+\|\nabla\cdot\mathbf u\|^2}_{\text{PDE residuals}}\;+\;\lambda\!\!\sum_{\text{boundary}}\!\|\,\mathbf u-\mathbf u_{\text{bc}}\,\|^2\;+\;\lambda\,|p(0,0)|^2.`} />
       <ul>
         <li><strong>Coupled outputs:</strong> a single FNN <InlineMath tex={String.raw`\mathcal N_\theta(x,y)\to(u,v,p)`} /> learns all three fields at once; automatic differentiation supplies <InlineMath tex={String.raw`u_x,v_y,p_x,\dots`} /> to assemble the residuals.</li>
+        <li><strong>Architecture and training:</strong> a <InlineMath tex={String.raw`2\to[64]\times5\to3`} /> tanh/Glorot network, optimized with Adam (20,000 steps, learning rate <InlineMath tex={String.raw`10^{-3}`} />) then an L-BFGS polish, over 2601 interior + 400 boundary collocation points.</li>
         <li><strong>Regularized lid:</strong> the profile <InlineMath tex={String.raw`16\,x^2(1-x)^2`} /> vanishes with zero derivative at the corners, removing the <InlineMath tex={String.raw`u=1`} /> vs <InlineMath tex={String.raw`u=0`} /> discontinuity that would otherwise wreck convergence.</li>
-        <li><strong>Loss weighting (BC and gauge x10):</strong> the boundary conditions and the pressure gauge are up-weighted <InlineMath tex={String.raw`\lambda=10`} /> relative to the interior residuals, so the network does not ignore them: the key practical trick in multi-output PINNs.</li>
+        <li><strong>Loss weighting (BC and gauge x10):</strong> the boundary conditions and the pressure gauge are up-weighted <InlineMath tex={String.raw`\lambda=10`} /> relative to the interior residuals, the exact vector being <InlineMath tex={String.raw`[1,1,1,10,10,10,10,10]`} /> (three residuals at 1; lid-<InlineMath tex={String.raw`u`} />, lid-<InlineMath tex={String.raw`v`} />, wall-<InlineMath tex={String.raw`u`} />, wall-<InlineMath tex={String.raw`v`} /> and the pressure gauge at 10), so the network does not ignore them: the key practical trick in multi-output PINNs.</li>
         <li><strong>L-BFGS polish:</strong> after Adam, an L-BFGS step sharpens the minimum.</li>
       </ul>
       <p>
-        It is worth being <strong>honest</strong> about the accuracy ceiling: a soft primitive-variable PINN on CPU
-        reaches a relative error of a few percent against Ghia: competent and qualitatively correct, but not of spectral
-        accuracy. Stronger formulations (stream-function-vorticity, hard incompressibility constraints, or a GPU pass)
-        lower that error; they are <em>cited</em> as the horizon, not claimed here.
+        It is worth being <strong>honest</strong> about the accuracy ceiling. On the CPU lane this soft
+        primitive-variable PINN scores a relative-L2 of <strong>0.1675 (~17%)</strong> against the Ghia centerlines
+        (<InlineMath tex={String.raw`u`} />-centerline <strong>0.117</strong>,{" "}
+        <InlineMath tex={String.raw`v`} />-centerline <strong>0.218</strong>). The network captures the primary vortex
+        and the qualitative corner-eddy structure, but the centerline match, <strong>especially the vertical velocity{" "}
+        <InlineMath tex={String.raw`v`} /> at 0.22, is coarse</strong>, because the CPU lane cannot afford the iteration
+        count a sharp <InlineMath tex={String.raw`\mathrm{Re}=100`} /> cavity needs. This is <strong>reduced fidelity,
+        not a publication-grade cavity solve</strong>, and the gap to Ghia is reported as the headline number, not a
+        footnote. Stronger formulations (stream-function-vorticity, hard incompressibility constraints, or a GPU pass
+        on <strong>PhysicsNeMo</strong>) would tighten it; they are <em>cited</em> as the horizon, not claimed here.
       </p>
 
       <h3>Scope &amp; assumptions</h3>
@@ -235,7 +253,9 @@ u_x + v_y &= 0,
         field shows a minimum at the vortex core and maxima where the stream impinges on the walls. Quantitative
         validation is direct: the profile <InlineMath tex={String.raw`u(0.5,y)`} /> along the vertical centerline and
         <InlineMath tex={String.raw`v(x,0.5)`} /> along the horizontal one must fall on the digitized points of Ghia 1982;
-        the relative-L2 error against those points is the reported metric.
+        the reported metric is the relative-L2 against those points, <strong>0.1675</strong> (mean of the two
+        centerlines), and the exported ONNX model matches the trained network to{" "}
+        <InlineMath tex={String.raw`1.237\times10^{-6}`} /> max-abs parity.
       </p>
 
       <h3>How to read &amp; use the viz</h3>

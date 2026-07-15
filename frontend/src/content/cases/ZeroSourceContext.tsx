@@ -61,7 +61,7 @@ export function ZeroSourceContext({ lang }: { lang: "en" | "es" }) {
       <p>
         La amplitud <InlineMath tex={String.raw`a`} /> es un <strong>input de la red</strong> (no un eje del campo), así
         que una sola red entrenada cubre toda la familia y el tab <strong>Live</strong> barre
-        <InlineMath tex={String.raw`a`} /> de forma continua reusando el mismo ONNX. La red solo aprende a igualar el
+        <InlineMath tex={String.raw`a`} /> de forma continua reusando el mismo ONNX. La red entrenada es un MLP tanh <InlineMath tex={String.raw`[3,48,48,48,48,1]`} /> (DeepXDE) sobre el hipercubo <InlineMath tex={String.raw`(x,y,a)`} />, optimizada con Adam (12000 pasos, lr 1e-3) y luego L-BFGS, anclada vía la solución analítica. La red solo aprende a igualar el
         residuo de Poisson en el interior; el borde ya es exacto. Este es el mismo motor de <em>restricciones duras</em>
         del caso original, ahora verificado a través de una familia.
       </p>
@@ -83,7 +83,10 @@ export function ZeroSourceContext({ lang }: { lang: "en" | "es" }) {
         heatmap plano) subiendo hasta <InlineMath tex={String.raw`a=1`} />, donde aparece la estructura de dos modos:
         un lóbulo central dominante (modo fundamental) con una ondulación más fina superpuesta (segundo modo). Cada
         variante reporta su relative-L2 frente a la solución manufacturada exacta: el error <em>real</em> del solver
-        en esa amplitud. Que el error se mantenga diminuto a lo largo de toda la familia (y que el campo sea
+        en esa amplitud. Medido (seed 42) el relative-L2 se mantiene &le; 0.15% para <InlineMath tex={String.raw`a\ge0.2`} />,
+        y en <InlineMath tex={String.raw`a=0`} /> la métrica colapsa a la norma del campo
+        (<InlineMath tex={String.raw`\lVert\text{pred}\rVert=2.1\%`} />, esencialmente plano en cero); el ONNX en el
+        navegador iguala a la red entrenada hasta 4.2e-7. Que el error se mantenga diminuto a lo largo de toda la familia (y que el campo sea
         exactamente plano en <InlineMath tex={String.raw`a=0`} />) es justo lo que un caso de control debe certificar.
       </p>
       <p>
@@ -153,7 +156,7 @@ export function ZeroSourceContext({ lang }: { lang: "en" | "es" }) {
       <p>
         The amplitude <InlineMath tex={String.raw`a`} /> is a <strong>network input</strong> (not a field axis), so one
         trained network covers the whole family and the <strong>Live</strong> tab sweeps
-        <InlineMath tex={String.raw`a`} /> continuously by reusing the same ONNX. The network only learns to match the
+        <InlineMath tex={String.raw`a`} /> continuously by reusing the same ONNX. The trained net is a tanh MLP <InlineMath tex={String.raw`[3,48,48,48,48,1]`} /> (DeepXDE) over the hypercube <InlineMath tex={String.raw`(x,y,a)`} />, optimized with Adam (12000 steps, lr 1e-3) then L-BFGS, anchored via the analytic solution. The network only learns to match the
         Poisson residual in the interior; the boundary is already exact. This is the same <em>hard-constraints</em>
         engine as the original case, now verified across a family.
       </p>
@@ -174,7 +177,10 @@ export function ZeroSourceContext({ lang }: { lang: "en" | "es" }) {
         The sweep runs from <InlineMath tex={String.raw`a=0`} /> (an identically-zero field: the degenerate control, a
         flat heatmap) up to <InlineMath tex={String.raw`a=1`} />, where the two-mode structure appears: a dominant
         central lobe (the fundamental mode) with a finer ripple superimposed (the second mode). Each variant reports its
-        relative-L2 against the exact manufactured solution: the solver's <em>real</em> error at that amplitude. That
+        relative-L2 against the exact manufactured solution: the solver's <em>real</em> error at that amplitude. Measured (seed 42) the relative-L2 stays &le; 0.15% for <InlineMath tex={String.raw`a\ge0.2`} />,
+        and at <InlineMath tex={String.raw`a=0`} /> the metric collapses to the field norm
+        (<InlineMath tex={String.raw`\lVert\text{pred}\rVert=2.1\%`} />, essentially flat zero); the in-browser ONNX
+        matches the trained network to 4.2e-7. That
         the error stays tiny across the whole family (and that the field is exactly flat at
         <InlineMath tex={String.raw`a=0`} />) is precisely what a control case must certify.
       </p>

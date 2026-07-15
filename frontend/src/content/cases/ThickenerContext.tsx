@@ -23,7 +23,7 @@ export function ThickenerContext({ lang }: { lang: "en" | "es" }) {
         <li><strong>Dominio:</strong> altura de columna <InlineMath tex={String.raw`z\in[0,1]`} /> × tiempo <InlineMath tex={String.raw`t\in[0,1]`} /> (escalados), grilla del campo <InlineMath tex={String.raw`101\times51`} />.</li>
         <li><strong>Incógnita:</strong> la fracción de sólidos <InlineMath tex={String.raw`\phi(z,t)`} />: qué tan concentrada está la suspensión en cada altura e instante.</li>
         <li><strong>Parámetro de control:</strong> la <em>tasa de descenso</em> <InlineMath tex={String.raw`R\in[0.3,0.9]`} />: un input de la red; es la velocidad a la que cae la mud-line (un proxy de la sedimentabilidad).</li>
-        <li><strong>Flujo de Kynch (batch):</strong> <InlineMath tex={String.raw`f_{bk}=v_0\,\phi\,(1-\phi/\phi_{max})^C`} />: sedimentación <em>obstaculizada</em> (Richardson-Zaki), con <InlineMath tex={String.raw`\phi_{max}=0.66`} />, <InlineMath tex={String.raw`C=5`} />.</li>
+        <li><strong>Flujo de Kynch (batch):</strong> <InlineMath tex={String.raw`f_{bk}=v_0\,\phi\,(1-\phi/\phi_{max})^C`} />: sedimentación <em>obstaculizada</em> (Richardson-Zaki), con <InlineMath tex={String.raw`v_0=-1`} />, <InlineMath tex={String.raw`\phi_{max}=0.66`} />, <InlineMath tex={String.raw`C=5`} />.</li>
         <li><strong>Difusión degenerada:</strong> <InlineMath tex={String.raw`D(\phi)`} /> se <em>enciende</em> solo por encima de la concentración de gel <InlineMath tex={String.raw`\phi_c=0.23`} /> (consolidación del sedimento), regularizada con un interruptor <InlineMath tex={String.raw`\tanh`} /> para que el residual sea <InlineMath tex={String.raw`C^1`} />.</li>
       </ul>
 
@@ -36,8 +36,8 @@ export function ThickenerContext({ lang }: { lang: "en" | "es" }) {
       </p>
       <Equation tex={String.raw`\phi^*(z,t;R)=\phi_{lo}+(\phi_{hi}-\phi_{lo})\,\tfrac12\Big(1-\tanh\frac{z-s(t)}{W}\Big),\qquad s(t)=z_0-R\,t.`} />
       <p>
-        La interfase está en <InlineMath tex={String.raw`z=s(t)=z_0-R\,t`} /> y baja a velocidad
-        <InlineMath tex={String.raw`R`} />; su <em>grosor</em> lo fija <InlineMath tex={String.raw`W=0.10`} />. La fuente
+        La interfase parte de <InlineMath tex={String.raw`z_0=0.9`} /> y está en <InlineMath tex={String.raw`z=s(t)=z_0-R\,t`} />,
+        bajando a velocidad <InlineMath tex={String.raw`R`} />; su <em>grosor</em> lo fija <InlineMath tex={String.raw`W=0.10`} />. La fuente
         manufacturada <InlineMath tex={String.raw`f=\mathcal{L}[\phi^*]`} /> se deriva analíticamente, de modo que
         <InlineMath tex={String.raw`\phi^*`} /> resuelve la EDP modificada de forma <strong>exacta para cualquier</strong>
         <InlineMath tex={String.raw`R`} />: esa es la <strong>ancla de validación</strong>. Sus derivadas son
@@ -51,19 +51,24 @@ export function ThickenerContext({ lang }: { lang: "en" | "es" }) {
         todo <InlineMath tex={String.raw`R`} />. La PINN <InlineMath tex={String.raw`\phi_\theta(z,t,R)`} /> minimiza ese
         residual; la IC y las BC de Dirichlet se imponen de forma <strong>blanda</strong> e igualadas a
         <InlineMath tex={String.raw`\phi^*`} />, así la red aprende de verdad el campo interior y el L2 reportado es el
-        error real del PINN.
+        error real del PINN, y se mantiene <InlineMath tex={String.raw`\le 0.41\%`} /> en L2 relativo en las seis variantes
+        de <InlineMath tex={String.raw`R`} />, bien dentro de la banda de aceptación <InlineMath tex={String.raw`<2\times10^{-2}`} />;
+        el ONNX exportado coincide con la red entrenada hasta un máx-abs de <InlineMath tex={String.raw`5.1\times10^{-7}`} />.
       </p>
 
-      <h3>El método: el frente afilado + RAR</h3>
+      <h3>El método: un frente ensanchado + Adam luego L-BFGS</h3>
       <p>
-        El reto es el <em>frente delgado</em> (<InlineMath tex={String.raw`W=0.10`} />) que además <em>se mueve</em>: una
-        grilla uniforme lo resuelve mal y, al añadir <InlineMath tex={String.raw`R`} /> como input, el problema crece una
-        dimensión. Sobre el ajuste base aplicamos <strong>RAR</strong> (<em>residual-based adaptive refinement</em>, Wu
-        et al., CMAME 2023): se evalúa el residual en un gran pozo de puntos y se <strong>añaden</strong> los de mayor
-        error: que caen sobre la interfase móvil de toda la familia <InlineMath tex={String.raw`R`} />: varias rondas,
-        cerrando con un L-BFGS. El flujo obstaculizado <InlineMath tex={String.raw`f_{bk}`} /> y la difusión degenerada
-        <InlineMath tex={String.raw`D(\phi)`} /> con el interruptor de gel son los <em>genuinos</em> de Bürger-Concha; la
-        MMS solo nos da una verdad exacta contra la cual medir.
+        El reto es el <em>frente delgado y móvil</em> (<InlineMath tex={String.raw`W=0.10`} />), y añadir
+        <InlineMath tex={String.raw`R`} /> como input de la red hace crecer el problema una dimensión. La red es
+        <InlineMath tex={String.raw`[3,64,64,64,64,1]`} /> con activaciones <InlineMath tex={String.raw`\tanh`} /> (DeepXDE);
+        el entrenamiento es Adam por 24000 pasos a <InlineMath tex={String.raw`\text{lr}=10^{-3}`} />, luego un pulido
+        L-BFGS, con pesos de pérdida <InlineMath tex={String.raw`[1,10]`} /> sobre (residual, frontera). El refino
+        adaptativo por residual (RAR) se probó y se <strong>descartó aquí</strong>: desestabilizaba el rígido residual de
+        difusión degenerada. Lo que sí convergió limpiamente fue ensanchar el frente a
+        <InlineMath tex={String.raw`W=0.10`} /> para que un esquema simple de Adam luego L-BFGS resuelva la interfase móvil
+        en toda la familia <InlineMath tex={String.raw`R`} />. El flujo obstaculizado <InlineMath tex={String.raw`f_{bk}`} />
+        y la difusión degenerada <InlineMath tex={String.raw`D(\phi)`} /> con el interruptor de gel son los
+        <em> genuinos</em> de Bürger-Concha; la MMS solo nos da una verdad exacta contra la cual medir.
       </p>
 
       <h3>Alcances y supuestos</h3>
@@ -94,7 +99,7 @@ export function ThickenerContext({ lang }: { lang: "en" | "es" }) {
         alto) abajo, y la interfase descendiendo entre ambos: su <em>pendiente</em> es la tasa
         <InlineMath tex={String.raw`R`} /> y su <em>nitidez</em> es el grosor <InlineMath tex={String.raw`W`} />. Pasa el
         cursor para leer la fracción de sólidos exacta y mira el <strong>perfil de corte</strong> en
-        <InlineMath tex={String.raw`z`} /> (la forma <InlineMath tex={String.raw`\tanh`} /> de la interfase, clarificado→lecho)
+        <InlineMath tex={String.raw`z`} /> (la forma <InlineMath tex={String.raw`\tanh`} /> de la interfase, clarificado to lecho)
         y en <InlineMath tex={String.raw`t`} /> (cuándo pasa el frente por una altura fija). Los <strong>chips</strong>
         cargan cada tasa de descenso; en <strong>Live</strong>, desliza <InlineMath tex={String.raw`R`} /> y ve la
         mud-line caer más rápido o más lento en vivo en tu navegador (onnxruntime-web).
@@ -120,7 +125,7 @@ export function ThickenerContext({ lang }: { lang: "en" | "es" }) {
         <li><strong>Domain:</strong> column height <InlineMath tex={String.raw`z\in[0,1]`} /> × time <InlineMath tex={String.raw`t\in[0,1]`} /> (scaled), a <InlineMath tex={String.raw`101\times51`} /> field grid.</li>
         <li><strong>Unknown:</strong> the solid fraction <InlineMath tex={String.raw`\phi(z,t)`} />: how concentrated the suspension is at each height and instant.</li>
         <li><strong>Control parameter:</strong> the <em>descent rate</em> <InlineMath tex={String.raw`R\in[0.3,0.9]`} />: a network input; the speed at which the mud-line falls (a proxy for settleability).</li>
-        <li><strong>Kynch batch flux:</strong> <InlineMath tex={String.raw`f_{bk}=v_0\,\phi\,(1-\phi/\phi_{max})^C`} />: <em>hindered</em> settling (Richardson-Zaki), with <InlineMath tex={String.raw`\phi_{max}=0.66`} />, <InlineMath tex={String.raw`C=5`} />.</li>
+        <li><strong>Kynch batch flux:</strong> <InlineMath tex={String.raw`f_{bk}=v_0\,\phi\,(1-\phi/\phi_{max})^C`} />: <em>hindered</em> settling (Richardson-Zaki), with <InlineMath tex={String.raw`v_0=-1`} />, <InlineMath tex={String.raw`\phi_{max}=0.66`} />, <InlineMath tex={String.raw`C=5`} />.</li>
         <li><strong>Degenerate diffusion:</strong> <InlineMath tex={String.raw`D(\phi)`} /> <em>switches on</em> only above the gel concentration <InlineMath tex={String.raw`\phi_c=0.23`} /> (bed consolidation), regularized by a <InlineMath tex={String.raw`\tanh`} /> switch so the residual is <InlineMath tex={String.raw`C^1`} />.</li>
       </ul>
 
@@ -133,8 +138,8 @@ export function ThickenerContext({ lang }: { lang: "en" | "es" }) {
       </p>
       <Equation tex={String.raw`\phi^*(z,t;R)=\phi_{lo}+(\phi_{hi}-\phi_{lo})\,\tfrac12\Big(1-\tanh\frac{z-s(t)}{W}\Big),\qquad s(t)=z_0-R\,t.`} />
       <p>
-        The interface sits at <InlineMath tex={String.raw`z=s(t)=z_0-R\,t`} /> and descends at speed
-        <InlineMath tex={String.raw`R`} />; its <em>thickness</em> is set by <InlineMath tex={String.raw`W=0.10`} />. The
+        The interface starts at <InlineMath tex={String.raw`z_0=0.9`} /> and sits at <InlineMath tex={String.raw`z=s(t)=z_0-R\,t`} />,
+        descending at speed <InlineMath tex={String.raw`R`} />; its <em>thickness</em> is set by <InlineMath tex={String.raw`W=0.10`} />. The
         manufactured source <InlineMath tex={String.raw`f=\mathcal{L}[\phi^*]`} /> is derived analytically, so
         <InlineMath tex={String.raw`\phi^*`} /> solves the modified PDE <strong>exactly for any</strong>
         <InlineMath tex={String.raw`R`} />: that is the <strong>validation anchor</strong>. Its derivatives are
@@ -148,20 +153,24 @@ export function ThickenerContext({ lang }: { lang: "en" | "es" }) {
         <InlineMath tex={String.raw`R`} />. The PINN <InlineMath tex={String.raw`\phi_\theta(z,t,R)`} /> minimises that
         residual; the IC and Dirichlet BCs are imposed <strong>softly</strong> and equal to
         <InlineMath tex={String.raw`\phi^*`} />, so the network genuinely learns the interior field and the reported L2 is
-        the true PINN error.
+        the true PINN error, and it stays <InlineMath tex={String.raw`\le 0.41\%`} /> relative-L2 across all six
+        <InlineMath tex={String.raw`R`} /> variants, well inside the <InlineMath tex={String.raw`<2\times10^{-2}`} />
+        acceptance band; the exported ONNX matches the trained net to max-abs <InlineMath tex={String.raw`5.1\times10^{-7}`} />.
       </p>
 
-      <h3>The method: the sharp front + RAR</h3>
+      <h3>The method: a widened front + Adam then L-BFGS</h3>
       <p>
-        The challenge is the <em>thin front</em> (<InlineMath tex={String.raw`W=0.10`} />) that also <em>moves</em>: a
-        uniform grid resolves it poorly, and adding <InlineMath tex={String.raw`R`} /> as an input grows the problem by a
-        dimension. On top of the base fit we apply <strong>RAR</strong> (<em>residual-based adaptive refinement</em>, Wu
-        et al., CMAME 2023): the residual is evaluated over a large pool of points and the highest-error ones: which land
-        on the moving interface across the whole <InlineMath tex={String.raw`R`} /> family: are <strong>added</strong>,
-        over several rounds, closing with one L-BFGS polish. The hindered flux
-        <InlineMath tex={String.raw`f_{bk}`} /> and the degenerate diffusion <InlineMath tex={String.raw`D(\phi)`} /> with
-        the gel switch are the <em>genuine</em> Bürger-Concha terms; the MMS only supplies an exact truth to measure
-        against.
+        The challenge is the <em>thin, moving front</em> (<InlineMath tex={String.raw`W=0.10`} />), and adding
+        <InlineMath tex={String.raw`R`} /> as a network input grows the problem by a dimension. The net is
+        <InlineMath tex={String.raw`[3,64,64,64,64,1]`} /> with <InlineMath tex={String.raw`\tanh`} /> activations
+        (DeepXDE); training is Adam for 24000 steps at <InlineMath tex={String.raw`\text{lr}=10^{-3}`} />, then an L-BFGS
+        polish, with loss weights <InlineMath tex={String.raw`[1,10]`} /> on (residual, boundary). Residual adaptive
+        refinement (RAR) was tried and <strong>dropped here</strong>: it de-stabilised the stiff degenerate-diffusion
+        residual. What converged cleanly instead was widening the front to <InlineMath tex={String.raw`W=0.10`} /> so a
+        plain Adam then L-BFGS schedule resolves the moving interface across the whole
+        <InlineMath tex={String.raw`R`} /> family. The hindered flux <InlineMath tex={String.raw`f_{bk}`} /> and the
+        degenerate diffusion <InlineMath tex={String.raw`D(\phi)`} /> with the gel switch are the <em>genuine</em>
+        Bürger-Concha terms; the MMS only supplies an exact truth to measure against.
       </p>
 
       <h3>Scope &amp; assumptions</h3>
@@ -192,7 +201,7 @@ export function ThickenerContext({ lang }: { lang: "en" | "es" }) {
         <em> slope</em> is the rate <InlineMath tex={String.raw`R`} /> and its <em>sharpness</em> is the thickness
         <InlineMath tex={String.raw`W`} />. Hover to read the exact solid fraction and watch the
         <strong> line-cut profile</strong> in <InlineMath tex={String.raw`z`} /> (the <InlineMath tex={String.raw`\tanh`} />
-        interface shape, clarified→bed) and in <InlineMath tex={String.raw`t`} /> (when the front passes a fixed height).
+        interface shape, clarified to bed) and in <InlineMath tex={String.raw`t`} /> (when the front passes a fixed height).
         The <strong>chips</strong> load each descent rate; in <strong>Live</strong>, slide
         <InlineMath tex={String.raw`R`} /> and watch the mud-line fall faster or slower live in your browser
         (onnxruntime-web).
