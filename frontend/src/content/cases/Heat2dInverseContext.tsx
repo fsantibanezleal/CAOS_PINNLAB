@@ -75,14 +75,19 @@ export function Heat2dInverseContext({ lang }: { lang: "en" | "es" }) {
         dependiente de la temperatura, fuentes desconocidas, y geometrías complejas. El error es naturalmente más alto
         donde <InlineMath tex={String.raw`|\nabla T|`} /> es pequeño (cerca del borde y en los extremos de
         <InlineMath tex={String.raw`T`} />): ahí la EDP es poco sensible a <InlineMath tex={String.raw`k`} />, así que los
-        datos informan menos sobre la conductividad: una limitación honesta, no un defecto del método.
+        datos informan menos sobre la conductividad; el error de peor caso (máx-abs <InlineMath tex={String.raw`\approx0.44`} /> en <InlineMath tex={String.raw`k`} />)
+        se concentra justo ahí, en el borde y en el pico del campo: una limitación honesta impuesta por la física, no una
+        falla de ajuste.
       </p>
 
       <p>
         <strong>Qué muestra el benchmark.</strong> El campo recuperado <InlineMath tex={String.raw`k(x,y)`} /> reproduce el
         <em> domo</em> central de <InlineMath tex={String.raw`k^*`} /> (máximo en el centro, donde
         <InlineMath tex={String.raw`\sin\pi x\sin\pi y=1`} />, y <InlineMath tex={String.raw`k\to1`} /> hacia los bordes),
-        a partir de solo <InlineMath tex={String.raw`\sim100`} /> sensores de temperatura ruidosos. Como la conductividad
+        a partir de solo <InlineMath tex={String.raw`\sim100`} /> sensores de temperatura ruidosos. Cuantitativamente, la
+        conductividad recuperada queda al <strong>4.0%</strong> relativo-<InlineMath tex={String.raw`L^2`} /> de <InlineMath tex={String.raw`k^*`} />,
+        y el campo de temperatura implicado se reconstruye a menos del <strong>1%</strong> (0.77%): la física recupera ambos
+        campos, la conductividad a un pequeño porcentaje y la temperatura a sub-porcentaje. Como la conductividad
         es <em>estacionaria</em> y la verdad MMS es un par fijo <InlineMath tex={String.raw`(T^*,k^*)`} />: sin un mando
         físico que admita una familia paramétrica de inversiones bien puestas con el mismo conjunto de sensores: este
         caso se publica como un <strong>benchmark de una sola variante</strong>, no como un barrido (nunca fabricamos
@@ -97,7 +102,8 @@ export function Heat2dInverseContext({ lang }: { lang: "en" | "es" }) {
         campana de la conductividad (su altura <InlineMath tex={String.raw`\approx1.5`} /> en el centro). El error es
         visiblemente mayor cerca del contorno, donde <InlineMath tex={String.raw`T`} /> y su gradiente se anulan. Como es un
         benchmark de parámetro fijo, el tab <strong>Live</strong> re-evalúa la red entrenada (la misma física) en tu
-        navegador (onnxruntime-web), sin deslizador de parámetro.
+        navegador (onnxruntime-web) y reproduce la referencia offline con una diferencia máxima de <InlineMath tex={String.raw`4.8\times10^{-7}`} />, sin
+        deslizador de parámetro.
       </p>
     </>
   ): (
@@ -171,14 +177,19 @@ export function Heat2dInverseContext({ lang }: { lang: "en" | "es" }) {
         anisotropic or temperature-dependent conductivity, unknown sources, and complex geometries. The error is naturally
         larger where <InlineMath tex={String.raw`|\nabla T|`} /> is small (near the boundary and at the extrema of
         <InlineMath tex={String.raw`T`} />): there the PDE is weakly sensitive to <InlineMath tex={String.raw`k`} />, so the
-        data inform conductivity less: an honest limitation, not a flaw of the method.
+        data inform conductivity less; the worst-case error (max-abs <InlineMath tex={String.raw`\approx0.44`} /> in <InlineMath tex={String.raw`k`} />)
+        concentrates exactly there, at the boundary and the field's peak: an honest limitation set by the physics, not a
+        tuning failure.
       </p>
 
       <p>
         <strong>What the benchmark shows.</strong> The recovered field <InlineMath tex={String.raw`k(x,y)`} /> reproduces the
         central <em>dome</em> of <InlineMath tex={String.raw`k^*`} /> (peak at the center, where
         <InlineMath tex={String.raw`\sin\pi x\sin\pi y=1`} />, and <InlineMath tex={String.raw`k\to1`} /> toward the edges),
-        from only <InlineMath tex={String.raw`\sim100`} /> noisy temperature sensors. Because the conductivity is
+        from only <InlineMath tex={String.raw`\sim100`} /> noisy temperature sensors. Quantitatively the recovered
+        conductivity lands at <strong>4.0%</strong> relative-<InlineMath tex={String.raw`L^2`} /> of <InlineMath tex={String.raw`k^*`} />,
+        and the temperature field it implies is reconstructed to under <strong>1%</strong> (0.77%): the physics recovers
+        both fields, the conductivity to a few percent and the temperature to sub-percent. Because the conductivity is
         <em> stationary</em> and the MMS truth is a fixed pair <InlineMath tex={String.raw`(T^*,k^*)`} />: with no physical
         knob that admits a parametric family of well-posed inversions sharing the same sensor set: this case ships as a
         <strong> single-variant benchmark</strong>, not a sweep (we never fabricate regimes to inflate a count).
@@ -192,7 +203,8 @@ export function Heat2dInverseContext({ lang }: { lang: "en" | "es" }) {
         <InlineMath tex={String.raw`\approx1.5`} /> at the center). The error is visibly larger near the boundary, where
         <InlineMath tex={String.raw`T`} /> and its gradient vanish. Since it is a fixed-parameter benchmark, the
         <strong> Live</strong> tab re-evaluates the trained network (the same physics) in your browser
-        (onnxruntime-web), with no parameter slider.
+        (onnxruntime-web) and matches the offline reference to <InlineMath tex={String.raw`4.8\times10^{-7}`} /> max-abs, with no
+        parameter slider.
       </p>
     </>
   );

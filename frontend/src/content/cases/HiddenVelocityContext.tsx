@@ -21,7 +21,7 @@ export function HiddenVelocityContext({ lang }: { lang: "en" | "es" }) {
       <h3>Componentes y variables</h3>
       <ul>
         <li><strong>Verdad de flujo (cerrada):</strong> la celda de vórtice incompresible <InlineMath tex={String.raw`\mathbf{u}^*=A(\sin\pi x\cos\pi y,\ -\cos\pi x\sin\pi y)`} />, <InlineMath tex={String.raw`A=1.5`} />: divergencia cero por construcción y paredes que son líneas de corriente.</li>
-        <li><strong>Verdad del tinte (numérica):</strong> un parche gaussiano (centro <InlineMath tex={String.raw`(0.5,\,0.2)`} />) advectado-difundido por ese flujo con <InlineMath tex={String.raw`D=0.02`} />, resuelto por diferencias finitas con estabilidad VERIFICADA (Péclet de celda 0.59 &lt; 2, dt seguro por CFL, masa conservada, acotación afirmada): nunca se hornea una referencia numérica sin sus chequeos.</li>
+        <li><strong>Verdad del tinte (numérica):</strong> un parche gaussiano (centro <InlineMath tex={String.raw`(0.5,\,0.2)`} />) advectado-difundido por ese flujo con <InlineMath tex={String.raw`D=0.02`} />, resuelto por diferencias finitas con estabilidad VERIFICADA (Péclet de celda 0.59 &lt; 2, por lo que el diferenciado central es legítimo: un esquema upwind inyectaría difusión numérica <InlineMath tex={String.raw`\sim A\Delta x/2\approx 0.006`} />, comparable a <InlineMath tex={String.raw`D`} /> misma; dt seguro por CFL, masa conservada, acotación afirmada): nunca se hornea una referencia numérica sin sus chequeos.</li>
         <li><strong>Datos (lo ÚNICO observado):</strong> ~640 muestras espacio-temporales de <InlineMath tex={String.raw`c`} /> con ruido gaussiano (0.5% del máximo); otras 160 quedan RETENIDAS y nunca entrenan (validación fuera de muestra).</li>
         <li><strong>Incógnita (objetivo):</strong> el campo de velocidad completo <InlineMath tex={String.raw`(u,v)`} />: dos campos ocultos que jamás se midieron.</li>
       </ul>
@@ -31,19 +31,25 @@ export function HiddenVelocityContext({ lang }: { lang: "en" | "es" }) {
       <p>
         con <InlineMath tex={String.raw`D`} /> conocida (como en HFM, donde la viscosidad se asume o se aprende). La red{" "}
         <InlineMath tex={String.raw`\mathcal{N}_\theta(x,y,t)=(u,v,c)`} /> emite el tinte <em>y</em> la velocidad a la
-        vez, y la pérdida acopla tres términos: el residual de transporte, el residual de incompresibilidad y los
-        datos de tinte:
+        vez, y la pérdida acopla <strong>cinco términos</strong> (pesos [1, 1, 1, 1, 60]): el residual de transporte,
+        el de incompresibilidad, los dos residuales de estacionariedad <InlineMath tex={String.raw`u_t=v_t=0`} />, y el
+        término de datos de tinte:
       </p>
       <Equation tex={String.raw`\mathcal{L}=\big\|c_t+u\,c_x+v\,c_y-D\nabla^2c\big\|^2+\big\|u_x+v_y\big\|^2+\big\|u_t\big\|^2+\big\|v_t\big\|^2+\lambda\sum_i\big(c_\theta(x_i,y_i,t_i)-c_i^{\text{obs}}\big)^2.`} />
       <p>
         El transporte conecta lo visible con lo oculto: donde el tinte tiene gradiente, el término{" "}
         <InlineMath tex={String.raw`\mathbf{u}\cdot\nabla c`} /> obliga a la velocidad a explicar cómo se mueve la
-        mancha; la incompresibilidad propaga esa información a lo largo de las líneas de corriente. Los residuales{" "}
+        mancha; la incompresibilidad propaga esa información a lo largo de las líneas de corriente. Esa
+        incompresibilidad se impone <strong>suave</strong> (un residual) y no como restricción dura de función de
+        corriente, porque la ONNX exportada debe emitir (u, v, c) directamente: una formulación en derivadas de{" "}
+        <InlineMath tex={String.raw`\psi`} /> no exporta limpio. Los residuales{" "}
         <InlineMath tex={String.raw`u_t=v_t=0`} /> codifican el supuesto declarado de <strong>corriente
         estacionaria</strong>, y son estructurales: sin ellos (medido, no supuesto) la red gastaba su libertad en una
         velocidad variable en el tiempo que ~640 muestras de tinte no pueden fijar, y la corriente recuperada quedaba
         38-60% desviada incluso en la región barrida. Declarar lo que legítimamente se sabe (una corriente
-        cuasi-estacionaria en la ventana) agrega la información de TODOS los tiempos en UN campo.
+        cuasi-estacionaria en la ventana) agrega la información de TODOS los tiempos en UN campo. Concretamente: una
+        FNN [3, 64, 64, 64, 64, 3], entrenada con Adam (<InlineMath tex={String.raw`1.5\times10^4`} /> pasos) y luego
+        L-BFGS, semilla 42.
       </p>
 
       <h3>La honestidad: identificabilidad barrida por el tinte</h3>
@@ -51,9 +57,11 @@ export function HiddenVelocityContext({ lang }: { lang: "en" | "es" }) {
         Donde el tinte nunca pasó, <InlineMath tex={String.raw`\nabla c\approx 0`} /> y el transporte NO restringe a{" "}
         <InlineMath tex={String.raw`\mathbf{u}`} />: la velocidad es <strong>no identificable</strong> allí, para
         cualquier método, no solo para los PINN. Por eso el caso hornea la <strong>máscara barrida</strong> (donde{" "}
-        <InlineMath tex={String.raw`\max_t|\nabla c|`} /> supera un umbral, ~2/3 del dominio) y publica el error en dos
+        <InlineMath tex={String.raw`\max_t|\nabla c|`} /> supera el <strong>5% de su máximo</strong>, ~2/3 del dominio) y publica el error en dos
         números separados: dentro de la región barrida y en las zonas muertas. El L2 global se publica tal cual,
-        aunque las zonas muertas lo inflen: nunca se maquilla.
+        aunque las zonas muertas lo inflen, nunca se maquilla: el error de corriente en toda la grilla es{" "}
+        <strong>27.8%</strong>, frente a <strong>16.4% dentro de la región barrida</strong> y <strong>37.5%</strong> en
+        las zonas muertas.
       </p>
 
       <h3>Alcances y supuestos</h3>
@@ -91,7 +99,7 @@ export function HiddenVelocityContext({ lang }: { lang: "en" | "es" }) {
       <h3>Components &amp; variables</h3>
       <ul>
         <li><strong>Flow truth (closed form):</strong> the incompressible vortex cell <InlineMath tex={String.raw`\mathbf{u}^*=A(\sin\pi x\cos\pi y,\ -\cos\pi x\sin\pi y)`} />, <InlineMath tex={String.raw`A=1.5`} />: divergence-free by construction, walls are streamlines.</li>
-        <li><strong>Dye truth (numerical):</strong> a Gaussian patch (center <InlineMath tex={String.raw`(0.5,\,0.2)`} />) advected-diffused by that flow with <InlineMath tex={String.raw`D=0.02`} />, solved by finite differences with VERIFIED stability (cell Péclet 0.59 &lt; 2, CFL-safe dt, mass conserved, boundedness asserted): a numerical reference is never baked without its checks.</li>
+        <li><strong>Dye truth (numerical):</strong> a Gaussian patch (center <InlineMath tex={String.raw`(0.5,\,0.2)`} />) advected-diffused by that flow with <InlineMath tex={String.raw`D=0.02`} />, solved by finite differences with VERIFIED stability (cell Péclet 0.59 &lt; 2, so central differencing is legitimate: an upwind scheme would inject numerical diffusion <InlineMath tex={String.raw`\sim A\Delta x/2\approx 0.006`} />, comparable to <InlineMath tex={String.raw`D`} /> itself; CFL-safe dt, mass conserved, boundedness asserted): a numerical reference is never baked without its checks.</li>
         <li><strong>Data (the ONLY thing observed):</strong> ~640 space-time samples of <InlineMath tex={String.raw`c`} /> with Gaussian noise (0.5% of max); another 160 are HELD OUT and never train (out-of-sample validation).</li>
         <li><strong>Unknown (the target):</strong> the full velocity field <InlineMath tex={String.raw`(u,v)`} />: two hidden fields that were never measured.</li>
       </ul>
@@ -101,19 +109,24 @@ export function HiddenVelocityContext({ lang }: { lang: "en" | "es" }) {
       <p>
         with <InlineMath tex={String.raw`D`} /> known (as in HFM, where viscosity is assumed or learned). The network{" "}
         <InlineMath tex={String.raw`\mathcal{N}_\theta(x,y,t)=(u,v,c)`} /> emits the dye <em>and</em> the velocity at
-        once, and the loss couples three terms: the transport residual, the incompressibility residual, and the dye
-        data:
+        once, and the loss couples <strong>five terms</strong> (weights [1, 1, 1, 1, 60]): the transport residual, the
+        incompressibility residual, the two steadiness residuals <InlineMath tex={String.raw`u_t=v_t=0`} />, and the
+        dye-data term:
       </p>
       <Equation tex={String.raw`\mathcal{L}=\big\|c_t+u\,c_x+v\,c_y-D\nabla^2c\big\|^2+\big\|u_x+v_y\big\|^2+\big\|u_t\big\|^2+\big\|v_t\big\|^2+\lambda\sum_i\big(c_\theta(x_i,y_i,t_i)-c_i^{\text{obs}}\big)^2.`} />
       <p>
         Transport is what couples the visible to the hidden: wherever the dye has a gradient, the{" "}
         <InlineMath tex={String.raw`\mathbf{u}\cdot\nabla c`} /> term forces the velocity to explain how the patch
-        moves; incompressibility propagates that information along streamlines. The{" "}
+        moves; incompressibility propagates that information along streamlines. Incompressibility is imposed{" "}
+        <strong>softly</strong> (a residual) rather than as a hard stream-function constraint, because the exported
+        ONNX must emit (u, v, c) directly: a <InlineMath tex={String.raw`\psi`} />-derivative formulation does not
+        export cleanly. The{" "}
         <InlineMath tex={String.raw`u_t=v_t=0`} /> residuals encode the stated <strong>steady-flow assumption</strong>,
         and they are load-bearing: without them (measured, not guessed) the net spent its freedom on a time-varying
         velocity that ~640 sparse dye samples cannot pin, and the recovered current was 38-60% off even inside the
         swept region. Asserting what you legitimately know (a quasi-steady current over the window) aggregates the
-        dye information from ALL times into ONE field.
+        dye information from ALL times into ONE field. Concretely: an FNN [3, 64, 64, 64, 64, 3], trained with Adam
+        (<InlineMath tex={String.raw`1.5\times10^4`} /> steps) then L-BFGS, seed 42.
       </p>
 
       <h3>The honesty: dye-swept identifiability</h3>
@@ -121,9 +134,11 @@ export function HiddenVelocityContext({ lang }: { lang: "en" | "es" }) {
         Where dye never passed, <InlineMath tex={String.raw`\nabla c\approx 0`} /> and transport does NOT constrain{" "}
         <InlineMath tex={String.raw`\mathbf{u}`} />: the velocity is <strong>unidentifiable</strong> there, for any
         method, not just PINNs. So the case bakes the <strong>swept mask</strong> (where{" "}
-        <InlineMath tex={String.raw`\max_t|\nabla c|`} /> exceeds a threshold, ~2/3 of the domain) and publishes the
+        <InlineMath tex={String.raw`\max_t|\nabla c|`} /> exceeds <strong>5% of its max</strong>, ~2/3 of the domain) and publishes the
         error as two separate numbers: inside the swept region and in the dead zones. The global L2 is published
-        as-is even though the dead zones inflate it: never dressed up.
+        as-is even though the dead zones inflate it, never dressed up: the full-grid current error is{" "}
+        <strong>27.8%</strong>, versus <strong>16.4% inside the swept region</strong> and <strong>37.5%</strong> in the
+        dead zones.
       </p>
 
       <h3>Scope &amp; assumptions</h3>

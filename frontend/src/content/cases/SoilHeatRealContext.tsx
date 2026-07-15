@@ -14,7 +14,9 @@ export function SoilHeatRealContext({ lang }: { lang: "en" | "es" }) {
         física es la ecuación del calor 1D, <InlineMath tex={String.raw`T_t=\alpha\,T_{zz}`} />, con una única constante
         material desconocida: la <strong>difusividad térmica</strong> <InlineMath tex={String.raw`\alpha`} />. Este es el
         <strong> único caso entrenado contra un conjunto de datos REAL medido</strong>: temperaturas diarias de suelo de
-        la red NOAA USCRN. Planteamos un problema <strong>inverso</strong>: tomamos dos sensores como contornos reales,
+        la red NOAA USCRN. Los datos se descargan una sola vez del archivo abierto de NOAA y se usan sin conexión
+        (esquema pinnlab.dataset.uscrn/v1, 0% de faltantes en 2021), de modo que el entrenamiento es reproducible y la CI
+        no necesita red. Planteamos un problema <strong>inverso</strong>: tomamos dos sensores como contornos reales,
         recuperamos <InlineMath tex={String.raw`\alpha`} />, y validamos contra sensores interiores que el optimizador
         nunca vio.
       </p>
@@ -78,18 +80,30 @@ export function SoilHeatRealContext({ lang }: { lang: "en" | "es" }) {
         una familia paramétrica en forma cerrada</strong>: el forzamiento superficial es una serie temporal real sin
         solución analítica, y <InlineMath tex={String.raw`\alpha`} /> es lo que se recupera, no un mando que se barra.
         Este caso se publica honestamente como un <strong>único benchmark validado-real</strong>, no como un barrido de
-        regímenes.
+        regímenes. Un residual honesto se reporta, no se oculta: el contorno de 5 cm arrastra ruido meteorológico
+        sinóptico que una única <InlineMath tex={String.raw`\alpha`} /> efectiva no puede resolver del todo. Es visible en
+        la pérdida del contorno de 5 cm, pero no contamina el puntaje interior fuera de muestra, que es como se juzga el
+        caso.
       </p>
 
       <p>
         <strong>Qué muestra el benchmark.</strong> El campo recuperado <InlineMath tex={String.raw`T(z,t)`} /> es la
         firma clásica de la conducción subterránea: una <strong>onda estacional amortiguada y desfasada</strong>. Cerca
         de la superficie (<InlineMath tex={String.raw`z\to0`} />) la oscilación anual es amplia y sigue de cerca al aire;
-        en profundidad (<InlineMath tex={String.raw`z\to1`} />) la misma onda se aplana y se retrasa varias semanas. El
+        en profundidad (<InlineMath tex={String.raw`z\to1`} />) la misma onda se aplana y se retrasa varias semanas. La
+        señal medida es de manual: el sensor de 5 cm oscila unos <InlineMath tex={String.raw`30\,^\circ\mathrm{C}`} /> a lo
+        largo del año (<InlineMath tex={String.raw`-2.6\text{ a }27.0\,^\circ\mathrm{C}`} />), el de 50 cm solo unos
+        <InlineMath tex={String.raw`23\,^\circ\mathrm{C}`} /> (<InlineMath tex={String.raw`1.0\text{ a }24.2\,^\circ\mathrm{C}`} />)
+        y el de 100 cm unos <InlineMath tex={String.raw`18\,^\circ\mathrm{C}`} />
+        (<InlineMath tex={String.raw`3.0\text{ a }21.1\,^\circ\mathrm{C}`} />), retrasado varias semanas. Esa reducción de
+        amplitud de arriba hacia abajo es lo que una única <InlineMath tex={String.raw`\alpha`} /> debe explicar. El
         contraste amplitud-arriba / amplitud-abajo es exactamente lo que codifica <InlineMath tex={String.raw`\alpha`} />:
         el método lo recupera en la banda física correcta (<InlineMath tex={String.raw`\sim0.3\,\mathrm{mm^2/s}`} />) y
         reproduce los sensores interiores ocultos con un error de orden <InlineMath tex={String.raw`1\,^\circ\mathrm{C}`} />
-        RMSE: sin haberlos visto nunca.
+        RMSE (un L2 relativo de <InlineMath tex={String.raw`6.9\%`} /> contra las temperaturas interiores reales): sin
+        haberlos visto nunca. Que la <InlineMath tex={String.raw`\alpha`} /> recuperada caiga dentro del rango de manual
+        para suelo mineral húmedo es la verificación independiente de que el inverso encontró física, no un ajuste de
+        curva.
       </p>
       <p>
         <strong>Cómo leer y usar la viz.</strong> El <strong>heatmap</strong> de <InlineMath tex={String.raw`T(z,t)`} />
@@ -113,7 +127,9 @@ export function SoilHeatRealContext({ lang }: { lang: "en" | "es" }) {
         equation, <InlineMath tex={String.raw`T_t=\alpha\,T_{zz}`} />, with a single unknown material constant: the
         <strong> thermal diffusivity</strong> <InlineMath tex={String.raw`\alpha`} />. This is the <strong>only case
         trained against a REAL measured dataset</strong>: daily soil temperatures from NOAA's U.S. Climate Reference
-        Network. We pose an <strong>inverse</strong> problem: take two sensors as real boundaries, recover
+        Network. The data is vendored once from NOAA's open archive and used offline (schema
+        pinnlab.dataset.uscrn/v1, 0% missing in 2021), so training is reproducible and CI needs no network. We pose an
+        <strong> inverse</strong> problem: take two sensors as real boundaries, recover
         <InlineMath tex={String.raw`\alpha`} />, and validate against interior sensors the optimizer never saw.
       </p>
 
@@ -174,17 +190,28 @@ export function SoilHeatRealContext({ lang }: { lang: "en" | "es" }) {
         <InlineMath tex={String.raw`\alpha`} /> seasonally). That is why <strong>no closed-form parametric family
         exists</strong>: the surface forcing is a real time series with no analytic solution, and
         <InlineMath tex={String.raw`\alpha`} /> is what we recover, not a knob to sweep. This case ships honestly as a
-        <strong> single validated-real benchmark</strong>, not as a regime sweep.
+        <strong> single validated-real benchmark</strong>, not as a regime sweep. One honest residual is reported, not
+        hidden: the 5 cm boundary carries synoptic weather noise that a single effective
+        <InlineMath tex={String.raw`\alpha`} /> cannot fully resolve. It is visible in the 5 cm boundary loss, but it does
+        not contaminate the held-out interior score, which is what the case is judged on.
       </p>
 
       <p>
         <strong>What the benchmark shows.</strong> The recovered field <InlineMath tex={String.raw`T(z,t)`} /> is the
         classic signature of subsurface conduction: a <strong>damped, phase-lagged seasonal wave</strong>. Near the
         surface (<InlineMath tex={String.raw`z\to0`} />) the annual swing is large and tracks the air closely; at depth
-        (<InlineMath tex={String.raw`z\to1`} />) the same wave flattens and lags by several weeks. The top-amplitude /
+        (<InlineMath tex={String.raw`z\to1`} />) the same wave flattens and lags by several weeks. The measured signal is
+        textbook: the 5 cm sensor swings across roughly <InlineMath tex={String.raw`30\,^\circ\mathrm{C}`} /> over the year
+        (<InlineMath tex={String.raw`-2.6\text{ to }27.0\,^\circ\mathrm{C}`} />), the 50 cm sensor only about
+        <InlineMath tex={String.raw`23\,^\circ\mathrm{C}`} /> (<InlineMath tex={String.raw`1.0\text{ to }24.2\,^\circ\mathrm{C}`} />),
+        and the 100 cm sensor about <InlineMath tex={String.raw`18\,^\circ\mathrm{C}`} />
+        (<InlineMath tex={String.raw`3.0\text{ to }21.1\,^\circ\mathrm{C}`} />) and lagged by weeks. The top-amplitude /
         bottom-amplitude contrast is exactly what <InlineMath tex={String.raw`\alpha`} /> encodes: the method recovers it
         in the correct physical band (<InlineMath tex={String.raw`\sim0.3\,\mathrm{mm^2/s}`} />) and reproduces the hidden
-        interior sensors to about <InlineMath tex={String.raw`1\,^\circ\mathrm{C}`} /> RMSE: having never seen them.
+        interior sensors to about <InlineMath tex={String.raw`1\,^\circ\mathrm{C}`} /> RMSE (a <InlineMath tex={String.raw`6.9\%`} />
+        relative-L2 against the real interior temperatures): having never seen them. That the recovered
+        <InlineMath tex={String.raw`\alpha`} /> lands inside the textbook range for moist mineral soil is the independent
+        sanity check that the inverse found physics, not a curve fit.
       </p>
       <p>
         <strong>How to read &amp; use the viz.</strong> The <strong>heatmap</strong> of

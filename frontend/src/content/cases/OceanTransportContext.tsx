@@ -38,7 +38,10 @@ export function OceanTransportContext({ lang }: { lang: "en" | "es" }) {
         el <em>pico</em> decae como <InlineMath tex={String.raw`s_0^2/s^2`} /> porque la masa total se conserva. La PINN
         <InlineMath tex={String.raw`c_\theta(x,y,t)`} /> minimiza el residual de transporte en puntos de colocación, con
         la IC (el vertido) y las BC (<InlineMath tex={String.raw`c^*`} /> en el borde) impuestas de forma blanda y
-        ponderada: así la red aprende de verdad el campo interior y el L2 reportado es el error real del PINN.
+        ponderada: así la red aprende de verdad el campo interior y el L2 reportado es el error real del PINN. En
+        concreto: una red tanh de 4x64 con entradas <InlineMath tex={String.raw`(x,y,t)`} /> (DeepXDE), entrenada con
+        Adam (18000 pasos, lr 1e-3) y pulida con L-BFGS, con pesos de pérdida <InlineMath tex={String.raw`[1,10,50]`} />
+        sobre [EDP, BC, IC]: el peso mayor en la IC ancla el vertido sin fijar duramente el interior.
       </p>
 
       <h3>Alcances y supuestos</h3>
@@ -64,7 +67,8 @@ export function OceanTransportContext({ lang }: { lang: "en" | "es" }) {
         e <InlineMath tex={String.raw`y`} /> dan las campanas gaussianas (su ancho = la dispersión, su altura = la
         dilución). Los <strong>chips</strong> saltan a cada instante; en <strong>Live</strong>, arrastra
         <InlineMath tex={String.raw`t`} /> como un <em>scrubber</em> y ve el vertido derivar y dispersarse en vivo en tu
-        navegador (onnxruntime-web).
+        navegador (onnxruntime-web). El ONNX del navegador coincide con la red entrenada a 4.8e-7 (máx abs), así que el
+        scrubber en vivo es el mismo solucionador, no una aproximación.
       </p>
     </>
   ): (
@@ -102,7 +106,10 @@ export function OceanTransportContext({ lang }: { lang: "en" | "es" }) {
         the <em>peak</em> decays as <InlineMath tex={String.raw`s_0^2/s^2`} /> because total mass is conserved. The PINN
         <InlineMath tex={String.raw`c_\theta(x,y,t)`} /> minimises the transport residual at collocation points, with the
         IC (the release) and BCs (<InlineMath tex={String.raw`c^*`} /> on the boundary) imposed softly and weighted: so
-        the network genuinely learns the interior field and the reported L2 is the true PINN error.
+        the network genuinely learns the interior field and the reported L2 is the true PINN error. Concretely: a 4x64
+        tanh network with <InlineMath tex={String.raw`(x,y,t)`} /> inputs (DeepXDE), trained by Adam (18000 steps,
+        lr 1e-3) then polished with L-BFGS, with loss weights <InlineMath tex={String.raw`[1,10,50]`} /> on [PDE, BC, IC]:
+        the heavier IC weight anchors the release without hard-clamping the interior.
       </p>
 
       <h3>Scope &amp; assumptions</h3>
@@ -128,7 +135,8 @@ export function OceanTransportContext({ lang }: { lang: "en" | "es" }) {
         <InlineMath tex={String.raw`x`} /> and <InlineMath tex={String.raw`y`} /> give the Gaussian bells (their width =
         the dispersion, their height = the dilution). The <strong>chips</strong> jump to each instant; in
         <strong> Live</strong>, drag <InlineMath tex={String.raw`t`} /> like a <em>scrubber</em> and watch the spill
-        drift and disperse live in your browser (onnxruntime-web).
+        drift and disperse live in your browser (onnxruntime-web). The browser ONNX matches the trained network to
+        4.8e-7 (max abs), so the live scrubber is the same solver, not an approximation.
       </p>
     </>
   );

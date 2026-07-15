@@ -57,7 +57,7 @@ export const CONSTRAINTS: Record<string, Pin[]> = {
   ],
   "bench-darcy-operator": [
     { kind: "bc", en: "u = 0 on the boundary", es: "u = 0 en el borde" },
-    { kind: "data", en: "training PAIRS a(x) → u(x): the operator is learned from data", es: "PARES de entrenamiento a(x) → u(x): el operador se aprende de datos" },
+    { kind: "data", en: "training PAIRS a(x) to u(x): the operator is learned from data", es: "PARES de entrenamiento a(x) to u(x): el operador se aprende de datos" },
     { kind: "anchor", en: "finite-difference solve per held-out a(x)", es: "solución de diferencias finitas por cada a(x) reservado" },
   ],
   "ctrl-zero-source": [
@@ -66,7 +66,7 @@ export const CONSTRAINTS: Record<string, Pin[]> = {
     { kind: "anchor", en: "manufactured u* (any a)", es: "u* manufacturada (todo a)" },
   ],
   "dyn-double-pendulum": [
-    { kind: "ic", en: "θᵢ(0) = 120°, θ̇ᵢ(0) = 0 (hard, θ₀ + t²N ansatz)", es: "θᵢ(0) = 120°, θ̇ᵢ(0) = 0 (dura, ansatz θ₀ + t²N)" },
+    { kind: "ic", en: "θᵢ(0) = 120°, θ̇ᵢ(0) = 0 (soft, 100x weight; t² hard ansatz rejected)", es: "θᵢ(0) = 120°, θ̇ᵢ(0) = 0 (suave, peso 100x; ansatz duro t² descartado)" },
     { kind: "anchor", en: "RK45 integrator rtol=atol=1e-10; leave-time is the honest metric", es: "integrador RK45 rtol=atol=1e-10; leave-time es la métrica honesta" },
   ],
   "ind-helmholtz": [
@@ -99,7 +99,7 @@ export const CONSTRAINTS: Record<string, Pin[]> = {
   "mine-flotation-kinetics": [
     { kind: "ic", en: "C(k,0) = 1", es: "C(k,0) = 1" },
     { kind: "param", en: "rate constant k ∈ [0.5,5] (network input)", es: "constante de tasa k ∈ [0.5,5] (entrada de la red)" },
-    { kind: "anchor", en: "exact C* = e^(-kt)", es: "exacta C* = e^(-kt)" },
+    { kind: "anchor", en: "exact C* = e^(-kt) (net matches to 7.6e-4 rel-L2)", es: "exacta C* = e^(-kt) (la red calza a 7.6e-4 L2 rel)" },
   ],
   "mine-heap-leach-rt": [
     { kind: "bc", en: "MMS-derived boundary/forcing per species", es: "borde/forzamiento derivados por MMS por especie" },
@@ -119,7 +119,7 @@ export const CONSTRAINTS: Record<string, Pin[]> = {
   "poll-soil-barrier": [
     { kind: "ic", en: "c(x,0) = 0 (hard)", es: "c(x,0) = 0 (dura)" },
     { kind: "bc", en: "inlet c = 1-e^(-t), outlet c = 0 (hard lift)", es: "entrada c = 1-e^(-t), salida c = 0 (lift duro)" },
-    { kind: "param", en: "D(x) jumps 100x inside the barrier (the kink)", es: "D(x) salta 100x dentro de la barrera (el quiebre)" },
+    { kind: "param", en: "D(x) drops 10x inside the barrier (the kink)", es: "D(x) baja 10x dentro de la barrera (el quiebre)" },
     { kind: "anchor", en: "layered series-resistance MMS", es: "MMS de resistencias en serie por capas" },
   ],
   "poll-source-uq-bpinn": [

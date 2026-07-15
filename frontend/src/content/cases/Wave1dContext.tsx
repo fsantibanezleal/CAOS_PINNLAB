@@ -52,7 +52,12 @@ export function Wave1dContext({ lang }: { lang: "en" | "es" }) {
         <strong>Se modela:</strong> onda 1D lineal sin amortiguamiento, velocidad constante (paramétrica en
         <InlineMath tex={String.raw`c`} />), modo único. <strong>Fuera de alcance:</strong> amortiguamiento, medios no
         homogéneos <InlineMath tex={String.raw`c(x)`} />, no linealidad, y reflexión/transmisión en interfaces. El reto
-        numérico es la <em>oscilación</em> (sesgo espectral): SIREN la maneja donde una tanh se estancaría.
+        numérico es la <em>oscilación</em> (sesgo espectral): SIREN la maneja donde una tanh se estancaría. La
+        familia oscilatoria también exige <em>capacidad</em>: una SIREN mayor (cinco capas ocultas de 96 unidades,
+        Adam por 22000 pasos y luego L-BFGS) domina toda la familia de velocidad 4x con un relativo-L2 de 0.32% en el
+        peor caso, incluida la esquina rápida <em>c=2</em> donde una red menor se estancaba. Aquí no hay un conjunto de
+        datos medido: el error se evalúa contra la onda estacionaria exacta <InlineMath tex={String.raw`u^*(x,t;c)`} />,
+        así que el error reportado es una cifra genuina de exactitud de solución, no un sustituto de ajuste a datos.
       </p>
 
       <p>
@@ -68,7 +73,8 @@ export function Wave1dContext({ lang }: { lang: "en" | "es" }) {
         el desplazamiento exacto y mira el <strong>perfil de corte</strong> en <InlineMath tex={String.raw`t`} /> (un
         coseno) y en <InlineMath tex={String.raw`x`} /> (la forma senoidal). Los <strong>chips</strong> cargan cada
         velocidad; en <strong>Live</strong>, desliza <InlineMath tex={String.raw`c`} /> y ve la onda recalcularse en
-        vivo en tu navegador (onnxruntime-web).
+        vivo en tu navegador (onnxruntime-web). El ONNX exportado coincide con la red entrenada a unos 7e-7, así que la
+        lectura Live es la misma solución que ves en los chips precalculados.
       </p>
     </>
   ): (
@@ -119,7 +125,12 @@ export function Wave1dContext({ lang }: { lang: "en" | "es" }) {
         <strong>Modeled:</strong> linear 1D wave, no damping, constant speed (parametric in
         <InlineMath tex={String.raw`c`} />), single mode. <strong>Out of scope:</strong> damping, inhomogeneous media
         <InlineMath tex={String.raw`c(x)`} />, nonlinearity, and reflection/transmission at interfaces. The numerical
-        challenge is the <em>oscillation</em> (spectral bias): SIREN handles it where a tanh would stall.
+        challenge is the <em>oscillation</em> (spectral bias): SIREN handles it where a tanh would stall. The
+        oscillatory family also needs <em>capacity</em>: a larger SIREN (five hidden layers of 96 units, trained Adam
+        for 22000 steps then L-BFGS) nails the full 4x speed family to a worst-case 0.32% relative-L2, including the
+        fast <em>c=2</em> corner where a smaller net stalled. There is no measured dataset here: the error is graded
+        against the exact standing wave <InlineMath tex={String.raw`u^*(x,t;c)`} />, so the reported error is a genuine
+        solution-accuracy number, not a fit-to-data proxy.
       </p>
 
       <p>
@@ -135,7 +146,8 @@ export function Wave1dContext({ lang }: { lang: "en" | "es" }) {
         displacement and watch the <strong>line-cut profile</strong> in <InlineMath tex={String.raw`t`} /> (a cosine)
         and in <InlineMath tex={String.raw`x`} /> (the sine shape). The <strong>chips</strong> load each speed; in
         <strong>Live</strong>, slide <InlineMath tex={String.raw`c`} /> and watch the wave recompute live in your
-        browser (onnxruntime-web).
+        browser (onnxruntime-web). The exported ONNX matches the trained net to about 7e-7, so the Live readout is the
+        same solution you see in the baked chips.
       </p>
     </>
   );

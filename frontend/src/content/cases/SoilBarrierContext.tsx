@@ -62,7 +62,7 @@ export function SoilBarrierContext({ lang }: { lang: "en" | "es" }) {
         <em> partición de la unidad</em> (en la línea de las <strong>FBPINN</strong>, Moseley, Markham &amp; Nissen-Meyer,
         <em> Advances in Computational Mathematics</em> 2023): se usan <strong>dos sub-redes</strong> mezcladas por
         ventanas suaves <InlineMath tex={String.raw`w_{\text{izq}}+w_{\text{der}}=1`} /> que conmutan a través del centro
-        de la barrera,
+        de la barrera con nitidez de ventana <InlineMath tex={String.raw`\beta=40`} />,
       </p>
       <Equation tex={String.raw`c_{\text{raw}}(x,t)=w_{\text{izq}}(x)\,\mathcal{N}_1+w_{\text{der}}(x)\,\mathcal{N}_2,\qquad w_{\text{izq}}=\sigma\!\big(\beta\,(x_c-x)\big).`} />
       <p>
@@ -75,8 +75,9 @@ export function SoilBarrierContext({ lang }: { lang: "en" | "es" }) {
       <p>
         El segundo término se anula en <InlineMath tex={String.raw`t=0`} /> y en <InlineMath tex={String.raw`x=0,1`} />,
         así que la red solo aprende la <em>corrección interior</em>. El residual de la EDP se evalúa con la
-        <InlineMath tex={String.raw`D(x)`} /> por tramos; se siembran <em>puntos de anclaje</em> sobre las dos caras de
-        la barrera para resolver bien el quiebre.
+        <InlineMath tex={String.raw`D(x)`} /> por tramos; se siembran tres <em>columnas de anclaje</em>, sobre las dos caras <InlineMath tex={String.raw`x=0.45,\,0.55`} /> y
+        sobre la costura <InlineMath tex={String.raw`x_c=0.5`} /> donde las sub-redes se relevan, para resolver bien el
+        quiebre.
       </p>
 
       <h3>Alcances y supuestos</h3>
@@ -96,7 +97,11 @@ export function SoilBarrierContext({ lang }: { lang: "en" | "es" }) {
         el contraste obligaría a una sola red a cubrir desde quiebres suaves hasta muy severos, y el régimen más severo
         <em> domina</em> el error: la familia paramétrica <em>empeoraría</em> la precisión y difuminaría justo el rasgo
         que el caso busca mostrar. Por honestidad (ADR-0016 §9.A: nunca fabricar regímenes para inflar un contador de
-        chips) se publica como un <strong>benchmark de parámetro fijo</strong> (una variante), no como un barrido.
+        chips) se publica como un <strong>benchmark de parámetro fijo</strong> (una variante), no como un barrido. Medido
+        contra el ancla MMS en forma cerrada, este lane alcanza <strong>19.2% de L2 relativo</strong> (error máx. abs.
+        0.134, paridad ONNX 8.9e-08, lane live): el quiebre por el salto de coeficiente es, con honestidad, la parte
+        difícil, y la FBPINN estricta normalizada por subdominio junto con un lane GPU lo ajustan más (ver la página del
+        método domain-decomposition).
       </p>
 
       <p>
@@ -176,7 +181,7 @@ export function SoilBarrierContext({ lang }: { lang: "en" | "es" }) {
         <em> partition of unity</em> (in the spirit of <strong>FBPINNs</strong>, Moseley, Markham &amp; Nissen-Meyer,
         <em> Advances in Computational Mathematics</em> 2023): <strong>two sub-networks</strong> are blended by smooth
         windows <InlineMath tex={String.raw`w_{\text{left}}+w_{\text{right}}=1`} /> that switch across the barrier
-        centre,
+        centre with window sharpness <InlineMath tex={String.raw`\beta=40`} />,
       </p>
       <Equation tex={String.raw`c_{\text{raw}}(x,t)=w_{\text{left}}(x)\,\mathcal{N}_1+w_{\text{right}}(x)\,\mathcal{N}_2,\qquad w_{\text{left}}=\sigma\!\big(\beta\,(x_c-x)\big).`} />
       <p>
@@ -189,8 +194,9 @@ export function SoilBarrierContext({ lang }: { lang: "en" | "es" }) {
       <p>
         The second term vanishes at <InlineMath tex={String.raw`t=0`} /> and at <InlineMath tex={String.raw`x=0,1`} />,
         so the network only learns the <em>interior correction</em>. The PDE residual is evaluated with the piecewise
-        <InlineMath tex={String.raw`D(x)`} />; <em>anchor points</em> are seeded on the two barrier faces so the kink is
-        resolved well.
+        <InlineMath tex={String.raw`D(x)`} />; three <em>anchor columns</em> are seeded, on the two barrier faces
+        <InlineMath tex={String.raw`x=0.45,\,0.55`} /> and on the seam <InlineMath tex={String.raw`x_c=0.5`} /> where the
+        sub-nets hand off, so the kink is resolved well.
       </p>
 
       <h3>Scope &amp; assumptions</h3>
@@ -210,7 +216,10 @@ export function SoilBarrierContext({ lang }: { lang: "en" | "es" }) {
         single network to span from mild to very severe kinks, and the most severe regime <em>dominates</em> the error: 
         the parametric family would <em>worsen</em> accuracy and blur the very feature the case exists to show. For
         honesty (ADR-0016 §9.A: never fabricate regimes to inflate a chip count) it ships as a <strong>fixed-parameter
-        benchmark</strong> (one variant), not a sweep.
+        benchmark</strong> (one variant), not a sweep. Scored against the closed-form MMS anchor, this lane lands at
+        <strong>19.2% relative-L2</strong> (max abs error 0.134, ONNX parity 8.9e-08, live lane): the coefficient-jump
+        kink is honestly the hard part, and the strict per-subdomain-normalized FBPINN plus a GPU lane tighten it further
+        (see the domain-decomposition method page).
       </p>
 
       <p>
