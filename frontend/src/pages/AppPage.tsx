@@ -19,6 +19,12 @@ const CATEGORY_ORDER = [
   "control",
 ];
 
+// Owner decision (2026-07-15): a fresh visit lands on a MINING case (mining-first product framing).
+// Flotation kinetics is the default: flotation is the emblematic mineral-processing operation and its
+// recovery-vs-time curve is the most legible first view. Deep links (?case=…) still win over this.
+const DEFAULT_GROUP = "mining-mineral-processing";
+const DEFAULT_CASE = "mine-flotation-kinetics";
+
 
 /** The App page (ADR-0016 §9 + ADR-0063), now a FULL-WIDTH workbench mirroring CAOS_RES_Lidar3D: the content
  *  fills the whole viewport (header + footer are already full-width) instead of being boxed in the narrow reading
@@ -29,7 +35,7 @@ export function AppPage() {
   const es = lang === "es";
   const [index, setIndex] = useState<CaseIndex | null>(null);
   const [err, setErr] = useState<string | null>(null);
-  const [group, setGroup] = useState<string>(CATEGORY_ORDER[0]);
+  const [group, setGroup] = useState<string>(DEFAULT_GROUP);
   const [caseId, setCaseId] = useState<string>("");
   const [q, setQ] = useState<string>("");
 
@@ -53,7 +59,7 @@ export function AppPage() {
     setSearchParams(p, { replace: true });
   }
 
-  // land on the tool: the deep-linked case when valid, else the first case of the default domain.
+  // land on the tool: the deep-linked case when valid, else the default MINING case (owner decision).
   useEffect(() => {
     if (index && !caseId) {
       const linked = searchParams.get("case");
@@ -63,8 +69,13 @@ export function AppPage() {
         setCaseId(found.case_id);
         return;
       }
-      const first = (groups[group] ?? [])[0] ?? index.cases[0];
-      if (first) setCaseId(first.case_id);
+      // default landing = the mining case; fall back to the mining group's first case, then anything.
+      const def = index.cases.find((c) => c.case_id === DEFAULT_CASE);
+      const first = def ?? (groups[DEFAULT_GROUP] ?? [])[0] ?? (groups[group] ?? [])[0] ?? index.cases[0];
+      if (first) {
+        setGroup(first.category);
+        setCaseId(first.case_id);
+      }
     }
   }, [index, group, caseId, groups]);
 
