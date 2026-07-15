@@ -1058,7 +1058,7 @@ ol li, ul li { margin: 4px 0; }
 
 /* --- Regimes tab: for a single-regime case it showed 3 small stat cards at the top over a big void. Fill the
        stage: bigger heading + intro, and the measured numbers become large centered HERO-number tiles. --- */
-.pl-stage > .charts { height: 100%; display: flex; flex-direction: column; min-height: 0; gap: 10px; }
+.pl-stage > .charts { height: 100%; display: flex; flex-direction: column; min-height: 0; gap: 10px; overflow: hidden; }
 .charts h3 { font-size: 21px; margin: 0; }
 .charts > p.muted { font-size: 15px; line-height: 1.6; margin: 0; max-width: 90ch; }
 .charts .pl-ans-grid { flex: 1 1 auto; align-content: center; justify-content: center; gap: 18px; }
@@ -1069,4 +1069,4 @@ ol li, ul li { margin: 4px 0; }
 }
 .charts .pl-ans-label { font-size: 14px; line-height: 1.45; color: var(--muted); }
 .charts .pl-ans-value { font-size: 30px; font-weight: 750; letter-spacing: -0.01em; color: var(--accent); }
-.charts .cmp-bars { flex: 1 1 auto; min-height: 0; }
+.charts .cmp-bars { flex: 1 1 auto; min-height: 0; overflow-y: auto; overflow-x: hidden; scrollbar-width: thin; }
