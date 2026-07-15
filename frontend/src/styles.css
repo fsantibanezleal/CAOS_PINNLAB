@@ -635,7 +635,7 @@ ol li, ul li { margin: 4px 0; }
 .pl-secbtn { font-family: inherit; font-size: 12px; font-weight: 600; padding: 4px 12px; border-radius: 999px; border: 1px solid var(--border); background: var(--panel-2); color: var(--muted); cursor: pointer; }
 .pl-secbtn:hover { color: var(--text); border-color: var(--accent); }
 .pl-secbtn.on { color: var(--accent); border-color: var(--accent); background: color-mix(in srgb, var(--accent) 12%, transparent); }
-.pl-secbody { flex: 1 1 auto; min-height: 0; overflow: hidden; }
+.pl-secbody { flex: 1 1 auto; min-height: 0; overflow-y: auto; overflow-x: hidden; scrollbar-width: thin; }
 /* Context section = a clean FULL-WIDTH reading pane; a long section scrolls WITHIN itself (a focused reading
    unit), never the stage. Equations get their own prominent full-width block. */
 .pl-prosewide { width: 100%; max-width: 100%; overflow-y: auto; scrollbar-width: thin; padding-right: 6px; }
@@ -962,3 +962,58 @@ ol li, ul li { margin: 4px 0; }
 .refs li { font-size: 11.5px; line-height: 1.5; color: var(--muted); margin: 2px 0; }
 .cite { color: var(--accent); font-weight: 600; text-decoration: none; }
 .cite:hover { text-decoration: underline; }
+
+/* =======================================================================================================
+   PRESENTATION TYPE SCALE (2026-07-15): the text surfaces were too small, left-hugging, and left a void
+   below. This block (last in the cascade, so it wins) sets a real reading type scale, gives the App Context
+   prose a 2-column newspaper layout so it USES THE WIDTH, and balances the Summary cards.
+   ======================================================================================================= */
+
+/* --- inline math never jams against the words around it --- */
+.inline-math { margin: 0 0.2em; }
+
+/* --- display equations: bigger, with breathing room --- */
+.equation { padding: 18px 20px; margin: 16px 0; }
+.equation .katex-display { margin: 0; font-size: 1.18em; }
+.equation-caption { font-size: 13px; margin-top: 10px; }
+.pl-prosewide .eq .katex-display, .prose .eq .katex-display { font-size: 1.12em; }
+
+/* --- doc reading pages: bigger, comfortable body; stronger headings --- */
+.prose p, .prose li { font-size: 16.5px; line-height: 1.75; }
+.prose > p.muted:first-of-type { font-size: 15.5px; }
+.prose h1 { font-size: 34px; letter-spacing: -0.02em; }
+.prose h2 { font-size: 23px; margin: 22px 0 10px; }
+.prose h3 { font-size: 18px; margin: 16px 0 8px; }
+.prose .panel { padding: 20px 24px; }
+.prose .panel h3 { font-size: 17px; }
+.prose .tbl { font-size: 14.5px; }
+
+/* --- App Context deep prose: a 2-COLUMN reading that fills the width; headings + equations span both
+       columns; short sections are grouped in JS (SectionPager) so each view carries enough text to fill. --- */
+.pl-prosewide { max-width: 100%; columns: 2; column-gap: 46px; column-rule: 1px solid color-mix(in srgb, var(--accent) 12%, var(--border)); }
+.pl-prosewide > h2:first-child, .pl-prosewide > h3:first-child { margin-top: 0; }
+.pl-prosewide h2 { column-span: all; font-size: 23px; margin: 0 0 14px; color: var(--text); }
+.pl-prosewide h3 { column-span: all; font-size: 18px; margin: 18px 0 8px; break-after: avoid; }
+.pl-prosewide .eq, .pl-prosewide .equation { column-span: all; break-inside: avoid; }
+.pl-prosewide p, .pl-prosewide ul, .pl-prosewide ol { font-size: 16px; line-height: 1.75; max-width: none; margin: 0 0 12px; }
+.pl-prosewide li { margin: 6px 0; }
+.pl-prosewide .refs { column-span: all; }
+/* single-column fallback on narrow stages so columns never get too thin */
+@media (max-width: 1200px) { .pl-prosewide { columns: 1; } }
+
+/* --- Summary cards: bigger text, vertically centered so short content sits balanced, not top-anchored --- */
+.pl-sumgrid > .pl-res-card { justify-content: center; padding: 22px 26px; gap: 10px; }
+.pl-sumgrid > .pl-res-card h4 { font-size: 12.5px; margin: 0 0 2px; }
+.pl-sumgrid > .pl-res-card p { font-size: 15.5px; line-height: 1.72; }
+.pl-sumgrid > .pl-res-card ul { font-size: 15.5px; line-height: 1.72; margin: 4px 0 0; padding-left: 20px; }
+.pl-sumgrid > .pl-res-card li { margin: 4px 0; }
+
+/* --- Results answer column: bigger question/answer/verdict, more air --- */
+.pl-res-answer { gap: 13px; }
+.pl-res-question { font-size: 18px; line-height: 1.3; }
+.pl-res-answertext { font-size: 15px; line-height: 1.62; }
+.pl-res-verdict { font-size: 14px; line-height: 1.62; }
+.pl-res-tileval { font-size: 21px; }
+.pl-res-tilelabel { font-size: 11.5px; }
+.pl-res-evidence li { font-size: 13.5px; line-height: 1.6; }
+.pl-res-evidence .refs-label, .pl-res-block h4, .pl-res-answer h4, .pl-res-evidence h4 { font-size: 12px; }
