@@ -3,6 +3,37 @@
 All notable changes to **PINN-Lab**. Format: `X.XX.XXX` (display), see `pinnlab.__version__`. Keep `0.x` while on
 synthetic/benchmark data. Tag every release.
 
+## [0.26.006] (2026-07-15) The app lands on a mining case by default
+
+- **Default landing = mining.** A fresh visit (no `?case` deep link) now opens on `mine-flotation-kinetics` in
+  the Mining & mineral processing domain, instead of the first canonical-benchmark case. Flotation is the
+  emblematic mineral-processing operation and its recovery-vs-time curve is the most legible first view; deep
+  links still win over the default. Verified with a headless landing check (domain = mining, case =
+  flotation-kinetics, hash `#/`).
+- **README:** dropped the "not a demo" negation from the opening line (state what it is); the honest-scope
+  bullet (not a FEM/FVM replacement, not a digital twin) is unchanged.
+
+## [0.26.005] (2026-07-15) Content corrections: every case audited vs its docs
+
+Each case was audited against its `docs/cases/*.md` and the baked traces; contradictions and overclaims were
+corrected so the in-app answer/verdict matches the documented physics and the numbers the pipeline actually
+produced.
+
+## [0.26.004] (2026-07-15) Presentation overhaul of the text surfaces
+
+Bigger type on the reading surfaces, a two-column Context panel that uses the full width, and removal of the
+empty voids that made the text surfaces feel hollow.
+
+## [0.26.003] (2026-07-15) Stage-fill layout crisis fixed
+
+The visualization kits now FILL the stage: no empty space, no overflow, no clipped captions. Closes the map-not-
+filling / tiny-floater regressions surfaced in the live review.
+
+## [0.26.002] (2026-07-15) Visual-identity pass + citation infrastructure
+
+A luminous answer hero, added depth, and refined regime chips; the Context panel goes full-width and the caption
+is unclamped. New citation infrastructure (`citations.ts`, `Cite` / `Refs`).
+
 ## [0.26.001] (2026-07-15) FIX: the heatmap no longer collapses to a few pixels (issue #57)
 
 The field map appeared at a good size then shrank to a tiny few-pixel version when the profile plots were
