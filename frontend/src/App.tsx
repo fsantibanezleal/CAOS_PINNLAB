@@ -87,10 +87,13 @@ export function App() {
           <span aria-hidden="true">·</span>
           <span>{t("footer.attribution")}</span>
           <span aria-hidden="true">·</span>
+          <span className="faint">{t("footer.provenance")}</span>
+          <span aria-hidden="true">·</span>
           <a href={EXTERNAL_LINKS.github} target="_blank" rel="noreferrer noopener">{t("header.github")}</a>
           <span aria-hidden="true">·</span>
           <span className="faint">{t("footer.license")}</span>
         </div>
+        <div className="footer-disclaimer faint">{t("footer.disclaimer")}</div>
       </footer>
 
       {archOpen && <ArchitectureModal onClose={() => setArchOpen(false)} />}
