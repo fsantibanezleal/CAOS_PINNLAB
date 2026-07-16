@@ -122,5 +122,6 @@
     "label_es": "media subida tras el muro"
    }
   ]
- }
+ },
+ "governing_equations_es": "c_t = D(x)\\,c_{xx} + f,\\ D=D_{soil}\\ \\text{fuera}\\ [0.45,0.55],\\ D_{barrier}=0.1\\ \\text{dentro};\\ c^*=(1-e^{-t})\\,\\Psi(x)"
 }

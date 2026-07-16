@@ -132,5 +132,6 @@
     "label_es": "receptor"
    }
   ]
- }
+ },
+ "governing_equations_es": "\\nabla^2 u + k_0^2 u = -f,\\ k_0=2\\pi n,\\ n=3,\\ \\text{en}\\ (0,1)^2,\\ u|_{\\partial\\Omega}=0,\\ u^*=\\sin(k_0 x)\\sin(k_0 y)"
 }

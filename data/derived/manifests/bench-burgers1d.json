@@ -279,5 +279,6 @@
     }
    ]
   }
- }
+ },
+ "governing_equations_es": "u_t + u\\,u_x = \\nu\\,u_{xx}\\ \\text{en}\\ (-1,1)\\times(0,1],\\ u^*=s-\\tfrac{\\Delta}{2}\\tanh\\!\\big(\\tfrac{\\Delta}{4\\nu}(x-x_0-st)\\big),\\ \\Delta=1,\\ s=\\tfrac12"
 }

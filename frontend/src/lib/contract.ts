@@ -64,6 +64,10 @@ export interface CaseManifest {
   category: string;
   title: string;
   governing_equations: string;
+  /** The Spanish reading: identical math, with the `\text{...}` prose translated. Baked by
+   *  data-pipeline/localize_equations.py, and only for the 18 cases whose equation carries annotations;
+   *  pure-math equations have no twin, so fall back to `governing_equations`. */
+  governing_equations_es?: string;
   method: string;
   real_or_synthetic: string;
   expected_band: string;

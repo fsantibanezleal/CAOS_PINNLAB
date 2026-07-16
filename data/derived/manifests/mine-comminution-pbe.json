@@ -237,5 +237,6 @@
     "label_es": "tamaño objetivo s*"
    }
   ]
- }
+ },
+ "governing_equations_es": "n_t + (-g)\\,n_s = D\\,n_{ss}\\ \\text{en}\\ s\\in[0,1],\\ t\\in[0,1];\\ n^*=\\sqrt{\\tfrac{\\sigma_0^2}{\\sigma_0^2+2Dt}}\\,e^{-(s-(s_0-g t))^2/(2(\\sigma_0^2+2Dt))}\\ (\\text{reducción tamaño-transporte del PBE})"
 }

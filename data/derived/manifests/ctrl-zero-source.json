@@ -219,5 +219,6 @@
     "value": "1.3e-03"
    }
   ]
- }
+ },
+ "governing_equations_es": "-\\nabla^2 u = f(x,y;a)\\ \\text{en}\\ (0,1)^2,\\ u|_{\\partial\\Omega}=0,\\ u^*=a\\big(\\sin\\pi x\\sin\\pi y+\\tfrac12\\sin 2\\pi x\\sin 2\\pi y\\big)"
 }

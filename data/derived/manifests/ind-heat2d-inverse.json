@@ -122,5 +122,6 @@
     "value_es": "356%: irrecuperable"
    }
   ]
- }
+ },
+ "governing_equations_es": "\\nabla\\!\\cdot(k(x,y)\\nabla T)=q\\ \\text{en}\\ (0,1)^2,\\ T|_{\\partial\\Omega}=0;\\ \\text{recuperar}\\ k\\ \\text{desde datos dispersos }T\\text{ obs};\\ k^*=1+\\tfrac12\\sin\\pi x\\sin\\pi y"
 }

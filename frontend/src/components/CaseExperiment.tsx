@@ -223,7 +223,7 @@ export function CaseExperiment({
       {/* RIGHT AREA: the equation (full width, ALWAYS visible) -> tabs -> the stage that every tab must fit */}
       <div className="pl-main">
         <div className="pl-eqrow">
-          <Equation tex={manifest.governing_equations} />
+          <Equation tex={(es && manifest.governing_equations_es) || manifest.governing_equations} />
         </div>
         <div className="pl-stagetabs" role="tablist" aria-label={es ? "Vistas" : "Views"}>
           {VIEWS.map((v) => (

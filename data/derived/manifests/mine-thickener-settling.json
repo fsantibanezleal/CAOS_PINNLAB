@@ -283,5 +283,6 @@
     }
    ]
   }
- }
+ },
+ "governing_equations_es": "\\phi_t + \\partial_z f_{bk}(\\phi) = \\partial_z(D(\\phi)\\phi_z),\\ f_{bk}=v_0\\phi(1-\\phi/\\phi_{max})^C,\\ D\\ \\text{degenera sobre}\\ \\phi_c"
 }

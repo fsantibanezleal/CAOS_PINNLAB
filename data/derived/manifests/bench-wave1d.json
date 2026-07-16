@@ -221,5 +221,6 @@
     }
    }
   ]
- }
+ },
+ "governing_equations_es": "u_{tt} = c^2 u_{xx}\\ \\text{en}\\ (0,1)\\times(0,1],\\ u(x,0)=\\sin(\\pi x),\\ u_t(x,0)=0,\\ u(0,t)=u(1,t)=0;\\ u^*=\\sin(\\pi x)\\cos(c\\pi t)"
 }

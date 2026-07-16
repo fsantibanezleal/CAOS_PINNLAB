@@ -132,5 +132,6 @@
     "label_es": "menos confiable (σ máx)"
    }
   ]
- }
+ },
+ "governing_equations_es": "c_t = D\\,c_{xx},\\ c|_{x=0,1}=0,\\ c^*=e^{-D\\pi^2 t}\\sin(\\pi x);\\ \\text{ensamble profundo} \\to [\\text{media},\\ \\text{desv. est.}]\\ \\text{(UQ epistémica desde sensores dispersos y ruidosos)}"
 }
