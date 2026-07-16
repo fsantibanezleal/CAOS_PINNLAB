@@ -200,8 +200,12 @@ export function FieldView({
       {/* the fit ref is on the STABLE body row (its size does not depend on the map), so setting the map size
           never resizes the measured element: no ResizeObserver feedback loop ("good for a moment then shrinks"). */}
       <div className="fv2-body" ref={fit.areaRef}>
-        {/* LEFT: the map, sized square from the available space; colorbar beside it */}
-        <div className="fv2-mapcol" style={fit.w ? { width: fit.w } : undefined}>
+        {/* LEFT: the map, sized square from the available space; colorbar beside it.
+            The column must NOT be pinned to fit.w: the row inside it is the map (fit.w) PLUS the gap and the
+            colorbar, so pinning the column to the map's width alone overflowed it by ~52px which, being
+            centered, spilled 26px past each edge. The left spill fell outside .pl-res-viz (overflow:hidden)
+            and clipped the map's left edge. Sizing the column to its content keeps the map whole. */}
+        <div className="fv2-mapcol">
           <div className="fv2-maprow" style={fit.h ? { height: fit.h } : undefined}>
             <div className="field-wrap" style={fit.w ? { width: fit.w, height: fit.h } : undefined}
               onMouseMove={onMove} onMouseLeave={() => setHov(null)} onClick={onClick} onWheel={onWheel}
