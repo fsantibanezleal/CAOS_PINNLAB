@@ -227,7 +227,8 @@
    {
     "label_en": "mean base cA shift over the window",
     "label_es": "cambio medio de cA en la base",
-    "value": "0.96 to 1.17"
+    "value": "0.96 to 1.17",
+    "value_es": "0.96 a 1.17"
    }
   ]
  }

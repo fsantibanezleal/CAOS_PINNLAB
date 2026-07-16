@@ -99,12 +99,18 @@ export interface CaseManifest {
   estimate?: EstimateBlock;
 }
 
-/** One answer line: a preformatted value, either single or per-variant (keyed by variant id). */
+/** One answer line: a preformatted value, either single or per-variant (keyed by variant id).
+ *  Most values are pure numbers with units and read the same in both languages, so `value`/`values` (the EN
+ *  and default reading) is all there is. `value_es`/`values_es` exist only where the value carries prose
+ *  ("not in window", "unrecoverable"), which otherwise leaked English into the Spanish app; fall back to
+ *  `value`/`values` when absent. Baked by data-pipeline/build_estimates.py. */
 export interface EstimateItem {
   label_en: string;
   label_es: string;
   value?: string;
+  value_es?: string;
   values?: Record<string, string>;
+  values_es?: Record<string, string>;
 }
 
 /** A computed answer drawn ON the field it was read from (issue #49 S3): coordinates in field_axes units,

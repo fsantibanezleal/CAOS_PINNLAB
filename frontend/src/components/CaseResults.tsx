@@ -41,8 +41,14 @@ export function CaseResults({
     { view: "context", label: es ? "Contexto" : "Context", proves: es ? "la teoría, el método y los supuestos" : "the theory, the method and the assumptions" },
   ];
 
-  const answerVal = (it: NonNullable<typeof e>["items"][number]) =>
-    it.value !== undefined ? it.value : (it.values?.[active.id] ?? Object.values(it.values ?? {})[0] ?? "");
+  // Prefer the ES twin when it exists (values that carry prose); fall back to the EN/default reading, which
+  // is what every pure-number value has.
+  const answerVal = (it: NonNullable<typeof e>["items"][number]) => {
+    const single = (es ? it.value_es : undefined) ?? it.value;
+    if (single !== undefined) return single;
+    const perVariant = (es ? it.values_es : undefined) ?? it.values;
+    return perVariant?.[active.id] ?? Object.values(perVariant ?? {})[0] ?? "";
+  };
 
   return (
     <div className="pl-results">
