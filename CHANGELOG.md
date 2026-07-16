@@ -3,6 +3,19 @@
 All notable changes to **PINN-Lab**. Format: `X.XX.XXX` (display), see `pinnlab.__version__`. Keep `0.x` while on
 synthetic/benchmark data. Tag every release.
 
+## [0.26.007] (2026-07-15) FIX: the field map was clipped on its left edge (and its colorbar scale hidden)
+
+The `fv2` field kit pinned `.fv2-mapcol` to `fit.w`, the MAP's width. The row inside it is the map plus a
+6px gap plus the colorbar (measured: 416 + 6 + 46 = 468 against a 468px row), so the row overflowed the
+column by ~52px and, being centered, spilled 26px past each edge. The left spill fell outside
+`.pl-res-viz` (`overflow:hidden`) and cut the map's left edge; the colorbar's scale labels were lost with
+it, so the map had no readable value scale. Reproduced live at every device pixel ratio (1, 2, 3), with and
+without the equation row, so it was hitting real users, on the default landing case (flotation).
+
+Fix: size the map column to its content instead of to the map width alone. Map size is unchanged (canvas
+still 414px); nothing clips (measured left overflow 26px -> 0 in Results, -15 in Field). The standing fit
+gate still passes its 508 tab-checks.
+
 ## [0.26.006] (2026-07-15) The app lands on a mining case by default
 
 - **Default landing = mining.** A fresh visit (no `?case` deep link) now opens on `mine-flotation-kinetics` in
