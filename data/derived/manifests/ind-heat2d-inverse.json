@@ -118,7 +118,8 @@
    {
     "label_en": "without data (physics alone)",
     "label_es": "sin datos (física sola)",
-    "value": "356%: unrecoverable"
+    "value": "356%: unrecoverable",
+    "value_es": "356%: irrecuperable"
    }
   ]
  }

@@ -65,12 +65,23 @@ def set_estimate(cid, question_en, question_es, why_en, why_es, items):
 QUESTIONS = {}
 
 
-def item(label_en, label_es, value=None, values=None):
+def item(label_en, label_es, value=None, values=None, value_es=None, values_es=None):
+    """One answer line. `value`/`values` are the EN (and default) reading.
+
+    Most values are pure numbers with units and read the same in both languages, so they need no ES twin.
+    Pass `value_es`/`values_es` ONLY when the value carries prose ("not in window", "unrecoverable", "0.96
+    to 1.17"): those used to leak English into the Spanish app, which localizes label/question/why but read
+    a single `value`. The app falls back to `value` when no ES twin exists.
+    """
     d = {"label_en": label_en, "label_es": label_es}
     if values is not None:
         d["values"] = values
+        if values_es is not None:
+            d["values_es"] = values_es
     else:
         d["value"] = value
+        if value_es is not None:
+            d["value_es"] = value_es
     return d
 
 
@@ -101,7 +112,9 @@ def bake_all():
         "Una incógnita de CAMPO es un inverso nativo de PINN: el mapa es otra salida de la red alimentada por datos dispersos; la inversión clásica exige malla + adjunto + muchas resoluciones directas.",
         [
             item("recovered conductivity map error", "error del mapa de conductividad", value=f"{cs.get('adapted_vs_std', 0)*100:.1f}% vs k*"),
-            item("without data (physics alone)", "sin datos (física sola)", value=f"{cs.get('naive_vs_std', 0)*100:.0f}%: unrecoverable"),
+            item("without data (physics alone)", "sin datos (física sola)",
+                 value=f"{cs.get('naive_vs_std', 0)*100:.0f}%: unrecoverable",
+                 value_es=f"{cs.get('naive_vs_std', 0)*100:.0f}%: irrecuperable"),
         ],
     )
 
@@ -126,7 +139,9 @@ def bake_all():
         [
             item("c at (x=0.5, t=0.25)", "c en (x=0.5, t=0.25)", value=f"{mu:.3f} ± {2*sg:.3f} (2σ)"),
             item(f"P(c > {thr}) at that point", f"P(c > {thr}) en ese punto", value=p_str),
-            item("least-trusted spot (largest σ)", "punto menos confiable (mayor σ)", value=f"σ = {float(std[sij]):.4f} at (x={float(xs[sij[0]]):.2f}, t={float(ts[sij[1]]):.2f})"),
+            item("least-trusted spot (largest σ)", "punto menos confiable (mayor σ)",
+                 value=f"σ = {float(std[sij]):.4f} at (x={float(xs[sij[0]]):.2f}, t={float(ts[sij[1]]):.2f})",
+                 value_es=f"σ = {float(std[sij]):.4f} en (x={float(xs[sij[0]]):.2f}, t={float(ts[sij[1]]):.2f})"),
         ],
     )
 
@@ -148,13 +163,15 @@ def bake_all():
         "El techo honesto de la estimación: pasado el horizonte de divergencia ningún modelo, por bien entrenado que esté, retiene la trayectoria: la estimación es el propio presupuesto de predictibilidad.",
         [
             item("PINN leave-time (|Δθ| > 0.3 rad vs RK45)", "leave-time de la PINN (|Δθ| > 0.3 rad vs RK45)", value=f"{s.get('leave_time', 0):.2f} s"),
-            item("a 0.01 rad twin leaves the same tube at", "un gemelo a 0.01 rad deja el mismo tubo en", value=f"{fmt(twin_leave)} s" if twin_leave else "within the window: no"),
+            item("a 0.01 rad twin leaves the same tube at", "un gemelo a 0.01 rad deja el mismo tubo en",
+                 value=f"{fmt(twin_leave)} s" if twin_leave else "within the window: no",
+                 value_es=f"{fmt(twin_leave)} s" if twin_leave else "dentro de la ventana: no"),
         ],
     )
 
     # ---- mine-thickener-settling: mudline arrival + final front height per R ----
     m = man("mine-thickener-settling")
-    vals_settle, vals_bed = {}, {}
+    vals_settle, vals_bed, vals_settle_es = {}, {}, {}
     for v in m["variants"]:
         t = trace_of(m, v["id"])
         zs, ts = np.array(t["axes"]["z"]), np.array(t["axes"]["t"])
@@ -169,6 +186,7 @@ def bake_all():
             front.append(zs[above.max()] if len(above) else zs[0])
         t_half = crossing_time(ts, front, 0.5, rising=False)
         vals_settle[v["id"]] = f"t = {fmt(t_half)}" if t_half is not None else "not in window"
+        vals_settle_es[v["id"]] = f"t = {fmt(t_half)}" if t_half is not None else "fuera de la ventana"
         vals_bed[v["id"]] = f"z = {front[-1]:.2f}"
     QUESTIONS["mine-thickener-settling"] = set_estimate(
         "mine-thickener-settling",
@@ -177,7 +195,7 @@ def bake_all():
         "Sizing thickeners from batch settling curves IS this front-tracking (the Kynch construction); one parametric net carries the whole descent-rate family as a design chart.",
         "Dimensionar espesadores desde curvas de sedimentación ES este seguimiento de frente (construcción de Kynch); una red paramétrica lleva toda la familia de tasas como carta de diseño.",
         [
-            item("mudline passes z=0.5 at", "la línea de lodo cruza z=0.5 en", values=vals_settle),
+            item("mudline passes z=0.5 at", "la línea de lodo cruza z=0.5 en", values=vals_settle, values_es=vals_settle_es),
             item("front position at t=1", "posición del frente en t=1", values=vals_bed),
         ],
     )
@@ -194,7 +212,9 @@ def bake_all():
         R1 = (1 - float(Ct[-1])) * 100
         t90 = crossing_time(ts, 1 - Ct, 0.9, rising=True)
         t90s = f"t90 = {fmt(t90)}" if t90 is not None else "R=90% not reached in window"
-        items_flot.append(item(f"k = {kv:.2g}: recovery at t=1, time to 90%", f"k = {kv:.2g}: recuperación en t=1, tiempo a 90%", value=f"{R1:.1f}%, {t90s}"))
+        t90s_es = f"t90 = {fmt(t90)}" if t90 is not None else "R=90% no alcanzado en la ventana"
+        items_flot.append(item(f"k = {kv:.2g}: recovery at t=1, time to 90%", f"k = {kv:.2g}: recuperación en t=1, tiempo a 90%",
+                               value=f"{R1:.1f}%, {t90s}", value_es=f"{R1:.1f}%, {t90s_es}"))
     QUESTIONS["mine-flotation-kinetics"] = set_estimate(
         "mine-flotation-kinetics",
         "What recovery does the cell reach, and what residence time hits 90%? (circuit design)",
@@ -218,13 +238,14 @@ def bake_all():
         "Las curvas de ruptura se leen del campo transportado; con el tiempo como entrada de la red, todo el calendario está a una evaluación.",
         [
             item("half-change breakthrough at the base", "ruptura de medio cambio en la base", value=f"t = {fmt(t_bt)}"),
-            item("mean base cA shift over the window", "cambio medio de cA en la base", value=f"{base[0]:.2f} to {base[-1]:.2f}"),
+            item("mean base cA shift over the window", "cambio medio de cA en la base",
+                 value=f"{base[0]:.2f} to {base[-1]:.2f}", value_es=f"{base[0]:.2f} a {base[-1]:.2f}"),
         ],
     )
 
     # ---- mine-comminution-pbe: passing fraction below s*=0.3 at t=1 per g ----
     m = man("mine-comminution-pbe")
-    vals_pass = {}
+    vals_pass, vals_pass_es = {}, {}
     s_star = 0.3
     for v in m["variants"]:
         t = trace_of(m, v["id"])
@@ -233,13 +254,14 @@ def bake_all():
         below = ss <= s_star
         num = np.trapezoid(n[below, -1], ss[below]); den = np.trapezoid(n[:, -1], ss)
         vals_pass[v["id"]] = f"{num/den*100:.1f}%" if den > 0 else "n/a"
+        vals_pass_es[v["id"]] = f"{num/den*100:.1f}%" if den > 0 else "n/d"
     QUESTIONS["mine-comminution-pbe"] = set_estimate(
         "mine-comminution-pbe",
         "What fraction of the charge passes size s*=0.3 after grinding? (mill sizing, P80-style)",
         "¿Qué fracción de la carga pasa el tamaño s*=0.3 tras la molienda? (dimensionamiento de molinos, estilo P80)",
         "Passing fractions are integrals of the size distribution the net carries for EVERY grind rate: the operating chart in one object.",
         "Las fracciones pasantes son integrales de la distribución que la red lleva para CADA tasa de molienda: la carta de operación en un objeto.",
-        [item("passing fraction < 0.3 at t=1", "fracción pasante < 0.3 en t=1", values=vals_pass)],
+        [item("passing fraction < 0.3 at t=1", "fracción pasante < 0.3 en t=1", values=vals_pass, values_es=vals_pass_es)],
     )
 
     # ---- poll-ocean-transport: arrival + peak at a coast point from frames ----
@@ -259,7 +281,8 @@ def bake_all():
         "Tiempos de llegada y picos de exposición en cualquier punto se leen de un solo campo transportado; los escenarios what-if se re-evalúan al instante vía el tiempo paramétrico.",
         [
             item(f"arrival (half-peak) at ({xt}, {yt})", f"llegada (medio pico) en ({xt}, {yt})", value=f"t = {fmt(t_arr)}"),
-            item("peak concentration there (within t ≤ 1)", "concentración pico allí (dentro de t ≤ 1)", value=f"{pk:.3f} at t = {tpk:.2f}"),
+            item("peak concentration there (within t ≤ 1)", "concentración pico allí (dentro de t ≤ 1)",
+                 value=f"{pk:.3f} at t = {tpk:.2f}", value_es=f"{pk:.3f} en t = {tpk:.2f}"),
         ],
     )
 
@@ -303,7 +326,7 @@ def bake_all():
 
     # ---- bench-heat1d: t_half per alpha + closed form ----
     m = man("bench-heat1d")
-    vals_th = {}
+    vals_th, vals_th_es = {}, {}
     for v in m["variants"]:
         t = trace_of(m, v["id"])
         xs, ts = np.array(t["axes"]["x"]), np.array(t["axes"]["t"])
@@ -313,18 +336,19 @@ def bake_all():
         a = float(v["params"].get("alpha", 0))
         exact = np.log(2) / (a * np.pi ** 2) if a else None
         vals_th[v["id"]] = f"t = {fmt(th)} (exact {exact:.3f})" if (th is not None and exact and exact <= ts[-1]) else (f"t = {fmt(th)}" if th else "not in window")
+        vals_th_es[v["id"]] = f"t = {fmt(th)} (exacto {exact:.3f})" if (th is not None and exact and exact <= ts[-1]) else (f"t = {fmt(th)}" if th else "fuera de la ventana")
     QUESTIONS["bench-heat1d"] = set_estimate(
         "bench-heat1d",
         "How long until the centerline cools to half its initial temperature? (quench / cooling design)",
         "¿Cuánto tarda el centro en enfriarse a la mitad de su temperatura inicial? (diseño de enfriamiento)",
         "One parametric net answers the cooling time for EVERY diffusivity: cross-checked here against the closed form ln 2/(απ²).",
         "Una red paramétrica responde el tiempo de enfriamiento para CADA difusividad: verificado aquí contra la forma cerrada ln 2/(απ²).",
-        [item("centerline half-cooling time", "tiempo de medio enfriamiento del centro", values=vals_th)],
+        [item("centerline half-cooling time", "tiempo de medio enfriamiento del centro", values=vals_th, values_es=vals_th_es)],
     )
 
     # ---- bench-burgers1d: front arrival at x*=0 per nu ----
     m = man("bench-burgers1d")
-    vals_arr = {}
+    vals_arr, vals_arr_es = {}, {}
     for v in m["variants"]:
         t = trace_of(m, v["id"])
         xs, ts = np.array(t["axes"]["x"]), np.array(t["axes"]["t"])
@@ -337,13 +361,14 @@ def bake_all():
             front.append(xs[idx.max()] if len(idx) else xs[0])
         t_arr = crossing_time(ts, front, 0.0, rising=True)
         vals_arr[v["id"]] = f"t = {fmt(t_arr)} (exact 0.80)" if t_arr is not None else "not in window"
+        vals_arr_es[v["id"]] = f"t = {fmt(t_arr)} (exacto 0.80)" if t_arr is not None else "fuera de la ventana"
     QUESTIONS["bench-burgers1d"] = set_estimate(
         "bench-burgers1d",
         "When does the shock front arrive at the checkpoint x=0? (front-arrival estimation)",
         "¿Cuándo llega el frente de choque al punto x=0? (estimación de llegada de frentes)",
         "Arrival times are read off the tracked front; the viscosity family shares one net (the exact arrival is x*/s = 0.8 for every ν).",
         "Los tiempos de llegada se leen del frente rastreado; la familia de viscosidades comparte una red (la llegada exacta es x*/s = 0.8 para todo ν).",
-        [item("front (u=0.5) reaches x=0 at", "el frente (u=0.5) llega a x=0 en", values=vals_arr)],
+        [item("front (u=0.5) reaches x=0 at", "el frente (u=0.5) llega a x=0 en", values=vals_arr, values_es=vals_arr_es)],
     )
 
     # ---- bench-allencahn: interface positions at t=1 ----

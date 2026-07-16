@@ -97,17 +97,20 @@
    {
     "label_en": "k = 0.5: recovery at t=1, time to 90%",
     "label_es": "k = 0.5: recuperación en t=1, tiempo a 90%",
-    "value": "39.4%, R=90% not reached in window"
+    "value": "39.4%, R=90% not reached in window",
+    "value_es": "39.4%, R=90% no alcanzado en la ventana"
    },
    {
     "label_en": "k = 2.8: recovery at t=1, time to 90%",
     "label_es": "k = 2.8: recuperación en t=1, tiempo a 90%",
-    "value": "93.6%, t90 = 0.84"
+    "value": "93.6%, t90 = 0.84",
+    "value_es": "93.6%, t90 = 0.84"
    },
    {
     "label_en": "k = 5: recovery at t=1, time to 90%",
     "label_es": "k = 5: recuperación en t=1, tiempo a 90%",
-    "value": "99.3%, t90 = 0.46"
+    "value": "99.3%, t90 = 0.46",
+    "value_es": "99.3%, t90 = 0.46"
    }
   ]
  }

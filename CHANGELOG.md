@@ -3,6 +3,21 @@
 All notable changes to **PINN-Lab**. Format: `X.XX.XXX` (display), see `pinnlab.__version__`. Keep `0.x` while on
 synthetic/benchmark data. Tag every release.
 
+## [0.26.008] (2026-07-15) FIX: English leaked into the Spanish answers
+
+The estimate schema localized `question`, `why` and `label` but carried a single `value`, so every value that
+embeds prose rendered in English inside the Spanish app: "39.4%, R=90% not reached in window", "not in
+window", "356%: unrecoverable", "0.96 to 1.17", "0.077 at t = 1.00", "t = 0.70 (exact 0.702)", "n/a",
+"within the window: no", "σ = ... at (x=...)".
+
+- **Schema**: `EstimateItem` gains optional `value_es` / `values_es`; the app prefers them in Spanish and
+  falls back to `value` / `values`, which is what every pure-number value keeps using (no ES twin needed).
+- **Pipeline**: `build_estimates.py` `item()` takes `value_es` / `values_es`, and the 10 prose-carrying sites
+  now bake both readings. Re-baked training-free from the committed artifacts: the diff adds `value_es` /
+  `values_es` only, and **no metric, L2 or ONNX-parity number changed**.
+- Verified in the browser across both languages: no English in any Spanish value; the fit gate still passes
+  its 508 tab-checks with the longer Spanish strings.
+
 ## [0.26.007] (2026-07-15) FIX: the field map was clipped on its left edge (and its colorbar scale hidden)
 
 The `fv2` field kit pinned `.fv2-mapcol` to `fit.w`, the MAP's width. The row inside it is the map plus a

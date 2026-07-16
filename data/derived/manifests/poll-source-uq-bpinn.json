@@ -114,7 +114,8 @@
    {
     "label_en": "least-trusted spot (largest σ)",
     "label_es": "punto menos confiable (mayor σ)",
-    "value": "σ = 0.0186 at (x=0.30, t=0.00)"
+    "value": "σ = 0.0186 at (x=0.30, t=0.00)",
+    "value_es": "σ = 0.0186 en (x=0.30, t=0.00)"
    }
   ],
   "markers": [

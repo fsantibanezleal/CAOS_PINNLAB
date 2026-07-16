@@ -220,7 +220,8 @@
    {
     "label_en": "peak concentration there (within t ≤ 1)",
     "label_es": "concentración pico allí (dentro de t ≤ 1)",
-    "value": "0.077 at t = 1.00"
+    "value": "0.077 at t = 1.00",
+    "value_es": "0.077 en t = 1.00"
    }
   ],
   "markers": [
