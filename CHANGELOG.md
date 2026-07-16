@@ -3,6 +3,21 @@
 All notable changes to **PINN-Lab**. Format: `X.XX.XXX` (display), see `pinnlab.__version__`. Keep `0.x` while on
 synthetic/benchmark data. Tag every release.
 
+## [0.26.009] (2026-07-15) FIX: the equations rendered English inside the Spanish app
+
+Each case ships one `governing_equations` LaTeX string. The math is language-neutral, but the prose inside
+`\text{...}` was English only, so the Spanish app rendered "rate constant", "recover k from sparse T obs",
+"validate vs held-out 10/20/50 cm", "degenerate above", "deep ensemble". 18 of the 21 cases carried such
+annotations (24 distinct phrases).
+
+- **New step** `data-pipeline/localize_equations.py`: rewrites ONLY the `\text{...}` payloads through an
+  explicit phrase map and bakes `governing_equations_es` beside the untouched original. Training-free and
+  deterministic. It FAILS LOUDLY on an unknown annotation, so a new case cannot silently ship English.
+- **Schema/app**: `governing_equations_es?` added to the contract; the equation row prefers it in Spanish and
+  falls back for the 3 pure-math cases that need no twin.
+- Verified in-browser across 10 cases: no English left in any Spanish equation; the math is byte-identical.
+  The fit gate still passes its 508 tab-checks with the longer Spanish strings.
+
 ## [0.26.008] (2026-07-15) FIX: English leaked into the Spanish answers
 
 The estimate schema localized `question`, `why` and `label` but carried a single `value`, so every value that

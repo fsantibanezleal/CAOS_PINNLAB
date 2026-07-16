@@ -91,5 +91,6 @@
     "value": "1.03 °C RMSE"
    }
   ]
- }
+ },
+ "governing_equations_es": "T_t=\\alpha\\,T_{zz},\\ z\\in[5,100]\\,\\mathrm{cm};\\ \\text{5 \\& 100 cm = bordes de Dirichlet reales},\\ \\text{recuperar }\\alpha,\\ \\text{validar contra 10/20/50 cm retenidos}"
 }

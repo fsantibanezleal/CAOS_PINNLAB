@@ -279,5 +279,6 @@
     }
    ]
   }
- }
+ },
+ "governing_equations_es": "\\partial_t u = \\alpha\\,\\partial_{xx} u\\ \\text{en}\\ (0,1)\\times(0,1],\\ u(x,0)=\\sin(\\pi x),\\ u(0,t)=u(1,t)=0;\\ u^*=e^{-\\alpha\\pi^2 t}\\sin(\\pi x)"
 }

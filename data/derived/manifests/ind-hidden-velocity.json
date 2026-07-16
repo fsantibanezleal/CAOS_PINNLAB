@@ -246,5 +246,6 @@
     "label_es": "centro verdadero"
    }
   ]
- }
+ },
+ "governing_equations_es": "c_t + \\mathbf{u}\\cdot\\nabla c = D\\nabla^2 c,\\ \\ \\nabla\\cdot\\mathbf{u}=0;\\ \\ \\text{recuperar }\\mathbf{u}(x,y)\\text{ desde datos dispersos y ruidosos }c\\text{ muestras};\\ \\mathbf{u}^*=A(\\sin\\pi x\\cos\\pi y,\\,-\\cos\\pi x\\sin\\pi y)"
 }

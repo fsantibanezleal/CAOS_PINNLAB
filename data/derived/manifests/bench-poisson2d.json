@@ -271,5 +271,6 @@
     }
    ]
   }
- }
+ },
+ "governing_equations_es": "-\\nabla^2 u = f(x,y;k)\\ \\text{en}\\ (0,1)^2,\\ u|_{\\partial\\Omega}=0;\\quad u^*=g(x)g(y),\\ g(t)=t(1-t)\\sin(k\\pi t)"
 }

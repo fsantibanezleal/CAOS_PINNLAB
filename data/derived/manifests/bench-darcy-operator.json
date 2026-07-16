@@ -225,5 +225,6 @@
     }
    }
   ]
- }
+ },
+ "governing_equations_es": "-\\nabla\\!\\cdot(a(\\mathbf{x})\\nabla u)=1,\\ u|_{\\partial\\Omega}=0\\ \\text{en}\\ (0,1)^2;\\ \\text{aprender el operador}\\ \\mathcal{G}_\\theta: a\\mapsto u\\ \\text{(FNO)}"
 }

@@ -113,5 +113,6 @@
     "value_es": "99.3%, t90 = 0.46"
    }
   ]
- }
+ },
+ "governing_equations_es": "\\partial_t C = -k\\,C,\\ C(k,0)=1\\ \\Rightarrow\\ C^*=e^{-k t},\\ R=1-C;\\ k\\in[0.5,5]\\ (\\text{constante cinética})"
 }

@@ -231,5 +231,6 @@
     "value_es": "0.96 a 1.17"
    }
   ]
- }
+ },
+ "governing_equations_es": "\\partial_t c_i + \\mathbf{v}\\cdot\\nabla c_i = D\\nabla^2 c_i - k_f c_A c_B + f_i,\\ \\mathbf{v}=(0,1),\\ D=0.05,\\ k_f=1\\ \\text{en}\\ (0,1)^2\\times(0,1]"
 }

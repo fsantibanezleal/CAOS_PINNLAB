@@ -98,5 +98,6 @@
     "label_es": "núcleo del vórtice"
    }
   ]
- }
+ },
+ "governing_equations_es": "(\\mathbf{u}\\cdot\\nabla)\\mathbf{u} = -\\tfrac1\\rho\\nabla p + \\nu\\nabla^2\\mathbf{u},\\ \\nabla\\cdot\\mathbf{u}=0,\\ \\text{Re}=100\\ \\text{en}\\ (0,1)^2"
 }
