@@ -6,7 +6,7 @@ export function DarcyOperatorContext({ lang }: { lang: "en" | "es" }) {
   const es = lang === "es";
   return es ? (
     <>
-      <h2>El problema: aprender el OPERADOR de Darcy: un FNO que resuelve toda una familia</h2>
+      <h2>El problema: aprender el operador de Darcy: un FNO que resuelve toda una familia</h2>
       <p>
         <strong>El problema.</strong> El flujo de Darcy en un medio poroso (un acuífero, un lecho de roca) cumple
         <InlineMath tex={String.raw`-\nabla\!\cdot\big(a(\mathbf{x})\,\nabla u\big)=1`} />, con presión
@@ -53,7 +53,7 @@ export function DarcyOperatorContext({ lang }: { lang: "en" | "es" }) {
         <InlineMath tex={String.raw`u_{\mathrm{ref}}`} /> es una verdad numérica fiel para cada <InlineMath tex={String.raw`a`} />.
       </p>
 
-      <h3>El método: aprendizaje de OPERADOR, no un PINN por instancia</h3>
+      <h3>El método: aprendizaje de operador, no un PINN por instancia</h3>
       <p>
         Esta es la <em>única</em> ficha del catálogo que <strong>no</strong> entrena un PINN para un problema de
         contorno único. Un PINN aprende <em>una</em> función <InlineMath tex={String.raw`u(\mathbf{x})`} /> para
@@ -97,21 +97,21 @@ export function DarcyOperatorContext({ lang }: { lang: "en" | "es" }) {
         que generaliza sobre <em>toda</em> la familia.
       </p>
       <p>
-        <strong>Cómo leer y usar la viz.</strong> Usa el <strong>selector de salida</strong> para alternar entre
+        <strong>Cómo leer y usar la viz.</strong> El <strong>selector de salida</strong> alterna entre
         <InlineMath tex={String.raw`a`} /> (la entrada), <InlineMath tex={String.raw`u_{\mathrm{pred}}`} /> (lo que dice
-        el FNO) y <InlineMath tex={String.raw`u_{\mathrm{true}}`} /> (la verdad numérica); compara
-        <InlineMath tex={String.raw`u_{\mathrm{pred}}`} /> con <InlineMath tex={String.raw`u_{\mathrm{true}}`} /> para
-        ver dónde el operador acierta y dónde se desvía (típicamente en las interfaces más afiladas). Al pasar el cursor para
-        leer valores exactos y mira los <strong>perfiles de corte</strong>. Los <strong>chips</strong> saltan entre
+        el FNO) y <InlineMath tex={String.raw`u_{\mathrm{true}}`} /> (la verdad numérica); comparar
+        <InlineMath tex={String.raw`u_{\mathrm{pred}}`} /> con <InlineMath tex={String.raw`u_{\mathrm{true}}`} />
+        muestra dónde el operador acierta y dónde se desvía (típicamente en las interfaces más afiladas). Al pasar el cursor
+        se leen valores exactos y se muestran los <strong>perfiles de corte</strong>. Los <strong>chips</strong> saltan entre
         instancias retenidas; cada uno reporta su propia L2 además de la L2 del conjunto de prueba (la métrica titular,
-        igual en todos los chips). Como el FNO es un mapa <strong>campo to campo</strong> (no de coordenadas), el tab
+        igual en todos los chips). Como el FNO es un mapa <strong>campo a campo</strong> (no de coordenadas), el tab
         <strong> Live</strong> reproduce los campos precalculados: no hay deslizador de coordenadas, y eso es correcto para
         un operador: el ONNX precalculado es el propio grafo del FNO, verificado por paridad a 1.8e-6 (máx abs).
       </p>
     </>
   ): (
     <>
-      <h2>The problem: learning the Darcy OPERATOR: one FNO that solves a whole family</h2>
+      <h2>The problem: learning the Darcy operator: one FNO that solves a whole family</h2>
       <p>
         <strong>The problem.</strong> Darcy flow in a porous medium (an aquifer, a rock bed) satisfies
         <InlineMath tex={String.raw`-\nabla\!\cdot\big(a(\mathbf{x})\,\nabla u\big)=1`} />, with pressure
@@ -129,7 +129,7 @@ export function DarcyOperatorContext({ lang }: { lang: "en" | "es" }) {
         <li><strong>Domain:</strong> the unit square <InlineMath tex={String.raw`(x,y)\in[0,1]^2`} />, a <InlineMath tex={String.raw`32\times32`} /> field grid.</li>
         <li><strong>Input (the coefficient function):</strong> the permeability field <InlineMath tex={String.raw`a(\mathbf{x})`} />, a Gaussian random field thresholded to two values <InlineMath tex={String.raw`\{3,12\}`} />: sharp material interfaces (channels).</li>
         <li><strong>Output (the solution):</strong> the Darcy pressure <InlineMath tex={String.raw`u(\mathbf{x})`} />, with <InlineMath tex={String.raw`u=0`} /> on <InlineMath tex={String.raw`\partial\Omega`} />.</li>
-        <li><strong>The operator:</strong> <InlineMath tex={String.raw`\mathcal{G}_\theta:a\mapsto u`} />: NOT a function of coordinates, but a learned <em>field-to-field</em> map fit on many <InlineMath tex={String.raw`(a,u)`} /> pairs.</li>
+        <li><strong>The operator:</strong> <InlineMath tex={String.raw`\mathcal{G}_\theta:a\mapsto u`} />: not a function of coordinates, but a learned <em>field-to-field</em> map fit on many <InlineMath tex={String.raw`(a,u)`} /> pairs.</li>
         <li><strong>Variants (chips):</strong> six <em>held-out</em> permeability fields <InlineMath tex={String.raw`a`} /> the FNO never saw at training: each chip is a new instance.</li>
       </ul>
 
@@ -158,7 +158,7 @@ export function DarcyOperatorContext({ lang }: { lang: "en" | "es" }) {
         is a faithful numerical truth for each <InlineMath tex={String.raw`a`} />.
       </p>
 
-      <h3>The method: OPERATOR learning, not a per-instance PINN</h3>
+      <h3>The method: operator learning, not a per-instance PINN</h3>
       <p>
         This is the <em>only</em> case in the catalogue that does <strong>not</strong> train a PINN for a single
         boundary-value problem. A PINN learns <em>one</em> function <InlineMath tex={String.raw`u(\mathbf{x})`} /> for
@@ -186,7 +186,7 @@ export function DarcyOperatorContext({ lang }: { lang: "en" | "es" }) {
         2021) and the reference pressure is a numerical (finite-difference) solve, not real field data.
         <strong> Out of scope:</strong> continuous / log-normal permeability, anisotropy or permeability tensors,
         non-unit sources, 3D, transients, and operator uncertainty quantification. The numbers are
-        <strong> operator-generalization</strong> figures (L2 ~5.5% held-out mean, per-sample mostly 2-10%), NOT the <InlineMath tex={String.raw`10^{-2}`} /> of
+        <strong> operator-generalization</strong> figures (L2 ~5.5% held-out mean, per-sample mostly 2-10%), not the <InlineMath tex={String.raw`10^{-2}`} /> of
         a PINN fit to one instance: labeled as such, not inflated.
       </p>
 

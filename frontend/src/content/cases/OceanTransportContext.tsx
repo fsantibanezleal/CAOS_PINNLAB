@@ -62,11 +62,11 @@ export function OceanTransportContext({ lang }: { lang: "en" | "es" }) {
       </p>
       <p>
         <strong>Cómo leer y usar la viz.</strong> El <strong>heatmap</strong> de <InlineMath tex={String.raw`c(x,y)`} />
-        en un instante muestra la mancha como un disco brillante sobre fondo oscuro; pasa el cursor para leer la
+        en un instante muestra la mancha como un disco brillante sobre fondo oscuro; al pasar el cursor se lee la
         concentración exacta en cualquier punto y los <strong>perfiles de corte</strong> en <InlineMath tex={String.raw`x`} />
         e <InlineMath tex={String.raw`y`} /> dan las campanas gaussianas (su ancho = la dispersión, su altura = la
-        dilución). Los <strong>chips</strong> saltan a cada instante; en <strong>Live</strong>, arrastra
-        <InlineMath tex={String.raw`t`} /> como un <em>scrubber</em> y ve el vertido derivar y dispersarse en vivo en tu
+        dilución). Los <strong>chips</strong> saltan a cada instante; en <strong>Live</strong>, al arrastrar
+        <InlineMath tex={String.raw`t`} /> como un <em>scrubber</em> el vertido deriva y se dispersa en vivo en el
         navegador (onnxruntime-web). El ONNX del navegador coincide con la red entrenada a 4.8e-7 (máx abs), así que el
         scrubber en vivo es el mismo solucionador, no una aproximación.
       </p>
@@ -80,7 +80,7 @@ export function OceanTransportContext({ lang }: { lang: "en" | "es" }) {
         equation <InlineMath tex={String.raw`c_t + \mathbf{v}\cdot\nabla c = D\nabla^2 c`} /> governs the concentration
         <InlineMath tex={String.raw`c(x,y,t)`} />. Here <strong>time</strong> is the swept parameter: a single network
         learns the whole history <InlineMath tex={String.raw`c(x,y;t)`} />, and in the <strong>Live</strong> tab the
-        <InlineMath tex={String.raw`t`} /> slider acts as a <strong>time scrubber</strong>: you watch the patch drift
+        <InlineMath tex={String.raw`t`} /> slider acts as a <strong>time scrubber</strong>: the patch drifts
         and dilute frame by frame.
       </p>
 
@@ -115,7 +115,7 @@ export function OceanTransportContext({ lang }: { lang: "en" | "es" }) {
       <h3>Scope &amp; assumptions</h3>
       <p>
         <strong>Modeled:</strong> a passive scalar, constant uniform current, isotropic diffusion, a single Gaussian
-        release. It is <em>illustrative-synthetic</em>: physically faithful but NOT fit to a real spill or a real
+        release. It is <em>illustrative-synthetic</em>: physically faithful but not fit to a real spill or a real
         ocean-current product. <strong>Out of scope:</strong> rotating / time-varying currents, anisotropic or
         state-dependent diffusion, pollutant reaction/decay, and bathymetry or coastline. The open boundary lets mass
         leave (the patch may touch the far edge), as at a coast.
@@ -135,7 +135,7 @@ export function OceanTransportContext({ lang }: { lang: "en" | "es" }) {
         <InlineMath tex={String.raw`x`} /> and <InlineMath tex={String.raw`y`} /> give the Gaussian bells (their width =
         the dispersion, their height = the dilution). The <strong>chips</strong> jump to each instant; in
         <strong> Live</strong>, drag <InlineMath tex={String.raw`t`} /> like a <em>scrubber</em> and watch the spill
-        drift and disperse live in your browser (onnxruntime-web). The browser ONNX matches the trained network to
+        drift and disperse live in the browser (onnxruntime-web). The browser ONNX matches the trained network to
         4.8e-7 (max abs), so the live scrubber is the same solver, not an approximation.
       </p>
     </>

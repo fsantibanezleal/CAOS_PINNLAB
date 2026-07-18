@@ -75,8 +75,8 @@ export function TrainingKit({ manifest, lang }: { manifest: CaseManifest; lang: 
     <div className="train-kit">
       <p className="dim-caption">
         {es
-          ? "MÍRALO APRENDER: el campo de cada carril en checkpoints REALES de entrenamiento, lado a lado, misma escala de color. La patología de entrenamiento se ve como dinámica: el carril ingenuo no converge; el adaptado sí."
-          : "WATCH IT LEARN: each lane's field at REAL training checkpoints, side by side, one colour scale. The training pathology becomes visible dynamics: the naive lane fails to converge; the adapted lane snaps on."}
+          ? "La red aprendiendo: el campo de cada carril en checkpoints reales de entrenamiento, lado a lado, misma escala de color. La patología de entrenamiento se ve como dinámica: el carril ingenuo no converge; el adaptado sí."
+          : "The network learning: each lane's field at real training checkpoints, side by side, one colour scale. The training pathology becomes visible dynamics: the naive lane fails to converge; the adapted lane snaps on."}
       </p>
       <Transport anim={anim} lang={lang} axisLabel={es ? "iteración" : "iteration"} axisValue={cps[f] ?? 0} fmt={fmtCount} />
       <div className="train-panels">

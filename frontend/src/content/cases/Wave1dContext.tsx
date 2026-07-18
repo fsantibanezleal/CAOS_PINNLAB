@@ -36,7 +36,7 @@ export function Wave1dContext({ lang }: { lang: "en" | "es" }) {
       <p>
         La frecuencia temporal <InlineMath tex={String.raw`c\pi`} /> sale de sustituir el modo en la EDP. La PINN
         <InlineMath tex={String.raw`u_\theta(x,t,c)`} /> usa <strong>activaciones senoidales (SIREN)</strong> como
-        remedio al sesgo espectral de la solución oscilatoria, y satisface las DOS ICs + las BC de forma
+        remedio al sesgo espectral de la solución oscilatoria, y satisface las dos ICs + las BC de forma
         <strong>exacta</strong> por una restricción dura:
       </p>
       <Equation tex={String.raw`u_\theta = \sin(\pi x) + t^2\,x(1-x)\,\mathcal{N}_\theta(x,t,c).`} />
@@ -69,12 +69,12 @@ export function Wave1dContext({ lang }: { lang: "en" | "es" }) {
       <p>
         <strong>Cómo leer y usar la viz.</strong> El <strong>heatmap</strong> de
         <InlineMath tex={String.raw`u(x,t)`} /> (x horizontal, t vertical) muestra <em>franjas diagonales/onduladas</em>
-      : el patrón espacio-tiempo de la onda, alternando crestas (claro) y valles (oscuro). Al pasar el cursor para leer
-        el desplazamiento exacto y mira el <strong>perfil de corte</strong> en <InlineMath tex={String.raw`t`} /> (un
+      : el patrón espacio-tiempo de la onda, alternando crestas (claro) y valles (oscuro). Al pasar el cursor se lee
+        el desplazamiento exacto y se muestra el <strong>perfil de corte</strong> en <InlineMath tex={String.raw`t`} /> (un
         coseno) y en <InlineMath tex={String.raw`x`} /> (la forma senoidal). Los <strong>chips</strong> cargan cada
-        velocidad; en <strong>Live</strong>, desliza <InlineMath tex={String.raw`c`} /> y ve la onda recalcularse en
-        vivo en tu navegador (onnxruntime-web). El ONNX exportado coincide con la red entrenada a unos 7e-7, así que la
-        lectura Live es la misma solución que ves en los chips precalculados.
+        velocidad; en <strong>Live</strong>, al deslizar <InlineMath tex={String.raw`c`} /> la onda se recalcula en
+        vivo en el navegador (onnxruntime-web). El ONNX exportado coincide con la red entrenada a unos 7e-7, así que la
+        lectura Live es la misma solución que la de los chips precalculados.
       </p>
     </>
   ): (
@@ -109,7 +109,7 @@ export function Wave1dContext({ lang }: { lang: "en" | "es" }) {
       <p>
         The temporal frequency <InlineMath tex={String.raw`c\pi`} /> follows from substituting the mode into the PDE.
         The PINN <InlineMath tex={String.raw`u_\theta(x,t,c)`} /> uses <strong>sinusoidal activations (SIREN)</strong> as
-        the spectral-bias remedy for the oscillatory solution, and satisfies the TWO ICs + BCs <strong>exactly</strong>
+        the spectral-bias remedy for the oscillatory solution, and satisfies the two ICs + BCs <strong>exactly</strong>
         by a hard constraint:
       </p>
       <Equation tex={String.raw`u_\theta = \sin(\pi x) + t^2\,x(1-x)\,\mathcal{N}_\theta(x,t,c).`} />
@@ -145,9 +145,9 @@ export function Wave1dContext({ lang }: { lang: "en" | "es" }) {
         space-time pattern of the wave, alternating crests (light) and troughs (dark). Hover to read the exact
         displacement and watch the <strong>line-cut profile</strong> in <InlineMath tex={String.raw`t`} /> (a cosine)
         and in <InlineMath tex={String.raw`x`} /> (the sine shape). The <strong>chips</strong> load each speed; in
-        <strong>Live</strong>, slide <InlineMath tex={String.raw`c`} /> and watch the wave recompute live in your
+        <strong>Live</strong>, slide <InlineMath tex={String.raw`c`} /> and watch the wave recompute live in the
         browser (onnxruntime-web). The exported ONNX matches the trained net to about 7e-7, so the Live readout is the
-        same solution you see in the baked chips.
+        same solution shown in the baked chips.
       </p>
     </>
   );

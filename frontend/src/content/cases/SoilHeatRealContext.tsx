@@ -1,19 +1,19 @@
 import { Equation, InlineMath } from "../../components/Equation";
 
-/** Deep bilingual Context for env-soil-heat-real (inverse thermal-diffusivity recovery from REAL USCRN soil
+/** Deep bilingual Context for env-soil-heat-real (inverse thermal-diffusivity recovery from real USCRN soil
  *  temperatures; the single validated-real benchmark: recover alpha, validate out-of-sample). */
 export function SoilHeatRealContext({ lang }: { lang: "en" | "es" }) {
   const es = lang === "es";
   return es ? (
     <>
-      <h2>El problema: recuperar la difusividad térmica del suelo a partir de temperaturas REALES</h2>
+      <h2>El problema: recuperar la difusividad térmica del suelo a partir de temperaturas reales</h2>
       <p>
         <strong>El problema.</strong> El calor estacional entra por la superficie del suelo y se propaga hacia abajo
         por <em>conducción difusiva</em>. La onda térmica se <strong>amortigua</strong> y se <strong>retrasa en
         fase</strong> con la profundidad: a 100 cm, el verano llega semanas más tarde y mucho más suave que a 5 cm. La
         física es la ecuación del calor 1D, <InlineMath tex={String.raw`T_t=\alpha\,T_{zz}`} />, con una única constante
         material desconocida: la <strong>difusividad térmica</strong> <InlineMath tex={String.raw`\alpha`} />. Este es el
-        <strong> único caso entrenado contra un conjunto de datos REAL medido</strong>: temperaturas diarias de suelo de
+        <strong> único caso entrenado contra un conjunto de datos real medido</strong>: temperaturas diarias de suelo de
         la red NOAA USCRN. Los datos se descargan una sola vez del archivo abierto de NOAA y se usan sin conexión
         (esquema pinnlab.dataset.uscrn/v1, 0% de faltantes en 2021), de modo que el entrenamiento es reproducible y la CI
         no necesita red. Planteamos un problema <strong>inverso</strong>: tomamos dos sensores como contornos reales,
@@ -26,7 +26,7 @@ export function SoilHeatRealContext({ lang }: { lang: "en" | "es" }) {
         <li><strong>Dominio:</strong> profundidad <InlineMath tex={String.raw`z`} /> de 5 a 100 cm (normalizada a <InlineMath tex={String.raw`[0,1]`} />) × tiempo <InlineMath tex={String.raw`t`} /> sobre 2019-2021 (estación IL_Champaign_9_SW).</li>
         <li><strong>Incógnita de campo:</strong> la temperatura <InlineMath tex={String.raw`T(z,t)`} /> (normalizada; el heatmap del campo es <InlineMath tex={String.raw`49\times81`} />).</li>
         <li><strong>Incógnita escalar (lo inverso):</strong> la difusividad térmica efectiva <InlineMath tex={String.raw`\alpha`} />: un <em>parámetro entrenable</em>, no un input.</li>
-        <li><strong>Contornos REALES (Dirichlet):</strong> los sensores de 5 cm y 100 cm imponen <InlineMath tex={String.raw`T`} /> en <InlineMath tex={String.raw`z=0`} /> y <InlineMath tex={String.raw`z=1`} /> como series de tiempo medidas.</li>
+        <li><strong>Contornos reales (Dirichlet):</strong> los sensores de 5 cm y 100 cm imponen <InlineMath tex={String.raw`T`} /> en <InlineMath tex={String.raw`z=0`} /> y <InlineMath tex={String.raw`z=1`} /> como series de tiempo medidas.</li>
         <li><strong>Ancla de validación (held-out):</strong> los sensores de 10, 20 y 50 cm: profundidades interiores <em>nunca</em> mostradas al optimizador.</li>
       </ul>
 
@@ -109,7 +109,7 @@ export function SoilHeatRealContext({ lang }: { lang: "en" | "es" }) {
         <strong>Cómo leer y usar la viz.</strong> El <strong>heatmap</strong> de <InlineMath tex={String.raw`T(z,t)`} />
         (profundidad en un eje, tiempo en el otro) muestra bandas cálidas y frías que se inclinan con la profundidad: 
         esa inclinación <em>es</em> el retraso de fase, y el desvanecimiento del contraste hacia abajo <em>es</em> el
-        amortiguamiento. Al pasar el cursor para leer la temperatura exacta en cualquier (profundidad, fecha); mira el
+        amortiguamiento. Al pasar el cursor se lee la temperatura exacta en cualquier (profundidad, fecha); se muestra el
         <strong> perfil de corte</strong> a profundidad fija (la onda anual, cada vez más suave al bajar) y a fecha fija
         (cómo cae la temperatura con la profundidad en invierno y sube en verano). Como es un benchmark de parámetro
         fijo, el tab <strong>Live</strong> re-evalúa la red entrenada (la misma física, vía onnxruntime-web), sin
@@ -119,14 +119,14 @@ export function SoilHeatRealContext({ lang }: { lang: "en" | "es" }) {
     </>
   ): (
     <>
-      <h2>The problem: recover the soil's thermal diffusivity from REAL temperatures</h2>
+      <h2>The problem: recover the soil's thermal diffusivity from real temperatures</h2>
       <p>
         <strong>The problem.</strong> Seasonal heat enters at the soil surface and propagates downward by
         <em> diffusive conduction</em>. The thermal wave is <strong>damped</strong> and <strong>phase-lagged</strong>
         with depth: at 100 cm, summer arrives weeks later and far smoother than at 5 cm. The physics is the 1D heat
         equation, <InlineMath tex={String.raw`T_t=\alpha\,T_{zz}`} />, with a single unknown material constant: the
         <strong> thermal diffusivity</strong> <InlineMath tex={String.raw`\alpha`} />. This is the <strong>only case
-        trained against a REAL measured dataset</strong>: daily soil temperatures from NOAA's U.S. Climate Reference
+        trained against a real measured dataset</strong>: daily soil temperatures from NOAA's U.S. Climate Reference
         Network. The data is vendored once from NOAA's open archive and used offline (schema
         pinnlab.dataset.uscrn/v1, 0% missing in 2021), so training is reproducible and CI needs no network. We pose an
         <strong> inverse</strong> problem: take two sensors as real boundaries, recover
@@ -138,7 +138,7 @@ export function SoilHeatRealContext({ lang }: { lang: "en" | "es" }) {
         <li><strong>Domain:</strong> depth <InlineMath tex={String.raw`z`} /> from 5 to 100 cm (normalised to <InlineMath tex={String.raw`[0,1]`} />) × time <InlineMath tex={String.raw`t`} /> over 2019-2021 (station IL_Champaign_9_SW).</li>
         <li><strong>Field unknown:</strong> the temperature <InlineMath tex={String.raw`T(z,t)`} /> (normalised; the field heatmap is <InlineMath tex={String.raw`49\times81`} />).</li>
         <li><strong>Scalar unknown (the inverse part):</strong> the effective thermal diffusivity <InlineMath tex={String.raw`\alpha`} />: a <em>trainable parameter</em>, not an input.</li>
-        <li><strong>REAL boundaries (Dirichlet):</strong> the 5 cm and 100 cm sensors impose <InlineMath tex={String.raw`T`} /> at <InlineMath tex={String.raw`z=0`} /> and <InlineMath tex={String.raw`z=1`} /> as measured time series.</li>
+        <li><strong>real boundaries (Dirichlet):</strong> the 5 cm and 100 cm sensors impose <InlineMath tex={String.raw`T`} /> at <InlineMath tex={String.raw`z=0`} /> and <InlineMath tex={String.raw`z=1`} /> as measured time series.</li>
         <li><strong>Validation anchor (held-out):</strong> the 10, 20 and 50 cm sensors: interior depths <em>never</em> shown to the optimizer.</li>
       </ul>
 
@@ -160,7 +160,7 @@ export function SoilHeatRealContext({ lang }: { lang: "en" | "es" }) {
       <p>
         The expected physical range for typical mineral soils is
         <InlineMath tex={String.raw`\alpha\approx0.2\text{-}0.8\,\mathrm{mm^2/s}`} />; a recovered value outside that band
-        would be a red flag. The honest metric is NOT the residual but the <strong>out-of-sample error</strong>: the
+        would be a red flag. The honest metric is not the residual but the <strong>out-of-sample error</strong>: the
         relative-L2 and the RMSE in degrees Celsius against the real 10/20/50 cm interior temperatures.
       </p>
 
@@ -218,7 +218,7 @@ export function SoilHeatRealContext({ lang }: { lang: "en" | "es" }) {
         <InlineMath tex={String.raw`T(z,t)`} /> (depth on one axis, time on the other) shows warm and cold bands that
         tilt with depth: that tilt <em>is</em> the phase lag, and the fading contrast going downward <em>is</em> the
         damping. Hover to read the exact temperature at any (depth, date); watch the <strong>line-cut profile</strong> at
-        fixed depth (the annual wave, ever smoother as you go down) and at a fixed date (how temperature falls with depth
+        fixed depth (the annual wave, ever smoother with depth) and at a fixed date (how temperature falls with depth
         in winter and rises in summer). Since it is a fixed-parameter benchmark, the <strong>Live</strong> tab
         re-evaluates the trained network (the same physics, via onnxruntime-web), with no parameter slider; the recovered
         <InlineMath tex={String.raw`\alpha`} /> and the out-of-sample RMSEs accompany the field as the honest figures of

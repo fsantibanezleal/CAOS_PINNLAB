@@ -239,7 +239,7 @@ export function VectorFieldKit({ manifest, trace, active, lang }: KitProps) {
       <div className="vf-readout mono">
         {hover
           ? <>{fa[0]}={hover.x.toFixed(3)} {fa[1]}={hover.y.toFixed(3)} → <strong>u={hover.u.toFixed(3)} v={hover.v.toFixed(3)} |U|={Math.hypot(hover.u, hover.v).toFixed(3)} p={hover.p.toFixed(3)}</strong></>
-         : <span className="muted">{es ? "pasa el cursor para leer (u, v, |U|, p) · líneas blancas = streamlines del flujo": "hover to read (u, v, |U|, p) · white lines = flow streamlines"}</span>}
+         : <span className="muted">{es ? "pasar el cursor para leer (u, v, |U|, p) · líneas blancas = streamlines del flujo": "hover to read (u, v, |U|, p) · white lines = flow streamlines"}</span>}
       </div>
       <p className="hint">
         {es

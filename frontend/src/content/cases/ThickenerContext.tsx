@@ -97,12 +97,12 @@ export function ThickenerContext({ lang }: { lang: "en" | "es" }) {
         (z vertical = altura de la columna, t horizontal) muestra una <em>banda diagonal</em>: el sobrenadante claro
         (<InlineMath tex={String.raw`\phi`} /> bajo) arriba, el lecho concentrado (<InlineMath tex={String.raw`\phi`} />
         alto) abajo, y la interfase descendiendo entre ambos: su <em>pendiente</em> es la tasa
-        <InlineMath tex={String.raw`R`} /> y su <em>nitidez</em> es el grosor <InlineMath tex={String.raw`W`} />. Pasa el
-        cursor para leer la fracción de sólidos exacta y mira el <strong>perfil de corte</strong> en
-        <InlineMath tex={String.raw`z`} /> (la forma <InlineMath tex={String.raw`\tanh`} /> de la interfase, clarificado to lecho)
+        <InlineMath tex={String.raw`R`} /> y su <em>nitidez</em> es el grosor <InlineMath tex={String.raw`W`} />. Al pasar el
+        cursor se lee la fracción de sólidos exacta y se muestra el <strong>perfil de corte</strong> en
+        <InlineMath tex={String.raw`z`} /> (la forma <InlineMath tex={String.raw`\tanh`} /> de la interfase, de clarificado a lecho)
         y en <InlineMath tex={String.raw`t`} /> (cuándo pasa el frente por una altura fija). Los <strong>chips</strong>
-        cargan cada tasa de descenso; en <strong>Live</strong>, desliza <InlineMath tex={String.raw`R`} /> y ve la
-        mud-line caer más rápido o más lento en vivo en tu navegador (onnxruntime-web).
+        cargan cada tasa de descenso; en <strong>Live</strong>, al deslizar <InlineMath tex={String.raw`R`} /> la
+        mud-line cae más rápido o más lento en vivo en el navegador (onnxruntime-web).
       </p>
     </>
   ): (
@@ -203,7 +203,7 @@ export function ThickenerContext({ lang }: { lang: "en" | "es" }) {
         <strong> line-cut profile</strong> in <InlineMath tex={String.raw`z`} /> (the <InlineMath tex={String.raw`\tanh`} />
         interface shape, clarified to bed) and in <InlineMath tex={String.raw`t`} /> (when the front passes a fixed height).
         The <strong>chips</strong> load each descent rate; in <strong>Live</strong>, slide
-        <InlineMath tex={String.raw`R`} /> and watch the mud-line fall faster or slower live in your browser
+        <InlineMath tex={String.raw`R`} /> and watch the mud-line fall faster or slower live in the browser
         (onnxruntime-web).
       </p>
     </>

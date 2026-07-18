@@ -50,7 +50,7 @@ export function AllenCahnContext({ lang }: { lang: "en" | "es" }) {
       </p>
       <Equation tex={String.raw`u_\theta = \underbrace{x^2\cos(\pi x)}_{=\,u(x,0)} + \underbrace{t\,(1-x^2)}_{\text{se anula en }t=0,\ x=\pm1}\,\mathcal{N}_\theta(x,t).`} />
       <ul>
-        <li><strong>Restricción dura (hard constraint):</strong> la IC se hornea en el ansatz, así <InlineMath tex={String.raw`u_\theta(x,0)=u(x,0)`} /> <em>exactamente</em> y los bordes quedan acoplados: sin términos de pérdida de IC/BC que compitan.</li>
+        <li><strong>Restricción dura (hard constraint):</strong> la IC se incorpora en el ansatz, así <InlineMath tex={String.raw`u_\theta(x,0)=u(x,0)`} /> <em>exactamente</em> y los bordes quedan acoplados: sin términos de pérdida de IC/BC que compitan.</li>
         <li><strong>RAR (refinamiento adaptativo por residual):</strong> tras el ajuste base Adam y luego L-BFGS, <strong>4 rondas</strong> de refinamiento voraz: cada ronda muestrea un pool de 100.000 puntos, añade los <strong>600 puntos</strong> de mayor residual como anclas, y reajusta (5.000 iteraciones de Adam); un <strong>L-BFGS final único</strong> pule tras el bucle, concentrando la densidad de colocación justo sobre la capa delgada móvil.</li>
       </ul>
       <p>
@@ -60,7 +60,7 @@ export function AllenCahnContext({ lang }: { lang: "en" | "es" }) {
       <p>
         Arquitectura: una FNN tanh <InlineMath tex={String.raw`[2,64,64,64,1]`} /> con 8.000 puntos de dominio / 400 de
         borde / 800 iniciales, Adam (lr 1e-3, 20.000 iteraciones) y luego L-BFGS antes del bucle RAR. El RAR recortado
-        (4 rondas más un L-BFGS final único en vez de 6 L-BFGS por ronda) hornea mucho más rápido para la misma
+        (4 rondas más un L-BFGS final único en vez de 6 L-BFGS por ronda) precalcula mucho más rápido para la misma
         precisión honesta sub-1%.
       </p>
 
@@ -96,8 +96,8 @@ export function AllenCahnContext({ lang }: { lang: "en" | "es" }) {
       <p>
         <strong>Cómo leer y usar la viz.</strong> El <strong>heatmap</strong> de <InlineMath tex={String.raw`u(x,t)`} />
         (x horizontal, t vertical) muestra las mesetas <InlineMath tex={String.raw`\pm1`} /> como bloques uniformes y
-        las interfaces como líneas nítidas. Al pasar el cursor para leer el valor exacto y ver lo plano que es el interior
-        de cada fase; mira el <strong>perfil de corte</strong> en <InlineMath tex={String.raw`x`} /> (mesetas + saltos
+        las interfaces como líneas nítidas. Al pasar el cursor se lee el valor exacto y se ve lo plano que es el interior
+        de cada fase; se muestra el <strong>perfil de corte</strong> en <InlineMath tex={String.raw`x`} /> (mesetas + saltos
         afilados) y en <InlineMath tex={String.raw`t`} /> (cuándo pasa una interfaz por un punto fijo). Como es un
         benchmark de parámetro fijo, el tab <strong>Live</strong> re-evalúa la red entrenada (la misma física), sin
         deslizador de parámetro.

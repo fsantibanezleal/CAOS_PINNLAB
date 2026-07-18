@@ -95,12 +95,12 @@ export function ComminutionContext({ lang }: { lang: "en" | "es" }) {
         <strong>Cómo leer y usar la viz.</strong> El <strong>heatmap</strong> de <InlineMath tex={String.raw`n(s,t)`} />
         (s horizontal, t vertical) muestra una <em>banda diagonal</em> que baja en tamaño al avanzar la molienda: su
         <em> inclinación</em> es la tasa <InlineMath tex={String.raw`g`} /> y su <em>anchura creciente</em> es la
-        dispersión <InlineMath tex={String.raw`D`} />. Al pasar el cursor para leer el valor exacto y mira el
+        dispersión <InlineMath tex={String.raw`D`} />. Al pasar el cursor se lee el valor exacto y se muestra el
         <strong> perfil de corte</strong> en <InlineMath tex={String.raw`s`} /> (la distribución de tamaños en un
         instante: la campana que se corre y se aplana) y en <InlineMath tex={String.raw`t`} /> (cómo crece y luego cae
         la masa en un tamaño fijo conforme la moda pasa por él). Los <strong>chips</strong> cargan cada tasa de molienda;
-        en <strong>Live</strong>, desliza <InlineMath tex={String.raw`g`} /> y ve la distribución correrse hacia los
-        finos en vivo en tu navegador (onnxruntime-web).
+        en <strong>Live</strong>, al deslizar <InlineMath tex={String.raw`g`} /> la distribución se corre hacia los
+        finos en vivo en el navegador (onnxruntime-web).
       </p>
     </>
   ): (
@@ -169,7 +169,7 @@ export function ComminutionContext({ lang }: { lang: "en" | "es" }) {
       <p>
         <strong>Modeled:</strong> the net shift of the size distribution toward fines (drift + dispersion), a constant
         grind rate per run (parametric in <InlineMath tex={String.raw`g`} />), a Gaussian feed. It is
-        <em> illustrative-synthetic</em>: a clean reduction of the PBE, NOT a fitted SAG/ball-mill PSD (there is no
+        <em> illustrative-synthetic</em>: a clean reduction of the PBE, not a fitted SAG/ball-mill PSD (there is no
         public grinding-PSD dataset with a rate axis). <strong>Out of scope:</strong> the full size-dependent
         selection/breakage kernels, agglomeration, a distributed or state-dependent grind rate, and mill load/fill
         dynamics. The lower boundary is open: mass may leave below <InlineMath tex={String.raw`s=0`} /> (fines below the
@@ -195,7 +195,7 @@ export function ComminutionContext({ lang }: { lang: "en" | "es" }) {
         instant: the bell shifting and flattening) and in <InlineMath tex={String.raw`t`} /> (how mass at a fixed size
         rises then falls as the mode passes through it). The <strong>chips</strong> load each grind rate; in
         <strong> Live</strong>, slide <InlineMath tex={String.raw`g`} /> and watch the distribution shift toward fines
-        live in your browser (onnxruntime-web).
+        live in the browser (onnxruntime-web).
       </p>
     </>
   );
