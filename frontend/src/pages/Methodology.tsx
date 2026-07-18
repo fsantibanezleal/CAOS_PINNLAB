@@ -64,7 +64,7 @@ const METHODS: Method[] = [
     bodyEn:
       "Plain MLPs have a spectral bias: they learn low frequencies fast and high frequencies slowly, so oscillatory solutions stall. Fourier-feature input encodings and SIREN (sinusoidal activations) inject high frequencies directly; hard-constraint output transforms bake the boundary/initial conditions into the network so they are satisfied EXACTLY (and survive the ONNX export).",
     bodyEs:
-      "Los MLP simples tienen sesgo espectral: aprenden rápido las bajas frecuencias y lento las altas, así que las soluciones oscilatorias se estancan. Las codificaciones de Fourier y SIREN (activaciones sinusoidales) inyectan altas frecuencias directamente; las restricciones duras por output-transform hornean las condiciones de borde/iniciales en la red para que se cumplan EXACTAMENTE (y sobrevivan a la exportación a ONNX).",
+      "Los MLP simples tienen sesgo espectral: aprenden rápido las bajas frecuencias y lento las altas, así que las soluciones oscilatorias se estancan. Las codificaciones de Fourier y SIREN (activaciones sinusoidales) inyectan altas frecuencias directamente; las restricciones duras por output-transform precalculan las condiciones de borde/iniciales en la red para que se cumplan EXACTAMENTE (y sobrevivan a la exportación a ONNX).",
     eq: String.raw`\gamma(\mathbf{x})=\big[\cos(2\pi B\mathbf{x}),\,\sin(2\pi B\mathbf{x})\big];\qquad u_\theta=g(\mathbf{x})+\ell(\mathbf{x})\,\mathcal{N}_\theta(\mathbf{x})`,
     cases: "ind-helmholtz (Fourier), bench-wave1d (SIREN), bench-poisson2d (hard BC)",
     ref: 4,

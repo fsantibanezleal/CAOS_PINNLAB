@@ -243,7 +243,7 @@ export function VectorFieldKit({ manifest, trace, active, lang }: KitProps) {
       </div>
       <p className="hint">
         {es
-          ? "Streamlines (RK4) del campo de velocidad horneado: revelan el vórtice recirculante de la cavidad que un heatmap escalar esconde. Estático (sin animación). La pestaña Live re-evalúa el ONNX."
+          ? "Streamlines (RK4) del campo de velocidad precalculado: revelan el vórtice recirculante de la cavidad que un heatmap escalar esconde. Estático (sin animación). La pestaña Live re-evalúa el ONNX."
          : "RK4 streamlines of the baked velocity field: they reveal the recirculating cavity vortex that a per-scalar heatmap hides. Static (no animation). The Live tab re-evaluates the ONNX."}
       </p>
     </div>

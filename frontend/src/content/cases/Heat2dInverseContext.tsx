@@ -96,7 +96,7 @@ export function Heat2dInverseContext({ lang }: { lang: "en" | "es" }) {
       <p>
         <strong>Cómo leer y usar la viz.</strong> El <strong>heatmap</strong> de <InlineMath tex={String.raw`k(x,y)`} /> es
         el producto: un domo suave centrado, brillante en el medio y descendiendo hacia
-        <InlineMath tex={String.raw`k=1`} /> en el borde. Pasa el cursor para leer la conductividad recuperada en cualquier
+        <InlineMath tex={String.raw`k=1`} /> en el borde. Al pasar el cursor para leer la conductividad recuperada en cualquier
         punto y compárala mentalmente con <InlineMath tex={String.raw`k^*=1+\tfrac12\sin\pi x\sin\pi y`} />; los
         <strong> perfiles de corte</strong> en <InlineMath tex={String.raw`x`} /> e <InlineMath tex={String.raw`y`} /> dan la
         campana de la conductividad (su altura <InlineMath tex={String.raw`\approx1.5`} /> en el centro). El error es

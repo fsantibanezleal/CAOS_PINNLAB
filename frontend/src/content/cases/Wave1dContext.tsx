@@ -69,7 +69,7 @@ export function Wave1dContext({ lang }: { lang: "en" | "es" }) {
       <p>
         <strong>Cómo leer y usar la viz.</strong> El <strong>heatmap</strong> de
         <InlineMath tex={String.raw`u(x,t)`} /> (x horizontal, t vertical) muestra <em>franjas diagonales/onduladas</em>
-      : el patrón espacio-tiempo de la onda, alternando crestas (claro) y valles (oscuro). Pasa el cursor para leer
+      : el patrón espacio-tiempo de la onda, alternando crestas (claro) y valles (oscuro). Al pasar el cursor para leer
         el desplazamiento exacto y mira el <strong>perfil de corte</strong> en <InlineMath tex={String.raw`t`} /> (un
         coseno) y en <InlineMath tex={String.raw`x`} /> (la forma senoidal). Los <strong>chips</strong> cargan cada
         velocidad; en <strong>Live</strong>, desliza <InlineMath tex={String.raw`c`} /> y ve la onda recalcularse en

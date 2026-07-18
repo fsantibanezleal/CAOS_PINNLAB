@@ -106,7 +106,7 @@ export function TailingsSeepageContext({ lang }: { lang: "en" | "es" }) {
       <p>
         <strong>Cómo leer y usar la viz.</strong> El <strong>heatmap</strong> de <InlineMath tex={String.raw`\psi(z,t)`} />{" "}
         (z vertical, t horizontal) muestra una banda de succión que se <em>profundiza</em> hacia la derecha (secado): el
-        color codifica cuán negativa es la carga. Pasa el cursor para leer la succión exacta en cualquier punto, y mira
+        color codifica cuán negativa es la carga. Al pasar el cursor para leer la succión exacta en cualquier punto, y mira
         los <strong>perfiles de corte</strong> en <InlineMath tex={String.raw`z`} /> (el perfil vertical de succión, su
         pendiente = el gradiente hidráulico) y en <InlineMath tex={String.raw`t`} /> (cómo se seca un punto fijo). Los{" "}
         <strong>chips</strong> cargan cada número sortivo; en <strong>Live</strong>, desliza{" "}

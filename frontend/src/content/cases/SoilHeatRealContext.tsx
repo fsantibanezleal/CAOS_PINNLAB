@@ -109,7 +109,7 @@ export function SoilHeatRealContext({ lang }: { lang: "en" | "es" }) {
         <strong>Cómo leer y usar la viz.</strong> El <strong>heatmap</strong> de <InlineMath tex={String.raw`T(z,t)`} />
         (profundidad en un eje, tiempo en el otro) muestra bandas cálidas y frías que se inclinan con la profundidad: 
         esa inclinación <em>es</em> el retraso de fase, y el desvanecimiento del contraste hacia abajo <em>es</em> el
-        amortiguamiento. Pasa el cursor para leer la temperatura exacta en cualquier (profundidad, fecha); mira el
+        amortiguamiento. Al pasar el cursor para leer la temperatura exacta en cualquier (profundidad, fecha); mira el
         <strong> perfil de corte</strong> a profundidad fija (la onda anual, cada vez más suave al bajar) y a fecha fija
         (cómo cae la temperatura con la profundidad en invierno y sube en verano). Como es un benchmark de parámetro
         fijo, el tab <strong>Live</strong> re-evalúa la red entrenada (la misma física, vía onnxruntime-web), sin

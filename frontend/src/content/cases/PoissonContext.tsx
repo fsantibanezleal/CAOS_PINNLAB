@@ -70,7 +70,7 @@ export function PoissonContext({ lang }: { lang: "en" | "es" }) {
         <strong>Cómo leer y usar la viz.</strong> El <strong>heatmap</strong> pinta <InlineMath tex={String.raw`u`} />
         en viridis; pasa el cursor para leer el valor exacto en cualquier punto (aparecen la cruz, las coordenadas y
         <InlineMath tex={String.raw`u`} />) y mira los dos <strong>perfiles de corte</strong> (u a lo largo de x y de y
-        por el cursor). Los <strong>chips de régimen</strong> cargan cada modo pre-horneado; el tab <strong>Charts</strong>
+        por el cursor). Los <strong>chips de régimen</strong> cargan cada modo pre-precalculado; el tab <strong>Charts</strong>
         compara el L2 de todos (clic para cargar). En el tab <strong>Live</strong>, mueve el deslizador de
         <InlineMath tex={String.raw`k`} /> y el campo se <em>recalcula en vivo</em> en tu navegador vía onnxruntime-web
       : la misma red entrenada offline, ahora paramétrica.

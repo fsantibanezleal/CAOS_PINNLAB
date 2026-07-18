@@ -19,7 +19,7 @@ export function Implementation() {
       <p>Eso da <strong>tres carriles</strong> de ejecución:</p>
       <ul>
         <li><strong>Precómputo (offline):</strong> el entrenamiento real, una vez, determinista dado <InlineMath tex={String.raw`(\text{caso},\ \text{semilla})`} />.</li>
-        <li><strong>Replay (web):</strong> el SPA dibuja el campo horneado y decimado: siempre disponible, sin red neuronal en runtime.</li>
+        <li><strong>Replay (web):</strong> el SPA dibuja el campo precalculado y decimado: siempre disponible, sin red neuronal en runtime.</li>
         <li><strong>Live (web):</strong> el SPA evalúa el ONNX exportado con onnxruntime-web para barrer el parámetro en vivo.</li>
       </ul>
       <p className="muted">

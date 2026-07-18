@@ -115,7 +115,7 @@ export function SoilBarrierContext({ lang }: { lang: "en" | "es" }) {
       <p>
         <strong>Cómo leer y usar la viz.</strong> El <strong>heatmap</strong> de <InlineMath tex={String.raw`c(x,t)`} />
         (x horizontal, t vertical) muestra cómo crece la concentración con el tiempo y cómo la barrera deprime la zona a
-        su derecha. Pasa el cursor para leer el valor exacto y localizar la caída a través de la barrera. El
+        su derecha. Al pasar el cursor para leer el valor exacto y localizar la caída a través de la barrera. El
         <strong> perfil de corte</strong> en <InlineMath tex={String.raw`x`} /> es lo más informativo: busca los
         <strong> dos quiebres</strong> en <InlineMath tex={String.raw`x=0.45`} /> y <InlineMath tex={String.raw`x=0.55`} />
         (cambio brusco de pendiente): son la firma de la barrera. El corte en <InlineMath tex={String.raw`t`} /> muestra

@@ -96,7 +96,7 @@ export function AllenCahnContext({ lang }: { lang: "en" | "es" }) {
       <p>
         <strong>Cómo leer y usar la viz.</strong> El <strong>heatmap</strong> de <InlineMath tex={String.raw`u(x,t)`} />
         (x horizontal, t vertical) muestra las mesetas <InlineMath tex={String.raw`\pm1`} /> como bloques uniformes y
-        las interfaces como líneas nítidas. Pasa el cursor para leer el valor exacto y ver lo plano que es el interior
+        las interfaces como líneas nítidas. Al pasar el cursor para leer el valor exacto y ver lo plano que es el interior
         de cada fase; mira el <strong>perfil de corte</strong> en <InlineMath tex={String.raw`x`} /> (mesetas + saltos
         afilados) y en <InlineMath tex={String.raw`t`} /> (cuándo pasa una interfaz por un punto fijo). Como es un
         benchmark de parámetro fijo, el tab <strong>Live</strong> re-evalúa la red entrenada (la misma física), sin
