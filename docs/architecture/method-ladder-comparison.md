@@ -42,9 +42,9 @@ JSON, then patch the manifest with a `comparison` and/or `diagnostics` block.
 | `build_helmholtz_ladder.py` | the reference: FDM standard + naive tanh + Fourier PINN + error maps + the wavenumber sweep + radial spectrum | naive + adapted, fresh |
 | `build_allencahn_ladder.py` | spectral-reference standard + the naive soft-PINN collapse vs hard-constraint+RAR | naive, fresh |
 | `build_naive_lane.py <case>` | generic: add a naive lane to a case that has `build_naive()` + an existing comparison | naive, fast |
-| `build_ladder.py <case> [variant]` | generic, fair: train BOTH adapted + naive fresh at a chosen (hard) regime, bake the comparison | both, fresh |
+| `build_ladder.py <case> [variant]` | generic, fair: train both adapted + naive fresh at a chosen (hard) regime, bake the comparison | both, fresh |
 | `build_navier_centerlines.py` | the Ghia 1982 Re=100 centerline validation (PINN vs benchmark points) | none |
-| `build_soilheat_validation.py` | PINN reconstruction vs REAL measured USCRN temps at the held-out depths | none |
+| `build_soilheat_validation.py` | PINN reconstruction vs real measured USCRN temps at the held-out depths | none |
 
 A case exposes `build_naive(seed)` (the plain net) and, where useful, `standard_field(coords)` (a classical solver)
 alongside its `build(seed)` and `analytic()`.
@@ -75,7 +75,7 @@ is the *method*, not the training.
 - **soil-barrier** — single-domain vs FBPINN, both ~19 % on the CPU lane (the edge is subtle, shown honestly).
 - **darcy** — the FNO operator's one-pass prediction vs the finite-difference reference (~2.5 %).
 - **navier** — the PINN velocity vs the Ghia (1982) Re=100 centerlines (u RMSE 0.053, v 0.029).
-- **soil-heat-real** — the reconstruction vs REAL measured USCRN temperatures at the held-out 10/20/50 cm depths,
+- **soil-heat-real** — the reconstruction vs real measured USCRN temperatures at the held-out 10/20/50 cm depths,
   out-of-sample (RMSE 1.24 / 1.05 / 0.75 °C).
 - **heat2d-inverse identifiability sweep** — recovered-k error vs number of sensors at one fair budget:
   356 % (n=0) → 17.3 % (n=10) → 16.3 % (n=25) → 13.6 % (n=50) → 12.6 % (n=100): the computed answer to "how much
@@ -93,18 +93,18 @@ is the *method*, not the training.
 
 ## The dynamics layer (issue #36, 2026-07-10)
 
-The comparison content is also shown AS MOTION (deep-research dossier `wip/web-review/dynamics-research-2026-07-10.md`:
+The comparison content is also shown as motion (deep-research dossier `wip/web-review/dynamics-research-2026-07-10.md`:
 animated field evolution + quantitative L2 is the verified state of practice; training-dynamics animation goes beyond it):
 
-- **Animated evolution hero** (`FieldView`): for every time case the dominant element is the MOVING spatial profile at
+- **Animated evolution hero** (`FieldView`): for every time case the dominant element is the moving spatial profile at
   time t (locked y-scale, ghost = initial state) driven by the transport bar; the space-time map is the seek/probe
   carpet. Works in both the Field and Live tabs.
-- **CompareEvolution** (`kits/CompareEvolution.tsx`): for any (space,t) comparison, the lanes animate TOGETHER -
+- **CompareEvolution** (`kits/CompareEvolution.tsx`): for any (space,t) comparison, the lanes animate together -
   standard (grey) vs naive (red) vs adapted (green) profiles on one locked scale. Pure replay of the baked comparison.
 - **Evolution frames** (`build_evolution_frames.py` -> manifest `evolution` + `view_kit: SpatioTemporalKit`): offline
   ONNX evals bake a smooth t-sequence for the 2-D transport cases (ocean 24 frames, heap-leach 16 x 2 species); the
   Field view plays the 2-D field with a colour scale fixed across frames.
-- **TrainingKit - "watch it learn"** (`build_training_dynamics.py` -> manifest `training`): REAL checkpoint fields
+- **TrainingKit - "watch it learn"** (`build_training_dynamics.py` -> manifest `training`): real checkpoint fields
   (naive vs adapted side by side, one colour scale) + live per-lane L2 + the L2-vs-iteration curve. Makes the
   training pathology visible as dynamics: the naive Helmholtz lane never leaves ~100 % (spectral bias is a
   training-time pathology, Krishnapriyan 2021), the Fourier lane converges to ~9 %. Beyond the surveyed state of

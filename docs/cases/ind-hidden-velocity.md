@@ -55,8 +55,8 @@ formulation does not export cleanly).
 The $u_t = v_t = 0$ residuals encode the stated **steady-flow assumption**, and they are load-bearing: in the first
 training run (without them) the net spent its freedom on a time-varying velocity that ~640 sparse dye samples cannot
 pin, and the recovered current was 38-60% off even inside the swept region — measured, not guessed. Declaring the
-current steady aggregates the dye information from ALL times into ONE field. This mirrors real practice: you assert
-what you legitimately know (a quasi-steady current over the observation window) and let the data determine the rest.
+current steady aggregates the dye information from all times into one field. This mirrors real practice: asserting
+what is legitimately known (a quasi-steady current over the observation window) and letting the data determine the rest.
 Training: Adam $1.5\times10^4$ steps then L-BFGS, seed 42.
 
 ## Honest identifiability: the swept mask

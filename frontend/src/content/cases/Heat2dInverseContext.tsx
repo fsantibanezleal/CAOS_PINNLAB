@@ -47,7 +47,7 @@ export function Heat2dInverseContext({ lang }: { lang: "en" | "es" }) {
         <InlineMath tex={String.raw`k^*`} /> verdadero.
       </p>
 
-      <h3>El método: inversión de campo con la SEGUNDA salida de la red</h3>
+      <h3>El método: inversión de campo con la segunda salida de la red</h3>
       <p>
         El truco central es que la conductividad desconocida <strong>es una salida de la red</strong>, no una constante a
         ajustar. La red <InlineMath tex={String.raw`\mathcal{N}_\theta(x,y)=(k_\theta,T_\theta)`} /> produce <em>dos</em>
@@ -96,12 +96,12 @@ export function Heat2dInverseContext({ lang }: { lang: "en" | "es" }) {
       <p>
         <strong>Cómo leer y usar la viz.</strong> El <strong>heatmap</strong> de <InlineMath tex={String.raw`k(x,y)`} /> es
         el producto: un domo suave centrado, brillante en el medio y descendiendo hacia
-        <InlineMath tex={String.raw`k=1`} /> en el borde. Al pasar el cursor para leer la conductividad recuperada en cualquier
-        punto y compárala mentalmente con <InlineMath tex={String.raw`k^*=1+\tfrac12\sin\pi x\sin\pi y`} />; los
+        <InlineMath tex={String.raw`k=1`} /> en el borde. Al pasar el cursor se lee la conductividad recuperada en cualquier
+        punto y se compara mentalmente con <InlineMath tex={String.raw`k^*=1+\tfrac12\sin\pi x\sin\pi y`} />; los
         <strong> perfiles de corte</strong> en <InlineMath tex={String.raw`x`} /> e <InlineMath tex={String.raw`y`} /> dan la
         campana de la conductividad (su altura <InlineMath tex={String.raw`\approx1.5`} /> en el centro). El error es
         visiblemente mayor cerca del contorno, donde <InlineMath tex={String.raw`T`} /> y su gradiente se anulan. Como es un
-        benchmark de parámetro fijo, el tab <strong>Live</strong> re-evalúa la red entrenada (la misma física) en tu
+        benchmark de parámetro fijo, el tab <strong>Live</strong> re-evalúa la red entrenada (la misma física) en el
         navegador (onnxruntime-web) y reproduce la referencia offline con una diferencia máxima de <InlineMath tex={String.raw`4.8\times10^{-7}`} />, sin
         deslizador de parámetro.
       </p>
@@ -150,7 +150,7 @@ export function Heat2dInverseContext({ lang }: { lang: "en" | "es" }) {
         <InlineMath tex={String.raw`k^*`} />.
       </p>
 
-      <h3>The method: field inversion via the SECOND network output</h3>
+      <h3>The method: field inversion via the second network output</h3>
       <p>
         The central trick is that the unknown conductivity <strong>is a network output</strong>, not a constant to fit. The
         network <InlineMath tex={String.raw`\mathcal{N}_\theta(x,y)=(k_\theta,T_\theta)`} /> produces <em>two</em> fields at
@@ -202,7 +202,7 @@ export function Heat2dInverseContext({ lang }: { lang: "en" | "es" }) {
         <InlineMath tex={String.raw`x`} /> and <InlineMath tex={String.raw`y`} /> give the conductivity bell (its height
         <InlineMath tex={String.raw`\approx1.5`} /> at the center). The error is visibly larger near the boundary, where
         <InlineMath tex={String.raw`T`} /> and its gradient vanish. Since it is a fixed-parameter benchmark, the
-        <strong> Live</strong> tab re-evaluates the trained network (the same physics) in your browser
+        <strong> Live</strong> tab re-evaluates the trained network (the same physics) in the browser
         (onnxruntime-web) and matches the offline reference to <InlineMath tex={String.raw`4.8\times10^{-7}`} /> max-abs, with no
         parameter slider.
       </p>

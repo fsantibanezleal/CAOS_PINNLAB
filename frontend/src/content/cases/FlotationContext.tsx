@@ -73,7 +73,7 @@ export function FlotationContext({ lang }: { lang: "en" | "es" }) {
         <strong> perfil de corte</strong> en <InlineMath tex={String.raw`t`} /> da la curva de decaimiento exponencial
         para un <InlineMath tex={String.raw`k`} /> fijo (la curva clásica de recuperación-vs-tiempo); el corte en
         <InlineMath tex={String.raw`k`} /> muestra cuánto más rápido flota un mineral mejor liberado. En
-        <strong> Live</strong>, la red paramétrica re-evalúa el mapa completo en tu navegador (onnxruntime-web).
+        <strong> Live</strong>, la red paramétrica re-evalúa el mapa completo en el navegador (onnxruntime-web).
       </p>
     </>
   ): (
@@ -127,7 +127,7 @@ export function FlotationContext({ lang }: { lang: "en" | "es" }) {
       <p>
         <strong>Modeled:</strong> lumped first-order kinetics, a single rate constant per run, batch recovery. It is
         <em> illustrative-synthetic</em>: the first-order model is the flotation standard, but the field is a clean
-        illustration, NOT fit to a plant/lab assay (public datasets are 0-D process time-series with no rate-constant
+        illustration, not fit to a plant/lab assay (public datasets are 0-D process time-series with no rate-constant
         axis). <strong>Out of scope:</strong> floatability spectra (distributed k), entrainment, second-order kinetics,
         and froth-phase dynamics.
       </p>
@@ -145,7 +145,7 @@ export function FlotationContext({ lang }: { lang: "en" | "es" }) {
         profile</strong> in <InlineMath tex={String.raw`t`} /> gives the exponential decay curve for a fixed
         <InlineMath tex={String.raw`k`} /> (the classic recovery-vs-time curve); the cut in <InlineMath tex={String.raw`k`} />
         shows how much faster a better-liberated mineral floats. In <strong>Live</strong>, the parametric network
-        re-evaluates the full map in your browser (onnxruntime-web).
+        re-evaluates the full map in the browser (onnxruntime-web).
       </p>
     </>
   );

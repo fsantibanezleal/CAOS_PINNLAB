@@ -9,7 +9,7 @@ import { Transport } from "./Transport";
 import { useAnimator } from "./useAnimator";
 
 /** TrainingKit - "WATCH IT LEARN" (issue #36). Replays the field at real training checkpoints for the naive
- *  and adapted lanes SIDE BY SIDE (one colour scale across every frame of both lanes), with the live L2 per lane
+ *  and adapted lanes side by side (one colour scale across every frame of both lanes), with the live L2 per lane
  *  and the L2-vs-iteration curve underneath. This makes the training pathology VISIBLE as dynamics: the naive
  *  Helmholtz lane stays a low-frequency blur across all of training (spectral bias), the naive Allen-Cahn lane
  *  slides into the metastable collapse - while the adapted lane converges. All frames are real baked training
@@ -75,8 +75,8 @@ export function TrainingKit({ manifest, lang }: { manifest: CaseManifest; lang: 
     <div className="train-kit">
       <p className="dim-caption">
         {es
-          ? "MÍRALO APRENDER: el campo de cada carril en checkpoints REALES de entrenamiento, lado a lado, misma escala de color. La patología de entrenamiento se ve como dinámica: el carril ingenuo no converge; el adaptado sí."
-          : "WATCH IT LEARN: each lane's field at REAL training checkpoints, side by side, one colour scale. The training pathology becomes visible dynamics: the naive lane fails to converge; the adapted lane snaps on."}
+          ? "La red aprendiendo: el campo de cada carril en checkpoints reales de entrenamiento, lado a lado, misma escala de color. La patología de entrenamiento se ve como dinámica: el carril ingenuo no converge; el adaptado sí."
+          : "The network learning: each lane's field at real training checkpoints, side by side, one colour scale. The training pathology becomes visible dynamics: the naive lane fails to converge; the adapted lane snaps on."}
       </p>
       <Transport anim={anim} lang={lang} axisLabel={es ? "iteración" : "iteration"} axisValue={cps[f] ?? 0} fmt={fmtCount} />
       <div className="train-panels">

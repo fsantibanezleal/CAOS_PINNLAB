@@ -126,7 +126,7 @@ export interface EstimateMarker {
   label_es: string;
 }
 
-/** The case's engineering QUESTION, the honest why-a-PINN line, and the computed ANSWER items. */
+/** The case's engineering question, the honest why-a-PINN line, and the computed answer items. */
 export interface EstimateBlock {
   question_en: string;
   question_es: string;
@@ -259,8 +259,8 @@ export const CATEGORY_INTRO: Record<string, { en: string; es: string }> = {
     es: "Procesos de modelo reducido del procesamiento mineral: conminución, flotación, espesamiento, lixiviación en pilas: cada uno un cierre de ingeniería estándar, etiquetado con honestidad como sintético-ilustrativo.",
   },
   "pollution-environmental": {
-    en: "Transport, seepage and uncertainty in environmental settings: an advecting plume, a barrier, unsaturated seepage, a Bayesian source, and the one case trained on REAL data (NOAA soil temperatures).",
-    es: "Transporte, filtración e incertidumbre en entornos ambientales: una pluma que se advecta, una barrera, filtración no saturada, una fuente bayesiana, y el único caso entrenado con datos REALES (temperaturas de suelo NOAA).",
+    en: "Transport, seepage and uncertainty in environmental settings: an advecting plume, a barrier, unsaturated seepage, a Bayesian source, and the one case trained on real data (NOAA soil temperatures).",
+    es: "Transporte, filtración e incertidumbre en entornos ambientales: una pluma que se advecta, una barrera, filtración no saturada, una fuente bayesiana, y el único caso entrenado con datos reales (temperaturas de suelo NOAA).",
   },
   "industrial-fluids-heat": {
     en: "Where PINNs genuinely win: an inverse conductivity recovery from sparse sensors, a hidden velocity field estimated from dye alone (the HFM mechanism), and a Helmholtz field with Fourier-feature inputs.",
@@ -288,5 +288,5 @@ export const VIEW_KIT_LABELS: Record<string, { en: string; es: string }> = {
 export const DATA_LABELS: Record<string, { en: string; es: string }> = {
   synthetic: { en: "synthetic", es: "sintético" },
   "synthetic-illustrative": { en: "synthetic-illustrative", es: "sintético-ilustrativo" },
-  "validated-real": { en: "REAL data", es: "datos REALES" },
+  "validated-real": { en: "real data", es: "datos reales" },
 };

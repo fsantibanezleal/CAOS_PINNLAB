@@ -120,7 +120,7 @@ export function SoilBarrierContext({ lang }: { lang: "en" | "es" }) {
         <strong> dos quiebres</strong> en <InlineMath tex={String.raw`x=0.45`} /> y <InlineMath tex={String.raw`x=0.55`} />
         (cambio brusco de pendiente): son la firma de la barrera. El corte en <InlineMath tex={String.raw`t`} /> muestra
         la subida <InlineMath tex={String.raw`1-e^{-t}`} /> hacia el estado estacionario. Como es un benchmark de
-        parámetro fijo, el tab <strong>Live</strong> re-evalúa la red entrenada (la misma física) en tu navegador
+        parámetro fijo, el tab <strong>Live</strong> re-evalúa la red entrenada (la misma física) en el navegador
         (onnxruntime-web), sin deslizador de parámetro.
       </p>
     </>
@@ -203,7 +203,7 @@ export function SoilBarrierContext({ lang }: { lang: "en" | "es" }) {
       <p>
         <strong>Modeled:</strong> 1D diffusion with a piecewise-coefficient barrier, a fixed 10× contrast, a fixed
         barrier geometry, a series-resistance MMS anchor. It is <em>illustrative-synthetic</em>: reasonable engineering
-        values, NOT a calibrated site or real data. <strong>Out of scope:</strong> advection or a velocity field (here
+        values, not a calibrated site or real data. <strong>Out of scope:</strong> advection or a velocity field (here
         <InlineMath tex={String.raw`V=0`} />), adsorption/retardation and contaminant decay, multiple barriers or a 2-D
         barrier, and the <em>extreme-contrast limit</em> (<InlineMath tex={String.raw`D_{\text{barrier}}/D_{\text{soil}}\to0`} />,
         an almost-discontinuous kink).
@@ -239,7 +239,7 @@ export function SoilBarrierContext({ lang }: { lang: "en" | "es" }) {
         <InlineMath tex={String.raw`x=0.55`} /> (abrupt slope change): they are the barrier's fingerprint. The cut in
         <InlineMath tex={String.raw`t`} /> shows the <InlineMath tex={String.raw`1-e^{-t}`} /> rise toward steady state.
         Since it is a fixed-parameter benchmark, the <strong>Live</strong> tab re-evaluates the trained network (the
-        same physics) in your browser (onnxruntime-web), with no parameter slider.
+        same physics) in the browser (onnxruntime-web), with no parameter slider.
       </p>
     </>
   );

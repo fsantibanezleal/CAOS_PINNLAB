@@ -68,7 +68,7 @@ export function TailingsSeepageContext({ lang }: { lang: "en" | "es" }) {
         toda la familia. En las seis variantes (<InlineMath tex={String.raw`\alpha=1.0,1.3,1.6,1.9,2.2,2.5`} />) el L2
         relativo frente a <InlineMath tex={String.raw`\psi^*`} /> se mantiene <InlineMath tex={String.raw`\le0.26\%`} />,
         y el ONNX exportado coincide con la red entrenada a <InlineMath tex={String.raw`3.6\times10^{-7}`} /> (máx abs),
-        de modo que el tab Live corre la misma física en tu navegador.
+        de modo que el tab Live ejecuta la misma física en el navegador.
       </p>
 
       <h3>El método: cierre de Gardner y por qué la familia es honesta</h3>
@@ -106,11 +106,11 @@ export function TailingsSeepageContext({ lang }: { lang: "en" | "es" }) {
       <p>
         <strong>Cómo leer y usar la viz.</strong> El <strong>heatmap</strong> de <InlineMath tex={String.raw`\psi(z,t)`} />{" "}
         (z vertical, t horizontal) muestra una banda de succión que se <em>profundiza</em> hacia la derecha (secado): el
-        color codifica cuán negativa es la carga. Al pasar el cursor para leer la succión exacta en cualquier punto, y mira
+        color codifica cuán negativa es la carga. Al pasar el cursor se lee la succión exacta en cualquier punto, y se muestran
         los <strong>perfiles de corte</strong> en <InlineMath tex={String.raw`z`} /> (el perfil vertical de succión, su
         pendiente = el gradiente hidráulico) y en <InlineMath tex={String.raw`t`} /> (cómo se seca un punto fijo). Los{" "}
-        <strong>chips</strong> cargan cada número sortivo; en <strong>Live</strong>, desliza{" "}
-        <InlineMath tex={String.raw`\alpha`} /> y ve el perfil de succión profundizarse o aplanarse en vivo en tu
+        <strong>chips</strong> cargan cada número sortivo; en <strong>Live</strong>, al deslizar{" "}
+        <InlineMath tex={String.raw`\alpha`} /> el perfil de succión se profundiza o se aplana en vivo en el
         navegador (onnxruntime-web).
       </p>
     </>
@@ -180,7 +180,7 @@ export function TailingsSeepageContext({ lang }: { lang: "en" | "es" }) {
         (<InlineMath tex={String.raw`\alpha=1.0,1.3,1.6,1.9,2.2,2.5`} />) the relative-L2 against{" "}
         <InlineMath tex={String.raw`\psi^*`} /> stays <InlineMath tex={String.raw`\le0.26\%`} />, and the exported ONNX
         matches the trained net to <InlineMath tex={String.raw`3.6\times10^{-7}`} /> (max abs), so the Live tab runs the
-        same physics in your browser.
+        same physics in the browser.
       </p>
 
       <h3>The method: the Gardner closure and why the family is honest</h3>
@@ -199,7 +199,7 @@ export function TailingsSeepageContext({ lang }: { lang: "en" | "es" }) {
       <p>
         <strong>Modeled:</strong> 1D vertical unsaturated flow, the Gardner exponential closure, strictly negative
         suction (<InlineMath tex={String.raw`\psi<0`} /> everywhere and for every <InlineMath tex={String.raw`\alpha`} />),
-        a source-free exact family. It is <em>illustrative-synthetic</em>: physically faithful but NOT fit to
+        a source-free exact family. It is <em>illustrative-synthetic</em>: physically faithful but not fit to
         measurements: <strong>no open <InlineMath tex={String.raw`\psi(z,t)`} /> dataset exists for the unsaturated
         zone of a tailings deposit</strong>; the unsaturated lane is modeled, not measured. <strong>Out of scope:</strong>{" "}
         the fuller van Genuchten-Mualem closure (documented as an extension), retention-curve hysteresis, 2D/3D flow and
@@ -222,7 +222,7 @@ export function TailingsSeepageContext({ lang }: { lang: "en" | "es" }) {
         suction anywhere, and watch the <strong>line-cut profiles</strong> in <InlineMath tex={String.raw`z`} /> (the
         vertical suction profile, its slope = the hydraulic gradient) and in <InlineMath tex={String.raw`t`} /> (how a
         fixed point dries out). The <strong>chips</strong> load each sorptive number; in <strong>Live</strong>, slide{" "}
-        <InlineMath tex={String.raw`\alpha`} /> and watch the suction profile deepen or flatten live in your browser
+        <InlineMath tex={String.raw`\alpha`} /> and watch the suction profile deepen or flatten live in the browser
         (onnxruntime-web).
       </p>
     </>

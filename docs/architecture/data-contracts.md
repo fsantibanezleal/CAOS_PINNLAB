@@ -46,9 +46,9 @@ rather than shipping a broken page.
 
 ### Why a trace *and* an ONNX
 
-A LIVE case ships both: the ONNX is the interactive engine (evaluate anywhere, any resolution), the trace is the
+A live case ships both: the ONNX is the interactive engine (evaluate anywhere, any resolution), the trace is the
 deterministic baseline the page renders instantly on load and the reference the live output is checked against. A
-PRECOMPUTE case ships only the trace. The [gate](the-gate.md) decides which.
+precompute case ships only the trace. The [gate](the-gate.md) decides which.
 
 ## The invariant
 

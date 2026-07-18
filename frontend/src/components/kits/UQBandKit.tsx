@@ -111,8 +111,8 @@ export function UQBandKit({ manifest, trace, lang }: KitProps) {
 
       <p className="hint">
         {es
-          ? `PINN bayesiana (deep ensemble, K=${K ?? "?"}): la banda es la incertidumbre epistémica a escala real: fina porque está bien calibrada (cobertura @2σ = ${cov != null ? (cov * 100).toFixed(1) + "%": "n/d"}). La curva naranja muestra DÓNDE crece σ. Mueve el deslizador de ${tAxis} (en pausa, sin animación).`
-         : `Bayesian PINN (deep ensemble, K=${K ?? "?"}): the band is epistemic uncertainty at true scale: thin because it is well-calibrated (coverage @2σ = ${cov != null ? (cov * 100).toFixed(1) + "%": "n/a"}). The orange curve shows WHERE σ grows. Drag the ${tAxis} slider (paused, no animation).`}
+          ? `PINN bayesiana (deep ensemble, K=${K ?? "?"}): la banda es la incertidumbre epistémica a escala real: fina porque está bien calibrada (cobertura @2σ = ${cov != null ? (cov * 100).toFixed(1) + "%": "n/d"}). La curva naranja muestra dónde crece σ. Mover el deslizador de ${tAxis} (en pausa, sin animación).`
+         : `Bayesian PINN (deep ensemble, K=${K ?? "?"}): the band is epistemic uncertainty at true scale: thin because it is well-calibrated (coverage @2σ = ${cov != null ? (cov * 100).toFixed(1) + "%": "n/a"}). The orange curve shows where σ grows. Drag the ${tAxis} slider (paused, no animation).`}
       </p>
     </div>
   );

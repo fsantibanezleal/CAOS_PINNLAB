@@ -131,12 +131,12 @@ u_x + v_y &= 0,
       <h3>Cómo leer y usar la viz</h3>
       <p>
         El <strong>heatmap</strong> muestra el campo seleccionado sobre la cavidad <InlineMath tex={String.raw`(x,y)`} />.
-        Cambia entre <InlineMath tex={String.raw`u`} /> (rápido positivo bajo la tapa, negativo en el retorno inferior),
+        El <strong>selector</strong> alterna entre <InlineMath tex={String.raw`u`} /> (rápido positivo bajo la tapa, negativo en el retorno inferior),
         <InlineMath tex={String.raw`v`} /> (sube por la pared derecha, baja por la izquierda) y la presión
-        <InlineMath tex={String.raw`p`} /> (núcleo de baja presión = centro del vórtice). Al pasar el cursor para leer el
-        valor exacto en cualquier punto. Usa el <strong>corte de línea</strong> sobre <InlineMath tex={String.raw`x=0.5`} />
-        para ver el perfil <InlineMath tex={String.raw`u(0.5,y)`} /> en forma de S: el signo cambia donde la corriente
-        de retorno se cruza con el flujo arrastrado por la tapa: y compáralo mentalmente con la curva de Ghia. Como es
+        <InlineMath tex={String.raw`p`} /> (núcleo de baja presión = centro del vórtice). Al pasar el cursor se lee el
+        valor exacto en cualquier punto. El <strong>corte de línea</strong> sobre <InlineMath tex={String.raw`x=0.5`} />
+        muestra el perfil <InlineMath tex={String.raw`u(0.5,y)`} /> en forma de S: el signo cambia donde la corriente
+        de retorno se cruza con el flujo arrastrado por la tapa, para comparar mentalmente con la curva de Ghia. Como es
         un benchmark de parámetro fijo, el tab <strong>Live</strong> re-evalúa la red entrenada (la misma física a
         <InlineMath tex={String.raw`\mathrm{Re}=100`} />), sin deslizador de parámetro.
       </p>

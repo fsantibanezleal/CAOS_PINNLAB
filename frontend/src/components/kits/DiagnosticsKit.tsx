@@ -83,9 +83,9 @@ export function DiagnosticsKit({ manifest, lang }: { manifest: CaseManifest; lan
   );
 }
 
-/** A chart where each series carries its OWN x,y (a benchmark scatter of points vs a model curve).
- *  INTERACTIVE (issue #49 S4): drag horizontally to zoom into an x-range (double-click resets); click a
- *  legend entry to SOLO that series (click it again to show all); hover for a crosshair with values. */
+/** A chart where each series carries its own x,y (a benchmark scatter of points vs a model curve).
+ *  Interactive (issue #49 S4): drag horizontally to zoom into an x-range (double-click resets); click a
+ *  legend entry to solo that series (click it again to show all); hover for a crosshair with values. */
 function XYChart({ series, xLabel, yLabel, yLog }: { series: { label: string; color: string; scatter?: boolean; x: number[]; y: number[] }[]; xLabel: string; yLabel: string; yLog?: boolean }) {
   const W = 640;
   const H = 300;

@@ -3,7 +3,7 @@ import { SubTabs } from "../components/SubTabs";
 import { useUI } from "../store";
 
 /** Implementation page: the architecture and the three flows (offline precompute, web replay/live, authoring),
- *  to ADR-0016 §9 depth: sub-tabs + KaTeX, and ZERO internal repo paths in the rendered UI. */
+ *  to ADR-0016 §9 depth: sub-tabs + KaTeX, and zero internal repo paths in the rendered UI. */
 export function Implementation() {
   const lang = useUI((s) => s.lang);
   const es = lang === "es";
@@ -12,9 +12,9 @@ export function Implementation() {
     <>
       <p>
         PINN-Lab está partido en <strong>dos mundos</strong> unidos por un contrato de datos. El <em>mundo offline</em>
-        (Python, pesado) entrena cada PINN con un motor del estado del arte, lo valida contra una referencia y hornea
+        (Python, pesado) entrena cada PINN con un motor del estado del arte, lo valida contra una referencia y precalcula
         artefactos compactos. El <em>mundo web</em> (este SPA, liviano) <strong>nunca recomputa la física</strong>: solo
-        carga esos artefactos y, cuando el modelo es lo bastante chico, corre la red exportada en tu navegador.
+        carga esos artefactos y, cuando el modelo es lo bastante chico, ejecuta la red exportada en el navegador.
       </p>
       <p>Eso da <strong>tres carriles</strong> de ejecución:</p>
       <ul>
@@ -33,7 +33,7 @@ export function Implementation() {
         PINN-Lab is split into <strong>two worlds</strong> joined by a data contract. The <em>offline world</em>
         (Python, heavy) trains each PINN with a state-of-the-art engine, validates it against a reference and bakes
         compact artifacts. The <em>web world</em> (this SPA, light) <strong>never recomputes the physics</strong>: it
-        only loads those artifacts and, when the model is small enough, runs the exported network in your browser.
+        only loads those artifacts and, when the model is small enough, runs the exported network in the browser.
       </p>
       <p>That gives <strong>three execution lanes</strong>:</p>
       <ul>
@@ -54,7 +54,7 @@ export function Implementation() {
       <ol>
         <li><strong>preprocess</strong>: valida la definición del caso e ingiere observaciones (problemas inversos).</li>
         <li><strong>feature / sampling</strong>: arma el plan de colocación (muestreo del dominio y, si aplica, refinamiento).</li>
-        <li><strong>train</strong>: ajusta el PINN con el motor SOTA (Adam → L-BFGS, + RAR si el caso lo define), exporta a ONNX y verifica paridad.</li>
+        <li><strong>train</strong>: ajusta el PINN con el motor SOTA (Adam, luego L-BFGS, + RAR si el caso lo define), exporta a ONNX y verifica paridad.</li>
         <li><strong>infer</strong>: evalúa el campo en la grilla de cada variante (régimen de parámetro).</li>
         <li><strong>evaluate</strong>: calcula el <InlineMath tex={String.raw`L^2`} /> relativo contra la referencia analítica/numérica (la etapa de <em>test</em>).</li>
         <li><strong>export</strong>: escribe el artefacto de replay decimado + el manifest por variante.</li>
@@ -64,7 +64,7 @@ export function Implementation() {
       </p>
       <Equation tex={String.raw`\varepsilon_{\text{rel}}=\frac{\lVert u_\theta - u^*\rVert_2}{\lVert u^*\rVert_2},\qquad u^*=\text{referencia analítica/numérica}.`} />
       <p className="muted">
-        Determinismo: misma semilla, mismo resultado. El motor pesado (DeepXDE/PhysicsNeMo) se usa AQUÍ, de verdad: no
+        Determinismo: misma semilla, mismo resultado. El motor pesado (DeepXDE/PhysicsNeMo) se usa aquí, de verdad: no
         es decorativo.
       </p>
     </>
@@ -74,7 +74,7 @@ export function Implementation() {
       <ol>
         <li><strong>preprocess</strong>: validate the case definition and ingest observations (inverse problems).</li>
         <li><strong>feature / sampling</strong>: build the collocation plan (domain sampling and, where applicable, refinement).</li>
-        <li><strong>train</strong>: fit the PINN with the SOTA engine (Adam → L-BFGS, + RAR if the case defines it), export to ONNX and verify parity.</li>
+        <li><strong>train</strong>: fit the PINN with the SOTA engine (Adam then L-BFGS, + RAR if the case defines it), export to ONNX and verify parity.</li>
         <li><strong>infer</strong>: evaluate the field on each variant's grid (parameter regime).</li>
         <li><strong>evaluate</strong>: compute the relative <InlineMath tex={String.raw`L^2`} /> against the analytic/numerical reference (the <em>test</em> stage).</li>
         <li><strong>export</strong>: write the decimated replay artifact + the per-variant manifest.</li>
@@ -82,7 +82,7 @@ export function Implementation() {
       <p>The reported error is the <strong>relative L2</strong> against the validation anchor, over the field grid:</p>
       <Equation tex={String.raw`\varepsilon_{\text{rel}}=\frac{\lVert u_\theta - u^*\rVert_2}{\lVert u^*\rVert_2},\qquad u^*=\text{analytic/numerical reference}.`} />
       <p className="muted">
-        Determinism: same seed, same result. The heavy engine (DeepXDE/PhysicsNeMo) is used HERE, for real: it is not
+        Determinism: same seed, same result. The heavy engine (DeepXDE/PhysicsNeMo) is used here, for real: it is not
         decorative.
       </p>
     </>
@@ -137,7 +137,7 @@ export function Implementation() {
         <li>Lee el <strong>índice</strong> (inventario de casos) y arma una pestaña por caso.</li>
         <li>Al abrir un caso, carga su <strong>manifest</strong>: ejes del campo, especificación de parámetros y la lista de variantes con sus métricas.</li>
         <li>Para la variante activa, descarga su <strong>traza</strong> (campo decimado) y la dibuja en el heatmap interactivo.</li>
-        <li>En el tab <strong>Live</strong>, carga el <strong>ONNX</strong> una vez y lo re-evalúa cada vez que mueves un deslizador de parámetro.</li>
+        <li>En el tab <strong>Live</strong>, carga el <strong>ONNX</strong> una vez y lo re-evalúa cada vez que se mueve un deslizador de parámetro.</li>
       </ol>
       <p>
         Cada caso es un <strong>banco de trabajo</strong> idéntico y de estructura estable. La columna izquierda
@@ -156,7 +156,7 @@ export function Implementation() {
         <li>Read the <strong>index</strong> (case inventory) and populate the Domain and Case selectors.</li>
         <li>On selecting a case, load its <strong>manifest</strong>: field axes, parameter spec and the list of variants with their metrics.</li>
         <li>For the active variant, fetch its <strong>trace</strong> (decimated field) and draw it in the interactive, contain-fitted heatmap.</li>
-        <li>In the <strong>Live</strong> tab, load the <strong>ONNX</strong> once and re-evaluate it whenever you move a parameter slider.</li>
+        <li>In the <strong>Live</strong> tab, load the <strong>ONNX</strong> once and re-evaluate it whenever a parameter slider is moved.</li>
       </ol>
       <p>
         Each case is an identical, <strong>structurally stable workbench</strong>. The left column selects the case
@@ -177,8 +177,8 @@ export function Implementation() {
       <ol>
         <li><strong>Definir el caso:</strong> EDP, dominio, entradas/salidas, ejes del campo y el ancla de validación (analítica/MMS/numérica).</li>
         <li><strong>Elegir el método SOTA</strong> que la física exige (hard constraints, RAR, Fourier features, descomposición de dominio, operador…).</li>
-        <li><strong>Parametrizar:</strong> si existe una familia con forma cerrada, el parámetro físico se vuelve una <em>entrada de la red</em> y el caso bakea ≥6 variantes; si no, se publica como un benchmark de variante única, honestamente etiquetado.</li>
-        <li><strong>Hornear y verificar:</strong> correr el pipeline, exigir un <InlineMath tex={String.raw`L^2`} /> relativo dentro de la banda esperada y paridad ONNX.</li>
+        <li><strong>Parametrizar:</strong> si existe una familia con forma cerrada, el parámetro físico se vuelve una <em>entrada de la red</em> y el caso precalcula ≥6 variantes; si no, se publica como un benchmark de variante única, honestamente etiquetado.</li>
+        <li><strong>Precalcular y verificar:</strong> ejecutar el pipeline, exigir un <InlineMath tex={String.raw`L^2`} /> relativo dentro de la banda esperada y paridad ONNX.</li>
         <li><strong>Escribir el Context</strong> bilingüe profundo y registrarlo, luego verificar la web con capturas antes de publicar.</li>
       </ol>
       <p className="muted">
@@ -211,10 +211,10 @@ export function Implementation() {
       </p>
       <ul>
         <li>
-          <strong>Un solucionador FDM que divergió y casi se hornea.</strong> Para validar la cavidad de Navier
+          <strong>Un solucionador FDM que divergió y por poco entra al precálculo.</strong> Para validar la cavidad de Navier
           se intentó un FDM propio: divergió a NaN. El guardia <InlineMath tex={String.raw`\varepsilon>0.06`} /> es
           <em> falso</em> para NaN, así que basura habría pasado el chequeo. Se revirtió y se validó contra las
-          líneas centrales publicadas de Ghia. Regla: nunca hornear una referencia numérica sin sus chequeos de
+          líneas centrales publicadas de Ghia. Regla: nunca precalcular una referencia numérica sin sus chequeos de
           estabilidad, y guardar con <InlineMath tex={String.raw`\lnot(x<\text{tol})`} />, no con <InlineMath tex={String.raw`x>\text{tol}`} />.
         </li>
         <li>
@@ -228,16 +228,16 @@ export function Implementation() {
           (velocidad desde tinte) daba 38-60% de error incluso donde el tinte barrió: la red gastaba su libertad en
           una velocidad variable en el tiempo que datos dispersos no pueden fijar. Declarar la corriente estacionaria
           (residuales <InlineMath tex={String.raw`u_t=v_t=0`} />) agregó todos los tiempos en un campo y bajó a 16%.
-          Ese primer resultado se RECHAZÓ; el fracaso quedó documentado como contenido, no oculto.
+          Ese primer resultado se rechazó; el fracaso quedó documentado como contenido, no oculto.
         </li>
         <li>
           <strong>La bomba de cómputo.</strong> Los kits animados hacían autoplay de un rAF infinito que fijaba un
-          núcleo de CPU. Regla permanente: animación pausada por defecto, corre UNA vez y se detiene, y se apaga
+          núcleo de CPU. Regla permanente: animación pausada por defecto, se ejecuta una vez y se detiene, y se apaga
           cuando la pestaña se oculta (<InlineMath tex={String.raw`\texttt{visibilitychange}`} />).
         </li>
         <li>
           <strong>Un test que pisó los artefactos canónicos.</strong> Una prueba de humo del pipeline reescribió
-          <InlineMath tex={String.raw`\texttt{data/derived}`} /> con una corrida CPU reducida, degradando la bakeada
+          <InlineMath tex={String.raw`\texttt{data/derived}`} /> con una corrida CPU reducida, degradando el precálculo
           real. Ahora la suite entera está en un <em>sandbox</em> (los escritos van a un tmp); una prueba nunca
           escribe un artefacto canónico.
         </li>
@@ -268,11 +268,11 @@ export function Implementation() {
           (velocity from dye) gave 38-60% error even where the dye swept: the net spent its freedom on a time-varying
           velocity that sparse data cannot pin. Declaring the current steady (residuals
           <InlineMath tex={String.raw`\ u_t=v_t=0`} />) aggregated all times into one field and dropped it to 16%.
-          That first result was REJECTED; the failure is documented as content, not hidden.
+          That first result was rejected; the failure is documented as content, not hidden.
         </li>
         <li>
           <strong>The compute bomb.</strong> The animated kits autoplayed an infinite rAF that pinned a CPU core.
-          Standing rule: animation paused by default, runs ONCE and stops, and halts when the tab is hidden
+          Standing rule: animation paused by default, runs once and stops, and halts when the tab is hidden
           (<InlineMath tex={String.raw`\texttt{visibilitychange}`} />).
         </li>
         <li>
@@ -297,7 +297,7 @@ export function Implementation() {
         tabs={[
           { id: "overview", label: es ? "App y carriles": "App & lanes", content: overview },
           { id: "offline", label: es ? "Precómputo offline": "Offline precompute", content: offline },
-          { id: "bridge", label: es ? "Puente → ONNX": "Train → ONNX bridge", content: bridge },
+          { id: "bridge", label: es ? "Puente a ONNX": "Train to ONNX bridge", content: bridge },
           { id: "web", label: es ? "Flujo web": "Web flow", content: webflow },
           { id: "design", label: es ? "Flujo de diseño": "Design flow", content: design },
           { id: "lessons", label: es ? "Lecciones de ingeniería": "Engineering lessons", content: lessons },

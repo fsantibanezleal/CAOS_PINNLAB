@@ -84,11 +84,11 @@ export function Burgers1dContext({ lang }: { lang: "en" | "es" }) {
         <strong>Cómo leer y usar la viz.</strong> El <strong>heatmap</strong> de <InlineMath tex={String.raw`u(x,t)`} />
         (x horizontal, t vertical) muestra una <em>banda diagonal</em>: el frente que avanza hacia la derecha; su
         <em>inclinación</em> es la velocidad <InlineMath tex={String.raw`s`} /> y su <em>nitidez</em> es la viscosidad.
-        Al pasar el cursor para leer el valor exacto y mira el <strong>perfil de corte</strong> en
+        Al pasar el cursor se lee el valor exacto y se muestra el <strong>perfil de corte</strong> en
         <InlineMath tex={String.raw`x`} /> (la forma <InlineMath tex={String.raw`\tanh`} /> del frente) y en
         <InlineMath tex={String.raw`t`} /> (cómo pasa el frente por un punto fijo). Los <strong>chips</strong> cargan
-        cada viscosidad; en <strong>Live</strong>, desliza <InlineMath tex={String.raw`\nu`} /> y ve el frente afilarse
-        o difuminarse en vivo en tu navegador (onnxruntime-web).
+        cada viscosidad; en <strong>Live</strong>, al deslizar <InlineMath tex={String.raw`\nu`} /> el frente se afila
+        o se difumina en vivo en el navegador (onnxruntime-web).
       </p>
     </>
   ): (
@@ -176,7 +176,7 @@ export function Burgers1dContext({ lang }: { lang: "en" | "es" }) {
         in <InlineMath tex={String.raw`x`} /> (the <InlineMath tex={String.raw`\tanh`} /> front shape) and in
         <InlineMath tex={String.raw`t`} /> (how the front passes a fixed point). The <strong>chips</strong> load each
         viscosity; in <strong>Live</strong>, slide <InlineMath tex={String.raw`\nu`} /> and watch the front sharpen or
-        smear live in your browser (onnxruntime-web).
+        smear live in the browser (onnxruntime-web).
       </p>
     </>
   );

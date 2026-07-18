@@ -18,7 +18,7 @@ single stage can be reasoned about (and unit-tested) in isolation.
 | **feature_extraction** | `stages/feature_extraction.py` | Build the evaluation grid (`linspace_grid`, or the case's own `eval_grid()` when it overrides sampling). Defines where the field is measured. |
 | **train** | `stages/train.py` | The heavy SOTA stage — build the PINN, run Adam → L-BFGS (+ optional RAR refinement hook), export ONNX, verify parity. See [train → ONNX → web](train-export-onnx.md). |
 | **infer** | `stages/infer.py` | Evaluate the trained net on the grid; reshape multi-output channels; time one full forward pass (`infer_ms`, the gate's interactivity proxy). |
-| **evaluate** | `stages/evaluate.py` | The TEST stage — relative-L2 + max-abs error of the field vs the validation anchor (analytic / reference dataset / Ghia), plus any case `extra_metrics`. Leakage-safe: the anchor is never PINN output. |
+| **evaluate** | `stages/evaluate.py` | The test stage — relative-L2 + max-abs error of the field vs the validation anchor (analytic / reference dataset / Ghia), plus any case `extra_metrics`. Leakage-safe: the anchor is never PINN output. |
 | **export** | `stages/export.py` | Bake the `field.json` trace, assemble the manifest (with the [gate](the-gate.md) verdict + measured numbers), write artifacts under `data/derived/` + `models/`. |
 
 ## The `train` ↔ `evaluate` split is deliberate

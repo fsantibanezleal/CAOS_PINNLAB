@@ -5,7 +5,7 @@ export function DoublePendulumContext({ lang }: { lang: "en" | "es" }) {
   const es = lang === "es";
   return es ? (
     <>
-      <h2>El problema: el péndulo doble: un sistema dinámico caótico, y la PINN como mapa t to estado</h2>
+      <h2>El problema: el péndulo doble: un sistema dinámico caótico, y la PINN como mapa t a estado</h2>
       <p>
         <strong>El problema.</strong> Dos brazos rígidos articulados, el segundo colgando del primero, soltados desde
         el reposo. Es uno de los sistemas <em>caóticos</em> más simples de la mecánica clásica: dos condiciones
@@ -136,7 +136,7 @@ export function DoublePendulumContext({ lang }: { lang: "en" | "es" }) {
       <h3>Honesty: chaos has a hard wall</h3>
       <p>
         A double pendulum is <strong>chaotic</strong>: no fixed network can follow the true trajectory past a finite
-        horizon (the <em>Lyapunov horizon</em>). So the headline metric is NOT a long-term match but the
+        horizon (the <em>Lyapunov horizon</em>). So the headline metric is not a long-term match but the
         <strong>leave-time</strong>: the first instant the PINN departs RK45 by more than
         <InlineMath tex={String.raw`0.30`} /> rad. Here it is a measured <strong>leave-time = 1.99 s</strong>: the PINN
         tracks RK45 to about <InlineMath tex={String.raw`0.02`} /> rad for nearly two seconds, then the trajectory peels

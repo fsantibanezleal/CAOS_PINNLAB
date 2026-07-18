@@ -95,14 +95,14 @@ export function SourceUqBpinnContext({ lang }: { lang: "en" | "es" }) {
       </p>
       <p>
         <strong>Cómo leer y usar la viz.</strong> El <strong>heatmap</strong> por defecto muestra la media
-        <InlineMath tex={String.raw`\mu(x,t)`} /> (x horizontal, t vertical); pasa el cursor para leer el valor exacto y
-        ve cómo el seno se aplana al subir <InlineMath tex={String.raw`t`} />. Cambia al campo de
-        <strong> incertidumbre</strong> <InlineMath tex={String.raw`s(x,t)`} /> para ver las paredes y los sensores como
+        <InlineMath tex={String.raw`\mu(x,t)`} /> (x horizontal, t vertical); al pasar el cursor se lee el valor exacto y
+        se ve cómo el seno se aplana al subir <InlineMath tex={String.raw`t`} />. El campo de
+        <strong> incertidumbre</strong> <InlineMath tex={String.raw`s(x,t)`} /> muestra las paredes y los sensores como
         valles oscuros y las zonas ciegas como crestas brillantes. Los <strong>perfiles de corte</strong> en
         <InlineMath tex={String.raw`x`} /> y <InlineMath tex={String.raw`t`} /> permiten comparar media e incertidumbre
         lado a lado: donde la banda <InlineMath tex={String.raw`\mu\pm 2s`} /> envuelve a <InlineMath tex={String.raw`c^*`} />,
         el ensemble está calibrado. Como es un benchmark único, el tab <strong>Live</strong> re-evalúa el ensemble
-        entrenado (la misma física y los mismos sensores), emitiendo media e incertidumbre en tu navegador, sin
+        entrenado (la misma física y los mismos sensores), emitiendo media e incertidumbre en el navegador, sin
         deslizador de parámetro.
       </p>
     </>
@@ -200,10 +200,10 @@ export function SourceUqBpinnContext({ lang }: { lang: "en" | "es" }) {
         sine flatten as <InlineMath tex={String.raw`t`} /> rises. Switch to the <strong>uncertainty</strong> field
         <InlineMath tex={String.raw`s(x,t)`} /> to see the walls and sensors as dark valleys and the blind zones as
         bright ridges. The <strong>line-cut profiles</strong> in <InlineMath tex={String.raw`x`} /> and
-        <InlineMath tex={String.raw`t`} /> let you compare mean and uncertainty side by side: where the band
+        <InlineMath tex={String.raw`t`} /> put mean and uncertainty side by side: where the band
         <InlineMath tex={String.raw`\mu\pm 2s`} /> brackets <InlineMath tex={String.raw`c^*`} />, the ensemble is
         calibrated. Since it is a single benchmark, the <strong>Live</strong> tab re-evaluates the trained ensemble (the
-        same physics and the same sensors), emitting mean and uncertainty in your browser, with no parameter slider.
+        same physics and the same sensors), emitting mean and uncertainty in the browser, with no parameter slider.
       </p>
     </>
   );

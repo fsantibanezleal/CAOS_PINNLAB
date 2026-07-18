@@ -112,11 +112,11 @@ export function HeapLeachContext({ lang }: { lang: "en" | "es" }) {
       <p>
         <strong>Cómo leer y usar la viz.</strong> El <strong>heatmap</strong> de
         <InlineMath tex={String.raw`c_A(x,z)`} /> en un instante muestra el patrón de seno-coseno modulado por el
-        decaimiento; pasa el cursor para leer la concentración exacta en cualquier punto y los <strong>perfiles de
+        decaimiento; al pasar el cursor se lee la concentración exacta en cualquier punto y los <strong>perfiles de
         corte</strong> en <InlineMath tex={String.raw`x`} /> y <InlineMath tex={String.raw`z`} /> dan los lóbulos del
         frente (su amplitud = cuánto ha decaído/reaccionado la especie). Los <strong>chips</strong> saltan a cada
-        instante; en <strong>Live</strong>, arrastra <InlineMath tex={String.raw`t`} /> como un <em>scrubber</em> y ve
-        los reactivos percolar, reaccionar y relajarse en vivo en tu navegador (onnxruntime-web). La especie primaria
+        instante; en <strong>Live</strong>, al arrastrar <InlineMath tex={String.raw`t`} /> como un <em>scrubber</em>
+        los reactivos percolan, reaccionan y se relajan en vivo en el navegador (onnxruntime-web). La especie primaria
         graficada es <InlineMath tex={String.raw`c_A`} />; el error de <InlineMath tex={String.raw`c_B`} /> contra la
         MMS se reporta junto al de <InlineMath tex={String.raw`c_A`} />.
       </p>
@@ -133,7 +133,7 @@ export function HeapLeachContext({ lang }: { lang: "en" | "es" }) {
         Each species' concentration evolves as <InlineMath tex={String.raw`c_i(x,z,t)`} />. Here <strong>time</strong> is
         the swept parameter: a single network learns the whole history <InlineMath tex={String.raw`c(x,z;t)`} />, and in
         the <strong>Live</strong> tab the <InlineMath tex={String.raw`t`} /> slider acts as a
-        <strong> time scrubber</strong>: you watch the fronts percolate, react and relax frame by frame.
+        <strong> time scrubber</strong>: the fronts percolate, react and relax frame by frame.
       </p>
 
       <h3>Components &amp; variables</h3>
@@ -211,7 +211,7 @@ export function HeapLeachContext({ lang }: { lang: "en" | "es" }) {
         <strong>Modeled:</strong> two aqueous reactants, uniform downward Darcy percolation, isotropic dispersion, one
         bimolecular reaction <InlineMath tex={String.raw`A+B\to C`} />, a saturated domain. It is
         <em> illustrative-synthetic</em>: parameter ranges <em>relevant</em> to Chilean Cu/REE bioleaching, but
-        <strong> NOT</strong> fit to any column test or plant dataset. Method precedent: reactive-transport PIML for
+        <strong> not</strong> fit to any column test or plant dataset. Method precedent: reactive-transport PIML for
         critical minerals (arXiv:2506.15960). <strong>Out of scope:</strong> shrinking-core kinetics, dual porosity,
         variable velocity/saturation, multi-species chemistry and precipitation; and a sweep over a physical parameter
         (not honest under MMS, see above).
@@ -234,7 +234,7 @@ export function HeapLeachContext({ lang }: { lang: "en" | "es" }) {
         <InlineMath tex={String.raw`x`} /> and <InlineMath tex={String.raw`z`} /> give the front lobes (their amplitude =
         how much the species has decayed/reacted). The <strong>chips</strong> jump to each instant; in
         <strong> Live</strong>, drag <InlineMath tex={String.raw`t`} /> like a <em>scrubber</em> and watch the reactants
-        percolate, react and relax live in your browser (onnxruntime-web). The plotted primary species is
+        percolate, react and relax live in the browser (onnxruntime-web). The plotted primary species is
         <InlineMath tex={String.raw`c_A`} />; the <InlineMath tex={String.raw`c_B`} /> error against the MMS is reported
         alongside <InlineMath tex={String.raw`c_A`} />'s.
       </p>

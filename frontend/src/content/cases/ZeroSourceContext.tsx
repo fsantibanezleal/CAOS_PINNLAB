@@ -14,7 +14,7 @@ export function ZeroSourceContext({ lang }: { lang: "en" | "es" }) {
         cero, <InlineMath tex={String.raw`-\nabla^2 u = f`} /> en <InlineMath tex={String.raw`(0,1)^2`} />,
         <InlineMath tex={String.raw`\,u|_{\partial\Omega}=0`} />. Su miembro degenerado: 
         <strong> fuente cero, campo cero</strong> (<InlineMath tex={String.raw`f\equiv0\Rightarrow u\equiv0`} />): es
-        la prueba de cordura mínima: el motor debe correr sin caer y devolver un campo plano en cero. Aquí lo
+        la prueba de cordura mínima: el motor debe ejecutarse sin caer y devolver un campo plano en cero. Aquí lo
         extendemos a una <strong>familia paramétrica verificada</strong> por el <em>método de soluciones manufacturadas</em>
         (MMS): elegimos una solución exacta <InlineMath tex={String.raw`u^*`} />, derivamos la fuente
         <InlineMath tex={String.raw`f=-\nabla^2 u^*`} /> que la produce, y un solo deslizador
@@ -54,7 +54,7 @@ export function ZeroSourceContext({ lang }: { lang: "en" | "es" }) {
 
       <h3>El método: restricción dura de borde, una sola red paramétrica</h3>
       <p>
-        El borde cero se hornea de forma <strong>exacta</strong> en el ansatz: no hay término de pérdida de borde que
+        El borde cero se incorpora de forma <strong>exacta</strong> en el ansatz: no hay término de pérdida de borde que
         compita:
       </p>
       <Equation tex={String.raw`u_\theta(x,y;a)=\underbrace{x(1-x)\,y(1-y)}_{=\,0\ \text{en }\partial\Omega}\;\mathcal{N}_\theta(x,y,a).`} />
@@ -91,12 +91,12 @@ export function ZeroSourceContext({ lang }: { lang: "en" | "es" }) {
       </p>
       <p>
         <strong>Cómo leer y usar la viz.</strong> El <strong>heatmap</strong> de
-        <InlineMath tex={String.raw`u(x,y)`} /> muestra los lóbulos manufacturados; pasa el cursor para leer el valor
-        exacto y compararlo mentalmente con <InlineMath tex={String.raw`u^*=a\,g`} />. Los <strong>perfiles de corte</strong>
+        <InlineMath tex={String.raw`u(x,y)`} /> muestra los lóbulos manufacturados; al pasar el cursor se lee el valor
+        exacto para compararlo mentalmente con <InlineMath tex={String.raw`u^*=a\,g`} />. Los <strong>perfiles de corte</strong>
         en <InlineMath tex={String.raw`x`} /> e <InlineMath tex={String.raw`y`} /> deben trazar senos suaves anclados a
-        cero en los bordes. En <strong>Live</strong>, arrastra el deslizador de amplitud
-        <InlineMath tex={String.raw`a`} /> hacia <InlineMath tex={String.raw`0`} /> y verás el campo desvanecerse a
-        cero plano: el control degenerado emergiendo como límite de la familia, re-evaluado en tu navegador
+        cero en los bordes. En <strong>Live</strong>, al arrastrar el deslizador de amplitud
+        <InlineMath tex={String.raw`a`} /> hacia <InlineMath tex={String.raw`0`} /> el campo se desvanece a
+        cero plano: el control degenerado emergiendo como límite de la familia, re-evaluado en el navegador
         (onnxruntime-web).
       </p>
     </>
@@ -191,7 +191,7 @@ export function ZeroSourceContext({ lang }: { lang: "en" | "es" }) {
         <InlineMath tex={String.raw`x`} /> and <InlineMath tex={String.raw`y`} /> should trace smooth sines pinned to
         zero at the edges. In <strong>Live</strong>, drag the amplitude slider
         <InlineMath tex={String.raw`a`} /> toward <InlineMath tex={String.raw`0`} /> and watch the field fade to flat
-        zero: the degenerate control emerging as the limit of the family, re-evaluated in your browser
+        zero: the degenerate control emerging as the limit of the family, re-evaluated in the browser
         (onnxruntime-web).
       </p>
     </>

@@ -2,7 +2,7 @@
 
 > **Method group `inverse-uq`** — recovering unknown coefficients, fields and sources from
 > sparse/noisy data, and attaching honest error bars to the answer.
-> First exercised in: `poll-air-source-inv` (REAL OpenAQ data), `poll-groundwater-rt`,
+> First exercised in: `poll-air-source-inv` (real OpenAQ data), `poll-groundwater-rt`,
 > `ind-heat2d-inverse`, `poll-source-uq-bpinn`.
 
 ---
@@ -93,7 +93,7 @@ model.train(iterations=80000, callbacks=[var_cb])
 For an unknown *field*, use a multi-output net (`dde.nn.PFNN`) and supply the sparse observations as a
 `dde.icbc.PointSetBC`; no `dde.Variable` is needed because the unknown lives in the network outputs.
 
-**PINN-Lab cases.** `poll-air-source-inv` (source field $S$, REAL OpenAQ data),
+**PINN-Lab cases.** `poll-air-source-inv` (source field $S$, real OpenAQ data),
 `poll-groundwater-rt` (reactive coupling + transport parameters), `ind-heat2d-inverse` (conductivity
 field $k(x)$), `mine-flotation-kinetics` (scalar rate constant $k$). The `real_or_synthetic` flag on
 each case flips to `validated` only where wired to committed real data (OpenAQ, USGS NWIS); otherwise

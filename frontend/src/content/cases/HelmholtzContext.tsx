@@ -72,7 +72,7 @@ export function HelmholtzContext({ lang }: { lang: "en" | "es" }) {
       <p>
         <strong>Resultado y honestidad.</strong> Medido con semilla 42, la PINN con características de Fourier alcanza un
         relativo-L2 de 0.1026 (~10%) contra el campo analítico, con un error absoluto máximo de 0.158; la exportación
-        ONNX coincide con la red entrenada hasta 4.77e-07 (abs máx) y corre en <strong>Live</strong> a 340 KB, 18.5 ms de
+        ONNX coincide con la red entrenada hasta 4.77e-07 (abs máx) y se ejecuta en <strong>Live</strong> a 340 KB, 18.5 ms de
         inferencia. El ~10% está honestamente limitado por CPU: el mapa de Fourier levanta la meseta de sesgo espectral
         que de otro modo dejaría a una MLP simple un orden de magnitud peor, pero con
         <InlineMath tex={String.raw`k_0=6\pi`} /> en el carril de CPU el patrón estacionario se resuelve a ~10%, no a
@@ -104,12 +104,12 @@ export function HelmholtzContext({ lang }: { lang: "en" | "es" }) {
       <p>
         <strong>Cómo leer y usar la viz.</strong> El <strong>heatmap</strong> de <InlineMath tex={String.raw`u(x,y)`} />
         muestra el tablero de ajedrez de lóbulos claros (<InlineMath tex={String.raw`+1`} />) y oscuros
-        (<InlineMath tex={String.raw`-1`} />); pasa el cursor para leer la amplitud exacta y confirmar que los nodos caen
-        en <InlineMath tex={String.raw`u=0`} /> y los bordes están limpios. Mira los <strong>perfiles de corte</strong>
-        en <InlineMath tex={String.raw`x`} /> e <InlineMath tex={String.raw`y`} />: cada uno es una sinusoide de tres
-        ciclos completos: cuenta los picos para verificar el número de onda. Como es un benchmark de número de onda
-        fijo, el tab <strong>Live</strong> re-evalúa la red entrenada (la misma física) en tu navegador
-        (onnxruntime-web), sin deslizador de parámetro; compara su salida con el patrón exacto para ver el error
+        (<InlineMath tex={String.raw`-1`} />); al pasar el cursor se lee la amplitud exacta y se confirma que los nodos caen
+        en <InlineMath tex={String.raw`u=0`} /> y los bordes están limpios. Los <strong>perfiles de corte</strong>
+        en <InlineMath tex={String.raw`x`} /> e <InlineMath tex={String.raw`y`} /> son cada uno una sinusoide de tres
+        ciclos completos: contar los picos verifica el número de onda. Como es un benchmark de número de onda
+        fijo, el tab <strong>Live</strong> re-evalúa la red entrenada (la misma física) en el navegador
+        (onnxruntime-web), sin deslizador de parámetro; su salida se compara con el patrón exacto para ver el error
         residual del PINN. Más allá de las vistas propias de este caso, la vista <strong>Compare</strong> pone en una
         misma grilla el solver clásico de diferencias finitas, la PINN ingenua de tanh puro (120.8% relativo-L2) y la
         PINN con características de Fourier (9.3%); <strong>Diagnostics</strong> muestra el barrido de número de onda (la
@@ -218,7 +218,7 @@ export function HelmholtzContext({ lang }: { lang: "en" | "es" }) {
         <InlineMath tex={String.raw`u=0`} /> and the edges are clean. Watch the <strong>line-cut profiles</strong> in
         <InlineMath tex={String.raw`x`} /> and <InlineMath tex={String.raw`y`} />: each is a three-cycle sinusoid: count
         the peaks to verify the wavenumber. Since it is a fixed-wavenumber benchmark, the <strong>Live</strong> tab
-        re-evaluates the trained network (the same physics) in your browser (onnxruntime-web), with no parameter slider;
+        re-evaluates the trained network (the same physics) in the browser (onnxruntime-web), with no parameter slider;
         compare its output against the exact pattern to see the PINN's residual error. Beyond this case's own views, the
         <strong> Compare</strong> view puts the classical finite-difference solve, the naive plain-tanh PINN (120.8%
         relative-L2), and the Fourier-feature PINN (9.3%) on one grid; <strong>Diagnostics</strong> shows the wavenumber
