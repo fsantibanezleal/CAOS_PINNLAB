@@ -87,7 +87,7 @@ export function Benchmark() {
         </table>
         <p className="muted" style={{ fontSize: 12.5 }}>
           {lang === "es"
-            ? "Las columnas de la escalera vienen de las comparaciones horneadas (la vista Comparar de cada caso); un guion significa que ese carril no existe para el caso (nunca se fabrica un contraste). Clic en un caso abre su comparación."
+            ? "Las columnas de la escalera vienen de las comparaciones precalculadas (la vista Comparar de cada caso); un guion significa que ese carril no existe para el caso (nunca se fabrica un contraste). Clic en un caso abre su comparación."
             : "The ladder columns come from the baked comparisons (each case's Compare view); a dash means that lane does not exist for the case (a contrast is never fabricated). Click a case to open its comparison."}
         </p>
       </div>

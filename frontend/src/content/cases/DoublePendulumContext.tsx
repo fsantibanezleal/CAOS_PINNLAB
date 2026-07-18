@@ -21,7 +21,7 @@ export function DoublePendulumContext({ lang }: { lang: "en" | "es" }) {
         <li><strong>Estado:</strong> los ángulos desde la vertical <InlineMath tex={String.raw`\theta_1(t),\theta_2(t)`} /> y sus velocidades <InlineMath tex={String.raw`\dot\theta_1,\dot\theta_2`} />.</li>
         <li><strong>Constantes:</strong> masas <InlineMath tex={String.raw`m_1=m_2=1`} />, longitudes <InlineMath tex={String.raw`\ell_1=\ell_2=1`} />, gravedad <InlineMath tex={String.raw`g=9.81`} />.</li>
         <li><strong>Condición inicial:</strong> <InlineMath tex={String.raw`\theta_1(0)=\theta_2(0)=120^\circ`} />, soltado del reposo <InlineMath tex={String.raw`\dot\theta_i(0)=0`} />: un régimen claramente caótico.</li>
-        <li><strong>Dominio:</strong> tiempo <InlineMath tex={String.raw`t\in[0,3]`} /> s, 601 muestras horneadas.</li>
+        <li><strong>Dominio:</strong> tiempo <InlineMath tex={String.raw`t\in[0,3]`} /> s, 601 muestras precalculadas.</li>
         <li><strong>Ancla:</strong> un integrador <strong>RK45</strong> de alta precisión (<InlineMath tex={String.raw`\text{rtol}=\text{atol}=10^{-10}`} />): la verdad numérica contra la que se mide la PINN.</li>
       </ul>
 

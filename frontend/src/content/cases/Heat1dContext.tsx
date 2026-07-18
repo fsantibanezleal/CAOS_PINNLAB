@@ -73,7 +73,7 @@ export function Heat1dContext({ lang }: { lang: "en" | "es" }) {
         <strong>Cómo leer y usar la viz.</strong> El <strong>heatmap</strong> muestra
         <InlineMath tex={String.raw`u(x,t)`} /> con <InlineMath tex={String.raw`x`} /> horizontal y
         <InlineMath tex={String.raw`t`} /> vertical (el tiempo sube): una banda brillante abajo (t pequeño) que se
-        desvanece hacia arriba (t grande) es la relajación. Pasa el cursor para leer la temperatura exacta en cualquier
+        desvanece hacia arriba (t grande) es la relajación. Al pasar el cursor para leer la temperatura exacta en cualquier
         <InlineMath tex={String.raw`(x,t)`} /> y mira el <strong>perfil de corte</strong> en
         <InlineMath tex={String.raw`x`} /> (la forma senoidal) y en <InlineMath tex={String.raw`t`} /> (el decaimiento
         exponencial). Los <strong>chips</strong> cargan cada difusividad; en <strong>Live</strong>, desliza

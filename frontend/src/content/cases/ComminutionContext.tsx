@@ -95,7 +95,7 @@ export function ComminutionContext({ lang }: { lang: "en" | "es" }) {
         <strong>Cómo leer y usar la viz.</strong> El <strong>heatmap</strong> de <InlineMath tex={String.raw`n(s,t)`} />
         (s horizontal, t vertical) muestra una <em>banda diagonal</em> que baja en tamaño al avanzar la molienda: su
         <em> inclinación</em> es la tasa <InlineMath tex={String.raw`g`} /> y su <em>anchura creciente</em> es la
-        dispersión <InlineMath tex={String.raw`D`} />. Pasa el cursor para leer el valor exacto y mira el
+        dispersión <InlineMath tex={String.raw`D`} />. Al pasar el cursor para leer el valor exacto y mira el
         <strong> perfil de corte</strong> en <InlineMath tex={String.raw`s`} /> (la distribución de tamaños en un
         instante: la campana que se corre y se aplana) y en <InlineMath tex={String.raw`t`} /> (cómo crece y luego cae
         la masa en un tamaño fijo conforme la moda pasa por él). Los <strong>chips</strong> cargan cada tasa de molienda;

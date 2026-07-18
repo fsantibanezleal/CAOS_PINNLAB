@@ -101,12 +101,12 @@ export function DarcyOperatorContext({ lang }: { lang: "en" | "es" }) {
         <InlineMath tex={String.raw`a`} /> (la entrada), <InlineMath tex={String.raw`u_{\mathrm{pred}}`} /> (lo que dice
         el FNO) y <InlineMath tex={String.raw`u_{\mathrm{true}}`} /> (la verdad numérica); compara
         <InlineMath tex={String.raw`u_{\mathrm{pred}}`} /> con <InlineMath tex={String.raw`u_{\mathrm{true}}`} /> para
-        ver dónde el operador acierta y dónde se desvía (típicamente en las interfaces más afiladas). Pasa el cursor para
+        ver dónde el operador acierta y dónde se desvía (típicamente en las interfaces más afiladas). Al pasar el cursor para
         leer valores exactos y mira los <strong>perfiles de corte</strong>. Los <strong>chips</strong> saltan entre
         instancias retenidas; cada uno reporta su propia L2 además de la L2 del conjunto de prueba (la métrica titular,
         igual en todos los chips). Como el FNO es un mapa <strong>campo to campo</strong> (no de coordenadas), el tab
-        <strong> Live</strong> reproduce los campos horneados: no hay deslizador de coordenadas, y eso es correcto para
-        un operador: el ONNX horneado es el propio grafo del FNO, verificado por paridad a 1.8e-6 (máx abs).
+        <strong> Live</strong> reproduce los campos precalculados: no hay deslizador de coordenadas, y eso es correcto para
+        un operador: el ONNX precalculado es el propio grafo del FNO, verificado por paridad a 1.8e-6 (máx abs).
       </p>
     </>
   ): (
