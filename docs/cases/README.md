@@ -12,7 +12,7 @@ value; lanes are derived from measurements (see [the gate](../architecture/the-g
 | **canonical-benchmark** | poisson2d · heat1d · wave1d · burgers1d · allencahn · navier-cavity · darcy-operator (FNO) · **double-pendulum (chaotic ODE)** |
 | **industrial-fluids-heat** | helmholtz · heat2d-inverse · **hidden-velocity (HFM flagship)** |
 | **mining / mineral-processing** | heap-leach-rt · thickener-settling · flotation-kinetics · comminution-pbe |
-| **pollution / environmental** | ocean-transport · soil-barrier · tailings-seepage · **soil-heat-real (REAL DATA)** · source-uq-bpinn (UQ) |
+| **pollution / environmental** | ocean-transport · soil-barrier · tailings-seepage · **soil-heat-real (real data)** · source-uq-bpinn (UQ) |
 | **control** | zero-source |
 
 ## Honesty: what "real" means here
@@ -59,7 +59,7 @@ the reproduce command).
 - [poll-ocean-transport](poll-ocean-transport.md) — advection–diffusion.
 - [poll-soil-barrier](poll-soil-barrier.md) — FBPINN domain decomposition across a low-permeability barrier.
 - [poll-tailings-seepage](poll-tailings-seepage.md) — Richards/Gardner unsaturated seepage.
-- [env-soil-heat-real](env-soil-heat-real.md) — **REAL-data** inverse (USCRN soil temperatures).
+- [env-soil-heat-real](env-soil-heat-real.md) — **real-data** inverse (USCRN soil temperatures).
 - [poll-source-uq-bpinn](poll-source-uq-bpinn.md) — Bayesian PINN (deep ensemble) with epistemic uncertainty.
 
 **Control**

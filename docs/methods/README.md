@@ -12,7 +12,7 @@ The base recipe **Adam → L-BFGS** underlies every case.
 | **Loss / gradient weighting** | rebalance PDE vs BC vs data terms (NTK / gradient-norm / self-adaptive) | navier-cavity | [loss-weighting.md](loss-weighting.md) |
 | **Domain decomposition (FBPINN)** | a sub-net per subdomain blended by a partition of unity → handle kinks/jumps | soil-barrier | [domain-decomposition.md](domain-decomposition.md) |
 | **Operator learning (FNO / DeepONet)** | learn the solution *map* over a family, one forward pass per new instance | darcy-operator (FNO) | [operator-learning.md](operator-learning.md) |
-| **Inverse problems & UQ** | recover a field/parameter from sparse data + a deep-ensemble error bar | heat2d-inverse, soil-heat-real (REAL), source-uq-bpinn | [inverse-uq.md](inverse-uq.md) |
+| **Inverse problems & UQ** | recover a field/parameter from sparse data + a deep-ensemble error bar | heat2d-inverse, soil-heat-real (real), source-uq-bpinn | [inverse-uq.md](inverse-uq.md) |
 | **Variational & scalable** | weak-form (hp-VPINN) and separable (SPINN) routes to lower regularity / huge collocation | roadmap | [variational-scalable.md](variational-scalable.md) |
 | **Optimization (Adam → L-BFGS)** | first-order into the basin, quasi-Newton to polish | every DeepXDE case | [optimization.md](optimization.md) |
 

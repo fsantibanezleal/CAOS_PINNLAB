@@ -22,7 +22,7 @@ and a `docs/` tree that is written *as the code is versioned*.
 - **It IS** a teaching-and-decision instrument and a **method catalogue**: each SOTA family — hard constraints, RAR
   adaptive sampling, Fourier features / SIREN, domain decomposition, operator learning (FNO), inverse + UQ — is
   genuinely *exercised* in at least one case, not merely named.
-- **It is NOT** a replacement for FEM/FVM (a good classical solver beats a PINN on a single well-posed forward
+- **It is not** a replacement for FEM/FVM (a good classical solver beats a PINN on a single well-posed forward
   problem), and it is **not** an industrial digital twin: most mining/pollution cases are validated on analytic (MMS)
   anchors or faithful reduced models, each carrying an honest `synthetic` / `synthetic-illustrative` /
   `validated-real` label. Exactly one case (`env-soil-heat-real`) is trained against a real measured dataset.
@@ -52,7 +52,7 @@ The pipeline does not bake one field per case: it **computes the comparison the 
   animating together, 2-D frame sequences (ocean, heap-leach), and **Training — "watch it learn"**: the field at real
   training checkpoints, naive vs adapted side by side (spectral bias made visible as a training pathology).
 - **The story**: an 8-chapter when-PINNs-win/lose selector, each chapter deep-linking (`#/?case=…&view=…`) to the
-  case + view that DEMONSTRATES it. Chapter 1 is honest: on the easy forward problem the classical solver wins.
+  case + view that demonstrates it. Chapter 1 is honest: on the easy forward problem the classical solver wins.
 - Ladder tools live in `data-pipeline/` (`build_standard_comparisons.py`, `build_ladder.py`, `build_naive_lane.py`,
   `build_training_dynamics.py`, `build_evolution_frames.py`, `build_identifiability_sweep.py`, …); artifacts are
   contract-tested (`tests/test_dynamics_artifacts.py`).
@@ -64,7 +64,7 @@ The pipeline does not bake one field per case: it **computes the comparison the 
 ./scripts/setup.ps1                          # or ./scripts/setup.sh
 
 # 2. bake a case (train → validate → ONNX → manifest)
-./scripts/precompute.ps1 bench-poisson2d --seed 42      # omit the id to bake ALL cases + rebuild the index
+./scripts/precompute.ps1 bench-poisson2d --seed 42      # omit the id to bake all cases + rebuild the index
 
 # 3. run the web app (predev overlays the baked artifacts, then Vite serves them)
 cd frontend && npm install && npm run dev
