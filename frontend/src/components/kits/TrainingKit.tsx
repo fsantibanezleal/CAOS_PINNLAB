@@ -9,7 +9,7 @@ import { Transport } from "./Transport";
 import { useAnimator } from "./useAnimator";
 
 /** TrainingKit - "WATCH IT LEARN" (issue #36). Replays the field at real training checkpoints for the naive
- *  and adapted lanes SIDE BY SIDE (one colour scale across every frame of both lanes), with the live L2 per lane
+ *  and adapted lanes side by side (one colour scale across every frame of both lanes), with the live L2 per lane
  *  and the L2-vs-iteration curve underneath. This makes the training pathology VISIBLE as dynamics: the naive
  *  Helmholtz lane stays a low-frequency blur across all of training (spectral bias), the naive Allen-Cahn lane
  *  slides into the metastable collapse - while the adapted lane converges. All frames are real baked training

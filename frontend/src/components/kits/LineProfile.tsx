@@ -2,9 +2,9 @@ import { useState } from "react";
 
 import { fmtTick, fmtVal, niceTicks } from "../../lib/plot";
 
-/** An SVG line plot of u over a spatial axis with REAL axes (nice ticks + a recessive grid), a faint GHOST of
- *  the initial frame, a hover crosshair + value read-out, and a y-scale LOCKED to the whole field's range so the
- *  curve doesn't rescale every frame (the motion you see is the real solution evolving, not an autoscale
+/** An SVG line plot of u over a spatial axis with real axes (nice ticks + a recessive grid), a faint ghost of
+ *  the initial frame, a hover crosshair + value read-out, and a y-scale locked to the whole field's range so the
+ *  curve doesn't rescale every frame (the motion shown is the real solution evolving, not an autoscale
  *  artifact). The animated hero of the time cases and of TimeEvolutionKit. */
 export function LineProfile({
   values,

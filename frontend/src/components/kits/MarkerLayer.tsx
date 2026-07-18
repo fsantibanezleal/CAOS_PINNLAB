@@ -8,7 +8,7 @@ export function markersFor(manifest: CaseManifest, active?: VariantEntry | null)
   return [...(e.markers ?? []), ...(byV ?? [])];
 }
 
-/** THE ANSWER, DRAWN ON THE FIELD: an absolutely-positioned overlay for any map container whose axes span
+/** The answer, drawn on the field: an absolutely-positioned overlay for any map container whose axes span
  *  [a0,a1] x [b0,b1] in field_axes units (b up). Put inside a position:relative wrapper covering the map. */
 export function MarkerLayer({
   markers,
