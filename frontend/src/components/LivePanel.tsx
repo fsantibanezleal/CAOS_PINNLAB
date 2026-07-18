@@ -112,8 +112,8 @@ export function LivePanel({ manifest, lang }: { manifest: CaseManifest; lang: "e
       <div className="live-panel">
         <p className="banner warn">
           {es
-            ? "Caso precompute (operador campo→campo): el motor corre OFFLINE; el navegador reproduce un resultado representativo horneado. No hay inferencia en vivo por coordenadas para este lane."
-           : "Precompute case (field→field operator): the engine runs OFFLINE; the browser replays a representative baked result. There is no coordinate-driven live inference for this lane."}
+            ? "Caso precompute (operador campo→campo): el motor corre offline; el navegador reproduce un resultado representativo precalculado. No hay inferencia en vivo por coordenadas para este lane."
+           : "Precompute case (field→field operator): the engine runs offline; the browser replays a representative baked result. There is no coordinate-driven live inference for this lane."}
         </p>
       </div>
     );

@@ -47,7 +47,7 @@ export function VariantCharts({
         <h3>{es ? "Los números medidos de este caso" : "This case's measured numbers"}</h3>
         <p className="muted" style={{ marginTop: 0 }}>
           {es
-            ? "Este caso tiene un solo régimen, así que no hay barrido que comparar: estos son todos los números que la horneada midió, cada uno explicado. Los mapas de error viven en Comparar / Diagnóstico."
+            ? "Este caso tiene un solo régimen, así que no hay barrido que comparar: estos son todos los números que la precalculada midió, cada uno explicado. Los mapas de error viven en Comparar / Diagnóstico."
             : "This case has a single regime, so there is no sweep to compare: these are all the numbers the bake measured, each explained. The error maps live in Compare / Diagnostics."}
         </p>
         <div className="pl-ans-grid">

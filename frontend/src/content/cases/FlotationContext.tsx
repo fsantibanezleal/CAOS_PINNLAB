@@ -68,7 +68,7 @@ export function FlotationContext({ lang }: { lang: "en" | "es" }) {
         recuperación casi total). Las <em>isolíneas</em> son curvas <InlineMath tex={String.raw`kt=\text{const}`} />.
       </p>
       <p>
-        <strong>Cómo leer y usar la viz.</strong> Pasa el cursor para leer <InlineMath tex={String.raw`C`} /> exacto en
+        <strong>Cómo leer y usar la viz.</strong> Al pasar el cursor para leer <InlineMath tex={String.raw`C`} /> exacto en
         cualquier <InlineMath tex={String.raw`(k,t)`} /> (la recuperación es <InlineMath tex={String.raw`1-C`} />). El
         <strong> perfil de corte</strong> en <InlineMath tex={String.raw`t`} /> da la curva de decaimiento exponencial
         para un <InlineMath tex={String.raw`k`} /> fijo (la curva clásica de recuperación-vs-tiempo); el corte en

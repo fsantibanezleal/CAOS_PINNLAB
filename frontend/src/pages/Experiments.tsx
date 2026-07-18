@@ -53,7 +53,7 @@ export function Experiments() {
         <h3>{lang === "es" ? "La escalera de métodos: estándar vs PINN ingenua vs la corrección" : "The method ladder: standard vs naive vs adapted PINN"}</h3>
         <p style={{ fontSize: 14 }}>
           {lang === "es"
-            ? "La tubería offline COMPUTA la comparación que la teoría describe: la solución estándar (forma cerrada o solucionador clásico) frente a la PINN ingenua (sin la corrección) frente a la corrección, más diagnósticos. La vista Comparar / Diagnóstico de cada caso muestra resultados REALES horneados, no afirmaciones."
+            ? "La tubería offline COMPUTA la comparación que la teoría describe: la solución estándar (forma cerrada o solucionador clásico) frente a la PINN ingenua (sin la corrección) frente a la corrección, más diagnósticos. La vista Comparar / Diagnóstico de cada caso muestra resultados REALES precalculados, no afirmaciones."
             : "The offline pipeline COMPUTES the comparison the theory describes: the standard solution (closed-form or classical solver) vs the naive PINN (without the fix) vs the fix, plus diagnostics. Each case's Compare / Diagnostics view shows REAL baked results, not assertions."}
         </p>
         <table className="tbl">
@@ -156,7 +156,7 @@ export function Experiments() {
       <h1>{lang === "es" ? "Experimentos": "Experiments"}</h1>
       <p className="muted">
         {lang === "es"
-          ? "Resumen por categoría de los casos horneados: la escalera de métodos, qué se corrió de verdad, y método/motor/lane/error por grupo."
+          ? "Resumen por categoría de los casos precalculados: la escalera de métodos, qué se corrió de verdad, y método/motor/lane/error por grupo."
          : "Per-category summary of the baked cases: the method ladder, what was actually run, and method/engine/lane/error by group."}
       </p>
       {rows.length === 0 ? (

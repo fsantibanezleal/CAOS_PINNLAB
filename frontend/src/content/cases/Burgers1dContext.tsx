@@ -84,7 +84,7 @@ export function Burgers1dContext({ lang }: { lang: "en" | "es" }) {
         <strong>Cómo leer y usar la viz.</strong> El <strong>heatmap</strong> de <InlineMath tex={String.raw`u(x,t)`} />
         (x horizontal, t vertical) muestra una <em>banda diagonal</em>: el frente que avanza hacia la derecha; su
         <em>inclinación</em> es la velocidad <InlineMath tex={String.raw`s`} /> y su <em>nitidez</em> es la viscosidad.
-        Pasa el cursor para leer el valor exacto y mira el <strong>perfil de corte</strong> en
+        Al pasar el cursor para leer el valor exacto y mira el <strong>perfil de corte</strong> en
         <InlineMath tex={String.raw`x`} /> (la forma <InlineMath tex={String.raw`\tanh`} /> del frente) y en
         <InlineMath tex={String.raw`t`} /> (cómo pasa el frente por un punto fijo). Los <strong>chips</strong> cargan
         cada viscosidad; en <strong>Live</strong>, desliza <InlineMath tex={String.raw`\nu`} /> y ve el frente afilarse
