@@ -125,7 +125,7 @@ export function LivePanel({ manifest, lang }: { manifest: CaseManifest; lang: "e
 
   return (
     <div className="live-panel">
-      <div className="live-controls" title={es ? "Inferencia EN VIVO en tu navegador (onnxruntime-web) del .onnx exportado: la misma red entrenada offline." : "LIVE inference in your browser (onnxruntime-web) of the exported .onnx: the same network trained offline."}>
+      <div className="live-controls" title={es ? "Inferencia en vivo en el navegador (onnxruntime-web) del .onnx exportado: la misma red entrenada offline." : "Live inference in the browser (onnxruntime-web) of the exported .onnx: the same network trained offline."}>
         {manifest.outputs.length > 1 && (
           <label className="ctl">
             <span>{es ? "Campo": "Field"}</span>

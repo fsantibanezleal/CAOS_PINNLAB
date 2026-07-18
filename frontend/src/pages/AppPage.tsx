@@ -39,7 +39,7 @@ export function AppPage() {
   const [caseId, setCaseId] = useState<string>("");
   const [q, setQ] = useState<string>("");
 
-  // Shareable deep links (issue #38): #/?case=<id>&view=<view> is read on load and kept in sync as you navigate.
+  // Shareable deep links (issue #38): #/?case=<id>&view=<view> is read on load and kept in sync as the user navigates.
   const [searchParams, setSearchParams] = useSearchParams();
   const [view, setView] = useState<string | undefined>(searchParams.get("view") ?? undefined);
 

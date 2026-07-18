@@ -76,4 +76,4 @@ The pipeline bakes the full **method ladder** for this case (see [the method lad
 
 ## Training view (watch it learn)
 
-The app's **Training** view replays the field at REAL training checkpoints (0 to 12k iterations), naive vs Fourier side by side with the live L2 and the L2-vs-iteration curve. The naive tanh lane never leaves ~100 % relative-L2 at ANY checkpoint - spectral bias is a training-time pathology, not a capacity limit - while the Fourier lane converges to ~9 %. Baked by `build_training_dynamics.py`.
+The app's **Training** view replays the field at real training checkpoints (0 to 12k iterations), naive vs Fourier side by side with the live L2 and the L2-vs-iteration curve. The naive tanh lane never leaves ~100 % relative-L2 at any checkpoint - spectral bias is a training-time pathology, not a capacity limit - while the Fourier lane converges to ~9 %. Baked by `build_training_dynamics.py`.

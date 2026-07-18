@@ -79,4 +79,4 @@ textbook PINN failure, computed and shown side by side with the error maps.
 
 ## Training view (watch it learn)
 
-The app's **Training** view replays the field at REAL training checkpoints (0 to 6k iterations), the naive soft PINN vs the hard-constraint PINN side by side with the live L2 and the L2-vs-iteration curve - the metastable collapse and the constrained convergence as visible dynamics. Baked by `build_training_dynamics.py`.
+The app's **Training** view replays the field at real training checkpoints (0 to 6k iterations), the naive soft PINN vs the hard-constraint PINN side by side with the live L2 and the L2-vs-iteration curve - the metastable collapse and the constrained convergence as visible dynamics. Baked by `build_training_dynamics.py`.

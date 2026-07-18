@@ -137,7 +137,7 @@ export function SpatioTemporalKit({ manifest, active, lang }: KitProps) {
       </div>
       <p className="hint">
         {es
-          ? `Pulsa ▶ para ver el campo 2-D evolucionar en ${tKey} (o arrastra la barra). Cada fotograma es un instante. (La pestaña Live re-evalúa el ONNX en cualquier ${tKey}.)`
+          ? `Pulsar ▶ para ver el campo 2-D evolucionar en ${tKey} (o arrastrar la barra). Cada fotograma es un instante. (La pestaña Live re-evalúa el ONNX en cualquier ${tKey}.)`
          : `Press ▶ to watch the 2-D field evolve in ${tKey} (or drag the bar). Each frame is one instant. (The Live tab re-evaluates the ONNX at any ${tKey}.)`}
       </p>
     </div>

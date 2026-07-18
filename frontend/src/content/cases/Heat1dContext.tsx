@@ -73,11 +73,11 @@ export function Heat1dContext({ lang }: { lang: "en" | "es" }) {
         <strong>Cómo leer y usar la viz.</strong> El <strong>heatmap</strong> muestra
         <InlineMath tex={String.raw`u(x,t)`} /> con <InlineMath tex={String.raw`x`} /> horizontal y
         <InlineMath tex={String.raw`t`} /> vertical (el tiempo sube): una banda brillante abajo (t pequeño) que se
-        desvanece hacia arriba (t grande) es la relajación. Al pasar el cursor para leer la temperatura exacta en cualquier
-        <InlineMath tex={String.raw`(x,t)`} /> y mira el <strong>perfil de corte</strong> en
+        desvanece hacia arriba (t grande) es la relajación. Al pasar el cursor se lee la temperatura exacta en cualquier
+        <InlineMath tex={String.raw`(x,t)`} /> y se muestra el <strong>perfil de corte</strong> en
         <InlineMath tex={String.raw`x`} /> (la forma senoidal) y en <InlineMath tex={String.raw`t`} /> (el decaimiento
-        exponencial). Los <strong>chips</strong> cargan cada difusividad; en <strong>Live</strong>, desliza
-        <InlineMath tex={String.raw`\alpha`} /> y ve el campo recalcularse en vivo en tu navegador (onnxruntime-web).
+        exponencial). Los <strong>chips</strong> cargan cada difusividad; en <strong>Live</strong>, al deslizar
+        <InlineMath tex={String.raw`\alpha`} /> el campo se recalcula en vivo en el navegador (onnxruntime-web).
       </p>
     </>
   ): (
@@ -153,7 +153,7 @@ export function Heat1dContext({ lang }: { lang: "en" | "es" }) {
         <strong>line-cut profile</strong> in <InlineMath tex={String.raw`x`} /> (the sine shape) and in
         <InlineMath tex={String.raw`t`} /> (the exponential decay). The <strong>chips</strong> load each diffusivity;
         in <strong>Live</strong>, slide <InlineMath tex={String.raw`\alpha`} /> and watch the field recompute live in
-        your browser (onnxruntime-web).
+        the browser (onnxruntime-web).
       </p>
     </>
   );

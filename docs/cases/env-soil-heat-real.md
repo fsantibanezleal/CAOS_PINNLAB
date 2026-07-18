@@ -1,4 +1,4 @@
-# env-soil-heat-real — subsurface heat conduction from REAL soil temperatures
+# env-soil-heat-real — subsurface heat conduction from real soil temperatures
 
 **The flagship real-data case.** Every other case validates against a closed-form or reduced-model truth; this one is
 trained on, and validated against, **real measured temperatures**.
@@ -39,7 +39,7 @@ held-out depth and compares to the measured series).
 | metric | value |
 |--------|-------|
 | recovered thermal diffusivity **α** | **0.30 mm²/s** (moist mineral soils: ~0.2–0.8 mm²/s ✓) |
-| held-out relative-L2 vs REAL temps | **6.9 %** |
+| held-out relative-L2 vs real temps | **6.9 %** |
 | held-out RMSE (10/20/50 cm, 243 pts) | **1.05 °C** (10 cm 1.26 · 20 cm 1.06 · 50 cm 0.75) |
 | ONNX parity | 1.4e-6 · lane **live** (40 KB, 0.85 ms) |
 
@@ -63,8 +63,8 @@ python -m pinnlab.pipeline env-soil-heat-real --seed 42   # train + validate + b
 ```
 
 
-## Validation (the app's Diagnostics view: held-out REAL sensors)
+## Validation (the app's Diagnostics view: held-out real sensors)
 
-The out-of-sample real-data test: the reconstruction vs the REAL measured USCRN temperatures at the **held-out**
+The out-of-sample real-data test: the reconstruction vs the real measured USCRN temperatures at the **held-out**
 10/20/50 cm depths (interior sensors never shown to the optimizer), over 2019-2021. Measured points vs the PINN curve,
 RMSE **1.24 / 1.05 / 0.75 degC** - matching the case's own held-out metrics. See [the method ladder](../architecture/method-ladder-comparison.md).

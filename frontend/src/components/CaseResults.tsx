@@ -31,9 +31,9 @@ export function CaseResults({
       ? [{ view: "compare", label: es ? "Comparar" : "Compare", proves: es ? "la referencia clásica vs cada PINN, con mapas de error" : "the classical reference vs each PINN, with error maps" }]
       : []),
     { view: "field", label: es ? "Campo" : "Field", proves: es ? "el campo completo, más grande, con cortes y zoom" : "the full field, larger, with cuts and zoom" },
-    { view: "live", label: "Live", proves: es ? "la red corriendo en tu navegador" : "the network running in your browser" },
+    { view: "live", label: "Live", proves: es ? "la red ejecutándose en el navegador" : "the network running in the browser" },
     ...(manifest.training
-      ? [{ view: "training", label: es ? "Entrenamiento" : "Training", proves: es ? "mira a la variante ingenua NO aprender" : "watch the naive variant FAIL to learn" }]
+      ? [{ view: "training", label: es ? "Entrenamiento" : "Training", proves: es ? "la variante ingenua sin aprender" : "the naive variant failing to learn" }]
       : []),
     ...(manifest.diagnostics
       ? [{ view: "diagnostics", label: es ? "Diagnóstico" : "Diagnostics", proves: es ? "validación independiente" : "independent validation" }]

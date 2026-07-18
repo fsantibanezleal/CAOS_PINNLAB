@@ -83,8 +83,8 @@ export function CompareEvolution({ trace, lanes, vRange, lang }: { trace: Compar
       </div>
       <p className="hint">
         {es
-          ? "Pulsa ▶: los perfiles de cada carril evolucionan JUNTOS en el tiempo (escala y fija). Se ve al carril ingenuo separarse del estándar mientras la corrección lo sigue."
-          : "Press ▶: each lane's profile evolves TOGETHER in time (fixed y-scale). You see the naive lane peel away from the standard while the fix tracks it."}
+          ? "Pulsar ▶: los perfiles de cada carril evolucionan juntos en el tiempo (escala y fija). Se ve al carril ingenuo separarse del estándar mientras la corrección lo sigue."
+          : "Press ▶: each lane's profile evolves together in time (fixed y-scale). The naive lane peels away from the standard while the fix tracks it."}
       </p>
     </div>
   );

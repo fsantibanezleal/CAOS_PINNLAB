@@ -1,4 +1,4 @@
-/** CONSTRAINT ANATOMY (issue #44): what pins each case's solution down. A PDE alone has infinitely many
+/** Constraint anatomy (issue #44): what pins each case's solution down. A PDE alone has infinitely many
  *  solutions; these chips name the side conditions that make the problem well-posed (BC/IC), the tunable
  *  parameters, the inverse unknowns, the observed data, and the validation anchor. Sourced from each case
  *  module's definition (cases/<case>.py); shown color-coded in the context strip so the anatomy of
@@ -75,8 +75,8 @@ export const CONSTRAINTS: Record<string, Pin[]> = {
     { kind: "anchor", en: "analytic MMS + classical FDM standard", es: "MMS analítica + estándar FDM clásico" },
   ],
   "ind-hidden-velocity": [
-    { kind: "unknown", en: "the WHOLE velocity field (u,v): never measured, the HFM hidden state", es: "TODO el campo de velocidad (u,v): nunca medido, el estado oculto de HFM" },
-    { kind: "data", en: "~640 sparse noisy dye samples are the ONLY observations (no IC/BC on c)", es: "~640 muestras de tinte dispersas y ruidosas son las ÚNICAS observaciones (sin CI/CB de c)" },
+    { kind: "unknown", en: "the whole velocity field (u,v): never measured, the HFM hidden state", es: "todo el campo de velocidad (u,v): nunca medido, el estado oculto de HFM" },
+    { kind: "data", en: "~640 sparse noisy dye samples are the only observations (no IC/BC on c)", es: "~640 muestras de tinte dispersas y ruidosas son las únicas observaciones (sin CI/CB de c)" },
     { kind: "param", en: "D = 0.02 known (HFM-style); incompressibility + declared STEADY flow as residuals", es: "D = 0.02 conocida (estilo HFM); incompresibilidad + flujo ESTACIONARIO declarado como residuales" },
     { kind: "anchor", en: "closed-form u* + stability-asserted FD dye truth; swept vs dead-zone error split", es: "u* cerrada + tinte FD con estabilidad verificada; error separado barrida vs zona muerta" },
   ],
@@ -87,9 +87,9 @@ export const CONSTRAINTS: Record<string, Pin[]> = {
     { kind: "anchor", en: "manufactured (T*, k*, q) triple", es: "triple manufacturado (T*, k*, q)" },
   ],
   "env-soil-heat-real": [
-    { kind: "bc", en: "REAL 5 cm + 100 cm sensor series are the Dirichlet boundaries", es: "las series REALES de 5 y 100 cm son los bordes Dirichlet" },
+    { kind: "bc", en: "real 5 cm + 100 cm sensor series are the Dirichlet boundaries", es: "las series reales de 5 y 100 cm son los bordes Dirichlet" },
     { kind: "unknown", en: "one SCALAR diffusivity α (recovered: 0.30 mm²/s)", es: "UNA difusividad ESCALAR α (recuperada: 0.30 mm²/s)" },
-    { kind: "data", en: "held-out 10/20/50 cm sensors validate OUT-OF-SAMPLE (~1 °C)", es: "los sensores reservados de 10/20/50 cm validan FUERA DE MUESTRA (~1 °C)" },
+    { kind: "data", en: "held-out 10/20/50 cm sensors validate out-of-sample (~1 °C)", es: "los sensores reservados de 10/20/50 cm validan fuera de muestra (~1 °C)" },
   ],
   "mine-comminution-pbe": [
     { kind: "ic", en: "Gaussian size distribution at s₀", es: "distribución gaussiana de tamaño en s₀" },
@@ -124,7 +124,7 @@ export const CONSTRAINTS: Record<string, Pin[]> = {
   ],
   "poll-source-uq-bpinn": [
     { kind: "bc", en: "c = 0 at both walls", es: "c = 0 en ambas paredes" },
-    { kind: "data", en: "a handful of sparse noisy sensors: NOT the full IC: hence the σ band", es: "un puñado de sensores dispersos y ruidosos: NO la CI completa: de ahí la banda σ" },
+    { kind: "data", en: "a handful of sparse noisy sensors: not the full IC: hence the σ band", es: "un puñado de sensores dispersos y ruidosos: no la CI completa: de ahí la banda σ" },
     { kind: "anchor", en: "analytic diffusion mode + 2σ calibration", es: "modo de difusión analítico + calibración 2σ" },
   ],
   "poll-tailings-seepage": [
