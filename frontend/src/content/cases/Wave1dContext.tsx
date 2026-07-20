@@ -5,9 +5,9 @@ export function Wave1dContext({ lang }: { lang: "en" | "es" }) {
   const es = lang === "es";
   return es ? (
     <>
-      <h2>El problema: una onda estacionaria en una cuerda: la ecuación de onda 1D con velocidad ajustable</h2>
+      <h2>una onda estacionaria en una cuerda: la ecuación de onda 1D con velocidad ajustable</h2>
       <p>
-        <strong>El problema.</strong> Una cuerda fija en ambos extremos se suelta desde un perfil senoidal en reposo.
+        Una cuerda fija en ambos extremos se suelta desde un perfil senoidal en reposo.
         Oscila para siempre (sin amortiguamiento) como una <em>onda estacionaria</em>. La ecuación de onda
         <InlineMath tex={String.raw`u_{tt}=c^2 u_{xx}`} /> es la EDP <em>hiperbólica</em> canónica: gobierna cuerdas
         vibrantes, acústica, ondas electromagnéticas y sísmicas. A diferencia del calor (que olvida su condición
@@ -79,9 +79,9 @@ export function Wave1dContext({ lang }: { lang: "en" | "es" }) {
     </>
   ): (
     <>
-      <h2>The problem: a standing wave on a string: the 1D wave equation with a tunable speed</h2>
+      <h2>a standing wave on a string: the 1D wave equation with a tunable speed</h2>
       <p>
-        <strong>The problem.</strong> A string fixed at both ends is released from a sinusoidal profile at rest. It
+        A string fixed at both ends is released from a sinusoidal profile at rest. It
         oscillates forever (no damping) as a <em>standing wave</em>. The wave equation
         <InlineMath tex={String.raw`u_{tt}=c^2 u_{xx}`} /> is the canonical <em>hyperbolic</em> PDE: it governs
         vibrating strings, acoustics, electromagnetic and seismic waves. Unlike heat (which forgets its initial

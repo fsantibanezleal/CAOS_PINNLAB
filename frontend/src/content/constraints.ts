@@ -23,7 +23,7 @@ export const PIN_LABELS: Record<PinKind, { en: string; es: string }> = {
 
 export const CONSTRAINTS: Record<string, Pin[]> = {
   "bench-poisson2d": [
-    { kind: "bc", en: "u = 0 on the boundary (imposed HARD)", es: "u = 0 en el borde (impuesta DURA)" },
+    { kind: "bc", en: "u = 0 on the boundary (imposed hard)", es: "u = 0 en el borde (impuesta dura)" },
     { kind: "param", en: "source mode k ∈ [1,3] is a network input", es: "modo de fuente k ∈ [1,3] es entrada de la red" },
     { kind: "anchor", en: "closed-form u* (any k)", es: "u* de forma cerrada (todo k)" },
   ],
@@ -57,7 +57,7 @@ export const CONSTRAINTS: Record<string, Pin[]> = {
   ],
   "bench-darcy-operator": [
     { kind: "bc", en: "u = 0 on the boundary", es: "u = 0 en el borde" },
-    { kind: "data", en: "training PAIRS a(x) to u(x): the operator is learned from data", es: "PARES de entrenamiento a(x) to u(x): el operador se aprende de datos" },
+    { kind: "data", en: "training pairs a(x) to u(x): the operator is learned from data", es: "pares de entrenamiento a(x) a u(x): el operador se aprende de datos" },
     { kind: "anchor", en: "finite-difference solve per held-out a(x)", es: "solución de diferencias finitas por cada a(x) reservado" },
   ],
   "ctrl-zero-source": [
@@ -77,18 +77,18 @@ export const CONSTRAINTS: Record<string, Pin[]> = {
   "ind-hidden-velocity": [
     { kind: "unknown", en: "the whole velocity field (u,v): never measured, the HFM hidden state", es: "todo el campo de velocidad (u,v): nunca medido, el estado oculto de HFM" },
     { kind: "data", en: "~640 sparse noisy dye samples are the only observations (no IC/BC on c)", es: "~640 muestras de tinte dispersas y ruidosas son las únicas observaciones (sin CI/CB de c)" },
-    { kind: "param", en: "D = 0.02 known (HFM-style); incompressibility + declared STEADY flow as residuals", es: "D = 0.02 conocida (estilo HFM); incompresibilidad + flujo ESTACIONARIO declarado como residuales" },
+    { kind: "param", en: "D = 0.02 known (HFM-style); incompressibility + declared steady flow as residuals", es: "D = 0.02 conocida (estilo HFM); incompresibilidad + flujo estacionario declarado como residuales" },
     { kind: "anchor", en: "closed-form u* + stability-asserted FD dye truth; swept vs dead-zone error split", es: "u* cerrada + tinte FD con estabilidad verificada; error separado barrida vs zona muerta" },
   ],
   "ind-heat2d-inverse": [
     { kind: "bc", en: "T = 0 on the boundary (hard)", es: "T = 0 en el borde (dura)" },
-    { kind: "unknown", en: "k(x,y) is a FIELD unknown: physics alone leaves it underdetermined (356%)", es: "k(x,y) es incógnita de CAMPO: la física sola la deja indeterminada (356%)" },
+    { kind: "unknown", en: "k(x,y) is a field unknown: physics alone leaves it underdetermined (356%)", es: "k(x,y) es incógnita de campo: la física sola la deja indeterminada (356%)" },
     { kind: "data", en: "~100 sparse noisy T sensors make it solvable (4%): see the identifiability curve", es: "~100 sensores T dispersos y ruidosos la hacen soluble (4%): ver la curva de identificabilidad" },
     { kind: "anchor", en: "manufactured (T*, k*, q) triple", es: "triple manufacturado (T*, k*, q)" },
   ],
   "env-soil-heat-real": [
     { kind: "bc", en: "real 5 cm + 100 cm sensor series are the Dirichlet boundaries", es: "las series reales de 5 y 100 cm son los bordes Dirichlet" },
-    { kind: "unknown", en: "one SCALAR diffusivity α (recovered: 0.30 mm²/s)", es: "UNA difusividad ESCALAR α (recuperada: 0.30 mm²/s)" },
+    { kind: "unknown", en: "one scalar diffusivity α (recovered: 0.30 mm²/s)", es: "una difusividad escalar α (recuperada: 0.30 mm²/s)" },
     { kind: "data", en: "held-out 10/20/50 cm sensors validate out-of-sample (~1 °C)", es: "los sensores reservados de 10/20/50 cm validan fuera de muestra (~1 °C)" },
   ],
   "mine-comminution-pbe": [

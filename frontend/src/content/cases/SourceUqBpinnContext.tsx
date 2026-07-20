@@ -6,9 +6,9 @@ export function SourceUqBpinnContext({ lang }: { lang: "en" | "es" }) {
   const es = lang === "es";
   return es ? (
     <>
-      <h2>El problema: estimar un contaminante con pocos sensores ruidosos: y reportar la incertidumbre</h2>
+      <h2>estimar un contaminante con pocos sensores ruidosos: y reportar la incertidumbre</h2>
       <p>
-        <strong>El problema.</strong> Un contaminante disuelto difunde en un canal 1D y se gobierna por la ecuación del
+        Un contaminante disuelto difunde en un canal 1D y se gobierna por la ecuación del
         calor <InlineMath tex={String.raw`c_t = D\,c_{xx}`} />, con paredes limpias <InlineMath tex={String.raw`c=0`} />.
         Pero <em>no</em> conocemos la condición inicial completa: solo disponemos de un <strong>puñado de lecturas de
         sensores dispersas y ruidosas</strong>. Una PINN normal entregaría <em>una</em> respuesta puntual, sin barras de
@@ -108,9 +108,9 @@ export function SourceUqBpinnContext({ lang }: { lang: "en" | "es" }) {
     </>
   ): (
     <>
-      <h2>The problem: estimate a pollutant from a few noisy sensors: and report the uncertainty</h2>
+      <h2>estimate a pollutant from a few noisy sensors: and report the uncertainty</h2>
       <p>
-        <strong>The problem.</strong> A dissolved pollutant diffuses in a 1D channel, governed by the heat equation
+        A dissolved pollutant diffuses in a 1D channel, governed by the heat equation
         <InlineMath tex={String.raw`c_t = D\,c_{xx}`} />, with clean walls <InlineMath tex={String.raw`c=0`} />. But we
         do <em>not</em> know the full initial condition: we only have a <strong>handful of sparse, noisy sensor
         readings</strong>. An ordinary PINN would return <em>one</em> point answer with no error bars: dangerous for an

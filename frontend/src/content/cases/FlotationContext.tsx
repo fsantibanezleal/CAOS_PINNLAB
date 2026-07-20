@@ -5,9 +5,9 @@ export function FlotationContext({ lang }: { lang: "en" | "es" }) {
   const es = lang === "es";
   return es ? (
     <>
-      <h2>El problema: ¿qué tan rápido flota el mineral?: cinética de flotación de primer orden</h2>
+      <h2>¿qué tan rápido flota el mineral?: cinética de flotación de primer orden</h2>
       <p>
-        <strong>El problema.</strong> En una celda de flotación batch, las partículas de mineral valioso se adhieren a
+        En una celda de flotación batch, las partículas de mineral valioso se adhieren a
         burbujas y suben a la espuma. La fracción flotable <InlineMath tex={String.raw`C`} /> decae con una cinética de
         <strong> primer orden</strong>, <InlineMath tex={String.raw`\dot C=-kC`} />, donde la <strong>constante de
         tasa</strong> <InlineMath tex={String.raw`k`} /> (1/min) resume toda la flotabilidad: tamaño de partícula,
@@ -78,9 +78,9 @@ export function FlotationContext({ lang }: { lang: "en" | "es" }) {
     </>
   ): (
     <>
-      <h2>The problem: how fast does the ore float?: first-order flotation kinetics</h2>
+      <h2>how fast does the ore float?: first-order flotation kinetics</h2>
       <p>
-        <strong>The problem.</strong> In a batch flotation cell, valuable-mineral particles attach to bubbles and rise
+        In a batch flotation cell, valuable-mineral particles attach to bubbles and rise
         into the froth. The floatable fraction <InlineMath tex={String.raw`C`} /> decays with <strong>first-order</strong>
         kinetics, <InlineMath tex={String.raw`\dot C=-kC`} />, where the <strong>rate constant</strong>
         <InlineMath tex={String.raw`k`} /> (1/min) lumps all the floatability: particle size, reagents, hydrodynamics.

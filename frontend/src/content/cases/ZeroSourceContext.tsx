@@ -6,9 +6,9 @@ export function ZeroSourceContext({ lang }: { lang: "en" | "es" }) {
   const es = lang === "es";
   return es ? (
     <>
-      <h2>El problema: el caso de control: ¿el solver recupera una respuesta conocida?</h2>
+      <h2>el caso de control: ¿el solver recupera una respuesta conocida?</h2>
       <p>
-        <strong>El problema.</strong> Todo solver de EDP necesita un <strong>caso de control</strong>: un problema
+        Todo solver de EDP necesita un <strong>caso de control</strong>: un problema
         cuya solución exacta conocemos de antemano, para medir el error real del método en lugar de confiar a ciegas
         en él. El control canónico es la ecuación de <strong>Poisson</strong> sobre el cuadrado unitario con borde
         cero, <InlineMath tex={String.raw`-\nabla^2 u = f`} /> en <InlineMath tex={String.raw`(0,1)^2`} />,
@@ -102,9 +102,9 @@ export function ZeroSourceContext({ lang }: { lang: "en" | "es" }) {
     </>
   ): (
     <>
-      <h2>The problem: the control case: does the solver recover a known answer?</h2>
+      <h2>the control case: does the solver recover a known answer?</h2>
       <p>
-        <strong>The problem.</strong> Every PDE solver needs a <strong>control case</strong>: a problem whose exact
+        Every PDE solver needs a <strong>control case</strong>: a problem whose exact
         solution we know in advance, so we can measure the method's true error instead of trusting it blindly. The
         canonical control is the <strong>Poisson</strong> equation on the unit square with zero boundary,
         <InlineMath tex={String.raw`-\nabla^2 u = f`} /> on <InlineMath tex={String.raw`(0,1)^2`} />,
