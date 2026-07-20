@@ -7,9 +7,9 @@ export function PoissonContext({ lang }: { lang: "en" | "es" }) {
   const es = lang === "es";
   return es ? (
     <>
-      <h2>El problema: la ecuación de Poisson con un modo de fuente ajustable</h2>
+      <h2>la ecuación de Poisson con un modo de fuente ajustable</h2>
       <p>
-        <strong>El problema.</strong> La ecuación de Poisson <InlineMath tex={String.raw`-\nabla^2 u = f`} /> es la EDP
+        La ecuación de Poisson <InlineMath tex={String.raw`-\nabla^2 u = f`} /> es la EDP
         elíptica canónica: gobierna el potencial electrostático de una densidad de carga, la deflexión de una membrana
         bajo carga, la presión en flujo incompresible y la difusión en estado estacionario. Aquí la resolvemos en el
         cuadrado unitario <InlineMath tex={String.raw`(0,1)^2`} /> con condición de Dirichlet homogénea
@@ -78,9 +78,9 @@ export function PoissonContext({ lang }: { lang: "en" | "es" }) {
     </>
   ): (
     <>
-      <h2>The problem: the Poisson equation with a tunable source mode</h2>
+      <h2>the Poisson equation with a tunable source mode</h2>
       <p>
-        <strong>The problem.</strong> The Poisson equation <InlineMath tex={String.raw`-\nabla^2 u = f`} /> is the
+        The Poisson equation <InlineMath tex={String.raw`-\nabla^2 u = f`} /> is the
         canonical elliptic PDE: it governs the electrostatic potential of a charge density, the deflection of a loaded
         membrane, the pressure in incompressible flow, and steady-state diffusion. Here we solve it on the unit square
         <InlineMath tex={String.raw`(0,1)^2`} /> with a homogeneous Dirichlet condition (<InlineMath tex={String.raw`u=0`} />

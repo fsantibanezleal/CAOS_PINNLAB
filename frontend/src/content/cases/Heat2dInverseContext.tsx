@@ -5,9 +5,9 @@ export function Heat2dInverseContext({ lang }: { lang: "en" | "es" }) {
   const es = lang === "es";
   return es ? (
     <>
-      <h2>El problema: recuperar un campo de conductividad oculto desde unos pocos sensores: conducción inversa 2D</h2>
+      <h2>recuperar un campo de conductividad oculto desde unos pocos sensores: conducción inversa 2D</h2>
       <p>
-        <strong>El problema.</strong> Una placa conduce calor con una conductividad térmica <InlineMath tex={String.raw`k(x,y)`} />
+        Una placa conduce calor con una conductividad térmica <InlineMath tex={String.raw`k(x,y)`} />
         que <em>no conocemos</em> y que varía punto a punto. Conocemos la fuente de calor <InlineMath tex={String.raw`q(x,y)`} />
         y medimos la temperatura <InlineMath tex={String.raw`T`} /> en apenas <strong>un centenar de sensores dispersos</strong>
         (con ruido). La pregunta inversa es: ¿se puede reconstruir el <strong>campo completo</strong>
@@ -108,9 +108,9 @@ export function Heat2dInverseContext({ lang }: { lang: "en" | "es" }) {
     </>
   ): (
     <>
-      <h2>The problem: recover a hidden conductivity field from a handful of sensors: 2D inverse conduction</h2>
+      <h2>recover a hidden conductivity field from a handful of sensors: 2D inverse conduction</h2>
       <p>
-        <strong>The problem.</strong> A plate conducts heat with a thermal conductivity <InlineMath tex={String.raw`k(x,y)`} />
+        A plate conducts heat with a thermal conductivity <InlineMath tex={String.raw`k(x,y)`} />
         that we <em>do not know</em> and that varies point to point. We know the heat source
         <InlineMath tex={String.raw`q(x,y)`} /> and we measure the temperature <InlineMath tex={String.raw`T`} /> at just
         <strong> a hundred or so scattered sensors</strong> (noisy). The inverse question is: can we reconstruct the

@@ -6,9 +6,9 @@ export function SoilHeatRealContext({ lang }: { lang: "en" | "es" }) {
   const es = lang === "es";
   return es ? (
     <>
-      <h2>El problema: recuperar la difusividad térmica del suelo a partir de temperaturas reales</h2>
+      <h2>recuperar la difusividad térmica del suelo a partir de temperaturas reales</h2>
       <p>
-        <strong>El problema.</strong> El calor estacional entra por la superficie del suelo y se propaga hacia abajo
+        El calor estacional entra por la superficie del suelo y se propaga hacia abajo
         por <em>conducción difusiva</em>. La onda térmica se <strong>amortigua</strong> y se <strong>retrasa en
         fase</strong> con la profundidad: a 100 cm, el verano llega semanas más tarde y mucho más suave que a 5 cm. La
         física es la ecuación del calor 1D, <InlineMath tex={String.raw`T_t=\alpha\,T_{zz}`} />, con una única constante
@@ -119,9 +119,9 @@ export function SoilHeatRealContext({ lang }: { lang: "en" | "es" }) {
     </>
   ): (
     <>
-      <h2>The problem: recover the soil's thermal diffusivity from real temperatures</h2>
+      <h2>recover the soil's thermal diffusivity from real temperatures</h2>
       <p>
-        <strong>The problem.</strong> Seasonal heat enters at the soil surface and propagates downward by
+        Seasonal heat enters at the soil surface and propagates downward by
         <em> diffusive conduction</em>. The thermal wave is <strong>damped</strong> and <strong>phase-lagged</strong>
         with depth: at 100 cm, summer arrives weeks later and far smoother than at 5 cm. The physics is the 1D heat
         equation, <InlineMath tex={String.raw`T_t=\alpha\,T_{zz}`} />, with a single unknown material constant: the

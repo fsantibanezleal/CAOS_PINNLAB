@@ -5,9 +5,9 @@ export function HelmholtzContext({ lang }: { lang: "en" | "es" }) {
   const es = lang === "es";
   return es ? (
     <>
-      <h2>El problema: una onda estacionaria de alta frecuencia: la ecuación de Helmholtz 2D</h2>
+      <h2>una onda estacionaria de alta frecuencia: la ecuación de Helmholtz 2D</h2>
       <p>
-        <strong>El problema.</strong> La ecuación de Helmholtz
+        La ecuación de Helmholtz
         <InlineMath tex={String.raw`\nabla^2 u + k_0^2\,u = -f`} /> es la forma en el <em>dominio de la frecuencia</em>
         de la ecuación de onda: describe el estado estacionario de un campo que vibra a una sola frecuencia (acústica en
         una sala, electromagnetismo de microondas, vibración de una membrana). El número de onda
@@ -120,9 +120,9 @@ export function HelmholtzContext({ lang }: { lang: "en" | "es" }) {
     </>
   ): (
     <>
-      <h2>The problem: a high-frequency standing wave: the 2D Helmholtz equation</h2>
+      <h2>a high-frequency standing wave: the 2D Helmholtz equation</h2>
       <p>
-        <strong>The problem.</strong> The Helmholtz equation
+        The Helmholtz equation
         <InlineMath tex={String.raw`\nabla^2 u + k_0^2\,u = -f`} /> is the <em>frequency-domain</em> form of the wave
         equation: it describes the steady state of a field vibrating at a single frequency (room acoustics, microwave
         electromagnetics, the vibration of a membrane). The wavenumber <InlineMath tex={String.raw`k_0`} /> sets

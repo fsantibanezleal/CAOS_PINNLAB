@@ -5,9 +5,9 @@ export function DoublePendulumContext({ lang }: { lang: "en" | "es" }) {
   const es = lang === "es";
   return es ? (
     <>
-      <h2>El problema: el péndulo doble: un sistema dinámico caótico, y la PINN como mapa t a estado</h2>
+      <h2>el péndulo doble: un sistema dinámico caótico, y la PINN como mapa t a estado</h2>
       <p>
-        <strong>El problema.</strong> Dos brazos rígidos articulados, el segundo colgando del primero, soltados desde
+        Dos brazos rígidos articulados, el segundo colgando del primero, soltados desde
         el reposo. Es uno de los sistemas <em>caóticos</em> más simples de la mecánica clásica: dos condiciones
         iniciales casi idénticas divergen exponencialmente (el <em>efecto mariposa</em>). A diferencia de todos los
         demás casos de este catálogo, <strong>no hay campo espacial</strong>: la incógnita es una <em>trayectoria</em>
@@ -87,9 +87,9 @@ export function DoublePendulumContext({ lang }: { lang: "en" | "es" }) {
     </>
   ): (
     <>
-      <h2>The problem: the double pendulum: a chaotic dynamical system, and the PINN as a t to state map</h2>
+      <h2>the double pendulum: a chaotic dynamical system, and the PINN as a t to state map</h2>
       <p>
-        <strong>The problem.</strong> Two rigid arms hinged in series, the second hanging off the first, released from
+        Two rigid arms hinged in series, the second hanging off the first, released from
         rest. It is one of the simplest <em>chaotic</em> systems in classical mechanics: two almost-identical initial
         conditions diverge exponentially (the <em>butterfly effect</em>). Unlike every other case in this catalogue
         there is <strong>no spatial field</strong>: the unknown is a <em>trajectory</em> in state space. The network

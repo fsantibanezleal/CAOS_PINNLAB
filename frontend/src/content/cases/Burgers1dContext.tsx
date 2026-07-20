@@ -5,9 +5,9 @@ export function Burgers1dContext({ lang }: { lang: "en" | "es" }) {
   const es = lang === "es";
   return es ? (
     <>
-      <h2>El problema: un frente de choque que se mueve: Burgers viscoso 1D con viscosidad ajustable</h2>
+      <h2>un frente de choque que se mueve: Burgers viscoso 1D con viscosidad ajustable</h2>
       <p>
-        <strong>El problema.</strong> La ecuación de Burgers <InlineMath tex={String.raw`u_t + u\,u_x = \nu\,u_{xx}`} />
+        La ecuación de Burgers <InlineMath tex={String.raw`u_t + u\,u_x = \nu\,u_{xx}`} />
         es el modelo no lineal más simple que combina <em>advección</em> (el término <InlineMath tex={String.raw`u\,u_x`} />,
         que empina los perfiles hasta formar choques) con <em>difusión</em> (el término <InlineMath tex={String.raw`\nu\,u_{xx}`} />,
         que los suaviza). Es el banco de pruebas canónico de la dinámica de fluidos y del tráfico: la competencia
@@ -93,9 +93,9 @@ export function Burgers1dContext({ lang }: { lang: "en" | "es" }) {
     </>
   ): (
     <>
-      <h2>The problem: a moving shock front: 1D viscous Burgers with a tunable viscosity</h2>
+      <h2>a moving shock front: 1D viscous Burgers with a tunable viscosity</h2>
       <p>
-        <strong>The problem.</strong> The Burgers equation <InlineMath tex={String.raw`u_t + u\,u_x = \nu\,u_{xx}`} />
+        The Burgers equation <InlineMath tex={String.raw`u_t + u\,u_x = \nu\,u_{xx}`} />
         is the simplest nonlinear model that pits <em>advection</em> (the <InlineMath tex={String.raw`u\,u_x`} /> term,
         which steepens profiles into shocks) against <em>diffusion</em> (the <InlineMath tex={String.raw`\nu\,u_{xx}`} />
         term, which smooths them). It is the canonical test bed of fluid dynamics and traffic flow: the

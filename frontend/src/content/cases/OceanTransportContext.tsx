@@ -5,9 +5,9 @@ export function OceanTransportContext({ lang }: { lang: "en" | "es" }) {
   const es = lang === "es";
   return es ? (
     <>
-      <h2>El problema: una mancha de contaminante que deriva y se dispersa: advección-difusión 2D</h2>
+      <h2>una mancha de contaminante que deriva y se dispersa: advección-difusión 2D</h2>
       <p>
-        <strong>El problema.</strong> Se vierte un contaminante pasivo (plástico, hidrocarburo) en una zona costera. La
+        Se vierte un contaminante pasivo (plástico, hidrocarburo) en una zona costera. La
         corriente lo <em>arrastra</em> (advección) mientras la turbulencia de remolinos lo <em>dispersa</em> (difusión
         de Fick). La ecuación de transporte <InlineMath tex={String.raw`c_t + \mathbf{v}\cdot\nabla c = D\nabla^2 c`} />
         gobierna la concentración <InlineMath tex={String.raw`c(x,y,t)`} />. Aquí el <strong>tiempo</strong> es el
@@ -73,9 +73,9 @@ export function OceanTransportContext({ lang }: { lang: "en" | "es" }) {
     </>
   ): (
     <>
-      <h2>The problem: a pollutant patch that drifts and disperses: 2D advection-diffusion</h2>
+      <h2>a pollutant patch that drifts and disperses: 2D advection-diffusion</h2>
       <p>
-        <strong>The problem.</strong> A passive pollutant (plastic, oil) is released in a coastal zone. The current
+        A passive pollutant (plastic, oil) is released in a coastal zone. The current
         <em> carries</em> it (advection) while eddy turbulence <em>disperses</em> it (Fickian diffusion). The transport
         equation <InlineMath tex={String.raw`c_t + \mathbf{v}\cdot\nabla c = D\nabla^2 c`} /> governs the concentration
         <InlineMath tex={String.raw`c(x,y,t)`} />. Here <strong>time</strong> is the swept parameter: a single network

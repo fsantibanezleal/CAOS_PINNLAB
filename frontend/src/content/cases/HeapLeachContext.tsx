@@ -5,9 +5,9 @@ export function HeapLeachContext({ lang }: { lang: "en" | "es" }) {
   const es = lang === "es";
   return es ? (
     <>
-      <h2>El problema: dos reactivos que percolan, se dispersan y reaccionan en una pila de lixiviación</h2>
+      <h2>dos reactivos que percolan, se dispersan y reaccionan en una pila de lixiviación</h2>
       <p>
-        <strong>El problema.</strong> En la lixiviación en pilas (o in-situ) de cobre / tierras raras, una solución
+        En la lixiviación en pilas (o in-situ) de cobre / tierras raras, una solución
         lixiviante percola hacia abajo a través del medio poroso saturado. Dos reactivos acuosos
         <InlineMath tex={String.raw`c_A`} /> y <InlineMath tex={String.raw`c_B`} /> son <em>arrastrados</em> por el
         flujo de Darcy (advección), <em>dispersados</em> por la tortuosidad del poro (difusión) y <em>consumidos</em>
@@ -123,9 +123,9 @@ export function HeapLeachContext({ lang }: { lang: "en" | "es" }) {
     </>
   ): (
     <>
-      <h2>The problem: two reactants that percolate, disperse and react in a leach heap</h2>
+      <h2>two reactants that percolate, disperse and react in a leach heap</h2>
       <p>
-        <strong>The problem.</strong> In heap (or in-situ) leaching of copper / rare earths, a lixiviant solution
+        In heap (or in-situ) leaching of copper / rare earths, a lixiviant solution
         percolates downward through the saturated porous medium. Two aqueous reactants
         <InlineMath tex={String.raw`c_A`} /> and <InlineMath tex={String.raw`c_B`} /> are <em>carried</em> by the Darcy
         flow (advection), <em>dispersed</em> by pore tortuosity (diffusion) and <em>consumed</em> as they react
