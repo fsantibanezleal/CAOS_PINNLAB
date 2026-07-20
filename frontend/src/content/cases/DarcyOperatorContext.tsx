@@ -6,9 +6,9 @@ export function DarcyOperatorContext({ lang }: { lang: "en" | "es" }) {
   const es = lang === "es";
   return es ? (
     <>
-      <h2>El problema: aprender el operador de Darcy: un FNO que resuelve toda una familia</h2>
+      <h2>aprender el operador de Darcy: un FNO que resuelve toda una familia</h2>
       <p>
-        <strong>El problema.</strong> El flujo de Darcy en un medio poroso (un acuífero, un lecho de roca) cumple
+        El flujo de Darcy en un medio poroso (un acuífero, un lecho de roca) cumple
         <InlineMath tex={String.raw`-\nabla\!\cdot\big(a(\mathbf{x})\,\nabla u\big)=1`} />, con presión
         <InlineMath tex={String.raw`u=0`} /> en el borde. El <strong>campo de permeabilidad</strong>
         <InlineMath tex={String.raw`a(\mathbf{x})`} /> es heterogéneo y distinto en cada sitio. Resolver una sola
@@ -111,9 +111,9 @@ export function DarcyOperatorContext({ lang }: { lang: "en" | "es" }) {
     </>
   ): (
     <>
-      <h2>The problem: learning the Darcy operator: one FNO that solves a whole family</h2>
+      <h2>learning the Darcy operator: one FNO that solves a whole family</h2>
       <p>
-        <strong>The problem.</strong> Darcy flow in a porous medium (an aquifer, a rock bed) satisfies
+        Darcy flow in a porous medium (an aquifer, a rock bed) satisfies
         <InlineMath tex={String.raw`-\nabla\!\cdot\big(a(\mathbf{x})\,\nabla u\big)=1`} />, with pressure
         <InlineMath tex={String.raw`u=0`} /> on the boundary. The <strong>permeability field</strong>
         <InlineMath tex={String.raw`a(\mathbf{x})`} /> is heterogeneous and different at every site. Solving a single

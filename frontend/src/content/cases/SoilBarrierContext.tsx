@@ -6,9 +6,9 @@ export function SoilBarrierContext({ lang }: { lang: "en" | "es" }) {
   const es = lang === "es";
   return es ? (
     <>
-      <h2>El problema: un contaminante frente a una barrera de baja permeabilidad: y el quiebre que deja</h2>
+      <h2>un contaminante frente a una barrera de baja permeabilidad: y el quiebre que deja</h2>
       <p>
-        <strong>El problema.</strong> En un sitio contaminado se instala una <em>barrera vertical</em> de baja
+        En un sitio contaminado se instala una <em>barrera vertical</em> de baja
         permeabilidad (un muro de lodo bentonítico o una pantalla de arcilla) para frenar el avance de un contaminante
         disuelto. El contaminante difunde por la columna de suelo, pero al atravesar la barrera se topa con una
         difusividad mucho menor: la barrera actúa como una <strong>resistencia en serie</strong> que ralentiza el
@@ -126,9 +126,9 @@ export function SoilBarrierContext({ lang }: { lang: "en" | "es" }) {
     </>
   ): (
     <>
-      <h2>The problem: a contaminant facing a low-permeability barrier: and the kink it leaves</h2>
+      <h2>a contaminant facing a low-permeability barrier: and the kink it leaves</h2>
       <p>
-        <strong>The problem.</strong> At a contaminated site a <em>vertical barrier</em> of low permeability (a
+        At a contaminated site a <em>vertical barrier</em> of low permeability (a
         bentonite slurry wall or a clay cutoff) is installed to slow the advance of a dissolved contaminant. The
         contaminant diffuses through the soil column, but crossing the barrier it meets a much lower diffusivity: the
         barrier acts as a <strong>series resistance</strong> that holds the plume back. The equation is pure diffusion

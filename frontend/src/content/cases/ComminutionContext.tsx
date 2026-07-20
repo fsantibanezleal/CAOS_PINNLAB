@@ -6,9 +6,9 @@ export function ComminutionContext({ lang }: { lang: "en" | "es" }) {
   const es = lang === "es";
   return es ? (
     <>
-      <h2>El problema: la molienda corre la distribución de tamaños hacia partículas finas: con una tasa de molienda ajustable</h2>
+      <h2>la molienda corre la distribución de tamaños hacia partículas finas: con una tasa de molienda ajustable</h2>
       <p>
-        <strong>El problema.</strong> En la conminución (molienda SAG / de bolas) las partículas se fracturan
+        En la conminución (molienda SAG / de bolas) las partículas se fracturan
         continuamente, de modo que la <strong>distribución de tamaños</strong> <InlineMath tex={String.raw`n(s,t)`} />
         se desplaza hacia tamaños menores con el tiempo de residencia. El modelo completo es la <em>ecuación de balance
         poblacional</em> (PBE), una ecuación íntegro-diferencial con núcleos de <em>selección</em> y <em>ruptura</em>.
@@ -105,9 +105,9 @@ export function ComminutionContext({ lang }: { lang: "en" | "es" }) {
     </>
   ): (
     <>
-      <h2>The problem: grinding shifts the size distribution toward fines: with a tunable grind rate</h2>
+      <h2>grinding shifts the size distribution toward fines: with a tunable grind rate</h2>
       <p>
-        <strong>The problem.</strong> In comminution (SAG / ball milling) particles fracture continuously, so the
+        In comminution (SAG / ball milling) particles fracture continuously, so the
         <strong> particle-size distribution</strong> <InlineMath tex={String.raw`n(s,t)`} /> shifts toward smaller sizes
         with residence time. The full model is the <em>population-balance equation</em> (PBE), an integro-differential
         equation with <em>selection</em> and <em>breakage</em> kernels. Here we work its <strong>size-transport

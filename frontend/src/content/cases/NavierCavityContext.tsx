@@ -6,9 +6,9 @@ export function NavierCavityContext({ lang }: { lang: "en" | "es" }) {
   const es = lang === "es";
   return es ? (
     <>
-      <h2>El problema: la cavidad con tapa móvil: Navier-Stokes incompresible estacionario</h2>
+      <h2>la cavidad con tapa móvil: Navier-Stokes incompresible estacionario</h2>
       <p>
-        <strong>El problema.</strong> La <em>cavidad con tapa móvil</em> (lid-driven cavity) es el banco de pruebas
+        La <em>cavidad con tapa móvil</em> (lid-driven cavity) es el banco de pruebas
         canónico de la dinámica de fluidos incompresible: un cuadrado de fluido <InlineMath tex={String.raw`(0,1)^2`} />
         cuyas tres paredes están fijas y cuya <strong>tapa superior</strong> se desliza horizontalmente. El arrastre
         viscoso de la tapa pone a girar todo el fluido, formando un <strong>vórtice primario</strong> en el centro y
@@ -143,9 +143,9 @@ u_x + v_y &= 0,
     </>
   ): (
     <>
-      <h2>The problem: the lid-driven cavity: steady incompressible Navier-Stokes</h2>
+      <h2>the lid-driven cavity: steady incompressible Navier-Stokes</h2>
       <p>
-        <strong>The problem.</strong> The <em>lid-driven cavity</em> is the canonical test bed of incompressible fluid
+        The <em>lid-driven cavity</em> is the canonical test bed of incompressible fluid
         dynamics: a square of fluid <InlineMath tex={String.raw`(0,1)^2`} /> whose three walls are fixed and whose
         <strong> top lid</strong> slides horizontally. The viscous drag from the lid sets the whole fluid spinning,
         forming a <strong>primary vortex</strong> at the center and small counter-rotating <strong>corner eddies</strong>

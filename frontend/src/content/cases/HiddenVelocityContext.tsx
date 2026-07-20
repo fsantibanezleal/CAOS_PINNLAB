@@ -6,9 +6,9 @@ export function HiddenVelocityContext({ lang }: { lang: "en" | "es" }) {
   const es = lang === "es";
   return es ? (
     <>
-      <h2>El problema: solo se ve el tinte. ¿Cuál es la corriente debajo?</h2>
+      <h2>solo se ve el tinte. ¿Cuál es la corriente debajo?</h2>
       <p>
-        <strong>El problema.</strong> En un flujo real casi nunca se mide la velocidad directamente: se ve lo que el
+        En un flujo real casi nunca se mide la velocidad directamente: se ve lo que el
         flujo <em>arrastra</em>: un tinte, humo, un contraste, sedimento. Este caso reproduce el mecanismo de{" "}
         <em>Hidden Fluid Mechanics</em> (Raissi, Yazdani y Karniadakis, Science 2020): estimar el campo de velocidad{" "}
         <InlineMath tex={String.raw`\mathbf{u}(x,y)`} /> completo a partir de <strong>solo</strong> muestras dispersas
@@ -84,9 +84,9 @@ export function HiddenVelocityContext({ lang }: { lang: "en" | "es" }) {
     </>
   ) : (
     <>
-      <h2>The problem: only the dye is visible. What is the current underneath?</h2>
+      <h2>only the dye is visible. What is the current underneath?</h2>
       <p>
-        <strong>The problem.</strong> In a real flow velocity is almost never measured directly: what the flow carries is visible{" "}
+        In a real flow velocity is almost never measured directly: what the flow carries is visible{" "}
         <em>carries</em>: a dye, smoke, a contrast agent, sediment. This case reproduces the{" "}
         <em>Hidden Fluid Mechanics</em> mechanism (Raissi, Yazdani &amp; Karniadakis, Science 2020): estimate the whole
         velocity field <InlineMath tex={String.raw`\mathbf{u}(x,y)`} /> from <strong>only</strong> sparse noisy samples

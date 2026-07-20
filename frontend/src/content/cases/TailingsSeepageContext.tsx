@@ -6,9 +6,9 @@ export function TailingsSeepageContext({ lang }: { lang: "en" | "es" }) {
   const es = lang === "es";
   return es ? (
     <>
-      <h2>El problema: agua que percola por un depósito de relaves no saturado: la ecuación de Richards</h2>
+      <h2>agua que percola por un depósito de relaves no saturado: la ecuación de Richards</h2>
       <p>
-        <strong>El problema.</strong> En un tranque de relaves, el agua se infiltra hacia abajo por un material
+        En un tranque de relaves, el agua se infiltra hacia abajo por un material
         <em> parcialmente saturado</em>: los poros contienen aire y agua a la vez. La presión del agua es{" "}
         <em>negativa</em> (succión), <InlineMath tex={String.raw`\psi<0`} />, y tanto la capacidad de almacenamiento
         como la conductividad del suelo <strong>dependen fuertemente de esa succión</strong>. La ecuación de{" "}
@@ -116,9 +116,9 @@ export function TailingsSeepageContext({ lang }: { lang: "en" | "es" }) {
     </>
   ): (
     <>
-      <h2>The problem: water seeping through an unsaturated tailings deposit: the Richards equation</h2>
+      <h2>water seeping through an unsaturated tailings deposit: the Richards equation</h2>
       <p>
-        <strong>The problem.</strong> In a tailings dam, water infiltrates downward through a{" "}
+        In a tailings dam, water infiltrates downward through a{" "}
         <em>partially saturated</em> material: the pores hold both air and water. The water pressure is{" "}
         <em>negative</em> (suction), <InlineMath tex={String.raw`\psi<0`} />, and both the storage capacity and the
         soil conductivity <strong>depend strongly on that suction</strong>. The <strong>Richards</strong> equation{" "}

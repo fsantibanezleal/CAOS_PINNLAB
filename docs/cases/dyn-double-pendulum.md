@@ -21,7 +21,7 @@ Two coupled nonlinear second-order ODEs from the Lagrangian (point masses `m₁=
 ## Method — `ode-residual-hard-ic` (soft IC)
 
 - **Physics loss** = squared residual of the two ODEs at collocation times (`r_i = θ_i''_net − f_i`, autodiff in `t`).
-- **Initial condition = SOFT** (`dde.icbc.IC` for `θ_i(0)` + `OperatorBC` for `θ_i'(0)=0`), weighted 100× above the
+- **Initial condition = soft** (`dde.icbc.IC` for `θ_i(0)` + `OperatorBC` for `θ_i'(0)=0`), weighted 100× above the
   residual. A `t²` hard-constraint ansatz was tried first and **rejected**: it makes `∂θ̂/∂params ∝ t² → 0` near
   `t=0`, killing the gradient signal so the net never learns the initial acceleration (it moved θ₁ the *wrong way*).
   Soft IC is well-conditioned and the standard DeepXDE IVP approach.

@@ -5,9 +5,9 @@ export function AllenCahnContext({ lang }: { lang: "en" | "es" }) {
   const es = lang === "es";
   return es ? (
     <>
-      <h2>El problema: separación de fases con interfaces afiladas: la ecuación de Allen-Cahn</h2>
+      <h2>separación de fases con interfaces afiladas: la ecuación de Allen-Cahn</h2>
       <p>
-        <strong>El problema.</strong> La ecuación de Allen-Cahn
+        La ecuación de Allen-Cahn
         <InlineMath tex={String.raw`u_t = d\,u_{xx} + 5\,(u-u^3)`} /> modela la <em>separación de fases</em>: el campo
         <InlineMath tex={String.raw`u`} /> es atraído hacia dos estados estables <InlineMath tex={String.raw`u=\pm1`} />
         (los pozos del potencial de doble pozo <InlineMath tex={String.raw`W(u)=\tfrac54(1-u^2)^2`} />), y la pequeña
@@ -105,9 +105,9 @@ export function AllenCahnContext({ lang }: { lang: "en" | "es" }) {
     </>
   ): (
     <>
-      <h2>The problem: phase separation with sharp interfaces: the Allen-Cahn equation</h2>
+      <h2>phase separation with sharp interfaces: the Allen-Cahn equation</h2>
       <p>
-        <strong>The problem.</strong> The Allen-Cahn equation
+        The Allen-Cahn equation
         <InlineMath tex={String.raw`u_t = d\,u_{xx} + 5\,(u-u^3)`} /> models <em>phase separation</em>: the field
         <InlineMath tex={String.raw`u`} /> is pulled toward two stable states <InlineMath tex={String.raw`u=\pm1`} />
         (the wells of the double-well potential <InlineMath tex={String.raw`W(u)=\tfrac54(1-u^2)^2`} />), and the small

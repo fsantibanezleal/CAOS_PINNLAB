@@ -5,9 +5,9 @@ export function Heat1dContext({ lang }: { lang: "en" | "es" }) {
   const es = lang === "es";
   return es ? (
     <>
-      <h2>El problema: cómo se relaja un perfil de temperatura: difusión 1D con difusividad ajustable</h2>
+      <h2>cómo se relaja un perfil de temperatura: difusión 1D con difusividad ajustable</h2>
       <p>
-        <strong>El problema.</strong> Una barra de longitud unitaria parte con un perfil de temperatura senoidal
+        Una barra de longitud unitaria parte con un perfil de temperatura senoidal
         <InlineMath tex={String.raw`u(x,0)=\sin(\pi x)`} /> y sus extremos se mantienen a cero. ¿Cómo decae ese perfil
         en el tiempo? La ecuación del calor (o de difusión) <InlineMath tex={String.raw`u_t=\alpha\,u_{xx}`} /> es la
         EDP <em>parabólica</em> canónica: gobierna la conducción térmica, la difusión de un soluto y, con un cambio de
@@ -82,9 +82,9 @@ export function Heat1dContext({ lang }: { lang: "en" | "es" }) {
     </>
   ): (
     <>
-      <h2>The problem: how a temperature profile relaxes: 1D diffusion with a tunable diffusivity</h2>
+      <h2>how a temperature profile relaxes: 1D diffusion with a tunable diffusivity</h2>
       <p>
-        <strong>The problem.</strong> A unit-length bar starts with a sinusoidal temperature profile
+        A unit-length bar starts with a sinusoidal temperature profile
         <InlineMath tex={String.raw`u(x,0)=\sin(\pi x)`} /> and its ends are held at zero. How does that profile decay
         in time? The heat (or diffusion) equation <InlineMath tex={String.raw`u_t=\alpha\,u_{xx}`} /> is the canonical
         <em> parabolic</em> PDE: it governs thermal conduction, solute diffusion and, with a sign flip, smoothing in

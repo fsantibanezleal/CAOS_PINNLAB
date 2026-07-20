@@ -28,7 +28,7 @@ around the vortex center by $t=1$.
 ## The dye truth (a numerical reference with its checks)
 
 There is no closed form for $c$ under a non-uniform flow, so the dye truth is a seeded explicit finite-difference
-solve on a $129^2$ grid — with its stability VERIFIED, never assumed (the lesson from the diverged Navier FDM):
+solve on a $129^2$ grid — with its stability verified, never assumed (the lesson from the diverged Navier FDM):
 
 - **Central differencing is legitimate** because the cell Péclet number $A\,\Delta x/D \approx 0.59 < 2$; an upwind
   scheme would inject numerical diffusion of order $A\,\Delta x/2 \approx 0.006$, comparable to $D$ itself, and

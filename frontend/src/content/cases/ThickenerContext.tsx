@@ -5,9 +5,9 @@ export function ThickenerContext({ lang }: { lang: "en" | "es" }) {
   const es = lang === "es";
   return es ? (
     <>
-      <h2>El problema: una interfase de barro que desciende: sedimentación de espesadores y relaves</h2>
+      <h2>una interfase de barro que desciende: sedimentación de espesadores y relaves</h2>
       <p>
-        <strong>El problema.</strong> En un espesador (o en una columna de relaves) una suspensión floculada
+        En un espesador (o en una columna de relaves) una suspensión floculada
         <em> sedimenta</em>: las partículas caen, el sobrenadante clarifica arriba y un <em>lecho consolidado</em> crece
         abajo. Entre ambos baja una <strong>interfase de barro</strong> (mud-line) afilada. La fracción volumétrica de
         sólidos <InlineMath tex={String.raw`\phi(z,t)`} /> obedece a una ley de conservación
@@ -107,9 +107,9 @@ export function ThickenerContext({ lang }: { lang: "en" | "es" }) {
     </>
   ): (
     <>
-      <h2>The problem: a descending mud-line: thickener &amp; tailings sedimentation</h2>
+      <h2>a descending mud-line: thickener &amp; tailings sedimentation</h2>
       <p>
-        <strong>The problem.</strong> In a thickener (or a tailings column) a flocculated suspension <em>settles</em>:
+        In a thickener (or a tailings column) a flocculated suspension <em>settles</em>:
         particles fall, the supernatant clears at the top, and a <em>consolidated bed</em> grows at the bottom. Between
         them a sharp <strong>mud-line</strong> descends. The solid volume fraction
         <InlineMath tex={String.raw`\phi(z,t)`} /> obeys a <em>strongly-degenerate convection-diffusion</em> conservation
