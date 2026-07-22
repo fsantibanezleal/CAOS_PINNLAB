@@ -115,24 +115,58 @@ def boundary_residual(u: torch.Tensor) -> torch.Tensor:
     ], dim=1)
 
 
-def to_physical(u_net: torch.Tensor) -> torch.Tensor:
-    """Network output -> physical u. A fixed affine scale (see U_SCALE): no label statistics involved, so a
-    data-free run is genuinely data-free."""
-    return U_SCALE * u_net
+_MASK_CACHE: dict = {}
+
+
+def boundary_mask(h: int, w: int, device=None, dtype=None) -> torch.Tensor:
+    """A bump that vanishes EXACTLY on the boundary of the unit square: 16 x(1-x) y(1-y), peak 1 at centre.
+
+    Multiplying the operator's output by this enforces u|_boundary = 0 as a HARD constraint (the repo's
+    standard `hard-constraints` idiom, here applied to an operator instead of a coordinate network).
+
+    Why this matters for PINO specifically: the PDE residual is evaluated on the INTERIOR only, and the Darcy
+    solution is unique only together with its boundary condition. With a merely SOFT boundary penalty, a large
+    physics weight can drive the interior residual to zero around the WRONG boundary values, converging to a
+    different member of the solution family -- measured here as the physics term making the mid-label regime
+    worse, not better. Making the boundary exact removes that failure mode, so the interior residual alone
+    pins the solution.
+    """
+    key = (h, w, device, dtype)
+    m = _MASK_CACHE.get(key)
+    if m is None:
+        x = torch.linspace(0.0, 1.0, w, device=device, dtype=dtype)
+        y = torch.linspace(0.0, 1.0, h, device=device, dtype=dtype)
+        m = (16.0 * (y * (1.0 - y))[:, None] * (x * (1.0 - x))[None, :])[None, None]
+        _MASK_CACHE[key] = m
+    return m
+
+
+def to_physical(u_net: torch.Tensor, hard_bc: bool = True) -> torch.Tensor:
+    """Network output -> physical u.
+
+    A fixed affine scale (see U_SCALE) so no label statistics are involved and a data-free run is genuinely
+    data-free, times the boundary mask when `hard_bc` (the default), so u = 0 on the boundary exactly.
+    """
+    u = U_SCALE * u_net
+    if hard_bc:
+        u = u * boundary_mask(u.shape[-2], u.shape[-1], u.device, u.dtype)
+    return u
 
 
 def pde_loss(u_net: torch.Tensor, a_phys: torch.Tensor, h: float, f: float = 1.0,
-             bc_weight: float = 1.0) -> tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
+             bc_weight: float = 1.0, hard_bc: bool = True) -> tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
     """The operator PDE loss of paper eq. (3)/(7): interior residual + the boundary term.
 
     Returns (total, interior_mse, boundary_mse). The residual is normalised by f so the term is
-    dimensionless and comparable across problems.
+    dimensionless and comparable across problems. With `hard_bc` the boundary is exact by construction, so
+    the boundary term is identically zero and is reported only as a check.
     """
-    u = to_physical(u_net)
+    u = to_physical(u_net, hard_bc=hard_bc)
     r = darcy_residual_fd(u, a_phys, h, f) / f
     interior = (r ** 2).mean()
     bnd = (boundary_residual(u) ** 2).mean() / (U_SCALE ** 2)
-    return interior + bc_weight * bnd, interior.detach(), bnd.detach()
+    total = interior if hard_bc else interior + bc_weight * bnd
+    return total, interior.detach(), bnd.detach()
 
 
 def relative_l2(pred: torch.Tensor, true: torch.Tensor) -> torch.Tensor:

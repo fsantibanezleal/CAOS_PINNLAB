@@ -133,15 +133,18 @@ class _Baked:
 
 
 class _Physical(__import__("torch").nn.Module):
-    """Export wrapper: the ONNX emits u in PHYSICAL units (the net's output times the fixed scale)."""
+    """Export wrapper: the ONNX emits u in PHYSICAL units, applying the SAME hard boundary constraint the
+    operator was trained with (scale x boundary mask). Exporting only the scale would ship an artifact that
+    disagrees with the trained model on the boundary."""
 
-    def __init__(self, net, scale: float):
+    def __init__(self, net, scale: float, mask):
         super().__init__()
         self.net = net
         self.scale = float(scale)
+        self.register_buffer("mask", mask)
 
     def forward(self, x):
-        return self.net(x) * self.scale
+        return self.net(x) * self.scale * self.mask
 
 
 def build(seed: int, quick: bool = False) -> dict:
@@ -152,8 +155,8 @@ def build(seed: int, quick: bool = False) -> dict:
 
     from ..datasets.darcy import _make_coeff, _solve_darcy
     from ..model.fno import FNO2d
-    from ..model.pino import (U_SCALE, balance_lambda, pde_loss, relative_l2, test_time_optimize,
-                              to_physical)
+    from ..model.pino import (U_SCALE, balance_lambda, boundary_mask, pde_loss, relative_l2,
+                              test_time_optimize, to_physical)
 
     pool, n_test, epochs = (8, 4, 2) if quick else (POOL, N_TEST, EPOCHS)
     # quick mode must keep the SAME NUMBER of budgets as variants() advertises, or the workbench shows
@@ -250,7 +253,7 @@ def build(seed: int, quick: bool = False) -> dict:
     # ---- export the PINO operator's own ONNX, in physical units ----
     onnx_path = _REPO / "models" / f"{CASE.id}.onnx"
     onnx_path.parent.mkdir(parents=True, exist_ok=True)
-    wrapped = _Physical(best_net, U_SCALE).eval()
+    wrapped = _Physical(best_net, U_SCALE, boundary_mask(N_GRID, N_GRID)).eval()
     torch.onnx.export(
         wrapped, (Xte[:1],), str(onnx_path), input_names=["a_grid"], output_names=["u"],
         dynamic_axes={"a_grid": {0: "n"}, "u": {0: "n"}},
