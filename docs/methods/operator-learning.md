@@ -166,6 +166,15 @@ a plain single-instance PINN's optimisation fails. PINO is the "operator + gover
 inherits FNO's many-query speed and adds the PINN's physics prior. **FC-PINO** extends it to
 non-periodic domains via Fourier continuation (FFT assumes periodicity, which leaks error otherwise).
 
+> **What WE measured, which is not a clean win** (`bench-darcy-pino`, 2026-07-15). The paragraph above is the
+> literature's claim. On our own 32x32 Darcy grid the physics term helps where labels are absent (zero
+> labels: 0.59 vs a data-only operator that is untrained by definition) and in the data-rich regime, but at
+> **8 and 32 labels our PINO lane is worse than the data-only FNO** (0.344 vs 0.152; 0.177 vs 0.105). The
+> cause is measured, not guessed: the gradient-norm balancer drove lambda to 29.3 at 8 labels, leaving the
+> data term ~3% of the update while the physics term was still far from converged. So do **not** read "far
+> less data hunger" as something this repo has demonstrated. See `wip/beyond-sota/plan-2026-07-15.md` §B.4
+> for all three configurations and the repair plan.
+
 **When to use it.** When you want an FNO surrogate but have **few solved instances**, or need the surrogate
 to be **physically consistent at resolutions beyond the training grid**, or want to push toward the
 data-free regime. It is exercised by **`bench-darcy-pino`**, the companion case to the data-driven
