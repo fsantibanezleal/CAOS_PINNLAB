@@ -3,6 +3,36 @@
 All notable changes to **PINN-Lab**. Format: `X.XX.XXX` (display), see `pinnlab.__version__`. Keep `0.x` while on
 synthetic/benchmark data. Tag every release.
 
+## [0.28.000] (2026-07-15) Structure-preserving learning: a Hamiltonian neural network
+
+The catalogue had no geometric / structure-preserving method, and its one mechanical system
+(`dyn-double-pendulum`) was a plain residual PINN that conserves nothing by construction. This adds the family
+that the RSS 2026 "Geometry of Motion" workshop is about.
+
+**New case `dyn-pendulum-hnn`** (`hamiltonian-symplectic`): two models trained on identical data, size, seed,
+steps and the same RK4 rollout, differing ONLY in output structure. An unstructured MLP emits the vector
+field directly; a Hamiltonian network emits a scalar H and takes the symplectic gradient dz/dt = J grad H,
+which conserves H exactly because J is antisymmetric.
+
+- **`model/hnn.py`**: the symplectic gradient, the canonical momenta (NOT the angular velocities), the RK4
+  rollout and the energy-drift metric. The analytic Hamiltonian was verified before use: it matches E = T + V
+  to 1.07e-14 over 2000 states and RK45 conserves it to 8.9e-10 over 10 s.
+- **Measured, low-energy bounded regime**: both lanes fit the derivative to the same order (1.2e-5 vs 1.0e-4)
+  and the structured lane holds energy 100x tighter over 8 s (0.07% vs 7.44%). The gap is structure, not
+  accuracy. Two earlier attempts are recorded honestly in the plan: a uniform-box coverage that made it worse,
+  and the chaotic high-energy regime where both lanes' absolute drift blows up (HNN still wins ~27x).
+- **The exported ONNX is the learned energy surface** (state -> H); the symplectic gradient in the forward
+  pass is not ONNX-representable, but the scalar H it differentiates is the physically meaningful object.
+
+**FIX (pre-existing): the trajectory kit's side panels collapsed to 2px.** `.traj-kit svg { height: 100% }`
+resolved against a collapsing flex column, so the phase-portrait and butterfly panels were invisible in the
+Results tab for BOTH trajectory cases (the shipped double pendulum included). Now 218px. The kit is also
+manifest-aware: with no twin trajectory it drops the chaos/leave-time framing, relabels "PINN" as "model",
+and shows an energy-vs-time panel in place of the butterfly.
+
+The case landed COMPLETE: pipeline + estimate + bilingual context + verdict + docs; index rebuilt to 23
+cases; fit gate passes 540 checks.
+
 ## [0.27.000] (2026-07-15) PINO: a physics-informed neural operator, and the overclaim it exposed
 
 The catalogue's operator lane was data-driven only. A domain expert asked publicly whether we had looked at

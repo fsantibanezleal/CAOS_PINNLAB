@@ -14,6 +14,7 @@ import { HelmholtzContext } from "./HelmholtzContext";
 import { HiddenVelocityContext } from "./HiddenVelocityContext";
 import { NavierCavityContext } from "./NavierCavityContext";
 import { OceanTransportContext } from "./OceanTransportContext";
+import { PendulumHnnContext } from "./PendulumHnnContext";
 import { PoissonContext } from "./PoissonContext";
 import { SoilBarrierContext } from "./SoilBarrierContext";
 import { SoilHeatRealContext } from "./SoilHeatRealContext";
@@ -32,6 +33,7 @@ const CASE_CONTEXT: Record<string, (p: { lang: "en" | "es" }) => ReactNode> = {
   "bench-burgers1d": Burgers1dContext,
   "bench-allencahn": AllenCahnContext,
   "dyn-double-pendulum": DoublePendulumContext,
+  "dyn-pendulum-hnn": PendulumHnnContext,
   "poll-ocean-transport": OceanTransportContext,
   "mine-flotation-kinetics": FlotationContext,
   "ctrl-zero-source": ZeroSourceContext,

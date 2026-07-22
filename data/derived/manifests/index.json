@@ -1,7 +1,7 @@
 {
  "schema": "pinnlab.index/v1",
  "engine_version": "0.26.002",
- "n_cases": 22,
+ "n_cases": 23,
  "categories": [
   "canonical-benchmark",
   "control",
@@ -129,6 +129,18 @@
    "real_or_synthetic": "synthetic-illustrative",
    "question_en": "How far ahead can ANY surrogate predict this chaotic machine?",
    "question_es": "¿Cuánto hacia adelante puede predecir esta máquina caótica CUALQUIER sustituto?"
+  },
+  {
+   "case_id": "dyn-pendulum-hnn",
+   "category": "canonical-benchmark",
+   "title": "Structure-preserving learning: a Hamiltonian network vs an unstructured one",
+   "manifest_path": "manifests/dyn-pendulum-hnn.json",
+   "system_type": "ode-dynamical",
+   "view_kit": "TrajectoryAnimationKit",
+   "method": "hamiltonian-symplectic",
+   "real_or_synthetic": "synthetic-illustrative",
+   "question_en": "Two models that fit the dynamics equally well: does either respect the conserved energy?",
+   "question_es": "Dos modelos que ajustan la dinámica igual de bien: ¿alguno respeta la energía conservada?"
   },
   {
    "case_id": "env-soil-heat-real",

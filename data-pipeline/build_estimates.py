@@ -485,6 +485,25 @@ def bake_all():
         [item("peak head, FNO vs finite differences", "presión pico, FNO vs diferencias finitas", values=vals_pk)],
     )
 
+    # ---- dyn-pendulum-hnn: does the model respect the conserved energy? ----
+    m = man("dyn-pendulum-hnn")
+    vals_drift, vals_drift_es, vals_fit = {}, {}, {}
+    for v in m["variants"]:
+        mm = v["metrics"]
+        d = float(mm["energy_drift_rel"]) * 100.0
+        vals_drift[v["id"]] = f"{d:.2f}%"
+        vals_drift_es[v["id"]] = f"{d:.2f}%"
+        vals_fit[v["id"]] = f"{float(mm['fit_loss']):.1e}"
+    QUESTIONS["dyn-pendulum-hnn"] = set_estimate(
+        "dyn-pendulum-hnn",
+        "Two models that fit the dynamics equally well: does either respect the conserved energy?",
+        "Dos modelos que ajustan la dinámica igual de bien: ¿alguno respeta la energía conservada?",
+        "An unstructured network can output any vector field, so nothing stops its energy drifting. A Hamiltonian network outputs a scalar H and takes the symplectic gradient, so energy conservation is a property of the parameterisation, not something the optimiser must get right.",
+        "Una red sin estructura puede entregar cualquier campo vectorial, así que nada impide que su energía derive. Una red hamiltoniana entrega un escalar H y toma el gradiente simpléctico, así la conservación de energía es una propiedad de la parametrización, no algo que el optimizador deba acertar.",
+        [item("energy drift over 8 s", "deriva de energía en 8 s", values=vals_drift, values_es=vals_drift_es),
+         item("derivative fit loss", "pérdida de ajuste de la derivada", values=vals_fit)],
+    )
+
     # ---- bench-darcy-pino: the label-budget question (PINO vs the data-only operator) ----
     m = man("bench-darcy-pino")
     vals_pino, vals_fno, vals_gain = {}, {}, {}
