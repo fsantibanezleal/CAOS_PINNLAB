@@ -31,7 +31,12 @@ export function CaseResults({
       ? [{ view: "compare", label: es ? "Comparar" : "Compare", proves: es ? "la referencia clásica vs cada PINN, con mapas de error" : "the classical reference vs each PINN, with error maps" }]
       : []),
     { view: "field", label: es ? "Campo" : "Field", proves: es ? "el campo completo, más grande, con cortes y zoom" : "the full field, larger, with cuts and zoom" },
-    { view: "live", label: "Live", proves: es ? "la red ejecutándose en el navegador" : "the network running in the browser" },
+    // Only when the case actually HAS a Live tab. It is gated on lane === "live" in CaseExperiment, so
+    // listing it unconditionally pointed precompute cases (the field-IO operators) at a tab that does not
+    // exist: a dead evidence link.
+    ...(manifest.lane === "live"
+      ? [{ view: "live", label: "Live", proves: es ? "la red ejecutándose en el navegador" : "the network running in the browser" }]
+      : []),
     ...(manifest.training
       ? [{ view: "training", label: es ? "Entrenamiento" : "Training", proves: es ? "la variante ingenua sin aprender" : "the naive variant failing to learn" }]
       : []),
