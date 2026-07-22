@@ -1,0 +1,131 @@
+{
+ "schema": "pinnlab.manifest/v2",
+ "case_id": "dyn-pendulum-hnn",
+ "category": "canonical-benchmark",
+ "title": "Structure-preserving learning: a Hamiltonian network vs an unstructured one",
+ "governing_equations": "\\dot{q}=\\partial H/\\partial p,\\ \\ \\dot{p}=-\\partial H/\\partial q\\ \\ (\\dot{z}=J\\,\\nabla H);\\ H(q,p)\\ \\text{conservada exactamente porque } J \\text{ es antisimétrica}",
+ "method": "hamiltonian-symplectic",
+ "real_or_synthetic": "synthetic-illustrative",
+ "expected_band": "both lanes fit the derivative equally well; the structured lane drifts far less in energy, while BOTH eventually lose the chaotic trajectory",
+ "validation_anchor": "integrator-ref",
+ "inputs": [
+  "t"
+ ],
+ "outputs": [
+  "th1",
+  "th2"
+ ],
+ "field_axes": [
+  "t"
+ ],
+ "system_type": "ode-dynamical",
+ "view_kit": "TrajectoryAnimationKit",
+ "param_specs": [],
+ "engine": {
+  "package": "pinnlab",
+  "version": "0.26.002",
+  "framework": "hnn-torch"
+ },
+ "seed": 42,
+ "trace_schema": "pinnlab.field/v1",
+ "onnx": {
+  "path": "dyn-pendulum-hnn.onnx",
+  "bytes": 169670,
+  "parity_max_abs": 7.629e-06,
+  "opset": 18,
+  "input_dim": 1
+ },
+ "lane": "precompute",
+ "gate": {
+  "lane": "precompute",
+  "onnx_bytes": 169670,
+  "infer_ms": 0.06,
+  "trace_bytes": 36660,
+  "reasons": [
+   "field-IO operator — not browser-coordinate-drivable"
+  ]
+ },
+ "flags": [],
+ "inverse": {},
+ "run_ms": 93814.53,
+ "variants": [
+  {
+   "id": "hnn",
+   "label_en": "Hamiltonian network (structured)",
+   "label_es": "Red hamiltoniana (estructurada)",
+   "note_en": "Outputs a single scalar H and takes the symplectic gradient, so the energy is conserved by construction.",
+   "note_es": "Entrega un único escalar H y toma el gradiente simpléctico, así la energía se conserva por construcción.",
+   "params": {
+    "structured": 1.0
+   },
+   "trace": {
+    "path": "dyn-pendulum-hnn/hnn.json",
+    "bytes": 36660
+   },
+   "metrics": {
+    "onnx_parity_max_abs": 7.629e-06,
+    "validation_anchor": "integrator-ref",
+    "l2_relative": 0.012933,
+    "energy_drift_rel": 0.000744,
+    "fit_loss": 1.237e-05,
+    "leave_time_s": 8.0,
+    "theta_err_1s": 0.0006,
+    "train_s": 54.5,
+    "ensemble_K": 0
+   }
+  },
+  {
+   "id": "mlp",
+   "label_en": "Unstructured network (baseline)",
+   "label_es": "Red sin estructura (referencia)",
+   "note_en": "Outputs the four time-derivatives directly, free to produce any vector field at all.",
+   "note_es": "Entrega directamente las cuatro derivadas temporales, libre de producir cualquier campo vectorial.",
+   "params": {
+    "structured": 0.0
+   },
+   "trace": {
+    "path": "dyn-pendulum-hnn/mlp.json",
+    "bytes": 36660
+   },
+   "metrics": {
+    "onnx_parity_max_abs": 7.629e-06,
+    "validation_anchor": "integrator-ref",
+    "l2_relative": 0.083528,
+    "energy_drift_rel": 0.074427,
+    "fit_loss": 0.0001017,
+    "leave_time_s": 8.0,
+    "theta_err_1s": 0.0105,
+    "train_s": 32.5,
+    "ensemble_K": 0
+   }
+  }
+ ],
+ "estimate": {
+  "question_en": "Two models that fit the dynamics equally well: does either respect the conserved energy?",
+  "question_es": "Dos modelos que ajustan la dinámica igual de bien: ¿alguno respeta la energía conservada?",
+  "why_en": "An unstructured network can output any vector field, so nothing stops its energy drifting. A Hamiltonian network outputs a scalar H and takes the symplectic gradient, so energy conservation is a property of the parameterisation, not something the optimiser must get right.",
+  "why_es": "Una red sin estructura puede entregar cualquier campo vectorial, así que nada impide que su energía derive. Una red hamiltoniana entrega un escalar H y toma el gradiente simpléctico, así la conservación de energía es una propiedad de la parametrización, no algo que el optimizador deba acertar.",
+  "items": [
+   {
+    "label_en": "energy drift over 8 s",
+    "label_es": "deriva de energía en 8 s",
+    "values": {
+     "hnn": "0.07%",
+     "mlp": "7.44%"
+    },
+    "values_es": {
+     "hnn": "0.07%",
+     "mlp": "7.44%"
+    }
+   },
+   {
+    "label_en": "derivative fit loss",
+    "label_es": "pérdida de ajuste de la derivada",
+    "values": {
+     "hnn": "1.2e-05",
+     "mlp": "1.0e-04"
+    }
+   }
+  ]
+ }
+}

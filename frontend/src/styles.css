@@ -745,6 +745,10 @@ ol li, ul li { margin: 4px 0; }
 /* Trajectory + UQ + Diagnostics svg charts: fill their flex parent instead of auto-height */
 .traj-kit { display: flex; flex-direction: column; height: 100%; min-height: 0; gap: 6px; }
 .traj-kit > .trace-svg, .traj-kit svg { flex: 1 1 auto; min-height: 0; width: 100%; height: 100%; margin: 0; }
+/* ...but the SIDE-panel charts (phase portrait + energy/butterfly) live in a COLUMN with no fixed height,
+   so `height: 100%` there resolves against a collapsing parent and the SVGs shrink to ~2px. Give them their
+   natural viewBox aspect instead. More specific than `.traj-kit svg`, so it wins. */
+.traj-kit .traj-side .trace-svg { flex: 0 0 auto; height: auto; min-height: 150px; }
 .uq-kit { display: flex; flex-direction: column; height: 100%; min-height: 0; }
 .uq-svg { flex: 1 1 auto; min-height: 0; width: 100%; max-width: none; height: 100%; }
 /* Diagnostics pager: one chart filling the stage */

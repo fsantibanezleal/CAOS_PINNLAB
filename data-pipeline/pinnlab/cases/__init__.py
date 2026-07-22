@@ -19,6 +19,7 @@ from . import (
     bench_wave1d,
     ctrl_zero_source,
     dyn_double_pendulum,
+    dyn_pendulum_hnn,
     env_soil_heat_real,
     ind_heat2d_inverse,
     ind_helmholtz,
@@ -58,6 +59,7 @@ _MODULES: list[ModuleType] = [
     poll_source_uq_bpinn,
     bench_darcy_operator,
     bench_darcy_pino,
+    dyn_pendulum_hnn,
 ]
 
 CASES: list[CaseSpec] = [m.CASE for m in _MODULES]

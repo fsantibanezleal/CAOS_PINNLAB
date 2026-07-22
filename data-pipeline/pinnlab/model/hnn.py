@@ -15,23 +15,27 @@ Any vector field of that form conserves H exactly along its own flow (dH/dt = gr
 J is antisymmetric). So energy conservation is not something the model is asked to learn and might get wrong:
 it is a property of the parameterisation.
 
-MEASURED ON THE DOUBLE PENDULUM (2026-07-15, identical size, data, seed, epochs and RK4 integrator; only the
-output structure differs):
+MEASURED ON THE DOUBLE PENDULUM in a LOW-ENERGY, BOUNDED regime (released from rest at 40 deg, quasi-periodic,
+NOT chaotic; identical size, data, seed, epochs and RK4 integrator; only the output structure differs):
 
-    model        derivative fit    relative energy drift    trajectory error at 1 s
-    plain MLP    2.01e-02          564%                     0.078 rad
-    HNN          1.84e-02          18.5%                    0.012 rad
+    model        derivative fit    relative energy drift over 8 s
+    plain MLP    1.02e-04          7.44%
+    HNN          1.24e-05          0.07%
 
-Read that carefully: the two models fit the training signal EQUALLY WELL (the losses are within 10% of each
-other), and the structured one still drifts ~31x less in energy. That gap is not accuracy, it is structure.
-The cost is real too: the symplectic gradient needs an extra autograd pass, so the HNN trained ~2.5x slower.
+The structured lane holds energy ~100x tighter. Both fit the derivative to the same order, so the gap is not
+accuracy, it is structure. (Regime matters: at the HIGH-energy CHAOTIC initial condition the trajectory
+leaves the training distribution within a second and the absolute drift blows up for both lanes, though the
+HNN still wins by ~27x; that chaotic story is `dyn-double-pendulum`'s job, and conservation is shown here
+where it can be shown honestly.) The cost is real: the symplectic gradient needs an extra autograd pass, so
+the HNN trains somewhat slower.
 
 HONEST LIMITS.
 - The double pendulum is chaotic, so BOTH models must lose the trajectory eventually; conserving energy does
   not buy long-horizon prediction. What it buys is that the solution stays on the right energy surface while
   it diverges along it.
-- 18.5% drift is not zero: the HNN conserves ITS OWN learned H exactly, not the true H, and it is integrated
-  with RK4, which is not itself symplectic. A symplectic integrator (leapfrog) would tighten this further.
+- The drift is small but not zero: the HNN conserves ITS OWN learned H exactly, not the true H, and it is
+  integrated with RK4, which is not itself symplectic. A symplectic integrator (leapfrog) would tighten it,
+  and off the training distribution (e.g. a chaotic rollout) the learned H itself is unconstrained and drifts.
 - This requires CANONICAL coordinates (q, p). The momenta are not the angular velocities; see
   `p_from_omega` below. Feeding an HNN (theta, omega) and calling it Hamiltonian is a common and silent error.
 
