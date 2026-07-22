@@ -1,0 +1,205 @@
+{
+ "schema": "pinnlab.manifest/v2",
+ "case_id": "bench-darcy-pino",
+ "category": "canonical-benchmark",
+ "title": "PINO: the operator that also knows the equation (Darcy, data-efficiency)",
+ "governing_equations": "-\\nabla\\!\\cdot(a(\\mathbf{x})\\nabla u)=1,\\ u|_{\\partial\\Omega}=0\\ \\text{en}\\ (0,1)^2;\\ \\min_\\theta\\ \\mathcal{L}_{\\text{data}} + \\lambda\\,\\mathbb{E}_{a'\\sim\\mu}\\|\\mathcal{R}(a',\\mathcal{G}_\\theta(a'))\\|^2",
+ "method": "operator-pino",
+ "real_or_synthetic": "synthetic",
+ "expected_band": "with the equation in the loss the operator needs far fewer solved instances; at ZERO labels a data-only operator is untrained while PINO still reaches a usable field",
+ "validation_anchor": "operator-test-l2",
+ "inputs": [
+  "x",
+  "y"
+ ],
+ "outputs": [
+  "u_pino",
+  "u_true",
+  "u_fno",
+  "a"
+ ],
+ "field_axes": [
+  "x",
+  "y"
+ ],
+ "system_type": "",
+ "view_kit": "HeatmapKit",
+ "param_specs": [],
+ "engine": {
+  "package": "pinnlab",
+  "version": "0.26.002",
+  "framework": "pino-torch"
+ },
+ "seed": 42,
+ "trace_schema": "pinnlab.field/v1",
+ "onnx": {
+  "path": "bench-darcy-pino.onnx",
+  "bytes": 2629864,
+  "parity_max_abs": 1e-08,
+  "opset": 18,
+  "input_dim": 2
+ },
+ "lane": "precompute",
+ "gate": {
+  "lane": "precompute",
+  "onnx_bytes": 2629864,
+  "infer_ms": 38.83,
+  "trace_bytes": 29091,
+  "reasons": [
+   "field-IO operator — not browser-coordinate-drivable"
+  ]
+ },
+ "flags": [],
+ "inverse": {},
+ "run_ms": 1697588.47,
+ "variants": [
+  {
+   "id": "n0",
+   "label_en": "No solved instances at all",
+   "label_es": "Sin instancias resueltas",
+   "note_en": "Zero labels: the data-only operator has no signal whatsoever, while PINO still has the equation.",
+   "note_es": "Cero etiquetas: el operador solo-datos no tiene senal alguna, mientras PINO aun tiene la ecuacion.",
+   "params": {
+    "n_labels": 0.0
+   },
+   "trace": {
+    "path": "bench-darcy-pino/n0.json",
+    "bytes": 29091
+   },
+   "metrics": {
+    "onnx_parity_max_abs": 1e-08,
+    "validation_anchor": "operator-test-l2",
+    "l2_relative": 0.688458,
+    "fno_data_only_l2": 1.045243,
+    "n_labels": 0,
+    "n_test": 32,
+    "train_s_pino": 26.5,
+    "train_s_fno": 0.1,
+    "lambda_balanced": 1.0,
+    "ensemble_K": 0
+   }
+  },
+  {
+   "id": "n8",
+   "label_en": "8 solved instances",
+   "label_es": "8 instancias resueltas",
+   "note_en": "A budget you could actually afford when each solve is expensive.",
+   "note_es": "Un presupuesto que si podrias pagar cuando cada resolucion es cara.",
+   "params": {
+    "n_labels": 8.0
+   },
+   "trace": {
+    "path": "bench-darcy-pino/n8.json",
+    "bytes": 28366
+   },
+   "metrics": {
+    "onnx_parity_max_abs": 1e-08,
+    "validation_anchor": "operator-test-l2",
+    "l2_relative": 0.470771,
+    "fno_data_only_l2": 0.169599,
+    "n_labels": 8,
+    "n_test": 32,
+    "train_s_pino": 82.9,
+    "train_s_fno": 27.4,
+    "lambda_balanced": 1.93,
+    "ensemble_K": 0
+   }
+  },
+  {
+   "id": "n32",
+   "label_en": "32 solved instances",
+   "label_es": "32 instancias resueltas",
+   "note_en": "A moderate budget: both lanes work, the physics term still helps.",
+   "note_es": "Un presupuesto moderado: ambas vias funcionan, el termino fisico aun ayuda.",
+   "params": {
+    "n_labels": 32.0
+   },
+   "trace": {
+    "path": "bench-darcy-pino/n32.json",
+    "bytes": 28364
+   },
+   "metrics": {
+    "onnx_parity_max_abs": 1e-08,
+    "validation_anchor": "operator-test-l2",
+    "l2_relative": 0.078363,
+    "fno_data_only_l2": 0.143286,
+    "n_labels": 32,
+    "n_test": 32,
+    "train_s_pino": 250.3,
+    "train_s_fno": 115.4,
+    "lambda_balanced": 0.54,
+    "ensemble_K": 0
+   }
+  },
+  {
+   "id": "n128",
+   "label_en": "128 solved instances",
+   "label_es": "128 instancias resueltas",
+   "note_en": "Data-rich: the regime where a data-only operator is at its strongest.",
+   "note_es": "Rico en datos: el regimen donde el operador solo-datos esta en su mejor momento.",
+   "params": {
+    "n_labels": 128.0
+   },
+   "trace": {
+    "path": "bench-darcy-pino/n128.json",
+    "bytes": 28378
+   },
+   "metrics": {
+    "onnx_parity_max_abs": 1e-08,
+    "validation_anchor": "operator-test-l2",
+    "l2_relative": 0.037074,
+    "fno_data_only_l2": 0.071459,
+    "n_labels": 128,
+    "n_test": 32,
+    "train_s_pino": 766.1,
+    "train_s_fno": 377.3,
+    "lambda_balanced": 1.65,
+    "ensemble_K": 0
+   }
+  }
+ ],
+ "estimate": {
+  "question_en": "How many solved instances does the operator need, if it also knows the equation?",
+  "question_es": "¿Cuántas instancias resueltas necesita el operador, si además conoce la ecuación?",
+  "why_en": "Every training label costs one classical solve, which is the expensive part on a real problem. Adding the PDE residual to the operator's own loss lets the equation stand in for labels: the chips are the label budgets, so the trade is visible directly.",
+  "why_es": "Cada etiqueta de entrenamiento cuesta una resolución clásica, que es la parte cara en un problema real. Agregar el residuo de la EDP a la pérdida del operador deja que la ecuación sustituya etiquetas: los chips son los presupuestos de etiquetas, así el intercambio se ve directo.",
+  "items": [
+   {
+    "label_en": "relative error, PINO (data + equation)",
+    "label_es": "error relativo, PINO (datos + ecuación)",
+    "values": {
+     "n0": "68.8%",
+     "n8": "47.1%",
+     "n32": "7.8%",
+     "n128": "3.7%"
+    }
+   },
+   {
+    "label_en": "relative error, data-only FNO",
+    "label_es": "error relativo, FNO solo-datos",
+    "values": {
+     "n0": "104.5%",
+     "n8": "17.0%",
+     "n32": "14.3%",
+     "n128": "7.1%"
+    }
+   },
+   {
+    "label_en": "PINO vs the data-only operator",
+    "label_es": "PINO frente al operador solo-datos",
+    "values": {
+     "n0": "+34% better",
+     "n8": "-178% WORSE",
+     "n32": "+45% better",
+     "n128": "+48% better"
+    },
+    "values_es": {
+     "n0": "+34% mejor",
+     "n8": "-178% PEOR",
+     "n32": "+45% mejor",
+     "n128": "+48% mejor"
+    }
+   }
+  ]
+ }
+}

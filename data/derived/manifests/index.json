@@ -1,7 +1,7 @@
 {
  "schema": "pinnlab.index/v1",
- "engine_version": "0.18.000",
- "n_cases": 21,
+ "engine_version": "0.26.002",
+ "n_cases": 22,
  "categories": [
   "canonical-benchmark",
   "control",
@@ -45,6 +45,18 @@
    "real_or_synthetic": "synthetic",
    "question_en": "Screening new geology maps: what peak pressure does each produce, instantly?",
    "question_es": "Cribado de mapas geológicos nuevos: ¿qué presión pico produce cada uno, al instante?"
+  },
+  {
+   "case_id": "bench-darcy-pino",
+   "category": "canonical-benchmark",
+   "title": "PINO: the operator that also knows the equation (Darcy, data-efficiency)",
+   "manifest_path": "manifests/bench-darcy-pino.json",
+   "system_type": "",
+   "view_kit": "HeatmapKit",
+   "method": "operator-pino",
+   "real_or_synthetic": "synthetic",
+   "question_en": "How many solved instances does the operator need, if it also knows the equation?",
+   "question_es": "¿Cuántas instancias resueltas necesita el operador, si además conoce la ecuación?"
   },
   {
    "case_id": "bench-heat1d",
@@ -143,18 +155,6 @@
    "question_es": "¿Dónde aísla y dónde conduce esta placa? (mapa de defectos desde ~100 temperaturas puntuales)"
   },
   {
-   "case_id": "ind-hidden-velocity",
-   "category": "industrial-fluids-heat",
-   "title": "Hidden velocity from dye: estimate the current from passive-scalar observations (HFM mechanism)",
-   "manifest_path": "manifests/ind-hidden-velocity.json",
-   "system_type": "inverse-assim",
-   "view_kit": "HiddenFlowKit",
-   "method": "inverse-hidden-state",
-   "real_or_synthetic": "synthetic",
-   "question_en": "You can only see the dye. What is the current underneath? (the HFM mechanism, Science 2020)",
-   "question_es": "Solo puedes ver el tinte. ¿Cuál es la corriente debajo? (el mecanismo HFM, Science 2020)"
-  },
-  {
    "case_id": "ind-helmholtz",
    "category": "industrial-fluids-heat",
    "title": "2D Helmholtz (high-wavenumber): Fourier-feature PINN",
@@ -165,6 +165,18 @@
    "real_or_synthetic": "synthetic",
    "question_en": "What field amplitude reaches the receiver at (0.25, 0.25) at frequency k₀ = 6π? (acoustics at a target)",
    "question_es": "¿Qué amplitud de campo llega al receptor en (0.25, 0.25) a frecuencia k₀ = 6π? (acústica en un objetivo)"
+  },
+  {
+   "case_id": "ind-hidden-velocity",
+   "category": "industrial-fluids-heat",
+   "title": "Hidden velocity from dye: estimate the current from passive-scalar observations (HFM mechanism)",
+   "manifest_path": "manifests/ind-hidden-velocity.json",
+   "system_type": "inverse-assim",
+   "view_kit": "HiddenFlowKit",
+   "method": "inverse-hidden-state",
+   "real_or_synthetic": "synthetic",
+   "question_en": "You can only see the dye. What is the current underneath? (the HFM mechanism, Science 2020)",
+   "question_es": "Solo puedes ver el tinte. ¿Cuál es la corriente debajo? (el mecanismo HFM, Science 2020)"
   },
   {
    "case_id": "mine-comminution-pbe",
@@ -196,7 +208,7 @@
    "title": "Heap-leach reactive transport: advection-diffusion-reaction PINN (2 species, time-scrubber)",
    "manifest_path": "manifests/mine-heap-leach-rt.json",
    "system_type": "",
-   "view_kit": "SpatioTemporalKit",
+   "view_kit": "HeatmapKit",
    "method": "advection-diffusion-reaction",
    "real_or_synthetic": "synthetic-illustrative",
    "question_en": "When does the reagent front break through at the base of the heap? (irrigation planning)",
@@ -220,7 +232,7 @@
    "title": "Ocean pollutant transport: 2D advection-diffusion PINN (time-scrubber)",
    "manifest_path": "manifests/poll-ocean-transport.json",
    "system_type": "",
-   "view_kit": "SpatioTemporalKit",
+   "view_kit": "HeatmapKit",
    "method": "advection-diffusion",
    "real_or_synthetic": "synthetic-illustrative",
    "question_en": "When does the spill reach the coastal checkpoint, and how strong is the peak? (emergency response)",

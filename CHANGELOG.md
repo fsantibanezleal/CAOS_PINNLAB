@@ -3,6 +3,46 @@
 All notable changes to **PINN-Lab**. Format: `X.XX.XXX` (display), see `pinnlab.__version__`. Keep `0.x` while on
 synthetic/benchmark data. Tag every release.
 
+## [0.27.000] (2026-07-15) PINO: a physics-informed neural operator, and the overclaim it exposed
+
+The catalogue's operator lane was data-driven only. A domain expert asked publicly whether we had looked at
+PINO as an FNO variant; auditing that question found the docs already claimed `bench-darcy-operator`
+"exercises all three methods on the same family: DeepONet, FNO, and PINO", while `PINO` appeared **zero
+times** in `data-pipeline/` and `frontend/src/`. Only the case doc was honest about it.
+
+**New case `bench-darcy-pino`** (`operator-pino`), the matched companion to the data-driven FNO case: same
+family, architecture, seed, epochs and test set, so only the loss differs.
+
+- **`model/pino.py`**: the paper's two phases (arXiv:2111.03794). Pre-training with the data loss plus the PDE
+  residual on VIRTUAL instances that cost no solve (Algorithm 1), then test-time optimization on a single
+  instance with the anchor loss. Residual by finite volume with harmonic-mean faces, **verified before use**:
+  rms 3.6e-14 on the reference solution, exactly f = 1 for u = 0.
+- **The FFT route is documented as unusable here, with a number**: this problem is non-periodic with a
+  discontinuous coefficient, and the spectral Laplacian misses by ~6x the source term.
+- **Gradient-norm balanced lambda**, after measuring a real pathology: the two loss terms are balanced in
+  VALUE (1.07 vs 1.00) but their gradient norms differ by **38.6x**, so a fixed lambda = 1 gave the equation
+  ~2.6% of the update.
+- **Hard boundary constraint**, which was the decisive fix: the residual is interior-only and Darcy is unique
+  only with its BC, so a soft penalty let the physics converge around wrong boundary values. Enforcing
+  u = 0 exactly moved 32 labels from -0.5% to **+45.3%**. The exported ONNX applies the same constraint.
+
+Measured (held-out relative-L2 over 32 unseen fields): **+34.1%** at 0 labels, **-177.6%** at 8,
+**+45.3%** at 32, **+48.1%** at 128. The 8-label regression is shipped and explained rather than hidden: it
+is the standing "physics-informed training is slow" objection, reproduced inside our own operator.
+
+Also in this release:
+
+- **`rebuild_index.py`**: regenerate `manifests/index.json` from the registry without retraining the whole
+  catalogue (previously only `run_all()` wrote it, so adding a case meant a full rebuild). It refuses to list
+  a case that has no manifest.
+- **FIX: dead evidence link.** The Results panel listed "Live" for every case, but the Live tab is gated on
+  `lane === "live"`, so both field-IO operator cases pointed at a tab that does not exist.
+- Docs corrected: the DeepONet/PINO "exercises all three" claim is replaced by a status table (DeepONet is
+  marked NOT implemented), and the literature's "far less data hunger" line now carries what we actually
+  measured.
+- Research persisted under `wip/beyond-sota/`: the primary-source transcription, the claims-vs-engine audit,
+  the plan with all three configurations tried, and the full survey.
+
 ## [0.26.009] (2026-07-15) FIX: the equations rendered English inside the Spanish app
 
 Each case ships one `governing_equations` LaTeX string. The math is language-neutral, but the prose inside

@@ -166,10 +166,20 @@ a plain single-instance PINN's optimisation fails. PINO is the "operator + gover
 inherits FNO's many-query speed and adds the PINN's physics prior. **FC-PINO** extends it to
 non-periodic domains via Fourier continuation (FFT assumes periodicity, which leaks error otherwise).
 
+> **What WE measured, which is not a clean win** (`bench-darcy-pino`, 2026-07-15). The paragraph above is the
+> literature's claim. On our own 32x32 Darcy grid the physics term helps where labels are absent (zero
+> labels: 0.59 vs a data-only operator that is untrained by definition) and in the data-rich regime, but at
+> **8 and 32 labels our PINO lane is worse than the data-only FNO** (0.344 vs 0.152; 0.177 vs 0.105). The
+> cause is measured, not guessed: the gradient-norm balancer drove lambda to 29.3 at 8 labels, leaving the
+> data term ~3% of the update while the physics term was still far from converged. So do **not** read "far
+> less data hunger" as something this repo has demonstrated. See `wip/beyond-sota/plan-2026-07-15.md` §B.4
+> for all three configurations and the repair plan.
+
 **When to use it.** When you want an FNO surrogate but have **few solved instances**, or need the surrogate
 to be **physically consistent at resolutions beyond the training grid**, or want to push toward the
-data-free regime. It is the second method exercised by `bench-darcy-operator` (after plain FNO), letting
-PINN-Lab show the data-vs-physics trade-off on the same Darcy family.
+data-free regime. It is exercised by **`bench-darcy-pino`**, the companion case to the data-driven
+`bench-darcy-operator`: same Darcy family, same architecture, same seed, same epochs, so the only difference
+is the loss and the data-vs-physics trade-off is measured rather than asserted.
 
 **Honest limitations.** PINO inherits FNO's OOD fragility and (where periodic FFTs are used) the
 periodicity assumption; the residual loss adds the usual PINN loss-balancing difficulty ($\lambda$ tuning,
@@ -196,12 +206,19 @@ $$
 \quad u|_{\partial\Omega} = 0,
 $$
 
-so the operator is $\mathcal{G}: a(x) \mapsto u(x)$ over a distribution of coefficient fields $a(x)$. The
-case **exercises all three methods on the same family**: DeepONet (branch over sensor-sampled $a$, trunk
-over query $x$), FNO (spectral operator on the gridded $a$, with the **zero-shot super-resolution** demo),
-and PINO (FNO + the Darcy residual at higher resolution, showing the **data-reduction** benefit). This is the
-one operator case kept in v1 to exercise the operator lane end-to-end (dossier Open Question §7); the rest of
-the operator/surrogate family is deferred to v2.
+so the operator is $\mathcal{G}: a(x) \mapsto u(x)$ over a distribution of coefficient fields $a(x)$.
+
+**What is actually implemented, and where** (corrected 2026-07-15 — this section previously claimed one case
+exercised all three methods, which was not true; see `wip/beyond-sota/audit-claims-vs-engine-2026-07-15.md`):
+
+| Method | Status | Case |
+|---|---|---|
+| **FNO** | **shipped** — a real 2D Fourier Neural Operator trained on the Darcy family and exported to ONNX | `bench-darcy-operator` (data-driven only) |
+| **PINO** | **shipped** — the equation enters the operator's own loss, plus virtual instances and test-time optimization with the anchor loss | `bench-darcy-pino` |
+| **DeepONet** | **NOT implemented.** Documented above as a method; no case exercises it yet. | — |
+
+The two Darcy cases are deliberately a matched pair: same family, same architecture, same seed, same epochs,
+so the only difference between them is the loss.
 
 **Pipeline lane.** Operators are a **precompute-lane** technology, not single-instance solves. Per dossier
 §3.1, `bench-darcy-operator` runs on **neuraloperator** in `.venv-pipeline`, which assembles the parametric

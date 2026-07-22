@@ -485,6 +485,29 @@ def bake_all():
         [item("peak head, FNO vs finite differences", "presión pico, FNO vs diferencias finitas", values=vals_pk)],
     )
 
+    # ---- bench-darcy-pino: the label-budget question (PINO vs the data-only operator) ----
+    m = man("bench-darcy-pino")
+    vals_pino, vals_fno, vals_gain = {}, {}, {}
+    for v in m["variants"]:
+        mm = v["metrics"]
+        p_, f_ = float(mm["l2_relative"]), float(mm["fno_data_only_l2"])
+        vals_pino[v["id"]] = f"{p_*100:.1f}%"
+        vals_fno[v["id"]] = f"{f_*100:.1f}%"
+        d = (f_ - p_) / f_ * 100.0
+        vals_gain[v["id"]] = (f"{d:+.0f}% better" if d > 0 else f"{d:+.0f}% WORSE")
+    vals_gain_es = {k: v.replace(" better", " mejor").replace(" WORSE", " PEOR") for k, v in vals_gain.items()}
+    QUESTIONS["bench-darcy-pino"] = set_estimate(
+        "bench-darcy-pino",
+        "How many solved instances does the operator need, if it also knows the equation?",
+        "¿Cuántas instancias resueltas necesita el operador, si además conoce la ecuación?",
+        "Every training label costs one classical solve, which is the expensive part on a real problem. Adding the PDE residual to the operator's own loss lets the equation stand in for labels: the chips are the label budgets, so the trade is visible directly.",
+        "Cada etiqueta de entrenamiento cuesta una resolución clásica, que es la parte cara en un problema real. Agregar el residuo de la EDP a la pérdida del operador deja que la ecuación sustituya etiquetas: los chips son los presupuestos de etiquetas, así el intercambio se ve directo.",
+        [item("relative error, PINO (data + equation)", "error relativo, PINO (datos + ecuación)", values=vals_pino),
+         item("relative error, data-only FNO", "error relativo, FNO solo-datos", values=vals_fno),
+         item("PINO vs the data-only operator", "PINO frente al operador solo-datos",
+              values=vals_gain, values_es=vals_gain_es)],
+    )
+
     # ---- ctrl-zero-source: the ABSOLUTE field magnitude at a = 0 (l2_relative is relative-with-eps there,
     #      which reads misleadingly large for a zero reference) ----
     m = man("ctrl-zero-source")

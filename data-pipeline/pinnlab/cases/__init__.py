@@ -12,6 +12,7 @@ from . import (
     bench_allencahn,
     bench_burgers1d,
     bench_darcy_operator,
+    bench_darcy_pino,
     bench_heat1d,
     bench_navier_cavity,
     bench_poisson2d,
@@ -56,6 +57,7 @@ _MODULES: list[ModuleType] = [
     env_soil_heat_real,
     poll_source_uq_bpinn,
     bench_darcy_operator,
+    bench_darcy_pino,
 ]
 
 CASES: list[CaseSpec] = [m.CASE for m in _MODULES]
