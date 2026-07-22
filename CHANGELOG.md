@@ -3,6 +3,31 @@
 All notable changes to **PINN-Lab**. Format: `X.XX.XXX` (display), see `pinnlab.__version__`. Keep `0.x` while on
 synthetic/benchmark data. Tag every release.
 
+## [0.29.000] (2026-07-15) Conformal prediction: a distribution-free error bar for the operator
+
+The operator cases reported a single held-out error number and said nothing about the next instance. This adds
+the guarantee a deployed surrogate needs, which the survey ranked the single highest-value gap.
+
+**New case `bench-darcy-conformal`** (`operator-conformal-uq`), the third Darcy operator case, reusing the same
+FNO. Split conformal prediction: calibrate on a held-out set, score each instance by its worst pixel error,
+take the finite-sample (1-alpha) quantile q; then for a new field the band pred +/- q contains the whole true
+field with probability >= 1-alpha, distribution-free, no retraining.
+
+- **Verified before building** (spike) and reproduced by the build: for targets 80/90/95% the empirical
+  coverage on 200 unseen fields is 87.5/96.5/99.5%, at or above target every time (a lower bound, so
+  over-coverage is expected from the whole-field score).
+- Variants are the coverage targets; the case bakes four fields (prediction, truth, abs error, in-band mask).
+  The shown field is chosen so its worst pixel falls between the tightest and widest bands, so the mask fills
+  in from 97.9% to 100% of pixels as the target grows: the coverage/width trade-off, visible.
+- The verdict states the three honest limits plainly: coverage is marginal under exchangeability (a different
+  coefficient family voids it), the band is one width not per-pixel uncertainty, and it cannot fix a wrong
+  operator.
+
+Also: the Theis groundwater anchor was verified (numerical radial solve vs the analytic well function, 0.06%)
+and the confined-aquifer inverse specced for a later landing (`wip/beyond-sota/spec-groundwater-and-conformal`).
+
+Landed complete: pipeline + estimate + bilingual context + verdict + docs; index at 24 cases; fit gate 556 checks.
+
 ## [0.28.000] (2026-07-15) Structure-preserving learning: a Hamiltonian neural network
 
 The catalogue had no geometric / structure-preserving method, and its one mechanical system
