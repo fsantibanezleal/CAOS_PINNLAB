@@ -3,6 +3,7 @@ import type { ReactNode } from "react";
 import { AllenCahnContext } from "./AllenCahnContext";
 import { Burgers1dContext } from "./Burgers1dContext";
 import { ComminutionContext } from "./ComminutionContext";
+import { DarcyConformalContext } from "./DarcyConformalContext";
 import { DarcyOperatorContext } from "./DarcyOperatorContext";
 import { DarcyPinoContext } from "./DarcyPinoContext";
 import { DoublePendulumContext } from "./DoublePendulumContext";
@@ -50,6 +51,7 @@ const CASE_CONTEXT: Record<string, (p: { lang: "en" | "es" }) => ReactNode> = {
   "poll-source-uq-bpinn": SourceUqBpinnContext,
   "bench-darcy-operator": DarcyOperatorContext,
   "bench-darcy-pino": DarcyPinoContext,
+  "bench-darcy-conformal": DarcyConformalContext,
 };
 
 export function ContextFor(caseId: string, lang: "en" | "es"): ReactNode {

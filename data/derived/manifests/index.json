@@ -1,7 +1,7 @@
 {
  "schema": "pinnlab.index/v1",
  "engine_version": "0.26.002",
- "n_cases": 23,
+ "n_cases": 24,
  "categories": [
   "canonical-benchmark",
   "control",
@@ -33,6 +33,18 @@
    "real_or_synthetic": "synthetic",
    "question_en": "When does the shock front arrive at the checkpoint x=0? (front-arrival estimation)",
    "question_es": "¿Cuándo llega el frente de choque al punto x=0? (estimación de llegada de frentes)"
+  },
+  {
+   "case_id": "bench-darcy-conformal",
+   "category": "canonical-benchmark",
+   "title": "Conformal prediction: a distribution-free error bar for the operator",
+   "manifest_path": "manifests/bench-darcy-conformal.json",
+   "system_type": "operator-surrogate",
+   "view_kit": "HeatmapKit",
+   "method": "operator-conformal-uq",
+   "real_or_synthetic": "synthetic",
+   "question_en": "Can the operator put an honest error bar on the next field it has never seen?",
+   "question_es": "¿Puede el operador poner una barra de error honesta sobre el próximo campo que nunca vio?"
   },
   {
    "case_id": "bench-darcy-operator",

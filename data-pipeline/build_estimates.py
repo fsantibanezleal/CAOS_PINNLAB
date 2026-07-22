@@ -485,6 +485,27 @@ def bake_all():
         [item("peak head, FNO vs finite differences", "presión pico, FNO vs diferencias finitas", values=vals_pk)],
     )
 
+    # ---- bench-darcy-conformal: does the coverage guarantee hold? ----
+    m = man("bench-darcy-conformal")
+    vals_tgt, vals_emp, vals_emp_es = {}, {}, {}
+    for v in m["variants"]:
+        mm = v["metrics"]
+        vals_tgt[v["id"]] = f"{float(mm['target_coverage'])*100:.0f}%"
+        e = float(mm["empirical_coverage"]) * 100.0
+        ok = e >= float(mm["target_coverage"]) * 100.0 - 0.5
+        vals_emp[v["id"]] = f"{e:.1f}% ({'holds' if ok else 'BELOW'})"
+        vals_emp_es[v["id"]] = f"{e:.1f}% ({'cumple' if ok else 'BAJO'})"
+    QUESTIONS["bench-darcy-conformal"] = set_estimate(
+        "bench-darcy-conformal",
+        "Can the operator put an honest error bar on the next field it has never seen?",
+        "¿Puede el operador poner una barra de error honesta sobre el próximo campo que nunca vio?",
+        "The operator reports one held-out error number and says nothing about the next instance. Split conformal calibration turns that into a band with a stated coverage probability, distribution-free, at no retraining cost. The chips are coverage targets; the readout is the coverage actually achieved on unseen fields.",
+        "El operador reporta un solo número de error retenido y no dice nada del próximo caso. La calibración conforme por división lo convierte en una banda con una probabilidad de cobertura declarada, sin supuestos de distribución y sin reentrenar. Los chips son objetivos de cobertura; el valor es la cobertura lograda sobre campos no vistos.",
+        [item("coverage target (1 - alpha)", "cobertura objetivo (1 - alpha)", values=vals_tgt),
+         item("coverage achieved on unseen fields", "cobertura lograda en campos no vistos",
+              values=vals_emp, values_es=vals_emp_es)],
+    )
+
     # ---- dyn-pendulum-hnn: does the model respect the conserved energy? ----
     m = man("dyn-pendulum-hnn")
     vals_drift, vals_drift_es, vals_fit = {}, {}, {}
