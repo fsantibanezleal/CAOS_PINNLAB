@@ -142,6 +142,36 @@ def relative_l2(pred: torch.Tensor, true: torch.Tensor) -> torch.Tensor:
     return (num / den).mean()
 
 
+def _grad_norm(net, loss) -> float:
+    """L2 norm of dLoss/dtheta, without disturbing any accumulated gradient."""
+    grads = torch.autograd.grad(loss, [p for p in net.parameters() if p.requires_grad],
+                                retain_graph=True, allow_unused=True)
+    return float(torch.sqrt(sum((g ** 2).sum() for g in grads if g is not None)))
+
+
+def balance_lambda(net, data_loss, physics_loss, prev: float | None = None, *,
+                   alpha: float = 0.9, lo: float = 1e-2, hi: float = 1e4) -> float:
+    """Gradient-norm balancing for the composite loss: pick lambda so the PHYSICS term contributes a
+    gradient of comparable magnitude to the DATA term.
+
+    This is the standard remedy for the PINN gradient pathology: the two terms can be balanced in VALUE while
+    being wildly unbalanced in GRADIENT, so the composite loss is effectively steered by one term alone.
+    Measured on this Darcy setup at initialisation: L_data = 1.07 and L_pde = 1.00 (values within 10% of each
+    other) but |grad L_data| = 3.28 against |grad L_pde| = 0.085, a factor of 38.6. With a fixed lambda = 1
+    the equation therefore supplied about 2.6% of the update, which is why the physics term helped only where
+    it was the sole signal (zero labels) and did nothing in the middle of the label range.
+
+    lambda_hat = |grad data| / |grad physics|, smoothed with an exponential moving average (alpha) and clipped.
+    Recomputed occasionally rather than every step, because it costs two extra backward passes.
+    """
+    gd = _grad_norm(net, data_loss)
+    gp = _grad_norm(net, physics_loss)
+    if gp <= 0.0 or not (gd == gd) or not (gp == gp):     # no physics gradient, or NaN: keep what we had
+        return prev if prev is not None else 1.0
+    lam = max(lo, min(hi, gd / gp))
+    return lam if prev is None else alpha * prev + (1.0 - alpha) * lam
+
+
 def test_time_optimize(net, x: torch.Tensor, a_phys: torch.Tensor, h: float, *, steps: int = 100,
                        lr: float = 1e-4, anchor_weight: float = 1.0, f: float = 1.0):
     """Paper Section 3.2, phase 2: fine-tune the PRE-TRAINED operator on ONE queried instance.
