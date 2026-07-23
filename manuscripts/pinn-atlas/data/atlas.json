@@ -1,0 +1,123 @@
+{
+ "cases": [
+  {
+   "case": "bench-wave1d",
+   "category": "canonical PDE",
+   "method": "",
+   "l2_relative": 4.9e-05,
+   "max_abs_error": 7.1e-05
+  },
+  {
+   "case": "mine-heap-leach-rt",
+   "category": "mining process",
+   "method": "",
+   "l2_relative": 7.9e-05,
+   "max_abs_error": 0.001684
+  },
+  {
+   "case": "mine-comminution-pbe",
+   "category": "mining process",
+   "method": "",
+   "l2_relative": 0.000179,
+   "max_abs_error": 0.000683
+  },
+  {
+   "case": "ctrl-zero-source",
+   "category": "control",
+   "method": "",
+   "l2_relative": 0.000207,
+   "max_abs_error": 1.4e-05
+  },
+  {
+   "case": "poll-ocean-transport",
+   "category": "pollution transport",
+   "method": "",
+   "l2_relative": 0.000314,
+   "max_abs_error": 0.000772
+  },
+  {
+   "case": "poll-tailings-seepage",
+   "category": "pollution transport",
+   "method": "",
+   "l2_relative": 0.000666,
+   "max_abs_error": 0.001184
+  },
+  {
+   "case": "mine-flotation-kinetics",
+   "category": "mining process",
+   "method": "",
+   "l2_relative": 0.000763,
+   "max_abs_error": 0.002217
+  },
+  {
+   "case": "bench-allencahn",
+   "category": "canonical PDE",
+   "method": "",
+   "l2_relative": 0.001183,
+   "max_abs_error": 0.008328
+  },
+  {
+   "case": "mine-thickener-settling",
+   "category": "mining process",
+   "method": "",
+   "l2_relative": 0.005127,
+   "max_abs_error": 0.006319
+  },
+  {
+   "case": "bench-burgers1d",
+   "category": "canonical PDE",
+   "method": "",
+   "l2_relative": 0.009686,
+   "max_abs_error": 0.107026
+  },
+  {
+   "case": "poll-source-uq-bpinn",
+   "category": "pollution transport",
+   "method": "Bayesian PINN UQ",
+   "l2_relative": 0.01192,
+   "max_abs_error": 0.025089
+  },
+  {
+   "case": "ind-heat2d-inverse",
+   "category": "inverse",
+   "method": "inverse",
+   "l2_relative": 0.040295,
+   "max_abs_error": 0.439376
+  },
+  {
+   "case": "bench-darcy-operator",
+   "category": "canonical PDE",
+   "method": "FNO operator",
+   "l2_relative": 0.056005,
+   "max_abs_error": null
+  },
+  {
+   "case": "env-soil-heat-real",
+   "category": "environmental (real/field)",
+   "method": "real field data",
+   "l2_relative": 0.06882,
+   "max_abs_error": null
+  },
+  {
+   "case": "ind-helmholtz",
+   "category": "inverse",
+   "method": "",
+   "l2_relative": 0.10256,
+   "max_abs_error": 0.15784
+  },
+  {
+   "case": "bench-navier-cavity",
+   "category": "canonical PDE",
+   "method": "",
+   "l2_relative": 0.1675,
+   "max_abs_error": null
+  },
+  {
+   "case": "poll-soil-barrier",
+   "category": "pollution transport",
+   "method": "",
+   "l2_relative": 0.191872,
+   "max_abs_error": 0.134161
+  }
+ ]
+}

@@ -4,6 +4,13 @@
 [![License](https://img.shields.io/github/license/fsantibanezleal/CAOS_PINNLAB)](LICENSE)
 [![Version](https://img.shields.io/github/v/tag/fsantibanezleal/CAOS_PINNLAB?label=version&sort=semver)](https://github.com/fsantibanezleal/CAOS_PINNLAB/tags)
 [![Live demo](https://img.shields.io/badge/demo-live-2ea44f)](https://pinnlab.fasl-work.com)
+[![DOI](https://img.shields.io/badge/DOI-10.5281%2Fzenodo.21517389-blue)](https://doi.org/10.5281/zenodo.21517389)
+
+Technical report (CC-BY-4.0): *"An Honest Physics-Informed Neural Network Atlas: Sub-Percent on Smooth Forward
+PDEs, Orders Worse on Inverse, High-Frequency and Real Data"*, concept DOI
+[10.5281/zenodo.21517389](https://doi.org/10.5281/zenodo.21517389) (source in
+[`manuscripts/pinn-atlas/`](manuscripts/pinn-atlas/)). It maps the honest relative-L2 accuracy across the case
+catalogue: PINNs are sub-percent on smooth forward PDEs and orders worse on inverse, high-frequency and real-data cases.
 
 PINN-Lab is a **real, reproducible product**: a catalogue of 26 differential-equation cases (PDEs + a chaotic ODE system),
 each trained offline by a state-of-the-art Physics-Informed Neural Network engine, **validated against an analytic
