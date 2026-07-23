@@ -5,7 +5,7 @@
 [![Version](https://img.shields.io/github/v/tag/fsantibanezleal/CAOS_PINNLAB?label=version&sort=semver)](https://github.com/fsantibanezleal/CAOS_PINNLAB/tags)
 [![Live demo](https://img.shields.io/badge/demo-live-2ea44f)](https://pinnlab.fasl-work.com)
 
-PINN-Lab is a **real, reproducible product**: a catalogue of 21 differential-equation cases (PDEs + a chaotic ODE system),
+PINN-Lab is a **real, reproducible product**: a catalogue of 26 differential-equation cases (PDEs + a chaotic ODE system),
 each trained offline by a state-of-the-art Physics-Informed Neural Network engine, **validated against an analytic
 or numerical reference**, exported to **ONNX**, and **replayed and re-inferred in the browser**. Every case ships its
 governing equations, the SOTA method that solves it, an interactive visualization that reacts to the cursor and the
@@ -20,8 +20,9 @@ and a `docs/` tree that is written *as the code is versioned*.
 ## What it is (and is not)
 
 - **It IS** a teaching-and-decision instrument and a **method catalogue**: each SOTA family — hard constraints, RAR
-  adaptive sampling, Fourier features / SIREN, domain decomposition, operator learning (FNO), inverse + UQ — is
-  genuinely *exercised* in at least one case, not merely named.
+  adaptive sampling, Fourier features / SIREN, domain decomposition, operator learning (FNO), physics-informed
+  operators (PINO), zero-shot super-resolution, conformal-prediction UQ, structure-preserving / Hamiltonian
+  learning, inverse + UQ — is genuinely *exercised* in at least one case, not merely named.
 - **It is not** a replacement for FEM/FVM (a good classical solver beats a PINN on a single well-posed forward
   problem), and it is **not** an industrial digital twin: most mining/pollution cases are validated on analytic (MMS)
   anchors or faithful reduced models, each carrying an honest `synthetic` / `synthetic-illustrative` /

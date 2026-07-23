@@ -66,12 +66,15 @@ export function Experiments() {
             <tr><td className="mono">bench-darcy-operator</td><td>finite-difference</td><td className="mono">—</td><td className="mono" style={{ color: "var(--good)" }}>FNO 2.5% (one pass)</td></tr>
             <tr><td className="mono">bench-navier-cavity</td><td>Ghia 1982</td><td className="mono">—</td><td className="mono" style={{ color: "var(--good)" }}>centerline RMSE 0.05</td></tr>
             <tr><td className="mono">env-soil-heat-real</td><td>real sensors</td><td className="mono">—</td><td className="mono" style={{ color: "var(--good)" }}>held-out ~1&deg;C</td></tr>
+            <tr><td className="mono">bench-darcy-pino</td><td>finite-difference</td><td className="mono">FNO data-only 14.3%</td><td className="mono" style={{ color: "var(--good)" }}>PINO 7.8% (32 labels)</td></tr>
+            <tr><td className="mono">dyn-pendulum-hnn</td><td>RK45</td><td className="mono" style={{ color: "var(--bad)" }}>MLP 7.4% E-drift</td><td className="mono" style={{ color: "var(--good)" }}>HNN 0.07%</td></tr>
+            <tr><td className="mono">env-aquifer-test</td><td>Theis analytic</td><td className="mono" style={{ color: "var(--bad)" }}>PINN 367%</td><td className="mono" style={{ color: "var(--good)" }}>Cooper-Jacob 0.7%</td></tr>
           </tbody>
         </table>
         <p className="muted" style={{ fontSize: 12.5 }}>
           {lang === "es"
-            ? "Honesto: donde una prueba justa no muestra contraste real (wave1d) o un solucionador divergió (una cavidad FDM apresurada), no se muestra ningún resultado inventado. Abre la vista Comparar de un caso para ver los campos y los mapas de error."
-            : "Honest: where a fair test shows no real contrast (wave1d) or a solver diverged (a rushed FDM cavity), no fabricated result is shown. Open a case's Compare view for the fields + error maps."}
+            ? "Honesto: donde una prueba justa no muestra contraste real (wave1d) o un solucionador divergió (una cavidad FDM apresurada), no se muestra ningún resultado inventado. Y donde la PINN pierde, se dice: en env-aquifer-test la corrección es el método clásico (Cooper-Jacob), no la red. Dos casos de operador van por otros ejes (conforme = cobertura, super-resolución = discretización) y aparecen en Benchmark. Abre la vista Comparar de un caso para ver los campos y los mapas de error."
+            : "Honest: where a fair test shows no real contrast (wave1d) or a solver diverged (a rushed FDM cavity), no fabricated result is shown. And where the PINN loses, it says so: in env-aquifer-test the fix is the classical method (Cooper-Jacob), not the network. Two operator cases run on other axes (conformal = coverage, super-resolution = discretisation) and appear in Benchmark. Open a case's Compare view for the fields + error maps."}
         </p>
       </div>
     </>
