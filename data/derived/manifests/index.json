@@ -1,7 +1,7 @@
 {
  "schema": "pinnlab.index/v1",
  "engine_version": "0.26.002",
- "n_cases": 25,
+ "n_cases": 26,
  "categories": [
   "canonical-benchmark",
   "control",
@@ -165,6 +165,18 @@
    "real_or_synthetic": "synthetic-illustrative",
    "question_en": "Two models that fit the dynamics equally well: does either respect the conserved energy?",
    "question_es": "Dos modelos que ajustan la dinámica igual de bien: ¿alguno respeta la energía conservada?"
+  },
+  {
+   "case_id": "env-aquifer-test",
+   "category": "pollution-environmental",
+   "title": "Pumping test: recover a confined aquifer's transmissivity and storativity",
+   "manifest_path": "manifests/env-aquifer-test.json",
+   "system_type": "steady-elliptic",
+   "view_kit": "HeatmapKit",
+   "method": "inverse-aquifer-test",
+   "real_or_synthetic": "synthetic-illustrative",
+   "question_en": "A pumping test: can we recover the aquifer's transmissivity and storativity?",
+   "question_es": "Una prueba de bombeo: ¿podemos recuperar la transmisividad y el almacenamiento del acuífero?"
   },
   {
    "case_id": "env-soil-heat-real",

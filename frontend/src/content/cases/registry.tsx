@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 
 import { AllenCahnContext } from "./AllenCahnContext";
+import { AquiferTestContext } from "./AquiferTestContext";
 import { Burgers1dContext } from "./Burgers1dContext";
 import { ComminutionContext } from "./ComminutionContext";
 import { DarcyConformalContext } from "./DarcyConformalContext";
@@ -49,6 +50,7 @@ const CASE_CONTEXT: Record<string, (p: { lang: "en" | "es" }) => ReactNode> = {
   "ind-hidden-velocity": HiddenVelocityContext,
   "bench-navier-cavity": NavierCavityContext,
   "env-soil-heat-real": SoilHeatRealContext,
+  "env-aquifer-test": AquiferTestContext,
   "poll-source-uq-bpinn": SourceUqBpinnContext,
   "bench-darcy-operator": DarcyOperatorContext,
   "bench-darcy-pino": DarcyPinoContext,

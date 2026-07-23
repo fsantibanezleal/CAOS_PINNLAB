@@ -1,0 +1,175 @@
+{
+ "schema": "pinnlab.manifest/v2",
+ "case_id": "env-aquifer-test",
+ "category": "pollution-environmental",
+ "title": "Pumping test: recover a confined aquifer's transmissivity and storativity",
+ "governing_equations": "s(r,t)=\\frac{Q}{4\\pi T}\\,W(u),\\ \\ u=\\frac{r^2 S}{4 T t};\\ \\ \\text{Cooper-Jacob: } s\\approx\\frac{Q}{4\\pi T}\\ln\\!\\frac{2.25\\,T t}{r^2 S}\\ \\text{(lineal en } \\ln t)",
+ "method": "inverse-aquifer-test",
+ "real_or_synthetic": "synthetic-illustrative",
+ "expected_band": "Cooper-Jacob recovers T to ~1% and S to a few percent from noisy pumping-test data; a PINN inverse on the same data is far worse (this is where the classical method wins)",
+ "validation_anchor": "theis-analytic",
+ "inputs": [
+  "x",
+  "y"
+ ],
+ "outputs": [
+  "drawdown"
+ ],
+ "field_axes": [
+  "x",
+  "y"
+ ],
+ "system_type": "steady-elliptic",
+ "view_kit": "HeatmapKit",
+ "param_specs": [],
+ "engine": {
+  "package": "pinnlab",
+  "version": "0.26.002",
+  "framework": "analytic-cooper-jacob"
+ },
+ "seed": 42,
+ "trace_schema": "pinnlab.field/v1",
+ "onnx": {
+  "path": "env-aquifer-test.onnx",
+  "bytes": 20559,
+  "parity_max_abs": 2.38e-07,
+  "opset": 18,
+  "input_dim": 2
+ },
+ "lane": "precompute",
+ "gate": {
+  "lane": "precompute",
+  "onnx_bytes": 20559,
+  "infer_ms": 0.04,
+  "trace_bytes": 19551,
+  "reasons": [
+   "field-IO operator — not browser-coordinate-drivable"
+  ]
+ },
+ "flags": [],
+ "inverse": {},
+ "run_ms": 7260.61,
+ "variants": [
+  {
+   "id": "fine-sand",
+   "label_en": "fine sand (T~120 m2/day)",
+   "label_es": "arena fina (T~120 m2/dia)",
+   "note_en": "A fine sand aquifer: the pumping test recovers its T and S from the drawdown curve.",
+   "note_es": "Un acuifero de arena fina: la prueba de bombeo recupera su T y S desde la curva de abatimiento.",
+   "params": {
+    "T_true": 120.0,
+    "S_true": 0.0005
+   },
+   "trace": {
+    "path": "env-aquifer-test/fine-sand.json",
+    "bytes": 19551
+   },
+   "metrics": {
+    "onnx_parity_max_abs": 2.38e-07,
+    "validation_anchor": "theis-analytic",
+    "T_recovered_m2_day": 123.9,
+    "T_true_m2_day": 120.0,
+    "T_rel_err": 0.0324,
+    "S_recovered": 0.000453,
+    "S_true": 0.0005,
+    "S_rel_err": 0.0938,
+    "cooper_jacob_points": 11,
+    "ensemble_K": 0
+   }
+  },
+  {
+   "id": "coarse-sand",
+   "label_en": "coarse sand (T~500 m2/day)",
+   "label_es": "arena gruesa (T~500 m2/dia)",
+   "note_en": "A coarse sand aquifer: the pumping test recovers its T and S from the drawdown curve.",
+   "note_es": "Un acuifero de arena gruesa: la prueba de bombeo recupera su T y S desde la curva de abatimiento.",
+   "params": {
+    "T_true": 500.0,
+    "S_true": 0.0002
+   },
+   "trace": {
+    "path": "env-aquifer-test/coarse-sand.json",
+    "bytes": 19543
+   },
+   "metrics": {
+    "onnx_parity_max_abs": 2.38e-07,
+    "validation_anchor": "theis-analytic",
+    "T_recovered_m2_day": 503.5,
+    "T_true_m2_day": 500.0,
+    "T_rel_err": 0.0069,
+    "S_recovered": 0.000194,
+    "S_true": 0.0002,
+    "S_rel_err": 0.0287,
+    "cooper_jacob_points": 27,
+    "ensemble_K": 0
+   }
+  },
+  {
+   "id": "gravel",
+   "label_en": "gravel (T~1500 m2/day)",
+   "label_es": "grava (T~1500 m2/dia)",
+   "note_en": "A gravel aquifer: the pumping test recovers its T and S from the drawdown curve.",
+   "note_es": "Un acuifero de grava: la prueba de bombeo recupera su T y S desde la curva de abatimiento.",
+   "params": {
+    "T_true": 1500.0,
+    "S_true": 8e-05
+   },
+   "trace": {
+    "path": "env-aquifer-test/gravel.json",
+    "bytes": 19479
+   },
+   "metrics": {
+    "onnx_parity_max_abs": 2.38e-07,
+    "validation_anchor": "theis-analytic",
+    "T_recovered_m2_day": 1497.4,
+    "T_true_m2_day": 1500.0,
+    "T_rel_err": 0.0017,
+    "S_recovered": 8.38e-05,
+    "S_true": 8e-05,
+    "S_rel_err": 0.0476,
+    "cooper_jacob_points": 40,
+    "ensemble_K": 0
+   }
+  }
+ ],
+ "estimate": {
+  "question_en": "A pumping test: can we recover the aquifer's transmissivity and storativity?",
+  "question_es": "Una prueba de bombeo: ¿podemos recuperar la transmisividad y el almacenamiento del acuífero?",
+  "why_en": "T and S cannot be measured directly; a pumping test infers them from how the drawdown falls over time. The classical Cooper-Jacob straight-line method reads T from the slope of drawdown vs ln(t) and S from the intercept. The chips are three confined aquifers.",
+  "why_es": "T y S no se miden directamente; una prueba de bombeo los infiere de cómo cae el abatimiento en el tiempo. El método clásico de la recta de Cooper-Jacob lee T de la pendiente de abatimiento vs ln(t) y S del intercepto. Los chips son tres acuíferos confinados.",
+  "items": [
+   {
+    "label_en": "recovered T vs true (m2/day)",
+    "label_es": "T recuperada vs real (m2/dia)",
+    "values": {
+     "fine-sand": "124 vs 120",
+     "coarse-sand": "504 vs 500",
+     "gravel": "1497 vs 1500"
+    }
+   },
+   {
+    "label_en": "recovered S vs true",
+    "label_es": "S recuperado vs real",
+    "values": {
+     "fine-sand": "4.5e-04 vs 5.0e-04",
+     "coarse-sand": "1.9e-04 vs 2.0e-04",
+     "gravel": "8.4e-05 vs 8.0e-05"
+    }
+   },
+   {
+    "label_en": "recovery error (Cooper-Jacob)",
+    "label_es": "error de recuperación (Cooper-Jacob)",
+    "values": {
+     "fine-sand": "T 3.2%, S 9.4%",
+     "coarse-sand": "T 0.7%, S 2.9%",
+     "gravel": "T 0.2%, S 4.8%"
+    },
+    "values_es": {
+     "fine-sand": "T 3.2%, S 9.4%",
+     "coarse-sand": "T 0.7%, S 2.9%",
+     "gravel": "T 0.2%, S 4.8%"
+    }
+   }
+  ]
+ }
+}
