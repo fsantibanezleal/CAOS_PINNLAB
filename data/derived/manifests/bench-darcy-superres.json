@@ -1,0 +1,168 @@
+{
+ "schema": "pinnlab.manifest/v2",
+ "case_id": "bench-darcy-superres",
+ "category": "canonical-benchmark",
+ "title": "Zero-shot super-resolution: one operator trained at 32x32, run at any grid",
+ "governing_equations": "-\\nabla\\!\\cdot(a(\\mathbf{x})\\nabla u)=1;\\ \\ \\mathcal{G}_\\theta\\ \\text{entrenado en } 32^2,\\ \\text{evaluado en } 64^2,96^2\\ \\text{sin reentrenar (invariante a la discretización)}",
+ "method": "operator-superres",
+ "real_or_synthetic": "synthetic",
+ "expected_band": "trained at 32x32, the operator runs at 64x64 and 96x96 it never saw; the error grows gracefully (a CNN cannot even be evaluated off its training grid)",
+ "validation_anchor": "operator-test-l2",
+ "inputs": [
+  "x",
+  "y"
+ ],
+ "outputs": [
+  "u_pred",
+  "u_true",
+  "abs_err"
+ ],
+ "field_axes": [
+  "x",
+  "y"
+ ],
+ "system_type": "operator-surrogate",
+ "view_kit": "HeatmapKit",
+ "param_specs": [],
+ "engine": {
+  "package": "pinnlab",
+  "version": "0.26.002",
+  "framework": "fno-torch"
+ },
+ "seed": 42,
+ "trace_schema": "pinnlab.field/v1",
+ "onnx": {
+  "path": "bench-darcy-superres.onnx",
+  "bytes": 2625003,
+  "parity_max_abs": 1.5e-08,
+  "opset": 18,
+  "input_dim": 2
+ },
+ "lane": "precompute",
+ "gate": {
+  "lane": "precompute",
+  "onnx_bytes": 2625003,
+  "infer_ms": 24.33,
+  "trace_bytes": 152990,
+  "reasons": [
+   "field-IO operator — not browser-coordinate-drivable"
+  ]
+ },
+ "flags": [],
+ "inverse": {},
+ "run_ms": 398387.2,
+ "variants": [
+  {
+   "id": "r32",
+   "label_en": "32x32 (training resolution)",
+   "label_es": "32x32 (resolución de entrenamiento)",
+   "note_en": "The grid the operator was trained on: the baseline error.",
+   "note_es": "La grilla en que se entrenó el operador: el error de referencia.",
+   "params": {
+    "resolution": 32.0
+   },
+   "trace": {
+    "path": "bench-darcy-superres/r32.json",
+    "bytes": 23679
+   },
+   "metrics": {
+    "onnx_parity_max_abs": 1.5e-08,
+    "validation_anchor": "operator-test-l2",
+    "l2_relative": 0.038245,
+    "resolution": 32,
+    "train_resolution": 32,
+    "degradation_x": 1.0,
+    "n_test": 24,
+    "ensemble_K": 0
+   }
+  },
+  {
+   "id": "r64",
+   "label_en": "64x64 (zero-shot, unseen)",
+   "label_es": "64x64 (cero-disparo, no vista)",
+   "note_en": "Twice as fine, never seen in training: the same weights just run.",
+   "note_es": "El doble de fina, nunca vista al entrenar: los mismos pesos simplemente corren.",
+   "params": {
+    "resolution": 64.0
+   },
+   "trace": {
+    "path": "bench-darcy-superres/r64.json",
+    "bytes": 97245
+   },
+   "metrics": {
+    "onnx_parity_max_abs": 1.5e-08,
+    "validation_anchor": "operator-test-l2",
+    "l2_relative": 0.056848,
+    "resolution": 64,
+    "train_resolution": 32,
+    "degradation_x": 1.49,
+    "n_test": 24,
+    "ensemble_K": 0
+   }
+  },
+  {
+   "id": "r96",
+   "label_en": "96x96 (zero-shot, unseen)",
+   "label_es": "96x96 (cero-disparo, no vista)",
+   "note_en": "Three times as fine: the degradation you pay for going far past the training grid.",
+   "note_es": "El triple de fina: la degradación que se paga al alejarse de la grilla de entrenamiento.",
+   "params": {
+    "resolution": 96.0
+   },
+   "trace": {
+    "path": "bench-darcy-superres/r96.json",
+    "bytes": 152990
+   },
+   "metrics": {
+    "onnx_parity_max_abs": 1.5e-08,
+    "validation_anchor": "operator-test-l2",
+    "l2_relative": 0.06611,
+    "resolution": 96,
+    "train_resolution": 32,
+    "degradation_x": 1.73,
+    "n_test": 24,
+    "ensemble_K": 0
+   }
+  }
+ ],
+ "estimate": {
+  "question_en": "Can one operator, trained at 32x32, run on finer grids it never saw?",
+  "question_es": "¿Puede un solo operador, entrenado en 32x32, correr en grillas más finas que nunca vio?",
+  "why_en": "A Fourier neural operator acts on Fourier MODES, not pixels, so the same trained weights apply at any resolution. The chips are evaluation grids; the readout is the held-out error at each, including grids the operator never saw. A CNN cannot even be evaluated off its training grid.",
+  "why_es": "Un operador neuronal de Fourier actúa sobre MODOS de Fourier, no píxeles, así que los mismos pesos entrenados sirven a cualquier resolución. Los chips son grillas de evaluación; el valor es el error retenido en cada una, incluidas grillas que el operador nunca vio. Una CNN ni siquiera puede evaluarse fuera de su grilla de entrenamiento.",
+  "items": [
+   {
+    "label_en": "evaluation grid",
+    "label_es": "grilla de evaluación",
+    "values": {
+     "r32": "32x32",
+     "r64": "64x64",
+     "r96": "96x96"
+    }
+   },
+   {
+    "label_en": "held-out relative error",
+    "label_es": "error relativo retenido",
+    "values": {
+     "r32": "3.8%",
+     "r64": "5.7%",
+     "r96": "6.6%"
+    }
+   },
+   {
+    "label_en": "vs the 32x32 training grid",
+    "label_es": "frente a la grilla 32x32",
+    "values": {
+     "r32": "training grid",
+     "r64": "1.49x vs 32x32, UNSEEN",
+     "r96": "1.73x vs 32x32, UNSEEN"
+    },
+    "values_es": {
+     "r32": "grilla de entrenamiento",
+     "r64": "1.49x vs 32x32, NO VISTA",
+     "r96": "1.73x vs 32x32, NO VISTA"
+    }
+   }
+  ]
+ }
+}

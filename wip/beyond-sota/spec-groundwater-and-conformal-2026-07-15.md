@@ -140,3 +140,19 @@ Each is a full unit (verify -> case -> estimate -> context -> verdict -> docs ->
 shape as the PINO and HNN units that shipped as v0.27.000 and v0.28.000. Neither should be half-built in the
 app: an unlanded case with no context renders a hollow panel, which is the exact defect the completeness rule
 exists to prevent.
+
+---
+
+## Unit 5 — DeepONet: MEASURED to underperform on Darcy, not shipped (2026-07-15)
+
+Spiked before building (`spike_deeponet.py`): a branch/trunk DeepONet on the same Darcy family reached only
+**0.69 relative-L2** (FNO ~0.06); a larger/longer version was **0.84** (worse, and partly a batching bug).
+This is the KNOWN result from the FNO literature: DeepONet's branch must compress the full 1024-dim coefficient
+field through a ~64-128 basis bottleneck, which the FNO's spectral structure avoids. Getting DeepONet
+competitive needs POD-DeepONet, a lower-dim sensor input, or far more data/compute: a research effort, not a
+quick add.
+
+Decision: DeepONet stays marked "NOT implemented" in `docs/methods/operator-learning.md` (honest). Do NOT ship
+a 0.7-error DeepONet lane; that would regress the honest doc. If built later, frame it as the honest
+architecture contrast (DeepONet weaker than FNO on gridded high-dim-input operators; its strength is
+coordinate-query / off-grid / irregular-sensor problems, not this one).

@@ -3,6 +3,32 @@
 All notable changes to **PINN-Lab**. Format: `X.XX.XXX` (display), see `pinnlab.__version__`. Keep `0.x` while on
 synthetic/benchmark data. Tag every release.
 
+## [0.30.000] (2026-07-15) Zero-shot super-resolution: one operator, any grid
+
+Completes the Darcy operator story (data-driven FNO -> physics-informed PINO -> conformal error bar -> this).
+The FNO's signature property: because each layer acts on Fourier MODES, not pixels, the same trained weights
+run at any resolution.
+
+**New case `bench-darcy-superres`** (`operator-superres`): the FNO is trained ONLY at 32x32, then evaluated,
+no retraining, at 32/64/96, each against a finite-difference reference at that grid.
+
+- **Verified before building** (spike, 1.8x degradation 32->64) and reproduced by the build: held-out
+  relative-L2 0.038 / 0.057 / 0.066 at 32 / 64 / 96. The operator just runs on grids it never saw; a CNN
+  cannot even be evaluated off its training grid.
+- The coefficient field uses a resolution-consistent correlation length (filter sigma scales with the grid),
+  so the three are the SAME physical process sampled more finely, not three families. Each variant renders at
+  its native resolution via an `eval_grid()` hook, so the field genuinely sharpens 32 -> 96.
+- Honest verdict: super-resolution is "one operator serves many grids", NOT "the operator gets better on
+  finer grids" (error rises with resolution). The exported ONNX is the 32x32 operator; the finer-grid results
+  are baked field artifacts (the FNO mode-scatter does not export with dynamic spatial ONNX axes).
+
+Backlog measured and recorded (not shipped broken, per the completeness rule): the groundwater PINN (forward
+82% / inverse 367% error; Cooper-Jacob classical baseline verified to <1% as the contrast), DeepONet on Darcy
+(0.69 vs FNO 0.06; the known FNO-beats-DeepONet result), and the PINO 8-label curriculum repair (made it
+worse). All in `wip/beyond-sota/`.
+
+Landed complete: pipeline + estimate + bilingual context + verdict + docs; index at 25 cases; fit gate 572 checks.
+
 ## [0.29.000] (2026-07-15) Conformal prediction: a distribution-free error bar for the operator
 
 The operator cases reported a single held-out error number and said nothing about the next instance. This adds

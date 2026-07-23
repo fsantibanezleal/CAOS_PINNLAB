@@ -14,6 +14,7 @@ from . import (
     bench_darcy_operator,
     bench_darcy_pino,
     bench_darcy_conformal,
+    bench_darcy_superres,
     bench_heat1d,
     bench_navier_cavity,
     bench_poisson2d,
@@ -61,6 +62,7 @@ _MODULES: list[ModuleType] = [
     bench_darcy_operator,
     bench_darcy_pino,
     bench_darcy_conformal,
+    bench_darcy_superres,
     dyn_pendulum_hnn,
 ]
 

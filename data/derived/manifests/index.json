@@ -1,7 +1,7 @@
 {
  "schema": "pinnlab.index/v1",
  "engine_version": "0.26.002",
- "n_cases": 24,
+ "n_cases": 25,
  "categories": [
   "canonical-benchmark",
   "control",
@@ -69,6 +69,18 @@
    "real_or_synthetic": "synthetic",
    "question_en": "How many solved instances does the operator need, if it also knows the equation?",
    "question_es": "¿Cuántas instancias resueltas necesita el operador, si además conoce la ecuación?"
+  },
+  {
+   "case_id": "bench-darcy-superres",
+   "category": "canonical-benchmark",
+   "title": "Zero-shot super-resolution: one operator trained at 32x32, run at any grid",
+   "manifest_path": "manifests/bench-darcy-superres.json",
+   "system_type": "operator-surrogate",
+   "view_kit": "HeatmapKit",
+   "method": "operator-superres",
+   "real_or_synthetic": "synthetic",
+   "question_en": "Can one operator, trained at 32x32, run on finer grids it never saw?",
+   "question_es": "¿Puede un solo operador, entrenado en 32x32, correr en grillas más finas que nunca vio?"
   },
   {
    "case_id": "bench-heat1d",
