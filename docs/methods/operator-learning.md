@@ -208,16 +208,21 @@ $$
 
 so the operator is $\mathcal{G}: a(x) \mapsto u(x)$ over a distribution of coefficient fields $a(x)$.
 
-**What is actually implemented, and where** (corrected 2026-07-15 — this section previously claimed one case
-exercised all three methods, which was not true; see `wip/beyond-sota/audit-claims-vs-engine-2026-07-15.md`):
+**The Darcy operator family — four matched cases** (built out 2026-07-15; this section previously claimed one
+case exercised all three methods, which was not true; see
+`wip/beyond-sota/audit-claims-vs-engine-2026-07-15.md`). All four share the same coefficient family, the same
+FNO architecture, the same seed and epochs, so each isolates one idea:
 
-| Method | Status | Case |
-|---|---|---|
-| **FNO** | **shipped** — a real 2D Fourier Neural Operator trained on the Darcy family and exported to ONNX | `bench-darcy-operator` (data-driven only) |
-| **PINO** | **shipped** — the equation enters the operator's own loss, plus virtual instances and test-time optimization with the anchor loss | `bench-darcy-pino` |
-| **DeepONet** | **NOT implemented.** Documented above as a method; no case exercises it yet. | — |
+| Case | Method | What it exercises | Headline (measured) |
+|---|---|---|---|
+| `bench-darcy-operator` | FNO (data-driven) | the operator baseline | held-out relative-L2 ~0.06 |
+| `bench-darcy-pino` | PINO | the equation in the operator's loss + virtual instances + test-time optimization | +34/+45/+48% vs data-only at 0/32/128 labels (and -178% at 8: shipped and explained) |
+| `bench-darcy-conformal` | conformal prediction | a distribution-free coverage band on the next unseen field | 87.5/96.5/99.5% empirical coverage meets 80/90/95% |
+| `bench-darcy-superres` | zero-shot super-resolution | discretisation invariance: trained at 32², run at 64²/96² unseen | relative-L2 0.038/0.057/0.066 |
 
-The two Darcy cases are deliberately a matched pair: same family, same architecture, same seed, same epochs,
+| **DeepONet** | **NOT implemented.** Documented above as a method; measured to underperform the FNO on gridded Darcy (0.69 vs 0.06, the known result); see `wip/beyond-sota/spec-groundwater-and-conformal-2026-07-15.md`. | — | — |
+
+The four Darcy cases are deliberately a matched set: same family, same architecture, same seed, same epochs,
 so the only difference between them is the loss.
 
 **Pipeline lane.** Operators are a **precompute-lane** technology, not single-instance solves. Per dossier
