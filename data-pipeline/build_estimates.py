@@ -485,6 +485,26 @@ def bake_all():
         [item("peak head, FNO vs finite differences", "presión pico, FNO vs diferencias finitas", values=vals_pk)],
     )
 
+    # ---- env-aquifer-test: does the pumping test recover T and S? (classical method) ----
+    m = man("env-aquifer-test")
+    vals_T, vals_S, vals_err, vals_err_es = {}, {}, {}, {}
+    for v in m["variants"]:
+        x = v["metrics"]
+        vals_T[v["id"]] = f"{x['T_recovered_m2_day']:.0f} vs {x['T_true_m2_day']:.0f}"
+        vals_S[v["id"]] = f"{x['S_recovered']:.1e} vs {x['S_true']:.1e}"
+        vals_err[v["id"]] = f"T {x['T_rel_err']*100:.1f}%, S {x['S_rel_err']*100:.1f}%"
+        vals_err_es[v["id"]] = f"T {x['T_rel_err']*100:.1f}%, S {x['S_rel_err']*100:.1f}%"
+    QUESTIONS["env-aquifer-test"] = set_estimate(
+        "env-aquifer-test",
+        "A pumping test: can we recover the aquifer's transmissivity and storativity?",
+        "Una prueba de bombeo: ¿podemos recuperar la transmisividad y el almacenamiento del acuífero?",
+        "T and S cannot be measured directly; a pumping test infers them from how the drawdown falls over time. The classical Cooper-Jacob straight-line method reads T from the slope of drawdown vs ln(t) and S from the intercept. The chips are three confined aquifers.",
+        "T y S no se miden directamente; una prueba de bombeo los infiere de cómo cae el abatimiento en el tiempo. El método clásico de la recta de Cooper-Jacob lee T de la pendiente de abatimiento vs ln(t) y S del intercepto. Los chips son tres acuíferos confinados.",
+        [item("recovered T vs true (m2/day)", "T recuperada vs real (m2/dia)", values=vals_T),
+         item("recovered S vs true", "S recuperado vs real", values=vals_S),
+         item("recovery error (Cooper-Jacob)", "error de recuperación (Cooper-Jacob)", values=vals_err, values_es=vals_err_es)],
+    )
+
     # ---- bench-darcy-superres: does the operator run on grids it never saw? ----
     m = man("bench-darcy-superres")
     vals_res, vals_err, vals_deg, vals_deg_es = {}, {}, {}, {}

@@ -238,7 +238,7 @@ export function CaseExperiment({
         <div className="pl-meta-footer mono">
           <span><b className="muted">{es ? "Método" : "Method"}</b> {manifest.method}</span>
           <span><b className="muted">{es ? "Motor" : "Engine"}</b> {manifest.engine.framework}</span>
-          <span><b className="muted">L2</b> {typeof l2 === "number" ? l2.toExponential(2) : String(l2)}</span>
+          {typeof l2 === "number" && <span><b className="muted">L2</b> {l2.toExponential(2)}</span>}
           <span><b className="muted">{es ? "Paridad ONNX" : "ONNX parity"}</b> {manifest.onnx.parity_max_abs.toExponential(1)}</span>
           {r && <span className="pl-meta-verdict" title={es ? r.verdict_es : r.verdict_en}><b className="muted">{es ? "Veredicto" : "Verdict"}</b> {(es ? r.verdict_es : r.verdict_en).split(":")[0]}</span>}
         </div>

@@ -22,6 +22,7 @@ from . import (
     ctrl_zero_source,
     dyn_double_pendulum,
     dyn_pendulum_hnn,
+    env_aquifer_test,
     env_soil_heat_real,
     ind_heat2d_inverse,
     ind_helmholtz,
@@ -64,6 +65,7 @@ _MODULES: list[ModuleType] = [
     bench_darcy_conformal,
     bench_darcy_superres,
     dyn_pendulum_hnn,
+    env_aquifer_test,
 ]
 
 CASES: list[CaseSpec] = [m.CASE for m in _MODULES]

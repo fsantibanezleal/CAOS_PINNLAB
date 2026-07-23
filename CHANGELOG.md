@@ -3,6 +3,32 @@
 All notable changes to **PINN-Lab**. Format: `X.XX.XXX` (display), see `pinnlab.__version__`. Keep `0.x` while on
 synthetic/benchmark data. Tag every release.
 
+## [0.31.000] (2026-07-15) Pumping test: a confined-aquifer inverse, and an honest "not the tool" case
+
+The subsurface applied case the catalogue was missing, and a "know when a PINN is NOT the tool" case in the
+honesty tradition.
+
+**New case `env-aquifer-test`** (`inverse-aquifer-test`, category pollution-environmental). A confined-aquifer
+pumping test: you cannot measure transmissivity T or storativity S directly, so you infer them from how the
+drawdown falls over time. The physics is the Theis (1935) solution; the working method is the classical
+Cooper-Jacob straight line (T from the slope of drawdown vs ln t, S from the intercept).
+
+- **Verified before building**: the analytic Theis anchor against a numerical radial solve (0.06%), and
+  Cooper-Jacob across three aquifers. The build reproduces it: fine sand / coarse sand / gravel recovered to
+  T 3.2/0.7/0.2% and S 9.4/2.9/4.8%.
+- **The field is the drawdown cone** s(x,y) at t=1 day (radially symmetric, deepest at the well); the variants
+  are the three aquifers. The exported ONNX is a small surrogate fit to the field; the honest inverse is
+  Cooper-Jacob, not the network.
+- **Honest verdict, with the PINN numbers**: a PINN spiked on the same data did far worse (forward 82% error;
+  parameter-inverse T = 2335 vs 500, 367% off), because the stiff near-well transient is the classic PINN
+  gradient pathology. The PINN earns its keep only where the aquifer is bounded or heterogeneous and no closed
+  form exists; on this well-posed problem, the classical method wins.
+
+**FIX:** the meta-footer showed "L2 undefined" for cases with no L2 headline (the operator/parameter cases);
+the L2 chip is now hidden when absent.
+
+Landed complete: pipeline + estimate + bilingual context + verdict + docs; index at 26 cases.
+
 ## [0.30.000] (2026-07-15) Zero-shot super-resolution: one operator, any grid
 
 Completes the Darcy operator story (data-driven FNO -> physics-informed PINO -> conformal error bar -> this).
