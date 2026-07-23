@@ -62,6 +62,38 @@ A forward radial PINN validated against Theis is easy to verify but invites "why
 form". Only build it if the inverse proves too finicky; even then, frame it as the honest "here a classical
 solution wins; the PINN earns its keep off these assumptions" case.
 
+### MEASURED (2026-07-15): both naive PINN formulations FAIL. This is a finding, not a blocker.
+
+Two time-boxed spikes were run before building, and BOTH failed, which is itself the honest result the
+critique predicts (stiff near-well transient + flux BC = the PINN gradient pathology):
+
+- **Forward radial Theis PINN** (log-r/log-t inputs, PDE + well-flux BC + far-field + IC anchor, 6000 Adam):
+  collapsed to a near-constant ~0.53 m everywhere, **82% relative-L2** vs Theis (true drawdown 2.78 -> 1.32 m).
+- **Inverse** (fit noisy drawdown at 3 wells + PDE residual with T, S as log-variables, 8000 Adam):
+  recovered T = 2335 vs 500 m^2/day (**367% error**), S off by 79%. The data fit alone does not pin (T, S),
+  and the log-r Laplacian e^{-2x} s_xx is tiny away from the well, so the PDE constraint that should identify
+  the parameters is too weak where the observations live.
+
+Scripts: `E:/_Temp/.../spike_theis_pinn.py`, `spike_theis_inverse.py` (regenerate; both are ~3-8 min).
+
+**The right build, therefore, is the CONTRAST case, and it needs the classical method IN it:**
+
+1. **Cooper-Jacob straight-line** (works, ~5 lines): for small u, s ~= (Q/4 pi T) ln(2.25 T t / r^2 S), so a
+   linear fit of s vs ln t at one well gives T from the slope (T = 2.3 Q / 4 pi * slope) and S from the
+   intercept. Recovers (T, S) accurately from the same noisy data. THIS is the working baseline.
+2. **The PINN inverse** as the contrast, with the fixes it needs to be competitive: NTK/gradient-norm loss
+   weighting (the same pathology fixed in bench-darcy-pino), causal/time-marching training, and a residual
+   normalisation that does not vanish away from the well. Even tuned, expect it to roughly MATCH Cooper-Jacob
+   at best.
+3. **The honest verdict**: for a well-posed confined-aquifer pumping test the classical method is the right
+   tool, faster and more robust; the PINN is not better and is far more finicky. The PINN earns its keep only
+   once the aquifer is bounded or heterogeneous (no closed form, Cooper-Jacob invalid) - which is the case to
+   build if a defensible heterogeneous reference solver is available.
+
+This is a strong "where a PINN is NOT the tool" case in the catalogue's honesty tradition, but it is a full
+unit (classical baseline + tuned PINN + contrast viz + docs), not a quick add. Do not ship a case whose PINN
+lane reads 367% as if it were a success; build the contrast or do not build it.
+
 ---
 
 ## Unit 4 — Conformal prediction on the operator (research: highest value-per-hour gap)
@@ -108,3 +140,19 @@ Each is a full unit (verify -> case -> estimate -> context -> verdict -> docs ->
 shape as the PINO and HNN units that shipped as v0.27.000 and v0.28.000. Neither should be half-built in the
 app: an unlanded case with no context renders a hollow panel, which is the exact defect the completeness rule
 exists to prevent.
+
+---
+
+## Unit 5 — DeepONet: MEASURED to underperform on Darcy, not shipped (2026-07-15)
+
+Spiked before building (`spike_deeponet.py`): a branch/trunk DeepONet on the same Darcy family reached only
+**0.69 relative-L2** (FNO ~0.06); a larger/longer version was **0.84** (worse, and partly a batching bug).
+This is the KNOWN result from the FNO literature: DeepONet's branch must compress the full 1024-dim coefficient
+field through a ~64-128 basis bottleneck, which the FNO's spectral structure avoids. Getting DeepONet
+competitive needs POD-DeepONet, a lower-dim sensor input, or far more data/compute: a research effort, not a
+quick add.
+
+Decision: DeepONet stays marked "NOT implemented" in `docs/methods/operator-learning.md` (honest). Do NOT ship
+a 0.7-error DeepONet lane; that would regress the honest doc. If built later, frame it as the honest
+architecture contrast (DeepONet weaker than FNO on gridded high-dim-input operators; its strength is
+coordinate-query / off-grid / irregular-sensor problems, not this one).

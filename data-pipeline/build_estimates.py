@@ -485,6 +485,28 @@ def bake_all():
         [item("peak head, FNO vs finite differences", "presión pico, FNO vs diferencias finitas", values=vals_pk)],
     )
 
+    # ---- bench-darcy-superres: does the operator run on grids it never saw? ----
+    m = man("bench-darcy-superres")
+    vals_res, vals_err, vals_deg, vals_deg_es = {}, {}, {}, {}
+    for v in m["variants"]:
+        mm = v["metrics"]
+        r = int(mm["resolution"])
+        vals_res[v["id"]] = f"{r}x{r}"
+        vals_err[v["id"]] = f"{float(mm['l2_relative'])*100:.1f}%"
+        seen = (r == int(mm["train_resolution"]))
+        vals_deg[v["id"]] = "training grid" if seen else f"{mm['degradation_x']}x vs 32x32, UNSEEN"
+        vals_deg_es[v["id"]] = "grilla de entrenamiento" if seen else f"{mm['degradation_x']}x vs 32x32, NO VISTA"
+    QUESTIONS["bench-darcy-superres"] = set_estimate(
+        "bench-darcy-superres",
+        "Can one operator, trained at 32x32, run on finer grids it never saw?",
+        "¿Puede un solo operador, entrenado en 32x32, correr en grillas más finas que nunca vio?",
+        "A Fourier neural operator acts on Fourier MODES, not pixels, so the same trained weights apply at any resolution. The chips are evaluation grids; the readout is the held-out error at each, including grids the operator never saw. A CNN cannot even be evaluated off its training grid.",
+        "Un operador neuronal de Fourier actúa sobre MODOS de Fourier, no píxeles, así que los mismos pesos entrenados sirven a cualquier resolución. Los chips son grillas de evaluación; el valor es el error retenido en cada una, incluidas grillas que el operador nunca vio. Una CNN ni siquiera puede evaluarse fuera de su grilla de entrenamiento.",
+        [item("evaluation grid", "grilla de evaluación", values=vals_res),
+         item("held-out relative error", "error relativo retenido", values=vals_err),
+         item("vs the 32x32 training grid", "frente a la grilla 32x32", values=vals_deg, values_es=vals_deg_es)],
+    )
+
     # ---- bench-darcy-conformal: does the coverage guarantee hold? ----
     m = man("bench-darcy-conformal")
     vals_tgt, vals_emp, vals_emp_es = {}, {}, {}
