@@ -3,6 +3,17 @@
 All notable changes to **PINN-Lab**. Format: `X.XX.XXX` (display), see `pinnlab.__version__`. Keep `0.x` while on
 synthetic/benchmark data. Tag every release.
 
+## [0.31.001] (2026-07-15) Experiments method-ladder + docs keep pace with the 26-case catalogue
+
+- **Experiments page:** added the three new cases that fit the standard/naive/fix ladder: `bench-darcy-pino`
+  (FNO data-only 14.3% -> PINO 7.8% at 32 labels), `dyn-pendulum-hnn` (MLP 7.4% energy drift -> HNN 0.07%),
+  and `env-aquifer-test` (PINN 367% -> Cooper-Jacob 0.7%, where the "fix" is honestly the classical method).
+  The conformal and super-resolution cases run on other axes (coverage, discretisation) and are noted as
+  appearing in Benchmark.
+- **Docs:** README and docs/README updated 21 -> 26 cases; the README method list gains PINO, super-resolution,
+  conformal UQ and structure-preserving/Hamiltonian; `operator-learning.md` now documents the complete
+  four-case Darcy operator family with measured headlines.
+
 ## [0.31.000] (2026-07-15) Pumping test: a confined-aquifer inverse, and an honest "not the tool" case
 
 The subsurface applied case the catalogue was missing, and a "know when a PINN is NOT the tool" case in the
