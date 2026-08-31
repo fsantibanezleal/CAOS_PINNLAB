@@ -33,6 +33,7 @@ GPU pseudo-spectral solver) are the paper's, on the paper's problems, and are ci
 And for ONE well-posed forward instance a classical sparse direct solve still wins; the operator's argument is
 many-query amortisation.
 """
+
 from __future__ import annotations
 
 from pathlib import Path
@@ -43,11 +44,11 @@ from .base import CaseSpec, Variant
 
 N_GRID = 32
 WIDTH, MODES, LAYERS = 20, 10, 4
-POOL, N_TEST = 128, 32               # labelled pool available, and the held-out test set
-BUDGETS = (0, 8, 32, 128)            # the label budgets shown as variants (0 = no labels at all)
+POOL, N_TEST = 128, 32  # labelled pool available, and the held-out test set
+BUDGETS = (0, 8, 32, 128)  # the label budgets shown as variants (0 = no labels at all)
 EPOCHS, BS = 80, 8
-LAMBDA_PDE = 1.0                     # fallback weight on the PDE loss (paper's lambda)
-BALANCE_EVERY = 25                   # steps between gradient-norm re-balances of that weight
+LAMBDA_PDE = 1.0  # fallback weight on the PDE loss (paper's lambda)
+BALANCE_EVERY = 25  # steps between gradient-norm re-balances of that weight
 _REPO = Path(__file__).resolve().parents[3]
 _STATE: dict = {}
 
@@ -68,30 +69,42 @@ CASE = CaseSpec(
     grid={"x": N_GRID, "y": N_GRID},
     field_axes=("x", "y"),
     expected_band="with the equation in the loss the operator needs far fewer solved instances; at ZERO labels a "
-                  "data-only operator is untrained while PINO still reaches a usable field",
+    "data-only operator is untrained while PINO still reaches a usable field",
     validation_anchor="operator-test-l2",
     train={"lr": 1e-3, "adam": 0},
     notes="Custom-engine FIELD-IO case (like bench-darcy-operator): trains BOTH lanes in build(), exports the "
-          "PINO operator's own field-in ONNX (physical units), web_drivable=False -> lane=precompute. Variants "
-          "are LABEL BUDGETS, so the workbench shows the data-efficiency curve directly.",
+    "PINO operator's own field-in ONNX (physical units), web_drivable=False -> lane=precompute. Variants "
+    "are LABEL BUDGETS, so the workbench shows the data-efficiency curve directly.",
 )
 
 
 def variants() -> list[Variant]:
     """The variants are LABEL BUDGETS: how many solved instances each lane was allowed to see."""
     text = {
-        0: ("No solved instances at all", "Sin instancias resueltas",
+        0: (
+            "No solved instances at all",
+            "Sin instancias resueltas",
             "Zero labels: the data-only operator has no signal whatsoever, while PINO still has the equation.",
-            "Cero etiquetas: el operador solo-datos no tiene senal alguna, mientras PINO aun tiene la ecuacion."),
-        8: ("8 solved instances", "8 instancias resueltas",
+            "Cero etiquetas: el operador solo-datos no tiene senal alguna, mientras PINO aun tiene la ecuacion.",
+        ),
+        8: (
+            "8 solved instances",
+            "8 instancias resueltas",
             "A budget you could actually afford when each solve is expensive.",
-            "Un presupuesto que si podrias pagar cuando cada resolucion es cara."),
-        32: ("32 solved instances", "32 instancias resueltas",
-             "A moderate budget: both lanes work, the physics term still helps.",
-             "Un presupuesto moderado: ambas vias funcionan, el termino fisico aun ayuda."),
-        128: ("128 solved instances", "128 instancias resueltas",
-              "Data-rich: the regime where a data-only operator is at its strongest.",
-              "Rico en datos: el regimen donde el operador solo-datos esta en su mejor momento."),
+            "Un presupuesto que si podrias pagar cuando cada resolucion es cara.",
+        ),
+        32: (
+            "32 solved instances",
+            "32 instancias resueltas",
+            "A moderate budget: both lanes work, the physics term still helps.",
+            "Un presupuesto moderado: ambas vias funcionan, el termino fisico aun ayuda.",
+        ),
+        128: (
+            "128 solved instances",
+            "128 instancias resueltas",
+            "Data-rich: the regime where a data-only operator is at its strongest.",
+            "Rico en datos: el regimen donde el operador solo-datos esta en su mejor momento.",
+        ),
     }
     out = []
     for n in BUDGETS:
@@ -105,7 +118,7 @@ def extra_metrics(sf) -> dict:
     i = int(_STATE.get("cur", 0))
     out = {}
     if "pino_l2" in _STATE:
-        out["l2_relative"] = round(float(_STATE["pino_l2"][i]), 6)       # headline = the PINO lane
+        out["l2_relative"] = round(float(_STATE["pino_l2"][i]), 6)  # headline = the PINO lane
         out["fno_data_only_l2"] = round(float(_STATE["fno_l2"][i]), 6)
         out["n_labels"] = int(BUDGETS[i])
         out["n_test"] = int(N_TEST)
@@ -121,7 +134,7 @@ class _Baked:
     exactly once per variant)."""
 
     def __init__(self, fields):
-        self._f = np.asarray(fields, dtype=np.float64)   # [n_var, 4, H, W]
+        self._f = np.asarray(fields, dtype=np.float64)  # [n_var, 4, H, W]
         self._i = 0
 
     def predict(self, XY):
@@ -155,8 +168,15 @@ def build(seed: int, quick: bool = False) -> dict:
 
     from ..datasets.darcy import _make_coeff, _solve_darcy
     from ..model.fno import FNO2d
-    from ..model.pino import (U_SCALE, balance_lambda, boundary_mask, pde_loss, relative_l2,
-                              test_time_optimize, to_physical)
+    from ..model.pino import (
+        U_SCALE,
+        balance_lambda,
+        boundary_mask,
+        pde_loss,
+        relative_l2,
+        test_time_optimize,
+        to_physical,
+    )
 
     pool, n_test, epochs = (8, 4, 2) if quick else (POOL, N_TEST, EPOCHS)
     # quick mode must keep the SAME NUMBER of budgets as variants() advertises, or the workbench shows
@@ -184,22 +204,24 @@ def build(seed: int, quick: bool = False) -> dict:
     def virtual(g, k):
         """Fresh coefficient fields, NO solve: the unlimited PDE-loss dataset (paper Algorithm 1)."""
         av = np.stack([_make_coeff(g, N_GRID) for _ in range(k)])
-        return (torch.as_tensor(np.stack([pack(x) for x in av]), dtype=torch.float32),
-                torch.as_tensor(av[:, None], dtype=torch.float32))
+        return (
+            torch.as_tensor(np.stack([pack(x) for x in av]), dtype=torch.float32),
+            torch.as_tensor(av[:, None], dtype=torch.float32),
+        )
 
     def train_lane(n_labels: int, use_physics: bool):
         torch.manual_seed(int(seed) + 7)
         g = np.random.default_rng(int(seed) + 1000)
         net = FNO2d(in_ch=3, width=WIDTH, modes=MODES, layers=LAYERS)
         opt = torch.optim.Adam(net.parameters(), lr=CASE.train["lr"])
-        lam = None                               # gradient-balanced weight on the physics term
+        lam = None  # gradient-balanced weight on the physics term
         step = 0
         t0 = time.perf_counter()
         for _ in range(epochs):
             if n_labels > 0:
                 perm = torch.randperm(n_labels)
                 for b in range(0, n_labels, BS):
-                    idx = perm[b:b + BS]
+                    idx = perm[b : b + BS]
                     opt.zero_grad()
                     ld = relative_l2(to_physical(net(X[idx])), U[idx])
                     if use_physics:
@@ -214,7 +236,7 @@ def build(seed: int, quick: bool = False) -> dict:
                     torch.nn.utils.clip_grad_norm_(net.parameters(), 1.0)
                     opt.step()
                     step += 1
-            if use_physics:                      # virtual instances: equation only, no labels
+            if use_physics:  # virtual instances: equation only, no labels
                 xv, av = virtual(g, BS)
                 opt.zero_grad()
                 lp, _, _ = pde_loss(net(xv), av, h)
@@ -233,33 +255,55 @@ def build(seed: int, quick: bool = False) -> dict:
         net_f, e_f, tf, _ = train_lane(n, False)
         net_p, e_p, tp, lam_p = train_lane(n, True)
         lam_used.append(lam_p)
-        fno_l2.append(e_f); pino_l2.append(e_p); t_fno.append(tf); t_pino.append(tp)
+        fno_l2.append(e_f)
+        pino_l2.append(e_p)
+        t_fno.append(tf)
+        t_pino.append(tp)
         best_net = net_p
-        with torch.no_grad():                    # the SAME held-out instance for every budget
+        with torch.no_grad():  # the SAME held-out instance for every budget
             up = to_physical(net_p(Xte[:1])).numpy()[0, 0]
             uf = to_physical(net_f(Xte[:1])).numpy()[0, 0]
         fields.append(np.stack([up, Ute[0, 0].numpy(), uf, Ate[0, 0].numpy()], axis=0))
 
     # ---- phase 2: test-time optimization on the held-out instance, with the anchor loss ----
-    u_tto, hist = test_time_optimize(best_net, Xte[:1], Ate[:1], h,
-                                     steps=(5 if quick else 120), lr=1e-4, anchor_weight=1.0)
-    tto_l2 = float(np.linalg.norm(u_tto.numpy()[0, 0] - Ute[0, 0].numpy())
-                   / (np.linalg.norm(Ute[0, 0].numpy()) + 1e-12))
+    u_tto, hist = test_time_optimize(
+        best_net, Xte[:1], Ate[:1], h, steps=(5 if quick else 120), lr=1e-4, anchor_weight=1.0
+    )
+    tto_l2 = float(
+        np.linalg.norm(u_tto.numpy()[0, 0] - Ute[0, 0].numpy()) / (np.linalg.norm(Ute[0, 0].numpy()) + 1e-12)
+    )
 
-    _STATE.update({"pino_l2": pino_l2, "fno_l2": fno_l2, "t_pino": t_pino, "t_fno": t_fno,
-                   "budgets": list(budgets), "tto_l2": tto_l2, "tto_hist": hist,
-                   "lam": lam_used})
+    _STATE.update(
+        {
+            "pino_l2": pino_l2,
+            "fno_l2": fno_l2,
+            "t_pino": t_pino,
+            "t_fno": t_fno,
+            "budgets": list(budgets),
+            "tto_l2": tto_l2,
+            "tto_hist": hist,
+            "lam": lam_used,
+        }
+    )
 
     # ---- export the PINO operator's own ONNX, in physical units ----
     onnx_path = _REPO / "models" / f"{CASE.id}.onnx"
     onnx_path.parent.mkdir(parents=True, exist_ok=True)
     wrapped = _Physical(best_net, U_SCALE, boundary_mask(N_GRID, N_GRID)).eval()
     torch.onnx.export(
-        wrapped, (Xte[:1],), str(onnx_path), input_names=["a_grid"], output_names=["u"],
+        wrapped,
+        (Xte[:1],),
+        str(onnx_path),
+        input_names=["a_grid"],
+        output_names=["u"],
         dynamic_axes={"a_grid": {0: "n"}, "u": {0: "n"}},
-        opset_version=18, dynamo=True, verbose=False, external_data=False,
+        opset_version=18,
+        dynamo=True,
+        verbose=False,
+        external_data=False,
     )
     from ..io.formats import strip_onnx_metadata
+
     strip_onnx_metadata(onnx_path)
     sess = ort.InferenceSession(str(onnx_path), providers=["CPUExecutionProvider"])
     k = min(8, n_test)

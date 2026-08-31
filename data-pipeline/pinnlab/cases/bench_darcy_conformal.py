@@ -38,6 +38,7 @@ HONESTY (this is the whole point of the case, so it is stated, not buried).
 
 Offline engine only. Custom FNO engine (like bench-darcy-operator), field-IO, precompute.
 """
+
 from __future__ import annotations
 
 from pathlib import Path
@@ -50,7 +51,7 @@ N_GRID = 32
 WIDTH, MODES, LAYERS = 20, 10, 4
 N_TRAIN, N_CAL, N_TEST = 128, 128, 200
 EPOCHS, BS = 120, 16
-TARGETS = (0.80, 0.90, 0.95)         # the coverage levels shown as variants
+TARGETS = (0.80, 0.90, 0.95)  # the coverage levels shown as variants
 _REPO = Path(__file__).resolve().parents[3]
 _STATE: dict = {}
 
@@ -72,31 +73,40 @@ CASE = CaseSpec(
     grid={"x": N_GRID, "y": N_GRID},
     field_axes=("x", "y"),
     expected_band="the empirical coverage lands at or above each target (80/90/95%), as split conformal guarantees "
-                  "under exchangeability",
+    "under exchangeability",
     validation_anchor="conformal-coverage",
     train={"lr": 1e-3, "adam": 0},
     notes="Custom-engine FIELD-IO case: trains the FNO, calibrates on a held-out split, bakes the coverage band "
-          "and the in-band mask. Variants are coverage targets. web_drivable=False -> lane=precompute.",
+    "and the in-band mask. Variants are coverage targets. web_drivable=False -> lane=precompute.",
 )
 
 
 def variants() -> list[Variant]:
     """The variants are the target coverage levels 1 - alpha."""
     text = {
-        0.80: ("80% coverage target", "Cobertura objetivo 80%",
-               "A tight band: it will miss ~1 field in 5, by design.",
-               "Una banda ajustada: fallará ~1 campo de cada 5, por diseño."),
-        0.90: ("90% coverage target", "Cobertura objetivo 90%",
-               "The common default: the band contains the whole field 9 times in 10.",
-               "El valor por defecto habitual: la banda contiene el campo entero 9 de cada 10 veces."),
-        0.95: ("95% coverage target", "Cobertura objetivo 95%",
-               "A conservative band: wider, misses ~1 field in 20.",
-               "Una banda conservadora: más ancha, falla ~1 campo de cada 20."),
+        0.80: (
+            "80% coverage target",
+            "Cobertura objetivo 80%",
+            "A tight band: it will miss ~1 field in 5, by design.",
+            "Una banda ajustada: fallará ~1 campo de cada 5, por diseño.",
+        ),
+        0.90: (
+            "90% coverage target",
+            "Cobertura objetivo 90%",
+            "The common default: the band contains the whole field 9 times in 10.",
+            "El valor por defecto habitual: la banda contiene el campo entero 9 de cada 10 veces.",
+        ),
+        0.95: (
+            "95% coverage target",
+            "Cobertura objetivo 95%",
+            "A conservative band: wider, misses ~1 field in 20.",
+            "Una banda conservadora: más ancha, falla ~1 campo de cada 20.",
+        ),
     }
     out = []
     for tgt in TARGETS:
         le, ls, ne, ns = text[tgt]
-        out.append(Variant(f"c{int(tgt*100)}", le, ls, {"target": tgt}, ne, ns))
+        out.append(Variant(f"c{int(tgt * 100)}", le, ls, {"target": tgt}, ne, ns))
     return out
 
 
@@ -104,7 +114,7 @@ def extra_metrics(sf) -> dict:
     i = int(_STATE.get("cur", 0))
     out = {}
     if "cov" in _STATE:
-        out["l2_relative"] = round(float(_STATE["test_l2"]), 6)          # the operator's own error (constant)
+        out["l2_relative"] = round(float(_STATE["test_l2"]), 6)  # the operator's own error (constant)
         out["target_coverage"] = TARGETS[i]
         out["empirical_coverage"] = round(float(_STATE["cov"][i]), 4)
         out["band_q"] = round(float(_STATE["q"][i]), 5)
@@ -116,7 +126,7 @@ def extra_metrics(sf) -> dict:
 
 class _Baked:
     def __init__(self, fields):
-        self._f = np.asarray(fields, dtype=np.float64)   # [n_var, 4, H, W]
+        self._f = np.asarray(fields, dtype=np.float64)  # [n_var, 4, H, W]
         self._i = 0
 
     def predict(self, XY):
@@ -151,22 +161,24 @@ def build(seed: int, quick: bool = False) -> dict:
     X = torch.as_tensor(np.stack([pack(a) for a in a_all]), dtype=torch.float32)
     U = torch.as_tensor(np.stack([u[None] for u in u_all]), dtype=torch.float32)
     Xtr, Utr = X[:n_train], U[:n_train]
-    Xcal, Ucal = X[n_train:n_train + n_cal], U[n_train:n_train + n_cal]
-    Xte, Ute = X[n_train + n_cal:], U[n_train + n_cal:]
-    a_raw = np.asarray(a_all)
+    Xcal, Ucal = X[n_train : n_train + n_cal], U[n_train : n_train + n_cal]
+    Xte, Ute = X[n_train + n_cal :], U[n_train + n_cal :]
+    np.asarray(a_all)
 
     torch.manual_seed(int(seed) + 5)
     net = FNO2d(in_ch=3, width=WIDTH, modes=MODES, layers=LAYERS)
     opt = torch.optim.Adam(net.parameters(), lr=CASE.train["lr"])
 
     def rl2(p, y):
-        return (torch.norm((p - y).reshape(len(p), -1), dim=1)
-                / torch.norm(y.reshape(len(y), -1), dim=1).clamp_min(1e-9)).mean()
+        return (
+            torch.norm((p - y).reshape(len(p), -1), dim=1)
+            / torch.norm(y.reshape(len(y), -1), dim=1).clamp_min(1e-9)
+        ).mean()
 
     for _ in range(epochs):
         perm = torch.randperm(n_train)
         for b in range(0, n_train, BS):
-            idx = perm[b:b + BS]
+            idx = perm[b : b + BS]
             opt.zero_grad()
             rl2(net(Xtr[idx]) * U_SCALE, Utr[idx]).backward()
             opt.step()
@@ -188,7 +200,7 @@ def build(seed: int, quick: bool = False) -> dict:
         level = min(np.ceil((n_cal + 1) * tgt) / n_cal, 1.0)
         q = float(np.quantile(cal_scores, level))
         qs.append(q)
-        covs.append(float((te_score <= q).mean()))              # empirical whole-field coverage on the test set
+        covs.append(float((te_score <= q).mean()))  # empirical whole-field coverage on the test set
 
     # Choose ONE held-out field to display, such that the in-band mask is informative: its worst pixel should
     # fall BETWEEN the tightest and widest bands, so at 80% part of the field is OUT (mask shows 0s at the hard
@@ -202,7 +214,7 @@ def build(seed: int, quick: bool = False) -> dict:
 
     fields = []
     for q in qs:
-        in_band = (view_err <= q).astype(np.float64)            # 1 where the band contains the truth
+        in_band = (view_err <= q).astype(np.float64)  # 1 where the band contains the truth
         fields.append(np.stack([view_pred, view_true, view_err, in_band], axis=0))
 
     _STATE.update({"test_l2": test_l2, "q": qs, "cov": covs})
@@ -213,16 +225,27 @@ def build(seed: int, quick: bool = False) -> dict:
 
     class _Phys(torch.nn.Module):
         def __init__(self, n):
-            super().__init__(); self.n = n
+            super().__init__()
+            self.n = n
 
         def forward(self, x):
             return self.n(x) * U_SCALE
 
     wrapped = _Phys(net).eval()
-    torch.onnx.export(wrapped, (Xte[:1],), str(onnx_path), input_names=["a_grid"], output_names=["u"],
-                      dynamic_axes={"a_grid": {0: "n"}, "u": {0: "n"}},
-                      opset_version=18, dynamo=True, verbose=False, external_data=False)
+    torch.onnx.export(
+        wrapped,
+        (Xte[:1],),
+        str(onnx_path),
+        input_names=["a_grid"],
+        output_names=["u"],
+        dynamic_axes={"a_grid": {0: "n"}, "u": {0: "n"}},
+        opset_version=18,
+        dynamo=True,
+        verbose=False,
+        external_data=False,
+    )
     from ..io.formats import strip_onnx_metadata
+
     strip_onnx_metadata(onnx_path)
     sess = ort.InferenceSession(str(onnx_path), providers=["CPUExecutionProvider"])
     k = min(8, n_test)

@@ -15,6 +15,7 @@ Writes:
   models/ind-helmholtz-naive.onnx             (naive lane, for the Live toggle)
   patches data/derived/manifests/ind-helmholtz.json with `comparison` + `diagnostics` blocks
 """
+
 from __future__ import annotations
 
 import json
@@ -76,7 +77,7 @@ def main():
 
     print("[1/5] standard (FDM) + analytic ...", flush=True)
     u_std = H.standard_field(coords)
-    u_analytic = (np.sin(H.K0 * X) * np.sin(H.K0 * Y))
+    u_analytic = np.sin(H.K0 * X) * np.sin(H.K0 * Y)
 
     print("[2/5] train NAIVE (plain tanh) ...", flush=True)
     m_naive = train_lane(fourier=False, n_waves=H.N_WAVES, adam=ADAM_MAIN, lbfgs=True)
@@ -109,7 +110,9 @@ def main():
         ma = train_lane(fourier=True, n_waves=n, adam=ADAM_SWEEP, lbfgs=False)
         ln = rel_l2(field_on_grid(mn, cg), exact)
         la = rel_l2(field_on_grid(ma, cg), exact)
-        sweep["n"].append(n); sweep["naive"].append(round(ln, 4)); sweep["adapted"].append(round(la, 4))
+        sweep["n"].append(n)
+        sweep["naive"].append(round(ln, 4))
+        sweep["adapted"].append(round(la, 4))
         print(f"   n={n}: naive L2={ln:.3f}  adapted L2={la:.3f}", flush=True)
 
     spec = {
@@ -125,10 +128,16 @@ def main():
     net.eval()
     onnx_path = MODELS / "ind-helmholtz-naive.onnx"
     torch.onnx.export(
-        net, (torch.zeros(1, 2, dtype=torch.float32),), str(onnx_path),
-        input_names=["coords"], output_names=["u"],
-        dynamic_axes={"coords": {0: "n"}, "u": {0: "n"}}, opset_version=18, dynamo=True,
-        verbose=False, external_data=False,
+        net,
+        (torch.zeros(1, 2, dtype=torch.float32),),
+        str(onnx_path),
+        input_names=["coords"],
+        output_names=["u"],
+        dynamic_axes={"coords": {0: "n"}, "u": {0: "n"}},
+        opset_version=18,
+        dynamo=True,
+        verbose=False,
+        external_data=False,
     )
     strip_onnx_metadata(onnx_path)
 
@@ -139,7 +148,10 @@ def main():
         "schema": "pinnlab.compare/v1",
         "case_id": "ind-helmholtz",
         "dims": ["x", "y"],
-        "axes": {"x": [round(float(v), 5) for v in coords["x"]], "y": [round(float(v), 5) for v in coords["y"]]},
+        "axes": {
+            "x": [round(float(v), 5) for v in coords["x"]],
+            "y": [round(float(v), 5) for v in coords["y"]],
+        },
         "fields": {
             "standard": rnd(u_std),
             "analytic": rnd(u_analytic),
@@ -151,22 +163,42 @@ def main():
         "summary": l2,
     }
     write_json(DERIVED / "ind-helmholtz" / "ladder-n3.json", trace)
-    write_json(DERIVED / "ind-helmholtz" / "diagnostics.json", {
-        "schema": "pinnlab.diagnostics/v1",
-        "case_id": "ind-helmholtz",
-        "wavenumber_sweep": sweep,
-        "radial_spectrum": spec,
-        "l2": l2,
-    })
+    write_json(
+        DERIVED / "ind-helmholtz" / "diagnostics.json",
+        {
+            "schema": "pinnlab.diagnostics/v1",
+            "case_id": "ind-helmholtz",
+            "wavenumber_sweep": sweep,
+            "radial_spectrum": spec,
+            "l2": l2,
+        },
+    )
 
     man_path = DERIVED / "manifests" / "ind-helmholtz.json"
     man = json.loads(man_path.read_text(encoding="utf-8"))
     man["comparison"] = {
         "trace": "ind-helmholtz/ladder-n3.json",
         "lanes": [
-            {"key": "standard", "label_en": "standard (FDM)", "label_es": "estándar (FDM)", "role": "reference"},
-            {"key": "naive", "label_en": "naive PINN", "label_es": "PINN ingenua", "role": "baseline", "err": "err_naive"},
-            {"key": "adapted", "label_en": "Fourier-feature PINN", "label_es": "PINN Fourier", "role": "fix", "err": "err_adapted"},
+            {
+                "key": "standard",
+                "label_en": "standard (FDM)",
+                "label_es": "estándar (FDM)",
+                "role": "reference",
+            },
+            {
+                "key": "naive",
+                "label_en": "naive PINN",
+                "label_es": "PINN ingenua",
+                "role": "baseline",
+                "err": "err_naive",
+            },
+            {
+                "key": "adapted",
+                "label_en": "Fourier-feature PINN",
+                "label_es": "PINN Fourier",
+                "role": "fix",
+                "err": "err_adapted",
+            },
             {"key": "analytic", "label_en": "analytic (MMS)", "label_es": "analítica (MMS)", "role": "exact"},
         ],
         "onnx_naive": "ind-helmholtz-naive.onnx",
@@ -176,7 +208,7 @@ def main():
     man["diagnostics"] = {"path": "ind-helmholtz/diagnostics.json"}
     write_json(man_path, man)
 
-    print(f"DONE in {(time.perf_counter()-t0)/60:.1f} min. L2={l2}", flush=True)
+    print(f"DONE in {(time.perf_counter() - t0) / 60:.1f} min. L2={l2}", flush=True)
 
 
 if __name__ == "__main__":

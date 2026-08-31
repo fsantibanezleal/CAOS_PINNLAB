@@ -10,6 +10,7 @@ layer 1. SOFT Dirichlet BC with loss weighting (the robust recipe for oscillator
 constraint fights the oscillation near the boundary). The Fourier map is a pure-tensor apply_feature_transform that
 traces into ONNX. n=3 (k0=6pi) is high enough to need the Fourier map, low enough to converge on CPU.
 """
+
 from __future__ import annotations
 
 import numpy as np
@@ -51,11 +52,16 @@ def analytic(xy: np.ndarray) -> np.ndarray:
 def variants() -> list[Variant]:
     # Single honest benchmark at a fixed high wavenumber: parametric-in-n is rejected (one frozen Fourier map can't
     # span a wavenumber band on the CPU lane without fabricating regimes). n=3 is the showcase of the method itself.
-    return [Variant(
-        "n3", "n=3 (k0=6π)", "n=3 (k0=6π)", {},
-        "Fixed high-wavenumber standing wave; Fourier features defeat the spectral-bias plateau.",
-        "Onda estacionaria de número de onda alto fijo; las características de Fourier vencen la meseta de sesgo espectral.",
-    )]
+    return [
+        Variant(
+            "n3",
+            "n=3 (k0=6π)",
+            "n=3 (k0=6π)",
+            {},
+            "Fixed high-wavenumber standing wave; Fourier features defeat the spectral-bias plateau.",
+            "Onda estacionaria de número de onda alto fijo; las características de Fourier vencen la meseta de sesgo espectral.",
+        )
+    ]
 
 
 def _helmholtz_model(seed: int, *, fourier: bool, n_waves: int = N_WAVES):
@@ -72,8 +78,8 @@ def _helmholtz_model(seed: int, *, fourier: bool, n_waves: int = N_WAVES):
     def pde(x, y):
         dy_xx = dde.grad.hessian(y, x, i=0, j=0)
         dy_yy = dde.grad.hessian(y, x, i=1, j=1)
-        f = k0 ** 2 * torch.sin(k0 * x[:, 0:1]) * torch.sin(k0 * x[:, 1:2])
-        return -dy_xx - dy_yy - k0 ** 2 * y - f
+        f = k0**2 * torch.sin(k0 * x[:, 0:1]) * torch.sin(k0 * x[:, 1:2])
+        return -dy_xx - dy_yy - k0**2 * y - f
 
     def sol(xy):
         xy = np.asarray(xy, dtype=np.float64)
@@ -102,8 +108,13 @@ def _helmholtz_model(seed: int, *, fourier: bool, n_waves: int = N_WAVES):
     nx = int(12 * n_waves)  # ~12 collocation points per wavelength per axis
     t = CASE.train
     data = dde.data.PDE(
-        geom, pde, [bc],
-        num_domain=nx * nx, num_boundary=4 * nx, solution=sol, num_test=t["num_test"],
+        geom,
+        pde,
+        [bc],
+        num_domain=nx * nx,
+        num_boundary=4 * nx,
+        solution=sol,
+        num_test=t["num_test"],
     )
     model = dde.Model(data, net)
     model.compile("adam", lr=t["lr"], loss_weights=t["loss_weights"], metrics=["l2 relative error"])
@@ -133,7 +144,7 @@ def standard_field(coords) -> np.ndarray:
     hx = float(x[1] - x[0])
     hy = float(y[1] - y[0])
     X, Y = np.meshgrid(x, y, indexing="ij")
-    f = (K0 ** 2) * np.sin(K0 * X) * np.sin(K0 * Y)
+    f = (K0**2) * np.sin(K0 * X) * np.sin(K0 * Y)
     ix = np.arange(1, nx - 1)
     iy = np.arange(1, ny - 1)
     ni, nj = len(ix), len(iy)
@@ -147,15 +158,25 @@ def standard_field(coords) -> np.ndarray:
     for a, i in enumerate(ix):
         for bb, j in enumerate(iy):
             r = idx(a, bb)
-            rows.append(r); cols.append(r); vals.append(2.0 / hx ** 2 + 2.0 / hy ** 2 - K0 ** 2)
+            rows.append(r)
+            cols.append(r)
+            vals.append(2.0 / hx**2 + 2.0 / hy**2 - K0**2)
             if a > 0:
-                rows.append(r); cols.append(idx(a - 1, bb)); vals.append(-1.0 / hx ** 2)
+                rows.append(r)
+                cols.append(idx(a - 1, bb))
+                vals.append(-1.0 / hx**2)
             if a < ni - 1:
-                rows.append(r); cols.append(idx(a + 1, bb)); vals.append(-1.0 / hx ** 2)
+                rows.append(r)
+                cols.append(idx(a + 1, bb))
+                vals.append(-1.0 / hx**2)
             if bb > 0:
-                rows.append(r); cols.append(idx(a, bb - 1)); vals.append(-1.0 / hy ** 2)
+                rows.append(r)
+                cols.append(idx(a, bb - 1))
+                vals.append(-1.0 / hy**2)
             if bb < nj - 1:
-                rows.append(r); cols.append(idx(a, bb + 1)); vals.append(-1.0 / hy ** 2)
+                rows.append(r)
+                cols.append(idx(a, bb + 1))
+                vals.append(-1.0 / hy**2)
             b[r] = f[i, j]
     A = sp.csr_matrix((vals, (rows, cols)), shape=(N, N))
     u_int = spla.spsolve(A, b)
