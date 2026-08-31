@@ -7,6 +7,7 @@ chosen regime; standard = the case's analytic reference at that regime. Bakes st
 maps and patches the manifest. For a parametric spectral-bias case, choose the HARD regime (e.g. wave c=2, poisson
 k=3) so the naive lane's failure is visible; a naive lane at an easy regime would be honest but undramatic.
 """
+
 from __future__ import annotations
 
 import json
@@ -15,7 +16,6 @@ import time
 from pathlib import Path
 
 import numpy as np
-import onnxruntime as ort
 import torch
 
 from pinnlab.io.formats import strip_onnx_metadata
@@ -81,15 +81,25 @@ def main():
 
     err_naive = np.abs(naive - standard)
     err_adapted = np.abs(adapted - standard)
-    l2 = {"naive_vs_std": round(l2_relative(naive, standard), 5), "adapted_vs_std": round(l2_relative(adapted, standard), 5)}
+    l2 = {
+        "naive_vs_std": round(l2_relative(naive, standard), 5),
+        "adapted_vs_std": round(l2_relative(adapted, standard), 5),
+    }
     print("   L2:", l2, flush=True)
 
     print("[3/3] bake + export naive ONNX + patch manifest ...", flush=True)
     trace = {
-        "schema": "pinnlab.compare/v1", "case_id": cid, "dims": list(axes),
+        "schema": "pinnlab.compare/v1",
+        "case_id": cid,
+        "dims": list(axes),
         "axes": {a: [round(float(v), 5) for v in coords[a]] for a in axes},
-        "fields": {"standard": rnd(standard), "adapted": rnd(adapted), "naive": rnd(naive),
-                   "err_adapted": rnd(err_adapted), "err_naive": rnd(err_naive)},
+        "fields": {
+            "standard": rnd(standard),
+            "adapted": rnd(adapted),
+            "naive": rnd(naive),
+            "err_adapted": rnd(err_adapted),
+            "err_naive": rnd(err_naive),
+        },
         "summary": {**l2, "regime": var["id"]},
     }
     (DERIVED / cid).mkdir(parents=True, exist_ok=True)
@@ -97,25 +107,51 @@ def main():
 
     net = model.net
     net.eval()
-    torch.onnx.export(net, (torch.zeros(1, int(built["input_dim"]), dtype=torch.float32),), str(MODELS / f"{cid}-naive.onnx"),
-                      input_names=["coords"], output_names=["u"], dynamic_axes={"coords": {0: "n"}, "u": {0: "n"}},
-                      opset_version=18, dynamo=True, verbose=False, external_data=False)
+    torch.onnx.export(
+        net,
+        (torch.zeros(1, int(built["input_dim"]), dtype=torch.float32),),
+        str(MODELS / f"{cid}-naive.onnx"),
+        input_names=["coords"],
+        output_names=["u"],
+        dynamic_axes={"coords": {0: "n"}, "u": {0: "n"}},
+        opset_version=18,
+        dynamo=True,
+        verbose=False,
+        external_data=False,
+    )
     strip_onnx_metadata(MODELS / f"{cid}-naive.onnx")
 
     regime_lbl = ", ".join(f"{k}={v:g}" for k, v in params.items()) or var["id"]
     man["comparison"] = {
         "trace": f"{cid}/comparison.json",
         "lanes": [
-            {"key": "standard", "label_en": "standard (analytic)", "label_es": "estándar (analítica)", "role": "reference"},
-            {"key": "naive", "label_en": "naive PINN", "label_es": "PINN ingenua", "role": "baseline", "err": "err_naive"},
-            {"key": "adapted", "label_en": f"{case.method} PINN", "label_es": f"PINN {case.method}", "role": "fix", "err": "err_adapted"},
+            {
+                "key": "standard",
+                "label_en": "standard (analytic)",
+                "label_es": "estándar (analítica)",
+                "role": "reference",
+            },
+            {
+                "key": "naive",
+                "label_en": "naive PINN",
+                "label_es": "PINN ingenua",
+                "role": "baseline",
+                "err": "err_naive",
+            },
+            {
+                "key": "adapted",
+                "label_en": f"{case.method} PINN",
+                "label_es": f"PINN {case.method}",
+                "role": "fix",
+                "err": "err_adapted",
+            },
         ],
         "onnx_naive": f"{cid}-naive.onnx",
-        "note_en": f"At the hard regime ({regime_lbl}): the naive PINN reaches L2 = {l2['naive_vs_std']*100:.0f}% vs the standard while the {case.method} fix reaches {l2['adapted_vs_std']*100:.1f}%.",
-        "note_es": f"En el régimen difícil ({regime_lbl}): la PINN ingenua llega a L2 = {l2['naive_vs_std']*100:.0f}% vs el estándar mientras que la corrección {case.method} llega a {l2['adapted_vs_std']*100:.1f}%.",
+        "note_en": f"At the hard regime ({regime_lbl}): the naive PINN reaches L2 = {l2['naive_vs_std'] * 100:.0f}% vs the standard while the {case.method} fix reaches {l2['adapted_vs_std'] * 100:.1f}%.",
+        "note_es": f"En el régimen difícil ({regime_lbl}): la PINN ingenua llega a L2 = {l2['naive_vs_std'] * 100:.0f}% vs el estándar mientras que la corrección {case.method} llega a {l2['adapted_vs_std'] * 100:.1f}%.",
     }
     man_path.write_text(json.dumps(man, ensure_ascii=False, indent=1) + "\n", encoding="utf-8")
-    print(f"[{cid}] DONE in {(time.perf_counter()-t0)/60:.1f} min. L2={l2}", flush=True)
+    print(f"[{cid}] DONE in {(time.perf_counter() - t0) / 60:.1f} min. L2={l2}", flush=True)
 
 
 if __name__ == "__main__":

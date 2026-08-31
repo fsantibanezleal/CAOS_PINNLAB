@@ -5,6 +5,7 @@ comparison/training/frames/diagnostics file referenced by a manifest exists, car
 internally consistent (frame shapes match the axes; L2 arrays align with the checkpoints; manifest summaries match
 the trace summaries). A drift here means the web app would render wrong or missing dynamics.
 """
+
 from __future__ import annotations
 
 import json
@@ -49,15 +50,15 @@ def test_comparison_contract(m):
     dims = t["dims"]
     axes = t["axes"]
     n0, n1 = len(axes[dims[0]]), len(axes[dims[1]])
-    lane_keys = {l["key"] for l in c["lanes"]}
+    lane_keys = {lane["key"] for lane in c["lanes"]}
     assert "standard" in lane_keys, "every comparison must carry the standard lane"
-    for l in c["lanes"]:
-        assert l["role"] in {"reference", "exact", "baseline", "fix", "data"}
-        fld = t["fields"].get(l["key"])
-        assert fld is not None, f"lane field {l['key']} missing in trace"
-        assert len(fld) == n0 and len(fld[0]) == n1, f"{l['key']} shape != axes"
-        if l.get("err"):
-            e = t["fields"].get(l["err"])
+    for lane in c["lanes"]:
+        assert lane["role"] in {"reference", "exact", "baseline", "fix", "data"}
+        fld = t["fields"].get(lane["key"])
+        assert fld is not None, f"lane field {lane['key']} missing in trace"
+        assert len(fld) == n0 and len(fld[0]) == n1, f"{lane['key']} shape != axes"
+        if lane.get("err"):
+            e = t["fields"].get(lane["err"])
             assert e is not None and len(e) == n0 and len(e[0]) == n1
     # the manifest summary (used by the Benchmark ladder columns) must MATCH the trace summary
     ms = c.get("summary") or {}
@@ -121,6 +122,7 @@ def test_diagnostics_contract(m):
 
 # ---- THE ESTIMATE block (issue #46): every case answers an engineering question with computed numbers ----
 
+
 def test_estimate_coverage_all_cases():
     """The estimation reframe covers the WHOLE catalogue: a case without its question/answer is a regression."""
     missing = [m["case_id"] for m in ALL if not m.get("estimate")]
@@ -133,7 +135,9 @@ def test_estimate_contract(m):
     assert e, "estimate block missing"
     for k in ("question_en", "question_es", "why_en", "why_es"):
         assert isinstance(e.get(k), str) and e[k].strip(), f"{k} missing/empty"
-    assert e["question_en"].strip().endswith("?") or "(" in e["question_en"], "the question should read as a question"
+    assert e["question_en"].strip().endswith("?") or "(" in e["question_en"], (
+        "the question should read as a question"
+    )
     items = e.get("items")
     assert isinstance(items, list) and len(items) >= 1, "at least one answer item"
     variant_ids = {v["id"] for v in m["variants"]}

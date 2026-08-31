@@ -32,6 +32,7 @@ HONEST LIMITS.
 
 Custom FNO engine (like bench-darcy-operator), field-IO, precompute.
 """
+
 from __future__ import annotations
 
 from pathlib import Path
@@ -40,12 +41,12 @@ import numpy as np
 
 from .base import CaseSpec, Variant
 
-BASE = 32                              # the ONLY resolution the operator is trained on
-RES = (32, 64, 96)                     # evaluation resolutions (variants)
+BASE = 32  # the ONLY resolution the operator is trained on
+RES = (32, 64, 96)  # evaluation resolutions (variants)
 WIDTH, MODES, LAYERS = 20, 10, 4
 N_TRAIN, N_TEST = 256, 24
 EPOCHS, BS = 120, 20
-SIGMA0 = 3.0                           # coefficient correlation length at BASE, scaled with resolution
+SIGMA0 = 3.0  # coefficient correlation length at BASE, scaled with resolution
 U_SCALE = 0.02
 _REPO = Path(__file__).resolve().parents[3]
 _STATE: dict = {}
@@ -68,25 +69,34 @@ CASE = CaseSpec(
     grid={"x": BASE, "y": BASE},
     field_axes=("x", "y"),
     expected_band="trained at 32x32, the operator runs at 64x64 and 96x96 it never saw; the error grows "
-                  "gracefully (a CNN cannot even be evaluated off its training grid)",
+    "gracefully (a CNN cannot even be evaluated off its training grid)",
     validation_anchor="operator-test-l2",
     train={"lr": 1e-3, "adam": 0},
     notes="Custom-engine FIELD-IO case: trains the FNO at 32x32, evaluates + bakes at 32/64/96, exports the "
-          "32x32 ONNX. Variants are resolutions. web_drivable=False -> lane=precompute.",
+    "32x32 ONNX. Variants are resolutions. web_drivable=False -> lane=precompute.",
 )
 
 
 def variants() -> list[Variant]:
     text = {
-        32: ("32x32 (training resolution)", "32x32 (resolución de entrenamiento)",
-             "The grid the operator was trained on: the baseline error.",
-             "La grilla en que se entrenó el operador: el error de referencia."),
-        64: ("64x64 (zero-shot, unseen)", "64x64 (cero-disparo, no vista)",
-             "Twice as fine, never seen in training: the same weights just run.",
-             "El doble de fina, nunca vista al entrenar: los mismos pesos simplemente corren."),
-        96: ("96x96 (zero-shot, unseen)", "96x96 (cero-disparo, no vista)",
-             "Three times as fine: the degradation you pay for going far past the training grid.",
-             "El triple de fina: la degradación que se paga al alejarse de la grilla de entrenamiento."),
+        32: (
+            "32x32 (training resolution)",
+            "32x32 (resolución de entrenamiento)",
+            "The grid the operator was trained on: the baseline error.",
+            "La grilla en que se entrenó el operador: el error de referencia.",
+        ),
+        64: (
+            "64x64 (zero-shot, unseen)",
+            "64x64 (cero-disparo, no vista)",
+            "Twice as fine, never seen in training: the same weights just run.",
+            "El doble de fina, nunca vista al entrenar: los mismos pesos simplemente corren.",
+        ),
+        96: (
+            "96x96 (zero-shot, unseen)",
+            "96x96 (cero-disparo, no vista)",
+            "Three times as fine: the degradation you pay for going far past the training grid.",
+            "El triple de fina: la degradación que se paga al alejarse de la grilla de entrenamiento.",
+        ),
     }
     out = []
     for r in RES:
@@ -127,7 +137,7 @@ class _Baked:
     field is at its OWN resolution, so no reshape mismatch."""
 
     def __init__(self, fields):
-        self._f = [np.asarray(f, dtype=np.float64) for f in fields]     # per-variant [3, res, res] (res varies!)
+        self._f = [np.asarray(f, dtype=np.float64) for f in fields]  # per-variant [3, res, res] (res varies!)
 
     def predict(self, XY):
         k = int(_STATE.get("cur", 0)) % len(self._f)
@@ -139,12 +149,14 @@ def _coeff(rng, n):
     """Resolution-consistent coefficient field: sigma scales with n so the physical correlation length is the
     same at every grid (the SAME process sampled more finely, not a different family)."""
     from scipy.ndimage import gaussian_filter
+
     g = gaussian_filter(rng.standard_normal((n, n)), sigma=SIGMA0 * n / BASE)
     return np.where(g > 0.0, 12.0, 3.0)
 
 
 def _solve(a):
     from ..datasets.darcy import _solve_darcy
+
     return _solve_darcy(a)
 
 
@@ -179,13 +191,15 @@ def build(seed: int, quick: bool = False) -> dict:
     opt = torch.optim.Adam(net.parameters(), lr=CASE.train["lr"])
 
     def rl2(p, y):
-        return (torch.norm((p - y).reshape(len(p), -1), dim=1)
-                / torch.norm(y.reshape(len(y), -1), dim=1).clamp_min(1e-9)).mean()
+        return (
+            torch.norm((p - y).reshape(len(p), -1), dim=1)
+            / torch.norm(y.reshape(len(y), -1), dim=1).clamp_min(1e-9)
+        ).mean()
 
     for _ in range(epochs):
         perm = torch.randperm(n_train)
         for b in range(0, n_train, BS):
-            idx = perm[b:b + BS]
+            idx = perm[b : b + BS]
             opt.zero_grad()
             rl2(net(Xtr[idx]) * U_SCALE, Utr[idx]).backward()
             opt.step()
@@ -216,7 +230,8 @@ def build(seed: int, quick: bool = False) -> dict:
 
     class _Phys(torch.nn.Module):
         def __init__(self, n):
-            super().__init__(); self.n = n
+            super().__init__()
+            self.n = n
 
         def forward(self, x):
             return self.n(x) * U_SCALE
@@ -226,10 +241,20 @@ def build(seed: int, quick: bool = False) -> dict:
     # this ONNX in the browser. (The FNO's mode-scatter does not export cleanly with dynamic spatial axes;
     # discretisation-invariance is a property of the torch model, demonstrated by the baked 64/96 fields.)
     wrapped = _Phys(net).eval()
-    torch.onnx.export(wrapped, (Xtr[:1],), str(onnx_path), input_names=["a_grid"], output_names=["u"],
-                      dynamic_axes={"a_grid": {0: "n"}, "u": {0: "n"}},
-                      opset_version=18, dynamo=True, verbose=False, external_data=False)
+    torch.onnx.export(
+        wrapped,
+        (Xtr[:1],),
+        str(onnx_path),
+        input_names=["a_grid"],
+        output_names=["u"],
+        dynamic_axes={"a_grid": {0: "n"}, "u": {0: "n"}},
+        opset_version=18,
+        dynamo=True,
+        verbose=False,
+        external_data=False,
+    )
     from ..io.formats import strip_onnx_metadata
+
     strip_onnx_metadata(onnx_path)
     sess = ort.InferenceSession(str(onnx_path), providers=["CPUExecutionProvider"])
     with torch.no_grad():

@@ -35,6 +35,7 @@ unconstrained and drifts (the HNN still beats the baseline there by ~27x, but bo
 terms). And 0.07% is small but not zero, because the HNN conserves its OWN learned H (not the true H) and is
 rolled out with RK4, which is not itself a symplectic integrator.
 """
+
 from __future__ import annotations
 
 from pathlib import Path
@@ -44,11 +45,11 @@ import numpy as np
 from .base import CaseSpec, Variant
 from .dyn_double_pendulum import G, _accel_np
 
-TH1_0 = np.deg2rad(40.0)   # shown IC: released from rest at 40 deg -> bounded, quasi-periodic (NOT chaotic)
+TH1_0 = np.deg2rad(40.0)  # shown IC: released from rest at 40 deg -> bounded, quasi-periodic (NOT chaotic)
 TH2_0 = np.deg2rad(40.0)
-TRAIN_ANGLE_DEG = (15.0, 55.0)   # training trajectories drawn from the same low-energy regime
+TRAIN_ANGLE_DEG = (15.0, 55.0)  # training trajectories drawn from the same low-energy regime
 
-T_MAX = 8.0   # long horizon: at low energy the motion is periodic, so conservation shows over many swings
+T_MAX = 8.0  # long horizon: at low energy the motion is periodic, so conservation shows over many swings
 N_EVAL = 601
 WIDTH = 200
 STEPS = 8000
@@ -83,21 +84,29 @@ CASE = CaseSpec(
     validation_anchor="integrator-ref",
     train={"lr": 1e-3, "adam": 0},
     notes="Custom-engine ode-dynamical case: trains BOTH lanes in build() and rolls each out with the SAME RK4, "
-          "so the integrator can never explain the difference. Variants ARE the two models.",
+    "so the integrator can never explain the difference. Variants ARE the two models.",
 )
 
 
 def variants() -> list[Variant]:
     """The variants are the two MODELS, so the structure question is the case's own axis."""
     return [
-        Variant("hnn", "Hamiltonian network (structured)", "Red hamiltoniana (estructurada)",
-                {"structured": 1.0},
-                "Outputs a single scalar H and takes the symplectic gradient, so the energy is conserved by construction.",
-                "Entrega un único escalar H y toma el gradiente simpléctico, así la energía se conserva por construcción."),
-        Variant("mlp", "Unstructured network (baseline)", "Red sin estructura (referencia)",
-                {"structured": 0.0},
-                "Outputs the four time-derivatives directly, free to produce any vector field at all.",
-                "Entrega directamente las cuatro derivadas temporales, libre de producir cualquier campo vectorial."),
+        Variant(
+            "hnn",
+            "Hamiltonian network (structured)",
+            "Red hamiltoniana (estructurada)",
+            {"structured": 1.0},
+            "Outputs a single scalar H and takes the symplectic gradient, so the energy is conserved by construction.",
+            "Entrega un único escalar H y toma el gradiente simpléctico, así la energía se conserva por construcción.",
+        ),
+        Variant(
+            "mlp",
+            "Unstructured network (baseline)",
+            "Red sin estructura (referencia)",
+            {"structured": 0.0},
+            "Outputs the four time-derivatives directly, free to produce any vector field at all.",
+            "Entrega directamente las cuatro derivadas temporales, libre de producir cualquier campo vectorial.",
+        ),
     ]
 
 
@@ -109,15 +118,26 @@ def _p_from_omega_np(th1, th2, om1, om2):
 def _energy_np(th1, th2, p1, p2):
     d = th1 - th2
     s, c = np.sin(d), np.cos(d)
-    return (p1 ** 2 + 2.0 * p2 ** 2 - 2.0 * p1 * p2 * c) / (2.0 * (1.0 + s ** 2)) \
-        - 2.0 * G * np.cos(th1) - G * np.cos(th2)
+    return (
+        (p1**2 + 2.0 * p2**2 - 2.0 * p1 * p2 * c) / (2.0 * (1.0 + s**2))
+        - 2.0 * G * np.cos(th1)
+        - G * np.cos(th2)
+    )
 
 
 def _rk45_ref(th1_0, th2_0, t_eval):
     from scipy.integrate import solve_ivp
-    sol = solve_ivp(lambda _t, y: [y[2], y[3], *_accel_np(y[0], y[1], y[2], y[3])],
-                    (float(t_eval[0]), float(t_eval[-1])), [th1_0, th2_0, 0.0, 0.0],
-                    t_eval=t_eval, method="RK45", rtol=1e-11, atol=1e-11, max_step=0.01)
+
+    sol = solve_ivp(
+        lambda _t, y: [y[2], y[3], *_accel_np(y[0], y[1], y[2], y[3])],
+        (float(t_eval[0]), float(t_eval[-1])),
+        [th1_0, th2_0, 0.0, 0.0],
+        t_eval=t_eval,
+        method="RK45",
+        rtol=1e-11,
+        atol=1e-11,
+        max_step=0.01,
+    )
     return sol.y
 
 
@@ -130,8 +150,8 @@ def extra_metrics(sf) -> dict:
     sf.fields["th2_ref"] = ref[1].reshape(shape)
 
     i = int(_STATE.get("cur", 0))
-    sf.fields["energy"] = _STATE["energy"][i].reshape(shape)           # this model's total energy over time
-    sf.fields["energy_ref"] = np.full(shape, _STATE["e0"])             # the constant true energy
+    sf.fields["energy"] = _STATE["energy"][i].reshape(shape)  # this model's total energy over time
+    sf.fields["energy_ref"] = np.full(shape, _STATE["e0"])  # the constant true energy
     th1_p = np.asarray(sf.fields["th1"], dtype=np.float64).reshape(-1)
     th2_p = np.asarray(sf.fields["th2"], dtype=np.float64).reshape(-1)
 
@@ -157,7 +177,7 @@ def extra_metrics(sf) -> dict:
 
 class _Baked:
     def __init__(self, traj):
-        self._t = np.asarray(traj, dtype=np.float64)   # [n_var, N, 2]
+        self._t = np.asarray(traj, dtype=np.float64)  # [n_var, N, 2]
         self._i = 0
 
     def predict(self, T):
@@ -172,8 +192,14 @@ def build(seed: int, quick: bool = False) -> dict:
 
     import torch
 
-    from ..model.hnn import (HNN, StateMLP, hamiltonian_analytic, p_from_omega, relative_energy_drift,
-                             rk4_rollout, symplectic_grad)
+    from ..model.hnn import (
+        HNN,
+        StateMLP,
+        hamiltonian_analytic,
+        relative_energy_drift,
+        rk4_rollout,
+        symplectic_grad,
+    )
 
     steps = 60 if quick else STEPS
     n_traj = 3 if quick else N_TRAIN_TRAJ
@@ -184,7 +210,9 @@ def build(seed: int, quick: bool = False) -> dict:
     # ---- training states: several RK45 trajectories, derivative from Hamilton's equations ----
     states = []
     for _ in range(n_traj):
-        y = _rk45_ref(np.deg2rad(rng.uniform(*TRAIN_ANGLE_DEG)), np.deg2rad(rng.uniform(*TRAIN_ANGLE_DEG)), t_eval)
+        y = _rk45_ref(
+            np.deg2rad(rng.uniform(*TRAIN_ANGLE_DEG)), np.deg2rad(rng.uniform(*TRAIN_ANGLE_DEG)), t_eval
+        )
         p1, p2 = _p_from_omega_np(y[0], y[1], y[2], y[3])
         states.append(np.stack([y[0], y[1], p1, p2], axis=1))
     Z = torch.as_tensor(np.concatenate(states), dtype=torch.float64)
@@ -202,7 +230,7 @@ def build(seed: int, quick: bool = False) -> dict:
         else:  # noqa: RET505
             body = StateMLP(width=WIDTH, out=4)
             net = body
-            f = lambda z: body((z - mu) / sd) * dscale   # noqa: E731  (same normalisation as the HNN)
+            f = lambda z: body((z - mu) / sd) * dscale  # noqa: E731  (same normalisation as the HNN)
         opt = torch.optim.Adam(net.parameters(), lr=CASE.train["lr"])
         t0 = time.perf_counter()
         loss = torch.tensor(0.0)
@@ -221,20 +249,30 @@ def build(seed: int, quick: bool = False) -> dict:
 
     traj, drift, losses, times, energy = [], [], [], [], []
     hnn_net = None
-    for structured in (True, False):                    # order MUST match variants(): hnn, then mlp
+    for structured in (True, False):  # order MUST match variants(): hnn, then mlp
         f, net, loss, ts = train(structured)
         if structured:
             hnn_net = net
         roll = rk4_rollout(f, z0.clone(), dt, N_EVAL - 1)
         traj.append(roll[:, :2].detach().numpy())
-        energy.append(hamiltonian_analytic(roll, G).detach().numpy())   # E(t) along THIS model's rollout
+        energy.append(hamiltonian_analytic(roll, G).detach().numpy())  # E(t) along THIS model's rollout
         drift.append(relative_energy_drift(roll, G))
         losses.append(loss)
         times.append(ts)
-    e0 = float(hamiltonian_analytic(z0.clone(), G).item())              # the constant true energy
+    e0 = float(hamiltonian_analytic(z0.clone(), G).item())  # the constant true energy
 
-    _STATE.update({"ref": ref, "drift": drift, "loss": losses, "train_s": times,
-                   "t": t_eval, "traj": [x.copy() for x in traj], "energy": energy, "e0": e0})
+    _STATE.update(
+        {
+            "ref": ref,
+            "drift": drift,
+            "loss": losses,
+            "train_s": times,
+            "t": t_eval,
+            "traj": [x.copy() for x in traj],
+            "energy": energy,
+            "e0": e0,
+        }
+    )
 
     # ---- export the LEARNED ENERGY SURFACE, state (4) -> H, the HNN's core object ----
     # HNN.forward takes a symplectic gradient via autograd.grad, which ONNX cannot represent; the scalar
@@ -255,11 +293,19 @@ def build(seed: int, quick: bool = False) -> dict:
     wrapped = _EnergyNet(hnn_net).eval().to(torch.float32)
     probe = Z[:8].to(torch.float32)
     torch.onnx.export(
-        wrapped, (probe,), str(onnx_path), input_names=["state"], output_names=["H"],
+        wrapped,
+        (probe,),
+        str(onnx_path),
+        input_names=["state"],
+        output_names=["H"],
         dynamic_axes={"state": {0: "n"}, "H": {0: "n"}},
-        opset_version=18, dynamo=True, verbose=False, external_data=False,
+        opset_version=18,
+        dynamo=True,
+        verbose=False,
+        external_data=False,
     )
     from ..io.formats import strip_onnx_metadata
+
     strip_onnx_metadata(onnx_path)
     sess = ort.InferenceSession(str(onnx_path), providers=["CPUExecutionProvider"])
     with torch.no_grad():

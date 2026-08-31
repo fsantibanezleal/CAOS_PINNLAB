@@ -5,6 +5,7 @@ just evaluates it on a time grid so the web can PLAY the evolution instead of sh
 Cases: poll-ocean-transport (drifting/spreading pollutant patch), mine-heap-leach-rt (advecting reacting fronts).
 Patches each manifest with {"evolution": {"path": ...}, "view_kit": "SpatioTemporalKit"} + the index.json badge.
 """
+
 from __future__ import annotations
 
 import json
@@ -36,8 +37,9 @@ def bake(cid: str, n_frames: int):
     outputs = man["outputs"]
     tspec = next((p for p in man.get("param_specs", []) if p["key"] not in fa), None)
     if tspec is None:
-        print(f"[{cid}] SKIP: no non-axis parameter to sweep"); return
-    tkey = tspec["key"]
+        print(f"[{cid}] SKIP: no non-axis parameter to sweep")
+        return
+    tspec["key"]
     tvals = np.linspace(float(tspec["min"]), float(tspec["max"]), n_frames)
 
     # the spatial grid (from the case domain recorded in the manifest? domain not in manifest -> use the baked trace axes)
@@ -61,7 +63,8 @@ def bake(cid: str, n_frames: int):
             frames[o].append(rnd(out[:, k].reshape(GRID, GRID)))
 
     payload = {
-        "schema": "pinnlab.evolution/v1", "case_id": cid,
+        "schema": "pinnlab.evolution/v1",
+        "case_id": cid,
         "t": [round(float(v), 5) for v in tvals],
         "axes": {fa[0]: rnd(ax0), fa[1]: rnd(ax1)},
         "frames": frames,
@@ -72,7 +75,9 @@ def bake(cid: str, n_frames: int):
     man["evolution"] = {"path": f"{cid}/frames.json"}
     man["view_kit"] = "SpatioTemporalKit"
     man_path.write_text(json.dumps(man, ensure_ascii=False, indent=1) + "\n", encoding="utf-8")
-    print(f"[{cid}] {n_frames} frames x {len(outputs)} outputs baked ({p.stat().st_size/1024:.0f} KB); view_kit=SpatioTemporalKit")
+    print(
+        f"[{cid}] {n_frames} frames x {len(outputs)} outputs baked ({p.stat().st_size / 1024:.0f} KB); view_kit=SpatioTemporalKit"
+    )
 
 
 def patch_index():

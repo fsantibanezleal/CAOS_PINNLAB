@@ -34,6 +34,7 @@ artifact (a learned drawdown-field surrogate; the honest inverse is Cooper-Jacob
 
 Offline engine only.
 """
+
 from __future__ import annotations
 
 from pathlib import Path
@@ -45,11 +46,11 @@ from .base import CaseSpec, Variant
 # spatial domain (m): a 1000 x 1000 m plan view with the pumping well at the centre
 L = 1000.0
 NG = 48
-RW = 5.0                               # well radius (avoid the log singularity at r=0)
-Q = 2000.0 / 86400.0                   # pumping rate, m^3/s (2000 m^3/day)
-R_OBS = 100.0                          # observation-well radius for the pumping-test curve
-T_EVAL = 86400.0                       # 1 day
-NOISE = 0.02                           # 2 cm gauge noise on the drawdown record
+RW = 5.0  # well radius (avoid the log singularity at r=0)
+Q = 2000.0 / 86400.0  # pumping rate, m^3/s (2000 m^3/day)
+R_OBS = 100.0  # observation-well radius for the pumping-test curve
+T_EVAL = 86400.0  # 1 day
+NOISE = 0.02  # 2 cm gauge noise on the drawdown record
 # (name_en, name_es, T [m^2/day], S) - a fine sand, a coarse sand, a gravel
 AQUIFERS = [
     ("fine sand", "arena fina", 120.0, 5e-4),
@@ -77,28 +78,33 @@ CASE = CaseSpec(
     grid={"x": NG, "y": NG},
     field_axes=("x", "y"),
     expected_band="Cooper-Jacob recovers T to ~1% and S to a few percent from noisy pumping-test data; a PINN "
-                  "inverse on the same data is far worse (this is where the classical method wins)",
+    "inverse on the same data is far worse (this is where the classical method wins)",
     validation_anchor="theis-analytic",
     train={"lr": 1e-3, "adam": 0},
     notes="Analytic-engine case: the field is the Theis drawdown cone; the inverse is Cooper-Jacob (classical). "
-          "A small coordinate net is fit to the cone for the ONNX artifact. web_drivable=False -> precompute.",
+    "A small coordinate net is fit to the cone for the ONNX artifact. web_drivable=False -> precompute.",
 )
 
 
 def variants() -> list[Variant]:
     out = []
     for name_en, name_es, T, S in AQUIFERS:
-        out.append(Variant(
-            name_en.replace(" ", "-"),
-            f"{name_en} (T~{T:.0f} m2/day)", f"{name_es} (T~{T:.0f} m2/dia)",
-            {"T_true": T, "S_true": S},
-            f"A {name_en} aquifer: the pumping test recovers its T and S from the drawdown curve.",
-            f"Un acuifero de {name_es}: la prueba de bombeo recupera su T y S desde la curva de abatimiento."))
+        out.append(
+            Variant(
+                name_en.replace(" ", "-"),
+                f"{name_en} (T~{T:.0f} m2/day)",
+                f"{name_es} (T~{T:.0f} m2/dia)",
+                {"T_true": T, "S_true": S},
+                f"A {name_en} aquifer: the pumping test recovers its T and S from the drawdown curve.",
+                f"Un acuifero de {name_es}: la prueba de bombeo recupera su T y S desde la curva de abatimiento.",
+            )
+        )
     return out
 
 
 def _theis(r, t, T_si, S):
     from scipy.special import exp1
+
     return Q / (4.0 * np.pi * T_si) * exp1(np.maximum(r, RW) ** 2 * S / (4.0 * T_si * t))
 
 
@@ -107,14 +113,14 @@ def _cooper_jacob(T_true, S_true, rng):
     T_si = T_true / 86400.0
     t = np.geomspace(300.0, T_EVAL, 40)
     s = _theis(R_OBS, t, T_si, S_true) + rng.normal(0, NOISE, len(t))
-    u = R_OBS ** 2 * S_true / (4.0 * T_si * t)
-    mask = u < 0.05                                          # Cooper-Jacob validity
+    u = R_OBS**2 * S_true / (4.0 * T_si * t)
+    mask = u < 0.05  # Cooper-Jacob validity
     if mask.sum() < 4:
         mask = np.ones_like(t, dtype=bool)
     m, b = np.polyfit(np.log(t[mask]), s[mask], 1)
-    T_rec = Q / (4.0 * np.pi * m) * 86400.0                 # back to m^2/day
+    T_rec = Q / (4.0 * np.pi * m) * 86400.0  # back to m^2/day
     t0 = np.exp(-b / m)
-    S_rec = 2.25 * (T_rec / 86400.0) * t0 / R_OBS ** 2
+    S_rec = 2.25 * (T_rec / 86400.0) * t0 / R_OBS**2
     return float(T_rec), float(S_rec), int(mask.sum())
 
 
@@ -176,8 +182,13 @@ def build(seed: int, quick: bool = False) -> dict:
     tmax = float(target.max())
     Yt = torch.tensor((target.ravel() / tmax)[:, None], dtype=torch.float32)
     torch.manual_seed(int(seed) + 4)
-    net = torch.nn.Sequential(torch.nn.Linear(2, 64), torch.nn.Tanh(),
-                              torch.nn.Linear(64, 64), torch.nn.Tanh(), torch.nn.Linear(64, 1))
+    net = torch.nn.Sequential(
+        torch.nn.Linear(2, 64),
+        torch.nn.Tanh(),
+        torch.nn.Linear(64, 64),
+        torch.nn.Tanh(),
+        torch.nn.Linear(64, 1),
+    )
     opt = torch.optim.Adam(net.parameters(), lr=3e-3)
     for _ in range(300 if not quick else 20):
         opt.zero_grad()
@@ -187,7 +198,9 @@ def build(seed: int, quick: bool = False) -> dict:
 
     class _Scaled(torch.nn.Module):
         def __init__(self, n, s):
-            super().__init__(); self.n = n; self.s = float(s)
+            super().__init__()
+            self.n = n
+            self.s = float(s)
 
         def forward(self, x):
             return self.n(x) * self.s
@@ -195,10 +208,20 @@ def build(seed: int, quick: bool = False) -> dict:
     wrapped = _Scaled(net, tmax).eval()
     onnx_path = _REPO / "models" / f"{CASE.id}.onnx"
     onnx_path.parent.mkdir(parents=True, exist_ok=True)
-    torch.onnx.export(wrapped, (XY[:1],), str(onnx_path), input_names=["xy"], output_names=["s"],
-                      dynamic_axes={"xy": {0: "n"}, "s": {0: "n"}},
-                      opset_version=18, dynamo=True, verbose=False, external_data=False)
+    torch.onnx.export(
+        wrapped,
+        (XY[:1],),
+        str(onnx_path),
+        input_names=["xy"],
+        output_names=["s"],
+        dynamic_axes={"xy": {0: "n"}, "s": {0: "n"}},
+        opset_version=18,
+        dynamo=True,
+        verbose=False,
+        external_data=False,
+    )
     from ..io.formats import strip_onnx_metadata
+
     strip_onnx_metadata(onnx_path)
     sess = ort.InferenceSession(str(onnx_path), providers=["CPUExecutionProvider"])
     with torch.no_grad():
