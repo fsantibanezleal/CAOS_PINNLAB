@@ -79,11 +79,20 @@ def fig_atlas():
 
 
 def fig_solution():
+    # The case's reference-validated field (field.json, relative L2 1.2e-3: the value in the atlas, Table I and the
+    # title below) and its pointwise error against the spectral reference that comparison.json stores on the same
+    # (x, t) grid. comparison.json's own "adapted" lane is a separately trained run (relative L2 4.3e-3), so it is
+    # not the field this figure is labelled with.
     comp = json.loads((DER / "bench-allencahn" / "comparison.json").read_text(encoding="utf-8"))
+    fld = json.loads((DER / "bench-allencahn" / "field.json").read_text(encoding="utf-8"))
     ax_ = comp["axes"]
     x = np.asarray(ax_["x"]); t = np.asarray(ax_["t"])
-    u = np.asarray(comp["fields"]["adapted"])
-    err = np.abs(np.asarray(comp["fields"]["err_adapted"]))
+    assert np.allclose(x, fld["axes"]["x"]) and np.allclose(t, fld["axes"]["t"]), "grids differ"
+    u = np.asarray(fld["fields"]["u"])
+    ref = np.asarray(comp["fields"]["standard"])
+    err = np.abs(u - ref)
+    print(f"fig-solution: relative L2 of the plotted field vs the spectral reference = "
+          f"{np.linalg.norm(u - ref) / np.linalg.norm(ref):.2e}")
     fig, (a1, a2) = plt.subplots(1, 2, figsize=(7.0, 3.0))
     ext = [t.min(), t.max(), x.min(), x.max()]
     im1 = a1.imshow(u, origin="lower", aspect="auto", extent=ext, cmap="RdBu_r")
