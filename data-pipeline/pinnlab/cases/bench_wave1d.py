@@ -1,4 +1,4 @@
-"""Group A · canonical-benchmark — 1D wave equation (hyperbolic), SIREN + HARD-CONSTRAINT PINN, PARAMETRIC in the
+"""Group A · canonical-benchmark, 1D wave equation (hyperbolic), SIREN + HARD-CONSTRAINT PINN, PARAMETRIC in the
 wave speed c.
 
 Governing equation:
@@ -7,12 +7,12 @@ Governing equation:
 Manufactured exact solution (validation anchor), valid for ANY c:
     u*(x,t;c) = sin(pi x) cos(c pi t)   (a single-mode standing wave oscillating at frequency c).
 
-Method — SIREN (sin activation) as the spectral-bias remedy for the oscillatory hyperbolic solution, combined with a
+Method, SIREN (sin activation) as the spectral-bias remedy for the oscillatory hyperbolic solution, combined with a
 HARD-CONSTRAINT output transform that satisfies BC + both ICs exactly:
     u_hat(x,t) = sin(pi x) + t^2 * x * (1-x) * N(x,t,c)
 (t=0 -> sin(pi x) = IC#1; every d/dt term carries a factor t -> u_t(x,0)=0 = IC#2; x(1-x) & sin(pi x) vanish at
 x=0,1 -> BC). The wave speed c is a network INPUT: ONE trained net covers the whole speed family; the web `Live` tab
-sweeps c continuously — watch the standing wave oscillate faster (large c) or slower (small c) via the shared ONNX.
+sweeps c continuously, watch the standing wave oscillate faster (large c) or slower (small c) via the shared ONNX.
 """
 from __future__ import annotations
 
@@ -63,12 +63,12 @@ def analytic(xtc: np.ndarray) -> np.ndarray:
 
 def variants() -> list[Variant]:
     presets = [
-        ("c05", 0.5, "Slow wave (c=0.5) — only a quarter period over the window.", "Onda lenta (c=0.5) — solo un cuarto de período en la ventana."),
-        ("c075", 0.75, "c=0.75 — three-eighths of a period.", "c=0.75 — tres octavos de período."),
-        ("c10", 1.0, "c=1 — half a period; the profile flips sign by t=1.", "c=1 — medio período; el perfil cambia de signo en t=1."),
-        ("c125", 1.25, "c=1.25 — past the half period.", "c=1.25 — pasado el medio período."),
-        ("c15", 1.5, "c=1.5 — three-quarters of a period.", "c=1.5 — tres cuartos de período."),
-        ("c20", 2.0, "Fast wave (c=2) — a full period; the standing wave returns to its start.", "Onda rápida (c=2) — un período completo; la onda estacionaria vuelve al inicio."),
+        ("c05", 0.5, "Slow wave (c=0.5), only a quarter period over the window.", "Onda lenta (c=0.5), solo un cuarto de período en la ventana."),
+        ("c075", 0.75, "c=0.75, three-eighths of a period.", "c=0.75, tres octavos de período."),
+        ("c10", 1.0, "c=1, half a period; the profile flips sign by t=1.", "c=1, medio período; el perfil cambia de signo en t=1."),
+        ("c125", 1.25, "c=1.25, past the half period.", "c=1.25, pasado el medio período."),
+        ("c15", 1.5, "c=1.5, three-quarters of a period.", "c=1.5, tres cuartos de período."),
+        ("c20", 2.0, "Fast wave (c=2), a full period; the standing wave returns to its start.", "Onda rápida (c=2), un período completo; la onda estacionaria vuelve al inicio."),
     ]
     return [Variant(vid, f"c={c:g}", f"c={c:g}", {"c": c}, en, es) for vid, c, en, es in presets]
 

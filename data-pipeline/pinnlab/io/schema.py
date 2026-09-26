@@ -1,4 +1,4 @@
-"""Typed objects passed between pipeline stages — the inter-stage contract.
+"""Typed objects passed between pipeline stages, the inter-stage contract.
 
 Pure dataclasses + numpy ONLY (Pyodide-safe): never import torch/deepxde here. The heavy PINN engine lives in
 `stages/train.py` and each case's `build()`; the light metadata (CaseSpec) lives in `cases/`.

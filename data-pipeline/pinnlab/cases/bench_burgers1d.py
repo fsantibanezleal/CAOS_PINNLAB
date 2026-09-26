@@ -1,17 +1,17 @@
-"""Group A · canonical-benchmark — 1D viscous Burgers, PARAMETRIC in the viscosity nu, HARD-CONSTRAINT PINN with
+"""Group A · canonical-benchmark, 1D viscous Burgers, PARAMETRIC in the viscosity nu, HARD-CONSTRAINT PINN with
 RESIDUAL-BASED ADAPTIVE REFINEMENT (RAR) for the sharp front.
 
 Governing equation:
     u_t + u u_x = nu u_xx,   x in [-1,1], t in [0,1].
-Exact TRAVELING-SHOCK family (validation anchor, closed form for ANY nu) — Whitham, *Linear and Nonlinear Waves*:
+Exact TRAVELING-SHOCK family (validation anchor, closed form for ANY nu), Whitham, *Linear and Nonlinear Waves*:
     u*(x,t;nu) = s - (Delta/2) tanh( k (x - x0 - s t) ),   k = Delta/(4 nu),
 with left/right states u_L = s + Delta/2, u_R = s - Delta/2. We use u_L=1, u_R=0 (=> Delta=1, s=1/2) and an initial
 front position x0=-0.4, so a front of width ~4*nu translates to the right at speed s and stays interior to [-1,1].
 The viscosity nu sets the front THICKNESS: small nu => a razor-sharp internal layer (quasi-shock), large nu => a
 diffuse ramp. nu is a NETWORK INPUT, so ONE trained net covers the whole viscosity family and the web `Live` tab
-sweeps nu continuously — watch the shock sharpen (small nu) or smear (large nu) via the shared ONNX.
+sweeps nu continuously, watch the shock sharpen (small nu) or smear (large nu) via the shared ONNX.
 
-Method — HARD CONSTRAINTS (IC + both Dirichlet BCs satisfied exactly by an output transform, no IC/BC loss) PLUS
+Method, HARD CONSTRAINTS (IC + both Dirichlet BCs satisfied exactly by an output transform, no IC/BC loss) PLUS
 RAR / RAR-G (residual-based adaptive refinement, Wu et al. CMAME 2023): after the base fit, greedily ADD collocation
 points where the PDE residual is largest, so the moving front is resolved without a globally dense grid.
 """
@@ -56,7 +56,7 @@ CASE = CaseSpec(
         "lbfgs": True,
         "num_domain": 9000,
         "num_test": 8000,
-        # RAR refinement (the method) — add high-residual points near the moving front:
+        # RAR refinement (the method): add high-residual points near the moving front:
         "rar_rounds": 5,
         "rar_addk": 400,
         "rar_adam": 3000,
@@ -75,12 +75,12 @@ def analytic(xtn: np.ndarray) -> np.ndarray:
 
 def variants() -> list[Variant]:
     presets = [
-        ("nu02", 0.02, "Sharp shock (ν=0.02) — a razor-thin internal layer (width ~0.08).", "Shock agudo (ν=0.02) — capa interna finísima (ancho ~0.08)."),
-        ("nu03", 0.03, "ν=0.03 — still a steep front.", "ν=0.03 — front aún empinado."),
-        ("nu04", 0.04, "ν=0.04 — moderate front thickness.", "ν=0.04 — grosor de front moderado."),
-        ("nu05", 0.05, "ν=0.05 — a visibly smoother ramp.", "ν=0.05 — rampa visiblemente más suave."),
-        ("nu06", 0.06, "ν=0.06 — diffuse front.", "ν=0.06 — front difuso."),
-        ("nu08", 0.08, "Diffuse shock (ν=0.08) — a broad ramp (width ~0.32).", "Shock difuso (ν=0.08) — rampa ancha (ancho ~0.32)."),
+        ("nu02", 0.02, "Sharp shock (ν=0.02), a razor-thin internal layer (width ~0.08).", "Shock agudo (ν=0.02), capa interna finísima (ancho ~0.08)."),
+        ("nu03", 0.03, "ν=0.03, still a steep front.", "ν=0.03, front aún empinado."),
+        ("nu04", 0.04, "ν=0.04, moderate front thickness.", "ν=0.04, grosor de front moderado."),
+        ("nu05", 0.05, "ν=0.05, a visibly smoother ramp.", "ν=0.05, rampa visiblemente más suave."),
+        ("nu06", 0.06, "ν=0.06, diffuse front.", "ν=0.06, front difuso."),
+        ("nu08", 0.08, "Diffuse shock (ν=0.08), a broad ramp (width ~0.32).", "Shock difuso (ν=0.08), rampa ancha (ancho ~0.32)."),
     ]
     return [Variant(vid, f"ν={nu:g}", f"ν={nu:g}", {"nu": nu}, en, es) for vid, nu, en, es in presets]
 

@@ -1,16 +1,16 @@
-"""Group C · pollution-environmental — ocean/coastal pollutant transport (forward), 2D advection-diffusion, baked as
+"""Group C · pollution-environmental, ocean/coastal pollutant transport (forward), 2D advection-diffusion, baked as
 a TIME-SCRUBBER workbench: field_axes=(x,y), the swept parameter is TIME t, so the web `Live` tab scrubs t and the
 shared ONNX replays the spill drifting and spreading.
 
 Governing equation (passive scalar c carried by a uniform coastal current v, eddy diffusion D, no source):
     c_t + v.grad(c) = D (c_xx + c_yy)   on (0,1)^2 x (0,1],  v = (0.45, 0.35),  D = 0.01.
-EXACT solution (validation anchor, the advected-diffused Gaussian / 2D Green's function — NOT a manufactured source):
+EXACT solution (validation anchor, the advected-diffused Gaussian / 2D Green's function, NOT a manufactured source):
     c*(x,y,t) = (s0^2 / s2) * exp( -((x - x0 - vx t)^2 + (y - y0 - vy t)^2) / (2 s2) ),   s2 = s0^2 + 2 D t.
 A Gaussian pollutant patch released at (x0,y0) drifts with the current (center moves at v) and spreads by eddy
 diffusion (variance grows as 2 D t), its peak decaying as mass is conserved. real_or_synthetic = synthetic-illustrative
 (a physically-faithful illustration of a plastic/oil patch, NOT fit to a real spill or a real ocean-current product).
 
-Method — advection-diffusion PINN with SOFT IC/BC (Dirichlet = c* on the boundary, IC = c* at t=0), so the network
+Method, advection-diffusion PINN with SOFT IC/BC (Dirichlet = c* on the boundary, IC = c* at t=0), so the network
 genuinely learns the interior transport field and the relative-L2 reports the true PINN error. Pe = |v| L / D ~ 45.
 """
 from __future__ import annotations
@@ -69,12 +69,12 @@ def analytic(xyt: np.ndarray) -> np.ndarray:
 
 def variants() -> list[Variant]:
     presets = [
-        ("t00", 0.0, "Release (t=0) — the patch at its source, compact and intense.", "Vertido (t=0) — el parche en su origen, compacto e intenso."),
-        ("t02", 0.2, "t=0.2 — drifting with the current, starting to spread.", "t=0.2 — derivando con la corriente, empezando a esparcirse."),
-        ("t04", 0.4, "t=0.4 — clearly advected and broader.", "t=0.4 — claramente advectado y más ancho."),
-        ("t06", 0.6, "t=0.6 — past the domain center, diluting.", "t=0.6 — pasado el centro del dominio, diluyéndose."),
-        ("t08", 0.8, "t=0.8 — broad and faint, nearing the far corner.", "t=0.8 — ancho y tenue, cerca de la esquina lejana."),
-        ("t10", 1.0, "t=1.0 — maximally spread and diluted.", "t=1.0 — máxima dispersión y dilución."),
+        ("t00", 0.0, "Release (t=0), the patch at its source, compact and intense.", "Vertido (t=0), el parche en su origen, compacto e intenso."),
+        ("t02", 0.2, "t=0.2, drifting with the current, starting to spread.", "t=0.2, derivando con la corriente, empezando a esparcirse."),
+        ("t04", 0.4, "t=0.4, clearly advected and broader.", "t=0.4, claramente advectado y más ancho."),
+        ("t06", 0.6, "t=0.6, past the domain center, diluting.", "t=0.6, pasado el centro del dominio, diluyéndose."),
+        ("t08", 0.8, "t=0.8, broad and faint, nearing the far corner.", "t=0.8, ancho y tenue, cerca de la esquina lejana."),
+        ("t10", 1.0, "t=1.0, maximally spread and diluted.", "t=1.0, máxima dispersión y dilución."),
     ]
     return [Variant(vid, f"t={tv:g}", f"t={tv:g}", {"t": tv}, en, es) for vid, tv, en, es in presets]
 

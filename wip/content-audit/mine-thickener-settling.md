@@ -1,4 +1,4 @@
-# Content audit — `mine-thickener-settling`
+# Content audit: `mine-thickener-settling`
 
 In-app content vs authoritative doc `docs/cases/mine-thickener-settling.md`.
 Date: 2026-07-15.
@@ -27,9 +27,9 @@ actual training details (net architecture, optimizer schedule, loss weights) are
 
 ## Contradictions (inApp vs docSays)
 
-### C1 — The method is RAR (FALSE). Doc: RAR was dropped; method is Adam→L-BFGS. [severity 3]
+### C1: The method is RAR (FALSE). Doc: RAR was dropped; method is Adam→L-BFGS. [severity 3]
 
-**File:** `frontend/src/content/cases/ThickenerContext.tsx` — the `<h3>` method heading and
+**File:** `frontend/src/content/cases/ThickenerContext.tsx`, the `<h3>` method heading and
 the paragraph under it, BOTH language branches (ES lines 57-67, EN lines 154-165).
 
 **inApp (EN, lines 154-165):**
@@ -45,7 +45,7 @@ the paragraph under it, BOTH language branches (ES lines 57-67, EN lines 154-165
 **docSays (Method, lines 27-31):**
 > "**Hard-front MMS family on the true nonlinear operator.** Net [3,64,64,64,64,1] tanh
 > (DeepXDE), Adam (24000, lr 1e-3) → L-BFGS, loss weights [1,10] ... **(RAR was dropped here
-> — it de-stabilised the stiff degenerate-diffusion residual; widening the front to W=0.10 +
+>, it de-stabilised the stiff degenerate-diffusion residual; widening the front to W=0.10 +
 > Adam→L-BFGS converges cleanly instead.)**"
 
 The app tells the reader RAR is the technique that makes this case work, over "several
@@ -65,31 +65,31 @@ doc" trap: the method claim is only stated once, and that one statement is wrong
 
 These were checked against the doc and hold:
 
-- **Governing PDE** `φ_t + ∂_z f_bk(φ) = ∂_z(D(φ) φ_z)` — matches doc line 12.
-- **MMS anchor** `φ*(z,t;R) = φ_lo + (φ_hi−φ_lo)·½(1−tanh((z−s)/W))`, `s(t)=z_0−R·t` —
+- **Governing PDE** `φ_t + ∂_z f_bk(φ) = ∂_z(D(φ) φ_z)`: matches doc line 12.
+- **MMS anchor** `φ*(z,t;R) = φ_lo + (φ_hi−φ_lo)·½(1−tanh((z−s)/W))`, `s(t)=z_0−R·t`, 
   matches doc line 19. The closed-form derivatives (φ*_z, φ*_t, φ*_zz) are a correct,
   value-adding expansion the doc does not spell out.
-- **Flux params** `φ_max=0.66`, `C=5`, hindered Richardson-Zaki — match doc line 15.
-- **Gel / degenerate switch** `φ_c=0.23`, tanh-regularized, C¹ residual — match doc lines 16-17.
-- **Front width** `W=0.10` and **rate range** `R∈[0.3,0.9]` — match doc lines 21-22.
-- **Six variants** R=0.30/0.42/0.54/0.66/0.78/0.90 — match doc line 35.
-- **Soft IC/BC** imposed equal to φ* so the reported L2 is the true PINN error — matches doc
+- **Flux params** `φ_max=0.66`, `C=5`, hindered Richardson-Zaki: match doc line 15.
+- **Gel / degenerate switch** `φ_c=0.23`, tanh-regularized, C¹ residual: match doc lines 16-17.
+- **Front width** `W=0.10` and **rate range** `R∈[0.3,0.9]`: match doc lines 21-22.
+- **Six variants** R=0.30/0.42/0.54/0.66/0.78/0.90: match doc line 35.
+- **Soft IC/BC** imposed equal to φ* so the reported L2 is the true PINN error: matches doc
   lines 28-29 ("soft-imposed on the whole (z,t,R) cube boundary incl. the t=0 IC").
 - **Honesty / scope** synthetic-illustrative, no public (z,t,φ) thickener field, not a plant
-  fit — matches doc lines 46-51.
+  fit, matches doc lines 46-51.
 - **results.ts answer** "t = 0.44 at the strongest dose" and "not within the window at the
-  weakest" — arithmetically correct: mid-height z=0.5 with z_0=0.9 gives t=0.4/R, so R=0.9→
+  weakest", arithmetically correct: mid-height z=0.5 with z_0=0.9 gives t=0.4/R, so R=0.9→
   t=0.444 and R=0.3→t=1.33 (>1, outside t∈[0,1]). Consistent.
-- **results.ts verdict** "sub-percent error vs the reference per regime" — consistent with the
+- **results.ts verdict** "sub-percent error vs the reference per regime": consistent with the
   doc's measured relative-L2 ≤ 0.41 % (line 39).
 - **constraints.ts** (MMS descending-front IC; R network input; MMS exact through genuine
-  nonlinear flux + degenerate D) — faithful to the doc, no RAR claim.
+  nonlinear flux + degenerate D), faithful to the doc, no RAR claim.
 
 ---
 
 ## Depth gaps (real doc content the app omits)
 
-### G1 — The true training recipe is missing. [ties to C1, high value]
+### G1: The true training recipe is missing. [ties to C1, high value]
 
 **File:** `frontend/src/content/cases/ThickenerContext.tsx`, method section.
 
@@ -104,7 +104,7 @@ paragraph occupies that slot:
 
 Replacing the false RAR paragraph with this real recipe fixes C1 and closes G1 in one edit.
 
-### G2 — The measured numbers are never surfaced in the deep Context. [minor]
+### G2: The measured numbers are never surfaced in the deep Context. [minor]
 
 The doc's Result table (lines 37-44) gives **relative-L2 ≤ 0.41 % across all 6 variants** and
 **ONNX parity max-abs 5.1e-7**. The Context says "the reported L2 is the true PINN error" but
@@ -112,7 +112,7 @@ never states what that error is. `results.ts` only says "sub-percent". Citing �
 optionally the ONNX parity, since the case runs live via onnxruntime-web) would ground the
 accuracy claim the Context alludes to.
 
-### G3 — `v_0 = −1` and `z_0 = 0.9` are not given numerically. [minor]
+### G3: `v_0 = −1` and `z_0 = 0.9` are not given numerically. [minor]
 
 The Context writes `f_bk = v_0 φ (1−φ/φ_max)^C` and `s(t) = z_0 − R·t` but lists only φ_max and
 C, and never pins v_0 or z_0. The doc gives **v_0 = −1** (line 15) and **z_0 = 0.9** (line 21).
@@ -123,7 +123,7 @@ R=0.9. Stating "front starts at z_0=0.9" makes the results answer self-consisten
 
 ## Concrete proposed enrichments (faithful to the doc; no invented numbers)
 
-### E1 (fixes C1 + G1) — Rewrite the method section. `ThickenerContext.tsx`
+### E1 (fixes C1 + G1): Rewrite the method section. `ThickenerContext.tsx`
 
 Replace the heading `The method: the sharp front + RAR` (ES: `El método: el frente afilado +
 RAR`) and its paragraph. Do NOT mention RAR as the method used. Proposed EN body, grounded in
@@ -142,14 +142,14 @@ doc lines 27-31:
 ES equivalent (mirror wording, keep KaTeX InlineMath for W, R, f_bk, D). Drop the "Wu et al.,
 CMAME 2023" RAR citation from this case, since RAR is not used.
 
-### E2 (closes G2) — Cite the measured error in the Context. `ThickenerContext.tsx`
+### E2 (closes G2): Cite the measured error in the Context. `ThickenerContext.tsx`
 
 In the formalization paragraph where it says "the reported L2 is the true PINN error", append
 (doc lines 39, 43): "and it stays **≤ 0.41 % relative-L2 across all six R variants**, well
 inside the < 2e-2 acceptance band." Optionally add to `results.ts` verdict: swap "sub-percent
 error" for "relative-L2 ≤ 0.41 % across the six variants".
 
-### E3 (closes G3) — Add v_0 and z_0. `ThickenerContext.tsx`
+### E3 (closes G3): Add v_0 and z_0. `ThickenerContext.tsx`
 
 In the Kynch-flux bullet, add `v_0=-1` alongside φ_max=0.66, C=5 (doc line 15). In the
 formalization paragraph, state the front starts at `z_0=0.9` (doc line 21) so the mid-height

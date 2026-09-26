@@ -1,10 +1,10 @@
-# ind-hidden-velocity — the current recovered from dye alone (the Hidden Fluid Mechanics mechanism)
+# ind-hidden-velocity: the current recovered from dye alone (the Hidden Fluid Mechanics mechanism)
 
 The flagship of the estimation reframe (issue #48): the case that demonstrates, at CPU-lane scale, the mechanism of
 **Hidden Fluid Mechanics** (Raissi, Yazdani & Karniadakis, *Science* 367(6481):1026-1030, 2020,
 [doi:10.1126/science.aaw4741](https://doi.org/10.1126/science.aaw4741)): estimating a velocity field from
 flow-visualization (passive scalar) data, "extracting quantitative information for which direct measurements may not
-be possible". The network never sees a velocity datum, and no IC/BC on the dye is imposed — that absence is the
+be possible". The network never sees a velocity datum, and no IC/BC on the dye is imposed, that absence is the
 selling point the paper states explicitly ("agnostic to the geometry or the initial and boundary conditions").
 
 ## Problem
@@ -23,12 +23,12 @@ around the vortex center by $t=1$.
 
 **Observed:** ~640 sparse space-time samples of $c$ with Gaussian noise (0.5% of max), plus the physics.
 **Held out:** another 160 samples never shown to the optimizer (out-of-sample dye validation).
-**Unknown (the estimate):** the whole velocity field $(u, v)$ — two hidden fields that were never measured.
+**Unknown (the estimate):** the whole velocity field $(u, v)$, two hidden fields that were never measured.
 
 ## The dye truth (a numerical reference with its checks)
 
 There is no closed form for $c$ under a non-uniform flow, so the dye truth is a seeded explicit finite-difference
-solve on a $129^2$ grid — with its stability verified, never assumed (the lesson from the diverged Navier FDM):
+solve on a $129^2$ grid, with its stability verified, never assumed (the lesson from the diverged Navier FDM):
 
 - **Central differencing is legitimate** because the cell Péclet number $A\,\Delta x/D \approx 0.59 < 2$; an upwind
   scheme would inject numerical diffusion of order $A\,\Delta x/2 \approx 0.006$, comparable to $D$ itself, and
@@ -54,7 +54,7 @@ formulation does not export cleanly).
 
 The $u_t = v_t = 0$ residuals encode the stated **steady-flow assumption**, and they are load-bearing: in the first
 training run (without them) the net spent its freedom on a time-varying velocity that ~640 sparse dye samples cannot
-pin, and the recovered current was 38-60% off even inside the swept region — measured, not guessed. Declaring the
+pin, and the recovered current was 38-60% off even inside the swept region, measured, not guessed. Declaring the
 current steady aggregates the dye information from all times into one field. This mirrors real practice: asserting
 what is legitimately known (a quasi-steady current over the observation window) and letting the data determine the rest.
 Training: Adam $1.5\times10^4$ steps then L-BFGS, seed 42.
@@ -62,12 +62,12 @@ Training: Adam $1.5\times10^4$ steps then L-BFGS, seed 42.
 ## Honest identifiability: the swept mask
 
 Where dye never passed, $\nabla c \approx 0$ and transport does **not** constrain $\mathbf{u}$: the velocity is
-unidentifiable there for ANY method — the same physics that made the heat2d-inverse recovery local to $|\nabla T|$.
+unidentifiable there for ANY method, the same physics that made the heat2d-inverse recovery local to $|\nabla T|$.
 The case bakes the **dye-swept mask** (where $\max_t |\nabla c_{\mathrm{FD}}|$ exceeds 5% of its max; ~67% of the
 domain) into every trace and reports the error split:
 
-- `speed_rel_rmse_swept` — relative speed RMSE **inside** the swept region (the recoverable claim),
-- `speed_rel_rmse_dead` — the never-dyed dead zones (published as-is; expected large),
+- `speed_rel_rmse_swept`: relative speed RMSE **inside** the swept region (the recoverable claim),
+- `speed_rel_rmse_dead`: the never-dyed dead zones (published as-is; expected large),
 - the full-grid `l2_relative` on $u$ (the primary metric) honestly includes both.
 
 ## Result (measured, seed 42)

@@ -19,22 +19,22 @@ plateaus at O(1).
 The `causal-curriculum` group collects the two complementary, well-validated remedies that both work by
 **imposing a temporal ordering on what the optimiser is allowed to fit**:
 
-1. **Causal training** (Wang, Sankaran & Perdikaris, CMAME 2024) — a soft, *continuous* re-weighting of
+1. **Causal training** (Wang, Sankaran & Perdikaris, CMAME 2024): a soft, *continuous* re-weighting of
    the residual loss so that each time slice is only weighted once all earlier slices have already
    converged. A single extra hyperparameter, no architectural change.
 2. **Curriculum regularisation + sequence-to-sequence / time-marching** (Krishnapriyan et al.,
-   NeurIPS 2021) — a *discrete* schedule: ramp a difficulty knob (e.g. the convection or reaction
+   NeurIPS 2021), a *discrete* schedule: ramp a difficulty knob (e.g. the convection or reaction
    coefficient) from easy to hard while warm-starting each stage, and/or solve the time interval in
    short successive segments instead of all at once.
 
-Both are **training schedules, not architectures** — they compose freely with Fourier features,
+Both are **training schedules, not architectures**, they compose freely with Fourier features,
 modified-MLP, PirateNets, adaptive sampling and NTK/grad-norm loss weighting. Neither is a built-in
 flag in DeepXDE; both are implemented as a **manual schedule** around the standard training loop (see
 "How it maps into PINN-Lab" below).
 
 ---
 
-## Method 1 — Causal training
+## Method 1: Causal training
 
 ### Explanation
 
@@ -52,7 +52,7 @@ w_i \;=\; \exp\!\left(-\,\epsilon \sum_{k=1}^{i-1} \mathcal{L}_r(t_k, \theta)\ri
 $$
 
 The weight $w_i$ is large (near 1) only when the **cumulative** residual of all earlier bins
-$\sum_{k<i}\mathcal{L}_r(t_k,\theta)$ is small — i.e. bin $i$ is only "switched on" in the loss once the
+$\sum_{k<i}\mathcal{L}_r(t_k,\theta)$ is small, i.e. bin $i$ is only "switched on" in the loss once the
 solution up to $t_{i-1}$ is already accurate. As training proceeds the front of converged bins sweeps
 forward in time, exactly mimicking how a time-stepping numerical solver marches the solution. The
 weights $w_i$ are treated as **constants** for the gradient step (stop-gradient / `detach`); they are
@@ -68,7 +68,7 @@ $$
 \min_i w_i \;>\; \delta \qquad (\text{typically } \delta \approx 0.99),
 $$
 
-which holds only when *every* bin's cumulative-earlier residual is small — i.e. the whole time interval
+which holds only when *every* bin's cumulative-earlier residual is small, i.e. the whole time interval
 has been resolved in causal order. The paper reports 10–100× lower relative L2 error on chaotic/stiff
 benchmarks (Allen–Cahn, Kuramoto–Sivashinsky, Navier–Stokes) that vanilla PINNs cannot solve at all.
 
@@ -91,16 +91,16 @@ vol. 421, 116813, 2024. arXiv:2203.07404. DOI: 10.1016/j.cma.2024.116813.
 
 ### Which framework implements it
 
-- **jaxpi** (`PredictiveIntelligenceLab/jaxpi`, JAX) — the canonical reference implementation; causal
+- **jaxpi** (`PredictiveIntelligenceLab/jaxpi`, JAX): the canonical reference implementation; causal
   weighting is a first-class config option and the original equations come from this group.
-- **PINA** (`mathLab/PINA`, PyTorch Lightning, MIT) — exposes it as the `CausalPINN` solver.
-- **DeepXDE** — **no built-in flag.** Implemented in PINN-Lab as a manual residual-bin re-weighting on
+- **PINA** (`mathLab/PINA`, PyTorch Lightning, MIT): exposes it as the `CausalPINN` solver.
+- **DeepXDE**: **no built-in flag.** Implemented in PINN-Lab as a manual residual-bin re-weighting on
   the PyTorch backend (a custom loss that bins collocation points by time, computes per-bin residuals,
   forms $w_i$ with `torch.no_grad()`, and returns the weighted sum).
 
 ### Which PINN-Lab case exercises it
 
-- **Primary anchor:** `bench-heat1d` (1D transient heat/diffusion $u_t = \alpha u_{xx}$) — the smallest
+- **Primary anchor:** `bench-heat1d` (1D transient heat/diffusion $u_t = \alpha u_{xx}$): the smallest
   time-dependent case, used to validate the causal-weighting harness against the analytic solution
   before it is reused on harder cases (per coverage map row 2).
 - **Reused by:** `bench-allencahn` (stiff $u_t = \varepsilon^2 u_{xx} + u - u^3$, combined with
@@ -109,7 +109,7 @@ vol. 421, 116813, 2024. arXiv:2203.07404. DOI: 10.1016/j.cma.2024.116813.
 
 ---
 
-## Method 2 — Curriculum regularisation + sequence-to-sequence (time-marching)
+## Method 2: Curriculum regularisation + sequence-to-sequence (time-marching)
 
 ### Explanation
 
@@ -119,8 +119,8 @@ but an **optimisation** failure: as the convection or reaction coefficient grows
 landscape develops sharp, ill-conditioned minima that gradient descent cannot reach from a cold start.
 They propose two schedule-based fixes that need no new architecture:
 
-- **Curriculum regularisation.** Solve an easy version of the PDE first — small convection coefficient
-  $\beta$, small reaction rate $\rho$, or large diffusion — then **warm-start** the next, slightly harder
+- **Curriculum regularisation.** Solve an easy version of the PDE first: small convection coefficient
+  $\beta$, small reaction rate $\rho$, or large diffusion, then **warm-start** the next, slightly harder
   stage from the previous stage's weights, ramping the coefficient up to its target value over a sequence
   of stages. Each stage starts in a well-conditioned basin near the previous solution, so the optimiser
   never has to cross the bad landscape in one jump.
@@ -128,7 +128,7 @@ They propose two schedule-based fixes that need no new architecture:
 - **Sequence-to-sequence / time-marching.** Instead of predicting the entire space–time field at once,
   split $[0,T]$ into short successive sub-intervals and train them in order, each sub-interval taking the
   previous one's terminal state as its initial condition. This is the discrete, "hard" analogue of causal
-  training — the network only ever sees a short, well-conditioned horizon at a time, which directly
+  training, the network only ever sees a short, well-conditioned horizon at a time, which directly
   restores temporal causality.
 
 Both cut error by **one to two orders of magnitude** on advection-dominated and stiff benchmarks where
@@ -168,16 +168,16 @@ Reference code: `github.com/a1k12/characterizing-pinns-failure-modes`.
 
 ### Which framework implements it
 
-- **No framework ships a turnkey curriculum/time-marching flag** — both methods are *recipes* over the
+- **No framework ships a turnkey curriculum/time-marching flag**: both methods are *recipes* over the
   standard training loop. The authors' reference code (above) is the canonical implementation.
-- **DeepXDE / jaxpi** — implemented as a manual schedule: an outer Python loop that (a) for curriculum,
+- **DeepXDE / jaxpi**: implemented as a manual schedule: an outer Python loop that (a) for curriculum,
   rebuilds the PDE residual with an increasing coefficient and re-`compile`/re-`train`s from the prior
   state; (b) for time-marching, advances a sliding `TimeDomain` window, baking the previous window's
   terminal field as the next window's initial condition.
 
 ### Which PINN-Lab case exercises it
 
-- **Primary anchor:** `bench-allencahn` (stiff Allen–Cahn) — the case that most needs time-marching /
+- **Primary anchor:** `bench-allencahn` (stiff Allen–Cahn): the case that most needs time-marching /
   curriculum to converge at all; documented as "PirateNets; causal / time-marching" in the coverage map
   (row 4).
 - **Naturally applicable to:** `poll-ocean-transport` and `poll-groundwater-rt` (advection-dominated
@@ -210,7 +210,7 @@ windows, and apply causal weighting *within* each window.
 ## Honest limitations
 
 - **Extra hyperparameters, no free lunch.** Causal training adds $\epsilon$ (and its annealing schedule),
-  the number of time bins $N_t$, and the stopping $\delta$ — all problem-dependent and requiring tuning.
+  the number of time bins $N_t$, and the stopping $\delta$, all problem-dependent and requiring tuning.
   A poorly chosen $\epsilon$ either reverts to the vanilla PINN (too small) or stalls progress to a crawl
   (too large). Curriculum adds the difficulty schedule $\{\beta^{(m)}\}$ and the per-stage iteration
   budget.
@@ -218,19 +218,19 @@ windows, and apply causal weighting *within* each window.
   per-bin residual bookkeeping every iteration; time-marching and curriculum run *multiple sequential
   trainings*. This compounds the headline PINN limitation (PINN-Lab dossier §1): for a single well-posed
   *forward* problem, a classical FEM/FVM solver is usually faster and more accurate. These schedules make
-  hard time-dependent PINNs *converge at all* — they do not make PINNs beat a good numerical solver on
+  hard time-dependent PINNs *converge at all*, they do not make PINNs beat a good numerical solver on
   forward-solve speed.
 - **Causal weighting can over-emphasise early times.** With large $\epsilon$ the late-time bins are
   starved of gradient until very late in training, so a fixed iteration budget may leave the final time
   slices under-resolved. The annealing schedule and the $\min_i w_i > \delta$ check are there precisely to
   detect this.
 - **Time-marching propagates error.** Each window inherits the previous window's terminal state as its
-  IC, so any error compounds across windows — short windows (more transfers, faster error growth) vs long
+  IC, so any error compounds across windows, short windows (more transfers, faster error growth) vs long
   windows (harder each, but fewer transfers) is a genuine tradeoff, and the IC-transfer must be evaluated
   consistently (re-bake the previous net's terminal field on the new window's spatial grid).
 - **Not a remedy for capacity or spectral-bias failures.** If the failure is high-frequency
   representation (spectral bias) rather than temporal ordering, you need Fourier features / SIREN /
-  PirateNets *as well* — causality fixes *when* the optimiser fits, not *what* the network can represent.
+  PirateNets *as well*, causality fixes *when* the optimiser fits, not *what* the network can represent.
 
 ---
 

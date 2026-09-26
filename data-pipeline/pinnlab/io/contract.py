@@ -1,4 +1,4 @@
-"""CONTRACT 1 — ingestion (raw -> pipeline): the *bring-your-own-data* gate for INVERSE PINN cases.
+"""CONTRACT 1, ingestion (raw -> pipeline): the *bring-your-own-data* gate for INVERSE PINN cases.
 
 Forward cases need no external data (the PDE + BC/IC fully determine the solution). Inverse cases assimilate sparse,
 possibly noisy MEASUREMENTS of the field to recover unknown PDE coefficients; this contract declares the required

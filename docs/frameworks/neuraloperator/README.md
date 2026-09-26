@@ -1,10 +1,10 @@
-# neuraloperator — the operator-learning reference library (FNO / TFNO / SFNO / GINO)
+# neuraloperator: the operator-learning reference library (FNO / TFNO / SFNO / GINO)
 
-> Framework guide for PINN-Lab. Role: the **operator-learning** lane — parametric, many-query
+> Framework guide for PINN-Lab. Role: the **operator-learning** lane, parametric, many-query
 > surrogates that map an *input function* (e.g. a permeability field $a(x)$) to a *solution field*
 > $u(x)$ over a whole family of PDE instances, not one instance at a time. It is the documented
 > **reference** for PINN-Lab's `bench-darcy-operator` case, which ships a **self-contained FNO**
-> (`data-pipeline/pinnlab/model/fno.py`) for clean ONNX export — `neuralop` itself is **not** a dependency.
+> (`data-pipeline/pinnlab/model/fno.py`) for clean ONNX export, `neuralop` itself is **not** a dependency.
 
 ---
 
@@ -17,7 +17,7 @@ instance: change the boundary data, the source, or a coefficient field and you m
 $$\mathcal{G}^{\dagger} : a \mapsto u, \qquad a \in \mathcal{A}, \; u \in \mathcal{U},$$
 
 a map between two function spaces. Once trained on samples $\{(a_i, u_i)\}$ drawn from a distribution
-over $\mathcal{A}$, a single forward pass returns the solution for a **new** input function $a$ — no
+over $\mathcal{A}$, a single forward pass returns the solution for a **new** input function $a$, no
 retraining, no inner optimization loop. This is exactly the regime the dossier reserves operators for:
 **parametric / many-query surrogates**, where the same PDE family is solved thousands of times
 (uncertainty quantification, inverse design, real-time control), and where a per-instance PINN or even
@@ -30,9 +30,9 @@ a classical solver would be too slow.
 | Model | Import | When to use |
 |---|---|---|
 | **FNO** | `from neuralop.models import FNO` | The default. Regular grids, periodic-ish domains; the Darcy case. |
-| **TFNO** | `from neuralop.models import TFNO` | Tensorized/factorized FNO — fewer parameters via low-rank (Tucker/CP) factorization of the spectral weights, better generalization on small data. |
-| **SFNO** | `from neuralop.models import SFNO` | Spherical FNO — uses the spherical harmonic transform instead of the FFT; for data on the sphere (weather/climate). Needs `torch_harmonics` installed. |
-| **GINO** | `from neuralop.models import GINO` | Geometry-Informed NO — a GNO encoder/decoder around an FNO latent grid; for **irregular geometries / point clouds / meshes** (3D CFD over arbitrary shapes). |
+| **TFNO** | `from neuralop.models import TFNO` | Tensorized/factorized FNO, fewer parameters via low-rank (Tucker/CP) factorization of the spectral weights, better generalization on small data. |
+| **SFNO** | `from neuralop.models import SFNO` | Spherical FNO, uses the spherical harmonic transform instead of the FFT; for data on the sphere (weather/climate). Needs `torch_harmonics` installed. |
+| **GINO** | `from neuralop.models import GINO` | Geometry-Informed NO, a GNO encoder/decoder around an FNO latent grid; for **irregular geometries / point clouds / meshes** (3D CFD over arbitrary shapes). |
 
 (Other exported models in 2.0.0: `UNO`, `UQNO`, `FNOGNO`, `CODANO`, `RNO`, `OTNO`, `LocalNO`.)
 
@@ -54,12 +54,12 @@ of **modes** rather than on grid points, the layer is **discretization-invariant
 act on an input sampled on *any* grid resolution. That single property gives FNO its two headline
 capabilities:
 
-1. **Discretization invariance** — train at 16×16, evaluate at 128×128 (the operator is defined on the
+1. **Discretization invariance**: train at 16×16, evaluate at 128×128 (the operator is defined on the
    function, not the mesh).
-2. **Zero-shot super-resolution** — predict a higher-resolution output than anything seen in training,
+2. **Zero-shot super-resolution**: predict a higher-resolution output than anything seen in training,
    in one forward pass, with no fine-tuning.
 
-The number of retained modes $k_{\max}$ per axis is the `n_modes` hyperparameter — the single most
+The number of retained modes $k_{\max}$ per axis is the `n_modes` hyperparameter, the single most
 important architectural knob.
 
 ### PINO (physics-informed operator), in one line
@@ -72,14 +72,14 @@ accuracy with far less data. PINO is a training strategy on top of an FNO, not a
 ### Honest limitations (document these on the case page)
 
 Operators are **bounded by their training distribution**, and FNO specifically has well-characterized
-failure modes — call them out, do not hide them:
+failure modes, call them out, do not hide them:
 
 - **Fixed modes cannot synthesize unseen high frequencies.** The spectral layer truncates everything
   above $k_{\max}$; on inputs with energy above the trained band (or at resolutions the high-frequency
   content was never seen at), error concentrates near the Nyquist frequency of the training grid. Spectral
   bias toward low frequencies is intrinsic to the architecture (Qin et al., arXiv:2404.07200).
 - **Out-of-distribution boundary conditions / parameters error badly.** A shift in BCs or in the
-  coefficient distribution can inflate error by **more than an order of magnitude** — FNO overfits to
+  coefficient distribution can inflate error by **more than an order of magnitude**, FNO overfits to
   the boundary/parameter regime it was trained on (Failure-modes study, arXiv:2601.11428).
 - **Artificial energy dissipation on nonlinear systems.** Mode truncation accumulated across depth
   manifests as spurious dissipation and manipulated frequency content, and rollouts of chaotic systems
@@ -94,7 +94,7 @@ Benchmark page must show where the operator degrades.
 ## Install (verified)
 
 `neuraloperator` 2.0.0 (released **2025-10-22**, MIT, Python ≥ 3.9, PyTorch backend). PINN-Lab does
-**not** install it — the `bench-darcy-operator` case ships a self-contained FNO (`model/fno.py`); the
+**not** install it, the `bench-darcy-operator` case ships a self-contained FNO (`model/fno.py`); the
 steps below are for readers who want the full reference library. If installed, it would belong in the
 **heavy precompute venv** (`.venv-pipeline`), never the live lane.
 
@@ -186,7 +186,7 @@ from neuralop.training import AdamW
 import torch
 
 l2loss = LpLoss(d=2, p=2)        # relative L2 over the 2D field
-h1loss = H1Loss(d=2)             # H1: penalizes value AND gradient — preferred for PDE fields
+h1loss = H1Loss(d=2)             # H1: penalizes value AND gradient, preferred for PDE fields
 train_loss  = h1loss
 eval_losses = {"h1": h1loss, "l2": l2loss}
 
@@ -273,14 +273,14 @@ print("zero-shot super-res output shape:", pred_32.shape)
 
 The discretization-invariance is the load-bearing point: `model` was only ever shown 16×16 data, yet
 `model(x_32)` returns a coherent 32×32 field. Predictions at the unseen resolution are noisier (the
-high-frequency content above the trained band was never observed — exactly the spectral-bias limitation
+high-frequency content above the trained band was never observed, exactly the spectral-bias limitation
 above), which is precisely the behavior the Benchmark page should quantify.
 
 ---
 
 ## ONNX-export notes
 
-> **This is the sharp edge for the web lane — read before promising a live FNO case.**
+> **This is the sharp edge for the web lane, read before promising a live FNO case.**
 
 The standard PINN-Lab contract exports the raw `nn.Module` and verifies parity:
 
@@ -305,14 +305,14 @@ TorchScript tracer (`torch.onnx.export(..., dynamo=False)`) historically does **
 (pytorch/pytorch #112382, #113444). Practical guidance, in order of preference:
 
 1. **Use the dynamo-based exporter** (`dynamo=True`, opset ≥ 18), which has FFT/complex coverage the
-   legacy path lacks. **Verify** it succeeds on your installed torch/onnx versions — FFT/complex export
+   legacy path lacks. **Verify** it succeeds on your installed torch/onnx versions, FFT/complex export
    support is version-sensitive, so pin and test it in CI, do not assume.
 2. **If export fails**, the FNO case stays **precompute-only**: bake the evaluated field to
    `data/artifacts/bench-darcy-operator` and serve it through the **replay lane**. This is an acceptable
-   and honest outcome — the gate (`core/gate.py`) should mark the case `precompute` when the ONNX export
+   and honest outcome, the gate (`core/gate.py`) should mark the case `precompute` when the ONNX export
    or `onnxruntime-web` inference check fails. Do **not** ship a half-working live FNO.
 3. **Alternative**: re-implement the spectral conv with FFT decomposed into real-valued matmuls (no
-   complex dtype, no `fft_rfft` node) before export — more work; only if a live FNO is a hard requirement.
+   complex dtype, no `fft_rfft` node) before export, more work; only if a live FNO is a hard requirement.
 
 **Parity gate (mandatory).** Whichever path is taken, assert the ONNX runtime output matches the
 PyTorch model on the same input within tolerance before shipping:
@@ -335,12 +335,12 @@ operators are good replay-lane candidates even when export technically succeeds.
 
 | Aspect | Mapping |
 |---|---|
-| **Lane** | **Offline / precompute** (`.venv-pipeline`). Operator training is heavy and dataset-based. PINN-Lab uses a **self-contained FNO** (`model/fno.py`), **not** the `neuralop` package — neither enters the live lane; `neuralop` is the documented reference only. |
-| **Primary case** | **`bench-darcy-operator`** (canonical Group A) — exercises FNO + PINO, discretization-invariance, and zero-shot super-resolution. The one operator case kept in v1 to harden the operator lane (dossier Open-Question §7: keep one, defer the rest). |
-| **Methods exercised** | `methods/fno.md` (#19) and `methods/pino.md` (#20) — both first land in `bench-darcy-operator`. |
+| **Lane** | **Offline / precompute** (`.venv-pipeline`). Operator training is heavy and dataset-based. PINN-Lab uses a **self-contained FNO** (`model/fno.py`), **not** the `neuralop` package, neither enters the live lane; `neuralop` is the documented reference only. |
+| **Primary case** | **`bench-darcy-operator`** (canonical Group A), exercises FNO + PINO, discretization-invariance, and zero-shot super-resolution. The one operator case kept in v1 to harden the operator lane (dossier Open-Question §7: keep one, defer the rest). |
+| **Methods exercised** | `methods/fno.md` (#19) and `methods/pino.md` (#20), both first land in `bench-darcy-operator`. |
 | **Live vs replay** | Decided by the gate per case. FNO ONNX export is fragile (FFT/complex); if export + `onnxruntime-web` inference pass the gate, serve live, **else replay** the baked field. Default expectation for the first operator case is **replay-backed**, with live as a stretch goal. |
-| **Validation obligation** | Operators are distribution-bounded — `bench-darcy-operator` **must** be validated **out-of-distribution** against a classical numerical Darcy reference (finite-difference), and the Benchmark page must surface the documented failure modes (unseen high freqs, OOD BC blow-up, energy dissipation). |
-| **Future use** | Any *parametric* mining/pollution surrogate (a PDE family rather than a single instance) would also use this engine — deferred to v2 per the dossier; the Darcy case proves the lane first. |
+| **Validation obligation** | Operators are distribution-bounded, `bench-darcy-operator` **must** be validated **out-of-distribution** against a classical numerical Darcy reference (finite-difference), and the Benchmark page must surface the documented failure modes (unseen high freqs, OOD BC blow-up, energy dissipation). |
+| **Future use** | Any *parametric* mining/pollution surrogate (a PDE family rather than a single instance) would also use this engine, deferred to v2 per the dossier; the Darcy case proves the lane first. |
 
 **One-line stance:** use `neuraloperator` only where the problem is genuinely a *family* of PDE
 instances to be solved many times; for single forward/inverse instances stay on DeepXDE /
@@ -350,12 +350,12 @@ PhysicsNeMo-Sym. Never present an operator as a PINN.
 
 ## References
 
-- Li, Kovachki, Azizzadenesheli, Liu, Bhattacharya, Stuart, Anandkumar — *Fourier Neural Operator for
+- Li, Kovachki, Azizzadenesheli, Liu, Bhattacharya, Stuart, Anandkumar: *Fourier Neural Operator for
   Parametric Partial Differential Equations.* ICLR 2021. arXiv:2010.08895.
-- Kovachki et al. — *Neural Operator: Learning Maps Between Function Spaces.* JMLR 2023. arXiv:2108.08481.
-- Li et al. — *Physics-Informed Neural Operator for Learning PDEs* (PINO). ACM/IMS J. Data Science 2024.
+- Kovachki et al.: *Neural Operator: Learning Maps Between Function Spaces.* JMLR 2023. arXiv:2108.08481.
+- Li et al.: *Physics-Informed Neural Operator for Learning PDEs* (PINO). ACM/IMS J. Data Science 2024.
   arXiv:2111.03794.
-- Kossaifi, Kovachki, Li, et al. — *A Library for Learning Neural Operators* (the `neuraloperator`
+- Kossaifi, Kovachki, Li, et al.: *A Library for Learning Neural Operators* (the `neuraloperator`
   library paper). 2024/2025. arXiv:2412.10354.
 - Failure modes: *Forcing and Diagnosing Failure Modes of Fourier Neural Operators Across Diverse PDE
   Families.* arXiv:2601.11428. · Qin et al., *Toward a Better Understanding of Fourier Neural Operators:

@@ -1,4 +1,4 @@
-# dyn-pendulum-hnn — Structure-preserving learning: does the model respect the energy?
+# dyn-pendulum-hnn: Structure-preserving learning: does the model respect the energy?
 
 **Method:** `hamiltonian-symplectic` · **Engine:** `hnn-torch` · **Category:** canonical-benchmark ·
 **Label:** synthetic-illustrative · **Lane:** precompute

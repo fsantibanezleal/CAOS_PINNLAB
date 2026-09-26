@@ -59,7 +59,7 @@ def rel_l2(a, b):
 
 
 def radial_spectrum(field):
-    """Azimuthally-averaged |FFT| vs radial wavenumber — the spectral-energy profile."""
+    """Azimuthally-averaged |FFT| vs radial wavenumber, the spectral-energy profile."""
     F = np.abs(np.fft.fftshift(np.fft.fft2(field)))
     n = field.shape[0]
     cy = cx = n // 2

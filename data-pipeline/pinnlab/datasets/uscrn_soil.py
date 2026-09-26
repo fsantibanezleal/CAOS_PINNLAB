@@ -1,8 +1,8 @@
 """Vendor REAL soil-temperature observations from NOAA's USCRN open archive for `env-soil-heat-real`.
 
 The U.S. Climate Reference Network reports daily-mean soil temperature at five standard depths (5, 10, 20, 50, 100 cm)
-at research-grade stations. Subsurface heat conduction is a genuinely diffusive 1D system — the surface temperature
-signal propagates downward damped + phase-lagged exactly as the heat equation predicts — so this is the ideal REAL
+at research-grade stations. Subsurface heat conduction is a genuinely diffusive 1D system, the surface temperature
+signal propagates downward damped + phase-lagged exactly as the heat equation predicts, so this is the ideal REAL
 dataset for a PINN inverse that recovers thermal diffusivity and validates it out-of-sample against held-out depths.
 
 Station IL_Champaign_9_SW (central Illinois) over 2019–2021 has complete soil-temperature records (0% missing in 2021,
@@ -80,7 +80,7 @@ def fetch_and_vendor(out_path: str | Path) -> dict:
     span_s = float((days.max() - days.min()) * 86400.0)  # seconds spanned (for physical alpha conversion)
     payload = {
         "schema": "pinnlab.dataset.uscrn/v1",
-        "source": "NOAA USCRN daily01 — SOIL_TEMP_{5,10,20,50,100}_DAILY (deg C)",
+        "source": "NOAA USCRN daily01, SOIL_TEMP_{5,10,20,50,100}_DAILY (deg C)",
         "url_template": BASE,
         "fetched": str(date.today()),
         "station": STATION,

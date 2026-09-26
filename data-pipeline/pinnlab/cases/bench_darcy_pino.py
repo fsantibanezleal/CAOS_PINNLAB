@@ -1,4 +1,4 @@
-"""Group A · canonical-benchmark — PINO: the PHYSICS-INFORMED neural operator on the Darcy family.
+"""Group A · canonical-benchmark, PINO: the PHYSICS-INFORMED neural operator on the Darcy family.
 
 The companion to `bench-darcy-operator`. That case learns the Darcy solution operator from SOLVED PAIRS only
 (data-driven FNO). This one adds the governing equation to the operator's own training loss, which is the

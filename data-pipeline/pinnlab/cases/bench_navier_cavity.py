@@ -1,4 +1,4 @@
-"""Group A · canonical-benchmark — 2D lid-driven cavity, steady incompressible Navier-Stokes (3 outputs u,v,p).
+"""Group A · canonical-benchmark, 2D lid-driven cavity, steady incompressible Navier-Stokes (3 outputs u,v,p).
 
 Governing equations (Re = 1/nu = 100, nu = 0.01, rho = 1):
     x-momentum:  u u_x + v u_y = -(1/rho) p_x + nu (u_xx + u_yy)
@@ -20,12 +20,12 @@ from .base import CaseSpec, Variant
 RHO = 1.0
 NU = 0.01  # Re = U L / nu = 1/0.01 = 100
 
-# Ghia et al. 1982, Re=100 — u along the vertical centerline x=0.5
+# Ghia et al. 1982, Re=100: u along the vertical centerline x=0.5
 GHIA_Y = np.array([0.0000, 0.0547, 0.0625, 0.0703, 0.1016, 0.1719, 0.2813, 0.4531,
                    0.5000, 0.6172, 0.7344, 0.8516, 0.9531, 0.9609, 0.9688, 0.9766, 1.0000])
 GHIA_U = np.array([0.00000, -0.03717, -0.04192, -0.04775, -0.06434, -0.10150, -0.15662, -0.21090,
                    -0.20581, -0.13641, 0.00332, 0.23151, 0.68717, 0.73722, 0.78871, 0.84123, 1.00000])
-# Ghia et al. 1982, Re=100 — v along the horizontal centerline y=0.5
+# Ghia et al. 1982, Re=100: v along the horizontal centerline y=0.5
 GHIA_X = np.array([0.0000, 0.0625, 0.0703, 0.0781, 0.0938, 0.1563, 0.2266, 0.2344,
                    0.5000, 0.8047, 0.8594, 0.9063, 0.9453, 0.9531, 0.9609, 0.9688, 1.0000])
 GHIA_V = np.array([0.00000, 0.09233, 0.10091, 0.10890, 0.12317, 0.16077, 0.17507, 0.17527,

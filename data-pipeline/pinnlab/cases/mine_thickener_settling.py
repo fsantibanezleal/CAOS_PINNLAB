@@ -1,4 +1,4 @@
-"""Group B · mining-mineral-processing — thickener / tailings sedimentation (Bürger-Concha settling, forward MMS),
+"""Group B · mining-mineral-processing, thickener / tailings sedimentation (Bürger-Concha settling, forward MMS),
 PARAMETRIC in the front descent rate R.
 
 1D batch settling of a flocculated suspension: the solid volume fraction phi(z,t) obeys the strongly-degenerate
@@ -6,7 +6,7 @@ convection-diffusion (Kynch hindered settling + sediment consolidation) conserva
     phi_t + d/dz f_bk(phi) = d/dz( D(phi) phi_z )
 with Richardson-Zaki batch flux f_bk = v0 phi (1-phi/phi_max)^C and a degenerate diffusion D(phi) that switches on
 only above the gel concentration phi_c (regularized by a tanh switch so the residual is C^1). A sharp settling front
-descends from the clear supernatant and a consolidating bed rises — the canonical "applied" moving-front case.
+descends from the clear supernatant and a consolidating bed rises, the canonical "applied" moving-front case.
 
 The validation anchor is a Method-of-Manufactured-Solutions descending tanh front whose source f = L[phi*] is derived
 analytically through the GENUINE nonlinear f_bk + degenerate D, so phi* solves the modified PDE EXACTLY for every R:
@@ -81,14 +81,14 @@ def analytic(ztR: np.ndarray) -> np.ndarray:
 
 def variants() -> list[Variant]:
     presets = [
-        ("r030", 0.30, "Slow settle (R=0.30) — a gently descending mud-line; the bed barely forms.",
-                        "Sedimentación lenta (R=0.30) — la interfase desciende suavemente; el lecho apenas se forma."),
-        ("r042", 0.42, "R=0.42 — moderate descent.", "R=0.42 — descenso moderado."),
-        ("r054", 0.54, "R=0.54 — clear settling, bed building.", "R=0.54 — sedimentación clara, el lecho crece."),
-        ("r066", 0.66, "R=0.66 — fast front, well-defined bed.", "R=0.66 — frente rápido, lecho bien definido."),
-        ("r078", 0.78, "R=0.78 — rapid settle (near the legacy case).", "R=0.78 — sedimentación rápida (cerca del caso original)."),
-        ("r090", 0.90, "Fast settle (R=0.90) — the mud-line drops to the column bottom by t=1.",
-                        "Sedimentación rápida (R=0.90) — la interfase llega al fondo de la columna en t=1."),
+        ("r030", 0.30, "Slow settle (R=0.30), a gently descending mud-line; the bed barely forms.",
+                        "Sedimentación lenta (R=0.30), la interfase desciende suavemente; el lecho apenas se forma."),
+        ("r042", 0.42, "R=0.42, moderate descent.", "R=0.42, descenso moderado."),
+        ("r054", 0.54, "R=0.54, clear settling, bed building.", "R=0.54, sedimentación clara, el lecho crece."),
+        ("r066", 0.66, "R=0.66, fast front, well-defined bed.", "R=0.66, frente rápido, lecho bien definido."),
+        ("r078", 0.78, "R=0.78, rapid settle (near the legacy case).", "R=0.78, sedimentación rápida (cerca del caso original)."),
+        ("r090", 0.90, "Fast settle (R=0.90), the mud-line drops to the column bottom by t=1.",
+                        "Sedimentación rápida (R=0.90), la interfase llega al fondo de la columna en t=1."),
     ]
     return [Variant(vid, f"R={r:g}", f"R={r:g}", {"R": r}, en, es) for vid, r, en, es in presets]
 

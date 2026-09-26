@@ -1,4 +1,4 @@
-# Hybrid data+physics PINN research (CFD) — verified — 2026-07-09
+# Hybrid data+physics PINN research (CFD): verified, 2026-07-09
 
 Source: deep-research harness (7 verified claims). The HONEST scoping (hybrid wins the ASSIMILATION/INVERSE niche, NOT general forward CFD) is binding.
 

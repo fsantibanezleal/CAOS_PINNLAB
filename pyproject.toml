@@ -1,4 +1,4 @@
-# PINN-Lab — the offline engine package (ADR-0057, instantiated from template_repo_product). The package `pinnlab`
+# PINN-Lab: the offline engine package (ADR-0057, instantiated from template_repo_product). The package `pinnlab`
 # holds the staged pipeline + the two data contracts + the pure numeric core; the heavy SOTA PINN engines
 # (DeepXDE/PhysicsNeMo) are pinned in data-pipeline/requirements.txt and documented in docs/frameworks/.
 [build-system]
@@ -8,13 +8,13 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "pinnlab"
 # PEP 440 form of the display version X.XX.XXX (see CHANGELOG.md + pinnlab.__version__).
-version = "0.31.1"
-description = "PINN-Lab — offline PINN pipeline (DeepXDE -> ONNX) + two data contracts + staged pipeline + replay artifacts."
+version = "0.31.2"
+description = "PINN-Lab, offline PINN pipeline (DeepXDE -> ONNX) + two data contracts + staged pipeline + replay artifacts."
 readme = "README.md"
 requires-python = ">=3.11"
 license = { text = "MIT" }
 authors = [{ name = "Felipe Santibáñez-Leal" }]
-# Runtime deps of the PURE core only (io/ + core/ + model/analytic.py + registry/live) — numpy, Pyodide-safe. The
+# Runtime deps of the PURE core only (io/ + core/ + model/analytic.py + registry/live): numpy, Pyodide-safe. The
 # heavy PINN engines are NOT runtime deps of the package; they live in the precompute lane (data-pipeline/requirements.txt).
 dependencies = ["numpy>=2.0"]
 

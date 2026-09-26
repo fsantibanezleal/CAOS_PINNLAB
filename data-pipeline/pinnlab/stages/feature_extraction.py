@@ -1,4 +1,4 @@
-"""Stage 2 — feature_extraction: derive the collocation/sampling plan for a case (deterministic, recorded for
+"""Stage 2, feature_extraction: derive the collocation/sampling plan for a case (deterministic, recorded for
 provenance). DeepXDE draws the actual collocation points inside build(); this stage fixes + documents the plan
 (domain/boundary/test counts, sampler) so the manifest records HOW the field was sampled."""
 from __future__ import annotations

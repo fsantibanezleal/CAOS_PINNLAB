@@ -6,7 +6,7 @@ checked ground, not from memory. Both follow the completeness rule PINO and HNN 
 
 ---
 
-## Unit 3 — Groundwater: a pumping-test inverse, Theis anchor (subsurface gap)
+## Unit 3: Groundwater: a pumping-test inverse, Theis anchor (subsurface gap)
 
 ### Status: ANCHOR VERIFIED, case not built.
 
@@ -96,7 +96,7 @@ lane reads 367% as if it were a success; build the contrast or do not build it.
 
 ---
 
-## Unit 4 — Conformal prediction on the operator (research: highest value-per-hour gap)
+## Unit 4: Conformal prediction on the operator (research: highest value-per-hour gap)
 
 ### Status: researched, not built. No verification spike yet.
 
@@ -143,7 +143,7 @@ exists to prevent.
 
 ---
 
-## Unit 5 — DeepONet: MEASURED to underperform on Darcy, not shipped (2026-07-15)
+## Unit 5: DeepONet: MEASURED to underperform on Darcy, not shipped (2026-07-15)
 
 Spiked before building (`spike_deeponet.py`): a branch/trunk DeepONet on the same Darcy family reached only
 **0.69 relative-L2** (FNO ~0.06); a larger/longer version was **0.84** (worse, and partly a batching bug).

@@ -1,14 +1,14 @@
-# mine-comminution-pbe — comminution population balance (size-transport), parametric grind rate g
+# mine-comminution-pbe: comminution population balance (size-transport), parametric grind rate g
 
 The **mining-mineral-processing** entry exercising the **population-balance / transport-PDE** family as a **parametric
 family**: a drift-diffusion in particle-size space stands in for the full comminution PBE, with the grind rate $g$ a
-network input — so the web **Live** tab sweeps the size distribution drifting toward fines.
+network input, so the web **Live** tab sweeps the size distribution drifting toward fines.
 
 ## Problem
 
 Grinding (SAG / ball milling) evolves the particle-size distribution $n(s,t)$: fragmentation continuously shifts mass
 toward smaller sizes. The full population-balance equation is an integro-differential equation coupling **selection**
-and **breakage** kernels; this case ships the **reduced size-transport surrogate** — a drift-diffusion in normalized
+and **breakage** kernels; this case ships the **reduced size-transport surrogate**, a drift-diffusion in normalized
 size space (the Fokker-Planck reduction of the breakage operator):
 
 $$ n_t + (-g)\,n_s = D\,n_{ss}, \qquad s\in[0,1]\ (1=\text{coarse}),\ t\in[0,1]. $$
@@ -40,15 +40,15 @@ Validation anchor: the **exact advected-diffused Gaussian** $n^*(s,t;g)$. Six va
 | ONNX parity (max abs) | 9.5e-7 |
 | lane | **live** (one shared ONNX; Live sweeps $g$) |
 
-The high-grind corner $g=0.6$ is advection-leaning (Péclet $\approx50$) and sits at ~2 % — labeled honestly in the
+The high-grind corner $g=0.6$ is advection-leaning (Péclet $\approx50$) and sits at ~2 %, labeled honestly in the
 expected band; the lower-grind variants are well under 1 %.
 
 ## Honesty
 
-`real_or_synthetic = synthetic-illustrative`. The drift-diffusion is a deliberate reduction of the comminution PBE — it
+`real_or_synthetic = synthetic-illustrative`. The drift-diffusion is a deliberate reduction of the comminution PBE, it
 keeps the correct behaviour (mass drifting + spreading toward fines) but drops the selection/breakage integral. The
 truth it scores against is the exact Green's-function field, **not** a measured mill PSD (no open SAG/ball-mill
-size-distribution dataset with a grind-rate axis — `real-datasets.md`). The full breakage-kernel integro-differential
+size-distribution dataset with a grind-rate axis, `real-datasets.md`). The full breakage-kernel integro-differential
 PBE is documented as the complete model.
 
 ## Reproduce

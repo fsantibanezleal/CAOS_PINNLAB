@@ -1,7 +1,7 @@
 # Determinism
 
 A PINN-Lab run is a **pure function of `(case, seed)`**. Given the same case module and the same seed, the pipeline
-produces the same trained network, the same field trace, and the same manifest — byte-for-byte. This is what makes
+produces the same trained network, the same field trace, and the same manifest, byte-for-byte. This is what makes
 the committed artifacts a *replay* rather than a snapshot, and what lets CI re-derive and re-check them.
 
 ## Where the seed reaches
@@ -9,8 +9,8 @@ the committed artifacts a *replay* rather than a snapshot, and what lets CI re-d
 `build(seed)` calls `dde.config.set_random_seed(seed)` before constructing the geometry, the collocation sampling,
 and the network initialization. That single call seeds:
 
-- **NumPy** — domain/boundary/initial point sampling, the reference grids;
-- **PyTorch** — weight initialization (Glorot) and any stochastic training op.
+- **NumPy**: domain/boundary/initial point sampling, the reference grids;
+- **PyTorch**: weight initialization (Glorot) and any stochastic training op.
 
 Because the recipe (Adam steps, L-BFGS, the optional RAR refinement) is itself deterministic given those seeds, the
 trained weights are fixed, the ONNX export is fixed, and the parity number is stable (~1e-7).

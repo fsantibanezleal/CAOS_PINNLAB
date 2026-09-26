@@ -1,12 +1,12 @@
-"""Group D · industrial-fluids-heat — 2D Helmholtz (frequency domain), FOURIER-FEATURE PINN (spectral-bias showcase).
+"""Group D · industrial-fluids-heat, 2D Helmholtz (frequency domain), FOURIER-FEATURE PINN (spectral-bias showcase).
 
 Governing equation (DeepXDE sign convention):
     -u_xx - u_yy - k0^2 u - f = 0  on (0,1)^2,  u=0 on the boundary,  k0 = 2 pi n (n=3),
     f = k0^2 sin(k0 x) sin(k0 y)  chosen so the MMS solution u* = sin(k0 x) sin(k0 y) is exact.
 
-Method — random FOURIER-FEATURE input embedding (Tancik 2020; Wang-Wang-Perdikaris multi-scale 2021): the spatial
+Method, random FOURIER-FEATURE input embedding (Tancik 2020; Wang-Wang-Perdikaris multi-scale 2021): the spatial
 frequency makes a plain tanh MLP suffer spectral bias; a frozen Gaussian Fourier map injects the frequencies into
-layer 1. SOFT Dirichlet BC with loss weighting (the robust recipe for oscillatory solutions — a multiplicative hard
+layer 1. SOFT Dirichlet BC with loss weighting (the robust recipe for oscillatory solutions, a multiplicative hard
 constraint fights the oscillation near the boundary). The Fourier map is a pure-tensor apply_feature_transform that
 traces into ONNX. n=3 (k0=6pi) is high enough to need the Fourier map, low enough to converge on CPU.
 """
@@ -66,7 +66,7 @@ def variants() -> list[Variant]:
 
 def _helmholtz_model(seed: int, *, fourier: bool, n_waves: int = N_WAVES):
     """Build a Helmholtz PINN. `fourier=True` is the ADAPTED lane (random Fourier-feature input embedding); with
-    `fourier=False` it is the NAIVE lane — the SAME architecture on raw (x,y), so its spectral-bias failure at high
+    `fourier=False` it is the NAIVE lane, the SAME architecture on raw (x,y), so its spectral-bias failure at high
     wavenumber is real, not staged. `n_waves` lets the diagnostics sweep the wavenumber."""
     import deepxde as dde
     import torch
@@ -101,7 +101,7 @@ def _helmholtz_model(seed: int, *, fourier: bool, n_waves: int = N_WAVES):
         net = dde.nn.FNN([in_dim] + [128] * 4 + [1], "tanh", "Glorot uniform")
         net.apply_feature_transform(fourier_features)
     else:
-        # NAIVE: a plain tanh MLP directly on (x,y) — no frequency injection -> spectral bias.
+        # NAIVE: a plain tanh MLP directly on (x,y): no frequency injection -> spectral bias.
         net = dde.nn.FNN([2] + [128] * 4 + [1], "tanh", "Glorot uniform")
 
     bc = dde.icbc.DirichletBC(geom, lambda x: 0.0, lambda _, on_boundary: on_boundary)
@@ -122,12 +122,12 @@ def _helmholtz_model(seed: int, *, fourier: bool, n_waves: int = N_WAVES):
 
 
 def build(seed: int) -> dict:
-    """The ADAPTED lane (Fourier features) — the case's shipped method."""
+    """The ADAPTED lane (Fourier features), the case's shipped method."""
     return {"model": _helmholtz_model(seed, fourier=True), "input_dim": 2}
 
 
 def build_naive(seed: int) -> dict:
-    """The NAIVE lane (plain tanh MLP) — run so the spectral-bias failure is visible next to the standard."""
+    """The NAIVE lane (plain tanh MLP), run so the spectral-bias failure is visible next to the standard."""
     return {"model": _helmholtz_model(seed, fourier=False), "input_dim": 2}
 
 

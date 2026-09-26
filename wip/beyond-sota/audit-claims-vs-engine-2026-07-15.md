@@ -26,7 +26,7 @@ Meanwhile the method and framework docs claim otherwise:
 | `docs/methods/operator-learning.md:200-202` | "The case **exercises all three methods on the same family**: DeepONet (branch/trunk), FNO (with the zero-shot super-resolution demo), and PINO (FNO + the Darcy residual at higher resolution, showing the data-reduction benefit)" | Only FNO is implemented. **DeepONet: absent. PINO: absent.** |
 | `docs/methods/operator-learning.md:171-172` | PINO "is the second method exercised by `bench-darcy-operator` (after plain FNO)" | Not exercised. Not implemented. |
 | `docs/frameworks/neuraloperator/README.md:339` | Primary case "exercises FNO + PINO" | FNO only. |
-| `docs/frameworks/neuraloperator/README.md:340` | "`methods/fno.md` (#19) and `methods/pino.md` (#20) — both first land in `bench-darcy-operator`" | Only #19 landed. |
+| `docs/frameworks/neuraloperator/README.md:340` | "`methods/fno.md` (#19) and `methods/pino.md` (#20), both first land in `bench-darcy-operator`" | Only #19 landed. |
 | `docs/cases/bench-darcy-operator.md:30` | "(The optional PINO physics-residual is documented as the upgrade; the shipped path is the data-driven FNO.)" | **Correct.** The case doc is the honest one. |
 
 So the docs contradict each other, and the wrong side is the one a reader hits first. Per the standing rule

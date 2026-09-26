@@ -1,13 +1,13 @@
-"""Group A · canonical-benchmark — Allen-Cahn (stiff reaction-diffusion), HARD-CONSTRAINT + RAR PINN.
+"""Group A · canonical-benchmark, Allen-Cahn (stiff reaction-diffusion), HARD-CONSTRAINT + RAR PINN.
 
 Governing equation:
     u_t = d u_xx + 5 (u - u^3),   d = 0.001,   x in [-1,1], t in [0,1],
     IC  u(x,0) = x^2 cos(pi x),   endpoint-matched (periodic-ish) BC.
 
-The tiny diffusion vs the bistable reaction makes sharp, slowly-moving transition layers between u=+/-1 — a plain
-soft PINN FAILS (collapses to a metastable state). Method — HARD CONSTRAINTS (IC baked into the output transform,
+The tiny diffusion vs the bistable reaction makes sharp, slowly-moving transition layers between u=+/-1, a plain
+soft PINN FAILS (collapses to a metastable state). Method, HARD CONSTRAINTS (IC baked into the output transform,
 no IC/BC loss term) + RAR adaptive sampling to chase the moving interface. SOTA ceiling (PirateNets ~2e-5, jaxpi) is
-cited, not claimed. Validation anchor: the spectral reference `Allen_Cahn.npz` (DeepXDE/Raissi, MIT) — numerical,
+cited, not claimed. Validation anchor: the spectral reference `Allen_Cahn.npz` (DeepXDE/Raissi, MIT), numerical,
 not real-world data.
 """
 from __future__ import annotations
@@ -113,7 +113,7 @@ def build(seed: int) -> dict:
 
 
 def build_naive(seed: int) -> dict:
-    """NAIVE lane: the plain SOFT PINN — the IC and BC are loss terms (no hard-constraint ansatz) and there is NO RAR.
+    """NAIVE lane: the plain SOFT PINN, the IC and BC are loss terms (no hard-constraint ansatz) and there is NO RAR.
     This is the documented failure mode: it collapses to a metastable state and smears the sharp +/-1 transition
     layers. Same net size as the adapted lane, so the contrast is the METHOD (hard constraints + RAR), not capacity."""
     import deepxde as dde
@@ -149,6 +149,6 @@ def refine(model, case, seed: int) -> None:
         model.data.add_anchors(X[idx])
         model.compile("adam", lr=t["lr"])
         model.train(iterations=int(t.get("rar_adam", 5000)), disregard_previous_best=True)
-    # one final L-BFGS polish after all anchors are added (was per-round — far cheaper, same accuracy on this case)
+    # one final L-BFGS polish after all anchors are added (was per-round: far cheaper, same accuracy on this case)
     model.compile("L-BFGS")
     model.train()

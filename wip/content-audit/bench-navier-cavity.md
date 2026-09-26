@@ -25,7 +25,7 @@ while omitting the 17% headline and the specific v=0.22 coarseness the doc insis
 
 ## Contradictions (inApp vs docSays)
 
-### C1 (hard, severity 3) — "a few percent" vs measured ~17% relative-L2
+### C1 (hard, severity 3): "a few percent" vs measured ~17% relative-L2
 - **inApp** (`NavierCavityContext.tsx`, EN method-honesty para, L204-207; ES L81-85):
   "a soft primitive-variable PINN on CPU reaches **a relative error of a few percent** against Ghia: competent and
   qualitatively correct, but not of spectral accuracy." / ES: "alcanza un **error relativo de unos pocos por
@@ -36,7 +36,7 @@ while omitting the 17% headline and the specific v=0.22 coarseness the doc insis
   coarse". The word "relative" in the Context maps to the doc's relative-L2, which is 17%, not "a few percent".
   The Honesty section reinforces: "the gap to Ghia is the headline number, not a footnote."
 
-### C2 (soft / honesty-placement) — flattering RMSE only, doc-unsupported pressure caveat
+### C2 (soft / honesty-placement): flattering RMSE only, doc-unsupported pressure caveat
 - **inApp** (`results.ts`, verdict_en, L89): "Validated against the published Ghia et al. benchmark centerlines
   (**velocity RMSE 0.05**): the flow structure is right and the eye location is usable for mixing questions.
   **Fine pressure details are NOT resolved at this budget**: use the classical solver for those."
@@ -47,7 +47,7 @@ while omitting the 17% headline and the specific v=0.22 coarseness the doc insis
   section: u RMSE 0.053, v RMSE 0.029), but selecting only that metric while dropping the 17% headline makes the
   verdict rosier than the doc, and the pressure caveat is an app invention not grounded in the doc.
 
-### Note (not a contradiction) — vortex-eye coordinate is app-introduced
+### Note (not a contradiction): vortex-eye coordinate is app-introduced
 - `results.ts` answer_en (L87): "The vortex eye sits at (x, y) = **(0.61, 0.75)**". The doc gives **no** vortex-eye
   coordinate. The value matches the canonical Ghia Re=100 primary-vortex center (~0.617, 0.734), so it is
   plausible and consistent with the Context's "center shifted toward the upper-right corner". Flag only to

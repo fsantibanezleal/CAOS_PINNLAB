@@ -1,4 +1,4 @@
-# PINN-Lab — a runnable catalogue of Physics-Informed Neural Networks
+# PINN-Lab: a runnable catalogue of Physics-Informed Neural Networks
 
 [![CI](https://img.shields.io/github/actions/workflow/status/fsantibanezleal/CAOS_PINNLAB/ci.yml?branch=main&label=CI)](https://github.com/fsantibanezleal/CAOS_PINNLAB/actions)
 [![License](https://img.shields.io/github/license/fsantibanezleal/CAOS_PINNLAB)](LICENSE)
@@ -16,20 +16,20 @@ PINN-Lab is a **real, reproducible product**: a catalogue of 26 differential-equ
 each trained offline by a state-of-the-art Physics-Informed Neural Network engine, **validated against an analytic
 or numerical reference**, exported to **ONNX**, and **replayed and re-inferred in the browser**. Every case ships its
 governing equations, the SOTA method that solves it, an interactive visualization that reacts to the cursor and the
-controls, and an honest benchmark vs. the reference — and the whole thing is deterministic given `(case, seed)`.
+controls, and an honest benchmark vs. the reference, and the whole thing is deterministic given `(case, seed)`.
 
 It is modelled on the validated exemplar **CAOS_SIMLAB**: a four-tab workbench per case, deep bilingual write-ups,
 and a `docs/` tree that is written *as the code is versioned*.
 
-> **Start here:** [docs/README.md](docs/README.md) — the documentation entry point. ·
+> **Start here:** [docs/README.md](docs/README.md), the documentation entry point. ·
 > **Just run it:** [docs/guides/01_getting-started.md](docs/guides/01_getting-started.md).
 
 ## What it is (and is not)
 
-- **It IS** a teaching-and-decision instrument and a **method catalogue**: each SOTA family — hard constraints, RAR
+- **It IS** a teaching-and-decision instrument and a **method catalogue**: each SOTA family: hard constraints, RAR
   adaptive sampling, Fourier features / SIREN, domain decomposition, operator learning (FNO), physics-informed
   operators (PINO), zero-shot super-resolution, conformal-prediction UQ, structure-preserving / Hamiltonian
-  learning, inverse + UQ — is genuinely *exercised* in at least one case, not merely named.
+  learning, inverse + UQ, is genuinely *exercised* in at least one case, not merely named.
 - **It is not** a replacement for FEM/FVM (a good classical solver beats a PINN on a single well-posed forward
   problem), and it is **not** an industrial digital twin: most mining/pollution cases are validated on analytic (MMS)
   anchors or faithful reduced models, each carrying an honest `synthetic` / `synthetic-illustrative` /
@@ -40,8 +40,8 @@ and a `docs/` tree that is written *as the code is versioned*.
 PINN-Lab is split into a **heavy offline world** (Python) and a **light web world** (this SPA), joined by an
 **artifact contract** so the web never recomputes the physics:
 
-1. **Offline pipeline (`data-pipeline/pinnlab/`).** A deterministic chain — `preprocess → feature/sampling → train →
-   infer → evaluate → export` — trains each PINN (Adam → L-BFGS, + RAR where defined), exports the trained net to
+1. **Offline pipeline (`data-pipeline/pinnlab/`).** A deterministic chain: `preprocess → feature/sampling → train →
+   infer → evaluate → export`, trains each PINN (Adam → L-BFGS, + RAR where defined), exports the trained net to
    ONNX (parity-checked `< 1e-4`), and bakes a compact per-variant field trace + a `manifests/<case>.json` (schema
    v2: params, seed, metrics, lane, bytes). Inverse cases also enforce an **ingestion contract** on their input data.
 2. **Artifact contract (`processing → web`).** The web app loads **only** the committed artifacts (index → manifest →
@@ -57,7 +57,7 @@ The pipeline does not bake one field per case: it **computes the comparison the 
   Allen-Cahn soft **95.4%** (metastable collapse) vs hard-constraint+RAR **0.4%**; heat2d-inverse with no data
   **356%** vs physics+data **4.0%**.
 - **Dynamics everywhere the content is motion**: an animated evolution hero on every time case, the ladder's lanes
-  animating together, 2-D frame sequences (ocean, heap-leach), and **Training — "watch it learn"**: the field at real
+  animating together, 2-D frame sequences (ocean, heap-leach), and **Training, "watch it learn"**: the field at real
   training checkpoints, naive vs adapted side by side (spectral bias made visible as a training pathology).
 - **The story**: an 8-chapter when-PINNs-win/lose selector, each chapter deep-linking (`#/?case=…&view=…`) to the
   case + view that demonstrates it. Chapter 1 is honest: on the easy forward problem the classical solver wins.
@@ -68,7 +68,7 @@ The pipeline does not bake one field per case: it **computes the comparison the 
 ## Quickstart
 
 ```powershell
-# 1. build the isolated environments (offline lane: numpy, DeepXDE/PyTorch, onnxruntime) — no global installs
+# 1. build the isolated environments (offline lane: numpy, DeepXDE/PyTorch, onnxruntime): no global installs
 ./scripts/setup.ps1                          # or ./scripts/setup.sh
 
 # 2. bake a case (train → validate → ONNX → manifest)
@@ -90,21 +90,21 @@ physical parameter and watch the exported ONNX re-evaluate in your browser. See
 | `data/derived/` | The committed artifacts: per-case field traces + `manifests/` (per-case + `index.json`). |
 | `models/` | The exported `<case>.onnx` for the live lane. |
 | `frontend/` | The Vite + React + TypeScript SPA (the workbench, the content pages). |
-| `docs/` | The documentation tree — **the core of the repo**: `architecture/`, `cases/`, `methods/`, `frameworks/`, `guides/`. |
-| `scripts/` | `setup`, `precompute`, `dev`, `smoke` — PowerShell + bash parity. |
+| `docs/` | The documentation tree, **the core of the repo**: `architecture/`, `cases/`, `methods/`, `frameworks/`, `guides/`. |
+| `scripts/` | `setup`, `precompute`, `dev`, `smoke`, PowerShell + bash parity. |
 | `requirements*.txt` | Pinned per-lane requirements (`data-pipeline/requirements.txt` = the offline engine; root `requirements.txt` = the minimal live lane; `requirements-gpu.txt` = the optional GPU fidelity lane). |
 
 ## Hard rules this repo bakes in
 
 - **The deep research is binding.** Every engine the research selected lives in `docs/frameworks/<tool>/` *and* the
-  pinned requirements, and the pipeline actually uses it — no hand-rolled substitute for a prescribed SOTA engine.
+  pinned requirements, and the pipeline actually uses it, no hand-rolled substitute for a prescribed SOTA engine.
 - **Honesty by design.** Each case declares its validation anchor and data label; the Benchmark page publishes the
   measured relative-L2 and ONNX parity, undressed.
 - **Reproducible.** Pinned requirements per lane; `scripts/setup`; deterministic given `(case, seed)`; the ONNX the
   browser runs is exactly the validated network.
 - **Versioned** (X.XX.XXX, CHANGELOG + tags from day 1) with license/attribution hygiene.
 - **Tests never write the canonical artifacts.** The whole pytest suite is sandboxed (an autouse `conftest.py`
-  fixture redirects every pipeline write target to a tmp dir) — a quick-mode smoke once clobbered committed bakes;
+  fixture redirects every pipeline write target to a tmp dir), a quick-mode smoke once clobbered committed bakes;
   never remove that fixture.
 
 See [docs/architecture/01_overview.md](docs/architecture/01_overview.md) for the full rationale and

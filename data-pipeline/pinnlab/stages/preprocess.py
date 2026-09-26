@@ -1,5 +1,5 @@
-"""Stage 1 — preprocess: confirm the case is well-posed and (for inverse cases) apply CONTRACT 1 to an observation
-table. Forward cases have no external data — the PDE + BC/IC determine the solution — so this stage validates the
+"""Stage 1, preprocess: confirm the case is well-posed and (for inverse cases) apply CONTRACT 1 to an observation
+table. Forward cases have no external data, the PDE + BC/IC determine the solution, so this stage validates the
 config and, if a bring-your-own-data CSV is supplied, ingests + screens the observations."""
 from __future__ import annotations
 

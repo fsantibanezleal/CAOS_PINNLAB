@@ -1,4 +1,4 @@
-"""Group D · industrial-fluids-heat — 2D INVERSE heat conduction: recover the conductivity field k(x,y) from sparse
+"""Group D · industrial-fluids-heat, 2D INVERSE heat conduction: recover the conductivity field k(x,y) from sparse
 interior temperature sensors.
 
     div(k(x,y) grad T) = q(x,y)  on (0,1)^2,  T=0 on the boundary.
@@ -9,7 +9,7 @@ there are no sensors. This is the canonical sparse-data field-inverse problem wh
 real_or_synthetic = synthetic (MMS): no open 2D thermal-field inverse dataset exists (real-datasets.md §6). The
 manufactured triple (T*, k*, q) is the ground truth:
     T* = sin(pi x) sin(pi y),   k* = 1 + 0.5 sin(pi x) sin(pi y),   q = div(k* grad T*)  (SymPy-derived).
-Method — INVERSE field PINN (PFNN 2-output, product-rule residual, PointSetBC observations, softplus(k) positivity).
+Method, INVERSE field PINN (PFNN 2-output, product-rule residual, PointSetBC observations, softplus(k) positivity).
 Primary score = relative-L2 of the recovered k vs k* (T error in extra_metrics).
 """
 from __future__ import annotations
@@ -76,7 +76,7 @@ def analytic(xy: np.ndarray) -> np.ndarray:
 
 def variants() -> list[Variant]:
     # Single honest benchmark: k* is a fixed MMS field and there is no network-input knob to sweep (the data-side
-    # knobs — noise / sensor count — would each need a fresh inverse solve). One variant, never a fabricated sweep.
+    # knobs: noise / sensor count, would each need a fresh inverse solve). One variant, never a fabricated sweep.
     return [Variant(
         "default", "Recovered k(x,y)", "k(x,y) recuperado", {},
         "Conductivity field recovered from ~100 sparse noisy T sensors; relative-L2 vs the exact k*.",
@@ -129,7 +129,7 @@ def build(seed: int) -> dict:
         div_kgradT = k * (T_xx + T_yy) + k_x * T_x + k_y * T_y
         return div_kgradT - q_source(x)
 
-    # sparse noisy temperature sensors (synthetic measurements) — shared with extra_metrics via module globals
+    # sparse noisy temperature sensors (synthetic measurements): shared with extra_metrics via module globals
     global _OBS_XY, _OBS_T
     ob_xy, ob_T = _sensors(seed)
     _OBS_XY, _OBS_T = ob_xy, ob_T

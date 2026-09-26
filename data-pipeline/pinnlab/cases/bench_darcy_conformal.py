@@ -1,4 +1,4 @@
-"""Group A · canonical-benchmark — CONFORMAL PREDICTION: a distribution-free error bar for the operator.
+"""Group A · canonical-benchmark, CONFORMAL PREDICTION: a distribution-free error bar for the operator.
 
 The third Darcy operator case. `bench-darcy-operator` ships a data-driven FNO and `bench-darcy-pino` adds the
 equation; both report a single held-out error NUMBER and say nothing about the NEXT instance. This case adds

@@ -3,16 +3,16 @@ HARD-CONSTRAINT PINN (zero Dirichlet boundary baked exactly).
 
 Governing equation:
     -nabla^2 u = f(x,y;a)  on (0,1)^2,   u|_{boundary} = 0.
-Manufactured exact solution (validation anchor, closed form for ANY a) — the method of manufactured solutions:
+Manufactured exact solution (validation anchor, closed form for ANY a), the method of manufactured solutions:
     u*(x,y;a) = a * g(x,y),   g(x,y) = sin(pi x) sin(pi y) + 1/2 sin(2 pi x) sin(2 pi y),
 which vanishes on the whole boundary for every a. Substituting into -nabla^2 gives the imposed source
     f(x,y;a) = a * ( 2 pi^2 sin(pi x) sin(pi y) + 4 pi^2 sin(2 pi x) sin(2 pi y) ).
 At a=0 this is the archetype's mandatory degenerate negative control (f == 0 => u == 0): the engine must run without
 crashing and return a flat-zero field, with relative-L2 = ||pred|| ~ 0. The amplitude a is a NETWORK INPUT, so ONE
-trained net covers the whole family and the web `Live` tab sweeps a continuously via the shared ONNX — watch the field
+trained net covers the whole family and the web `Live` tab sweeps a continuously via the shared ONNX, watch the field
 fade to flat zero as a -> 0 (the degenerate control as the limit of the family).
 
-Method — HARD CONSTRAINTS: the zero Dirichlet boundary is satisfied exactly by the output transform
+Method, HARD CONSTRAINTS: the zero Dirichlet boundary is satisfied exactly by the output transform
 x(1-x)y(1-y) * N, so there is no boundary loss term; the relative-L2 vs the manufactured u* is the true error.
 """
 from __future__ import annotations
@@ -71,12 +71,12 @@ def analytic(xya: np.ndarray) -> np.ndarray:
 
 def variants() -> list[Variant]:
     presets = [
-        ("a00", 0.0, "Degenerate control (a=0) — zero source, identically-zero field.", "Control degenerado (a=0) — fuente cero, campo idénticamente cero."),
-        ("a02", 0.2, "a=0.2 — the manufactured field switching on, faint.", "a=0.2 — el campo manufacturado encendiéndose, tenue."),
-        ("a04", 0.4, "a=0.4 — two-mode structure clearly visible.", "a=0.4 — estructura de dos modos claramente visible."),
-        ("a06", 0.6, "a=0.6 — stronger lobes.", "a=0.6 — lóbulos más marcados."),
-        ("a08", 0.8, "a=0.8 — near full amplitude.", "a=0.8 — casi amplitud plena."),
-        ("a10", 1.0, "Full amplitude (a=1) — dominant fundamental lobe with a finer second-mode ripple.", "Amplitud plena (a=1) — lóbulo fundamental dominante con ondulación más fina del segundo modo."),
+        ("a00", 0.0, "Degenerate control (a=0), zero source, identically-zero field.", "Control degenerado (a=0), fuente cero, campo idénticamente cero."),
+        ("a02", 0.2, "a=0.2, the manufactured field switching on, faint.", "a=0.2, el campo manufacturado encendiéndose, tenue."),
+        ("a04", 0.4, "a=0.4, two-mode structure clearly visible.", "a=0.4, estructura de dos modos claramente visible."),
+        ("a06", 0.6, "a=0.6, stronger lobes.", "a=0.6, lóbulos más marcados."),
+        ("a08", 0.8, "a=0.8, near full amplitude.", "a=0.8, casi amplitud plena."),
+        ("a10", 1.0, "Full amplitude (a=1), dominant fundamental lobe with a finer second-mode ripple.", "Amplitud plena (a=1), lóbulo fundamental dominante con ondulación más fina del segundo modo."),
     ]
     return [Variant(vid, f"a={av:g}", f"a={av:g}", {"a": av}, en, es) for vid, av, en, es in presets]
 

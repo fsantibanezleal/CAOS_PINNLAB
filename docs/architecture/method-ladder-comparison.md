@@ -29,10 +29,10 @@ reverted, not shipped.
 The pipeline / ladder tools bake a **comparison trace** (several fields on one grid) and an optional **diagnostics**
 JSON, then patch the manifest with a `comparison` and/or `diagnostics` block.
 
-- `data/derived/<case>/comparison.json` — `{ axes, fields: { standard, naive?, adapted, err_naive?, err_adapted, ... }, summary: { naive_vs_std?, adapted_vs_std, ... } }`
-- `data/derived/<case>/diagnostics.json` — `{ wavenumber_sweep? , radial_spectrum? , line_comparisons? , rmse? }`
-- manifest `comparison` — `{ trace, lanes: [{ key, label, role, err? }], onnx_naive?, note }`
-- manifest `diagnostics` — `{ path }`
+- `data/derived/<case>/comparison.json`: `{ axes, fields: { standard, naive?, adapted, err_naive?, err_adapted, ... }, summary: { naive_vs_std?, adapted_vs_std, ... } }`
+- `data/derived/<case>/diagnostics.json`: `{ wavenumber_sweep? , radial_spectrum? , line_comparisons? , rmse? }`
+- manifest `comparison`: `{ trace, lanes: [{ key, label, role, err? }], onnx_naive?, note }`
+- manifest `diagnostics`: `{ path }`
 
 ### The pipeline tools (`data-pipeline/`)
 
@@ -55,29 +55,29 @@ is the *method*, not the training.
 
 ## What is shown (the web viewer)
 
-- **CompareKit** (`frontend/src/components/kits/CompareKit.tsx`) — renders the comparison lanes as a row of heatmaps
+- **CompareKit** (`frontend/src/components/kits/CompareKit.tsx`): renders the comparison lanes as a row of heatmaps
   (standard | naive | adapted | ...) on a shared colour scale, plus the error maps, plus a shared hover probe that
   reads *every* lane at a point, plus the real baked relative-L2 headline. Manifest-driven, so it lights up for any
   case that has a `comparison`. It is the **default view** when a comparison exists.
-- **DiagnosticsKit** (`frontend/src/components/kits/DiagnosticsKit.tsx`) — the *why*: the wavenumber sweep (naive L2
+- **DiagnosticsKit** (`frontend/src/components/kits/DiagnosticsKit.tsx`): the *why*: the wavenumber sweep (naive L2
   climbs, the fix stays low), the radial spectral energy, and generic **line comparisons** (an `XYChart` of benchmark
-  points vs a model curve — used for the Ghia centerlines and the soil-heat held-out sensors).
+  points vs a model curve, used for the Ghia centerlines and the soil-heat held-out sensors).
 - Both carry a **snapshot-to-PNG** button per panel/chart (`frontend/src/lib/snapshot.ts`).
 
 ## The results (real, baked)
 
-- **Helmholtz** — naive tanh **120.8 %** vs Fourier **9.3 %** vs the classical FDM standard; the sweep shows the naive
+- **Helmholtz**: naive tanh **120.8 %** vs Fourier **9.3 %** vs the classical FDM standard; the sweep shows the naive
   lane going from 3 % (n=1) to ~100 % (n>=2).
-- **allencahn** — naive soft-PINN **95.4 %** (collapses to a metastable state, smears the sharp ±1 layers) vs
+- **allencahn**: naive soft-PINN **95.4 %** (collapses to a metastable state, smears the sharp ±1 layers) vs
   hard-constraint+RAR **0.4 %**, vs the spectral reference.
-- **heat2d-inverse** — pure physics with no data **356 %** (k underdetermined) vs physics + ~100 sensors **4.0 %**:
+- **heat2d-inverse**: pure physics with no data **356 %** (k underdetermined) vs physics + ~100 sensors **4.0 %**:
   the data is what makes the inverse solvable.
-- **soil-barrier** — single-domain vs FBPINN, both ~19 % on the CPU lane (the edge is subtle, shown honestly).
-- **darcy** — the FNO operator's one-pass prediction vs the finite-difference reference (~2.5 %).
-- **navier** — the PINN velocity vs the Ghia (1982) Re=100 centerlines (u RMSE 0.053, v 0.029).
-- **soil-heat-real** — the reconstruction vs real measured USCRN temperatures at the held-out 10/20/50 cm depths,
+- **soil-barrier**: single-domain vs FBPINN, both ~19 % on the CPU lane (the edge is subtle, shown honestly).
+- **darcy**: the FNO operator's one-pass prediction vs the finite-difference reference (~2.5 %).
+- **navier**: the PINN velocity vs the Ghia (1982) Re=100 centerlines (u RMSE 0.053, v 0.029).
+- **soil-heat-real**: the reconstruction vs real measured USCRN temperatures at the held-out 10/20/50 cm depths,
   out-of-sample (RMSE 1.24 / 1.05 / 0.75 °C).
-- **heat2d-inverse identifiability sweep** — recovered-k error vs number of sensors at one fair budget:
+- **heat2d-inverse identifiability sweep**: recovered-k error vs number of sensors at one fair budget:
   356 % (n=0) → 17.3 % (n=10) → 16.3 % (n=25) → 13.6 % (n=50) → 12.6 % (n=100): the computed answer to "how much
   information does a PINN need"; the cliff is between 0 and 10 sensors.
 

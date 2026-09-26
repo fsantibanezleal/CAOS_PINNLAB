@@ -1,16 +1,16 @@
-# PINA — framework guide
+# PINA: framework guide
 
-> **PINA** (*Physics-Informed Neural networks for Advanced modeling*) — the MIT-licensed,
+> **PINA** (*Physics-Informed Neural networks for Advanced modeling*), the MIT-licensed,
 > PyTorch-Lightning-idiomatic engine in PINN-Lab's stack. It carries the **richest single-library
 > catalogue of PINN variants** (SelfAdaptive, RBA, Causal, Competitive, Gradient, DeepEnsemble)
-> alongside supervised solvers, neural operators (DeepONet / FNO / Averaging) and ROM/GAROM — all
+> alongside supervised solvers, neural operators (DeepONet / FNO / Averaging) and ROM/GAROM, all
 > behind one `Problem → Condition → Solver → Trainer` API, with a Lightning `Trainer` for free
 > multi-GPU and a clean `torch.onnx.export` path because every solver's `.model` is a plain
 > `torch.nn.Module`.
 
 - **Repo:** <https://github.com/mathLab/PINA>
 - **Docs:** <https://mathlab.github.io/PINA/>
-- **PyPI:** `pina-mathlab` — latest **0.2.6** (verified 2026-06-21)
+- **PyPI:** `pina-mathlab`: latest **0.2.6** (verified 2026-06-21)
 - **License:** **MIT** (verified against `LICENSE.rst` on `master`)
 - **Built on:** PyTorch · PyTorch Lightning · PyTorch Geometric (PyG)
 - **Authors / group:** mathLab, SISSA (Rozza group)
@@ -22,8 +22,8 @@
 ### What it is
 
 PINA is a **high-level SciML framework** that sits on top of PyTorch, PyTorch Lightning and PyTorch
-Geometric. You describe a problem **declaratively** — its output variables, its spatial/temporal
-domains, and a set of **conditions** (boundary/initial values and the PDE residual itself) — and
+Geometric. You describe a problem **declaratively**, its output variables, its spatial/temporal
+domains, and a set of **conditions** (boundary/initial values and the PDE residual itself), and
 then hand that `Problem` to a **`Solver`**. The solver wraps a `torch.nn.Module` and a
 `LightningModule` training loop; a Lightning **`Trainer`** runs it. Because the heavy lifting
 (device placement, optimizer stepping, logging, checkpointing, distributed strategy) is delegated
@@ -44,7 +44,7 @@ In PINA, **each term of that sum is a `Condition`**: the residual term is a `Con
 interior domain `"D"` carrying an `Equation`, and each boundary/initial term is a `Condition` on a
 boundary domain carrying a `FixedValue` (or another `Equation`). The collocation points
 $\{x_i^r\}$, $\{x_j^b\}$ are produced by `problem.discretise_domain(...)`. The *solver* decides how
-those condition losses are combined and weighted — and that is where PINA's variants differ.
+those condition losses are combined and weighted, and that is where PINA's variants differ.
 
 ### Why it earns a place next to DeepXDE
 
@@ -70,16 +70,16 @@ ever required.
 
 ### When to reach for PINA (vs DeepXDE)
 
-- **You want a specific advanced variant out of the box** — `SelfAdaptivePINN`, `RBAPINN`,
+- **You want a specific advanced variant out of the box**: `SelfAdaptivePINN`, `RBAPINN`,
   `CausalPINN`, `CompetitivePINN`, `GradientPINN`, or a deep-ensemble PINN. *(In PINN-Lab this is
   the `mine-sag-thermal` SA-PINN study and any method-comparison case.)*
-- **You want Lightning ergonomics** — `Trainer`-level callbacks, multi-GPU/DDP with one flag,
-  Lightning logging/checkpointing, mixed precision — without writing a training loop.
+- **You want Lightning ergonomics**: `Trainer`-level callbacks, multi-GPU/DDP with one flag,
+  Lightning logging/checkpointing, mixed precision, without writing a training loop.
 - **You need an MIT-licensed engine** for a permissive dependency tree.
 - **You're mixing PINN and operator/ROM solvers** in the same library (DeepONet, FNO, GAROM).
 
 Reach for **DeepXDE instead** when you want the lowest-friction canonical PINN with CSG geometry,
-built-in RAR, and a battle-tested inverse path — which is why DeepXDE remains PINN-Lab's *primary*
+built-in RAR, and a battle-tested inverse path, which is why DeepXDE remains PINN-Lab's *primary*
 engine and PINA the *secondary / variant* engine.
 
 ### Honest limitations
@@ -91,7 +91,7 @@ engine and PINA the *secondary / variant* engine.
   against **0.2.6**.
 - **Pulls PyTorch Geometric even for plain PINNs.** `torch_geometric` is a hard dependency, so a
   trivial 1-D ODE drags in PyG (and its compiled extensions). Acceptable in the **pipeline venv**,
-  but a reason PINA never belongs in the live/Pyodide lane — only the *exported ONNX* ships.
+  but a reason PINA never belongs in the live/Pyodide lane, only the *exported ONNX* ships.
 - **Less geometry tooling than DeepXDE.** Domains are `CartesianDomain` / `EllipsoidDomain` /
   `SimplexDomain` and set operations; there is no CSG-grade constructive geometry like DeepXDE's.
 - **Per-point-weight variants need care at export.** `SelfAdaptivePINN`/`RBAPINN` keep auxiliary
@@ -143,7 +143,7 @@ python -m pip install onnx onnxruntime
 > pin the version. `torch_geometric` brings compiled extensions sensitive to the torch/CUDA combo;
 > if PyG wheels fail to resolve, install `torch` first to match your CUDA, then `pina-mathlab`.
 
-GPU works through Lightning — no PINA-specific CUDA install. Pick the accelerator at `Trainer` time
+GPU works through Lightning, no PINA-specific CUDA install. Pick the accelerator at `Trainer` time
 (`accelerator="gpu"`); the same code runs on CPU with `accelerator="cpu"`.
 
 ---
@@ -160,31 +160,31 @@ from pina.domain   import CartesianDomain     # also: EllipsoidDomain, SimplexDo
 from pina.operator import grad, div, laplacian  # autodiff differential operators
 from pina.equation import Equation, FixedValue  # residual wrapper / constant-value condition
 from pina.model    import FeedForward         # the network (a plain torch.nn.Module)
-from pina.solver   import PINN                # and variants — see the table below
+from pina.solver   import PINN                # and variants, see the table below
 ```
 
-### 3.1 `Problem` — *what to solve*
+### 3.1 `Problem`: *what to solve*
 
 Subclass the appropriate base (`SpatialProblem`, `TimeDependentProblem`, `ParametricProblem`,
 `InverseProblem`, or combinations). You declare:
 
-- `output_variables` — names of the network outputs (e.g. `["u"]`).
-- the domain(s) — `spatial_domain` / `temporal_domain` plus a `domains` dict naming each
+- `output_variables`: names of the network outputs (e.g. `["u"]`).
+- the domain(s): `spatial_domain` / `temporal_domain` plus a `domains` dict naming each
   subdomain (interior and each boundary slice).
-- `conditions` — the loss terms (next).
+- `conditions`: the loss terms (next).
 
 PINA also ships a **problem zoo** (`pina.problem.zoo`) with ready-made templates:
 `Poisson2DSquareProblem`, `AllenCahnProblem`, `HelmholtzProblem`, `DiffusionReactionProblem`,
-`AdvectionProblem`, `AcousticWaveProblem`, `SupervisedProblem`, etc. — useful for benchmarking a
+`AdvectionProblem`, `AcousticWaveProblem`, `SupervisedProblem`, etc., useful for benchmarking a
 solver against a known setup.
 
-### 3.2 `Condition` — *the loss terms*
+### 3.2 `Condition`: *the loss terms*
 
 A `Condition` binds a **domain** to an **equation**. Two common forms:
 
 - **PDE residual:** `Condition(domain="D", equation=Equation(residual_fn))`, where `residual_fn(input_, output_)`
   returns the residual that should be driven to 0. You build it with the differential operators:
-  `grad`, `div`, `laplacian`. Outputs are `LabelTensor`s — pull a component with
+  `grad`, `div`, `laplacian`. Outputs are `LabelTensor`s, pull a component with
   `output_.extract(["u"])` and differentiate with `grad(output_, input_, components=["u"], d=["x"])`.
 - **Boundary/initial value:** `Condition(domain="x0", equation=FixedValue(1.0))` pins the output to a
   constant on that subdomain. For non-constant or operator BCs, wrap them in an `Equation`.
@@ -192,7 +192,7 @@ A `Condition` binds a **domain** to an **equation**. Two common forms:
 Other condition types exist for data-driven and mixed setups: `InputTargetCondition`,
 `DomainEquationCondition`, `InputEquationCondition`, `DataCondition`.
 
-### 3.3 Sampling — `discretise_domain`
+### 3.3 Sampling: `discretise_domain`
 
 ```python
 problem.discretise_domain(n=100, mode="grid", domains=["D", "x0"])
@@ -201,7 +201,7 @@ problem.discretise_domain(n=100, mode="grid", domains=["D", "x0"])
 
 This materializes the collocation points each `Condition` is evaluated on.
 
-### 3.4 `Solver` — *how to train it* (the variant catalogue)
+### 3.4 `Solver`: *how to train it* (the variant catalogue)
 
 All physics-informed solvers take `(problem, model, ...)` and expose `solver.model` as a plain
 `torch.nn.Module`. Import from `pina.solver`:
@@ -209,8 +209,8 @@ All physics-informed solvers take `(problem, model, ...)` and expose `solver.mod
 | Solver | What it does | PINN-Lab use |
 |---|---|---|
 | `PINN` | vanilla physics-informed loss | baseline for every case |
-| `GradientPINN` | adds the residual-gradient term ($\nabla \mathcal{N}[u]=0$) — gPINN | steep-gradient cases (`bench-burgers1d`, `mine-comminution-pbe`) |
-| `CausalPINN` | weights each time slice by an exponential of earlier residuals — restores temporal causality | time-dependent / stiff (`bench-heat1d`, `poll-groundwater-rt`) |
+| `GradientPINN` | adds the residual-gradient term ($\nabla \mathcal{N}[u]=0$), gPINN | steep-gradient cases (`bench-burgers1d`, `mine-comminution-pbe`) |
+| `CausalPINN` | weights each time slice by an exponential of earlier residuals, restores temporal causality | time-dependent / stiff (`bench-heat1d`, `poll-groundwater-rt`) |
 | `SelfAdaptivePINN` | per-point trainable weights via minimax (gradient ascent on weights, descent on net) | self-adaptive study (`mine-sag-thermal`) |
 | `RBAPINN` | residual-based attention: multiplicative per-point weight updated from running residuals | sharp-front cases |
 | `CompetitivePINN` | adversarial/competitive (net vs. discriminator) formulation | comparison / robustness study |
@@ -221,7 +221,7 @@ All physics-informed solvers take `(problem, model, ...)` and expose `solver.mod
 Neural-operator architectures (`DeepONet`, `FNO`, `AveragingNeuralOperator`) live under
 `pina.model` and are trained through `SupervisedSolver` (data) or a physics-informed condition.
 
-### 3.5 `Trainer` — Lightning, multi-GPU for free
+### 3.5 `Trainer`: Lightning, multi-GPU for free
 
 `pina.Trainer` is a thin wrapper over `lightning.Trainer`, so every Lightning flag is available:
 
@@ -237,7 +237,7 @@ trainer = Trainer(
 trainer.train()
 ```
 
-`devices`/`strategy`/`precision` are passed straight through to Lightning — **multi-GPU PINN
+`devices`/`strategy`/`precision` are passed straight through to Lightning, **multi-GPU PINN
 training requires no PINA-specific code**, only these flags (and launching under DDP). This is the
 main ergonomic win over hand-rolled loops. Adam→L-BFGS polishing is configured through the optimizer
 passed to the solver (e.g. `TorchOptimizer(torch.optim.Adam, lr=1e-3)`), and a second L-BFGS phase
@@ -304,7 +304,7 @@ with torch.no_grad():
     print("true:", torch.exp(xs).flatten().tolist())
 ```
 
-**Variant swap** — to run the self-adaptive variant on the *same* problem, change one line:
+**Variant swap**, to run the self-adaptive variant on the *same* problem, change one line:
 
 ```python
 from pina.solver import SelfAdaptivePINN
@@ -316,7 +316,7 @@ solver = SelfAdaptivePINN(problem, model)   # everything else identical
 ## 5. ONNX-export notes
 
 PINA solvers wrap a plain `torch.nn.Module` at `solver.model`, so the export is the **standard
-PyTorch path** — no PINA-specific exporter, identical to the contract used for DeepXDE
+PyTorch path**, no PINA-specific exporter, identical to the contract used for DeepXDE
 (`model.net`). Export the **bare model only**, never the solver/LightningModule.
 
 ```python
@@ -334,7 +334,7 @@ torch.onnx.export(
 )
 ```
 
-**Mandatory parity check before shipping** (PINN-Lab CI guard) — the exported ONNX must reproduce
+**Mandatory parity check before shipping** (PINN-Lab CI guard), the exported ONNX must reproduce
 the trained model on the same points:
 
 ```python
@@ -357,18 +357,18 @@ print("ONNX parity OK")
   only `.model` is the deployable net.
 - **`LabelTensor` is a training convenience, not part of the graph.** `solver.model` consumes/returns
   ordinary tensors when called directly (as above), so the traced ONNX takes a plain `[N, d]`
-  Float32 tensor and returns `[N, out]` — exactly what `onnxruntime-web` needs. Keep the **column
+  Float32 tensor and returns `[N, out]`, exactly what `onnxruntime-web` needs. Keep the **column
   order** of inputs identical to `output_variables`/coordinate order, and record it in the manifest.
-- **Self-adaptive / RBA weights do not export — by design.** `SelfAdaptivePINN`/`RBAPINN` carry
+- **Self-adaptive / RBA weights do not export: by design.** `SelfAdaptivePINN`/`RBAPINN` carry
   auxiliary per-point weight tensors *outside* `solver.model`; they shape training, not inference.
   The exported `solver.model` is the trained field approximator and is what the parity check
   validates.
 - **Hard-constraint / feature transforms must be pure tensor ops** to be traced into the graph. If a
   case applies an output ansatz or input scaling, fold it into the `nn.Module` (or wrap the model)
-  so it is captured — otherwise re-apply it in the live lane and the parity check will catch the
+  so it is captured, otherwise re-apply it in the live lane and the parity check will catch the
   mismatch.
 - **Neural operators (DeepONet/FNO) take multiple/structured inputs.** Their ONNX export needs the
-  right `dummy` signature (branch+trunk for DeepONet; gridded field for FNO) — verify parity the
+  right `dummy` signature (branch+trunk for DeepONet; gridded field for FNO), verify parity the
   same way before shipping.
 
 The verified path matches PINN-Lab's train→export→web contract: train in `.venv-pipeline` →
@@ -380,12 +380,12 @@ The verified path matches PINN-Lab's train→export→web contract: train in `.v
 ## 6. Role in PINN-Lab (which cases / lane)
 
 - **Lane:** **offline / precompute** only, in `.venv-pipeline`. PINA + torch + PyG never enter the
-  live/Pyodide lane — only the exported `.onnx` and the baked replay artifact ship to the browser.
+  live/Pyodide lane, only the exported `.onnx` and the baked replay artifact ship to the browser.
 - **Position in the engine roster:** **secondary engine**, complementary to the primary **DeepXDE**.
   DeepXDE handles most canonical/pollution cases; PINA is the engine of choice when a case is
   fundamentally a **variant study** or needs **Lightning multi-GPU**, and is the **MIT-licensed
   fallback** if a fully permissive dependency tree is ever required.
-- **Primary case — `mine-sag-thermal` 🟠:** the **SA-PINN** study uses `SelfAdaptivePINN` for the
+- **Primary case: `mine-sag-thermal` (in progress):** the **SA-PINN** study uses `SelfAdaptivePINN` for the
   hybrid supervised+physics setup (self-adaptive per-point weighting), per the coverage map
   (method 6, `methods/self-adaptive`). This case is `synthetic-illustrative` and must be labeled so.
 - **Method exercises sourced here:** `SelfAdaptivePINN` (method 6), `CausalPINN` (method 2 cross-check
@@ -405,11 +405,11 @@ The verified path matches PINN-Lab's train→export→web contract: train in `.v
 
 All facts dated **2026-06-21**, verified against primary sources:
 
-- License **MIT** — confirmed against `LICENSE.rst` on `mathLab/PINA@master` (the auto-generated
+- License **MIT**: confirmed against `LICENSE.rst` on `mathLab/PINA@master` (the auto-generated
   README badge briefly read Apache; the actual license file is MIT).
-- Version **0.2.6**, Python **>=3.10**, deps `torch`/`lightning`/`torch_geometric`/`matplotlib` —
+- Version **0.2.6**, Python **>=3.10**, deps `torch`/`lightning`/`torch_geometric`/`matplotlib`, 
   PyPI JSON metadata for `pina-mathlab`.
 - Module paths (`pina.solver`, `pina.problem`, `pina.operator`, `pina.domain`, `pina.equation`,
-  `pina.model`) and the PINN example — current `mathLab/PINA` README code block.
-- Solver/Problem/Condition class names — PINA Code Documentation
+  `pina.model`) and the PINN example, current `mathLab/PINA` README code block.
+- Solver/Problem/Condition class names: PINA Code Documentation
   (<https://mathlab.github.io/PINA/_rst/_code.html>).

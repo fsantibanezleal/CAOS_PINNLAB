@@ -1,4 +1,4 @@
-"""Group C · pollution-environmental — contaminated-site barrier transport, DOMAIN-DECOMPOSITION (FBPINN-style) PINN.
+"""Group C · pollution-environmental, contaminated-site barrier transport, DOMAIN-DECOMPOSITION (FBPINN-style) PINN.
 
 A dissolved contaminant diffuses through a soil column containing one low-permeability vertical barrier (slurry/clay
 cutoff): a low-D slab in [AB,BB] that slows the plume. Pure-diffusion illustrative case (V=0):
@@ -8,7 +8,7 @@ discontinuous c_x). MMS anchor = the layered series-resistance steady profile (c
     Psi(x) = 1 - R(x)/R(L),  R(x)=int_0^x dx'/D(x'),   c*(x,t) = (1 - e^{-t}) Psi(x),  f = e^{-t} Psi(x)
 (the diffusive flux D c*_x = const, so its divergence vanishes in the interior; f is just the time term).
 
-Method — DOMAIN DECOMPOSITION (FBPINN partition-of-unity, dossier §4 #14): a 2-channel net blended by sigmoid
+Method, DOMAIN DECOMPOSITION (FBPINN partition-of-unity, dossier §4 #14): a 2-channel net blended by sigmoid
 windows w_left+w_right=1 across the barrier centre, so the kink in c_x is produced by two networks meeting on the
 subdomain boundary rather than a single smooth tanh fighting the jump. Hard IC/inlet/outlet via the output transform.
 real_or_synthetic = synthetic-illustrative (illustrative engineering values; MMS anchor, NOT a calibrated site).
@@ -133,7 +133,7 @@ def build(seed: int) -> dict:
 
 def build_naive(seed: int) -> dict:
     """NAIVE lane: ONE smooth single-channel net (no domain decomposition), same hard IC/BC. A single smooth network
-    cannot represent the discontinuous c_x at the low-permeability barrier faces, so it rounds off the kink — the
+    cannot represent the discontinuous c_x at the low-permeability barrier faces, so it rounds off the kink, the
     failure the FBPINN partition-of-unity blend fixes. Same net size, so the contrast is the METHOD, not capacity."""
     import deepxde as dde
     import torch

@@ -1,7 +1,7 @@
-"""Stage 3 — train (OFFLINE, heavy SOTA engine): fit the case's PINN with DeepXDE (Adam -> L-BFGS), export the
+"""Stage 3, train (OFFLINE, heavy SOTA engine): fit the case's PINN with DeepXDE (Adam -> L-BFGS), export the
 trained network to ONNX, and verify ONNX-vs-model parity. This is where the deep-research engine is used FOR REAL;
 the trained `.onnx` is exactly what the browser (onnxruntime-web) runs in the live lane. The output transform (hard
-constraints) is pure tensor ops, so it is captured in the exported graph — the parity check proves it.
+constraints) is pure tensor ops, so it is captured in the exported graph, the parity check proves it.
 """
 from __future__ import annotations
 
@@ -16,7 +16,7 @@ from ..registry import case_module, get_case
 
 
 def run(case_id: str, *, seed: int, models_dir: str, sampling: dict | None = None, quick: bool = False) -> dict:
-    """Train the case's PINN and export+verify its ONNX. `quick` is the CI smoke path: few iterations, no L-BFGS —
+    """Train the case's PINN and export+verify its ONNX. `quick` is the CI smoke path: few iterations, no L-BFGS, 
     it exercises the full train -> ONNX -> parity plumbing without waiting for convergence (do NOT bake real
     artifacts with quick=True)."""
     import onnxruntime as ort
@@ -35,7 +35,7 @@ def run(case_id: str, *, seed: int, models_dir: str, sampling: dict | None = Non
 
     if built.get("prebuilt") and "onnx_bytes" in built:
         # custom-engine FIELD-IO case (e.g. the FNO operator): it trained AND exported its OWN ONNX in build()
-        # (field-in, not coordinate-in), so the generic coordinate export/parity does not apply — pass it through.
+        # (field-in, not coordinate-in), so the generic coordinate export/parity does not apply: pass it through.
         return {
             "model": model,
             "onnx_path": built["onnx_path"],
@@ -69,7 +69,7 @@ def run(case_id: str, *, seed: int, models_dir: str, sampling: dict | None = Non
     Path(models_dir).mkdir(parents=True, exist_ok=True)
     onnx_path = Path(models_dir) / f"{case_id}.onnx"
     dummy = torch.zeros(1, d, dtype=torch.float32)
-    # Modern exporter (torch.export/dynamo, requires onnxscript) — the supported path going forward; the TorchScript
+    # Modern exporter (torch.export/dynamo, requires onnxscript): the supported path going forward; the TorchScript
     # exporter is deprecated. dynamic batch axis so onnxruntime-web can evaluate any number of query coordinates.
     torch.onnx.export(
         net, (dummy,), str(onnx_path),
@@ -78,7 +78,7 @@ def run(case_id: str, *, seed: int, models_dir: str, sampling: dict | None = Non
         opset_version=18, dynamo=True, verbose=False,
         external_data=False,  # embed weights -> a single self-contained .onnx for onnxruntime-web
     )
-    strip_onnx_metadata(onnx_path)  # the dynamo exporter embeds the local build path in metadata — strip it (clean public artifact)
+    strip_onnx_metadata(onnx_path)  # the dynamo exporter embeds the local build path in metadata, strip it (clean public artifact)
 
     # parity: ONNX must match model.predict on a random in-domain sample (proves the train->web bridge is faithful)
     rng = np.random.default_rng(seed + 1)

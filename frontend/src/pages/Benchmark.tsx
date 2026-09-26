@@ -52,7 +52,7 @@ export function Benchmark() {
           <tbody>
             {rows.map((m) => {
               const s = (m.comparison?.summary ?? {}) as Record<string, number>;
-              const pct = (v: number | undefined) => (typeof v === "number" ? (v * 100).toFixed(1) + "%" : "—");
+              const pct = (v: number | undefined) => (typeof v === "number" ? (v * 100).toFixed(1) + "%" : "–");
               const it0 = m.estimate?.items?.[0];
               const qoiVal = it0 ? (it0.value ?? Object.values(it0.values ?? {})[0]) : undefined;
               return (
@@ -66,7 +66,7 @@ export function Benchmark() {
                         <span className="muted" style={{ fontSize: 11, display: "block", lineHeight: 1.3 }}>{es ? it0.label_es : it0.label_en}</span>
                         <span className="mono" style={{ fontSize: 12 }}>{qoiVal}</span>
                       </>
-                    ) : "—"}
+                    ) : "–"}
                   </td>
                   <td>{m.validation_anchor}</td>
                   <td className="mono">

@@ -1,6 +1,6 @@
-"""CONTRACT 2 — artifact (pipeline -> web). The manifest is the authoritative, versioned record of a baked PINN
+"""CONTRACT 2, artifact (pipeline -> web). The manifest is the authoritative, versioned record of a baked PINN
 case: its governing equation, the SOTA method + engine, the tunable parameters, the exported ONNX pointer + parity,
-the lane/gate verdict, and a FAMILY OF VARIANTS (parameter regimes) — each with its own compact replay-artifact
+the lane/gate verdict, and a FAMILY OF VARIANTS (parameter regimes), each with its own compact replay-artifact
 pointer + per-regime metrics. The web loads ONLY manifests + artifacts; frontend/src/lib/contract.ts mirrors this
 schema so a drift fails the web build. A flat index.json inventories every case (ADR-0057 default).
 
