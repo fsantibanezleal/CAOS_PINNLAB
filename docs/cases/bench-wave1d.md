@@ -1,4 +1,4 @@
-# bench-wave1d — 1D wave equation, parametric speed (SIREN + hard constraints)
+# bench-wave1d: 1D wave equation, parametric speed (SIREN + hard constraints)
 
 The canonical hyperbolic benchmark, as a **parametric family**: the wave speed $c$ is a network input, so one trained
 net + one ONNX covers the whole speed family and the web **Live** tab makes the standing wave oscillate faster or
@@ -11,14 +11,14 @@ The 1D wave equation with a single-mode initial displacement, zero initial veloc
 
 $$ u_{tt} = c^2\,u_{xx} \quad\text{on}\ (0,1)\times(0,1],\qquad u(x,0)=\sin(\pi x),\ u_t(x,0)=0,\ u(0,t)=u(1,t)=0. $$
 
-The standing-wave solution is exact for **any** $c$ — the validation anchor:
+The standing-wave solution is exact for **any** $c$, the validation anchor:
 
 $$ u^*(x,t;c) = \sin(\pi x)\,\cos(c\pi t). $$
 
 The **wave speed** $c\in[0.5,2.0]$ is the swept knob: $c=0.5$ advances a quarter period over the window; $c=1$ half a
 period; $c=2$ a full period. Domain $x,t\in[0,1]$ ($161\times161$ field grid).
 
-## Method — SIREN + exact hard constraints
+## Method: SIREN + exact hard constraints
 
 - **SIREN.** A `tanh` MLP suffers spectral bias on the oscillatory $\cos(c\pi t)$; the net uses **`sin` activation**.
 - **Hard constraints.** The raw network is wrapped so both ICs and the BCs hold by construction:
@@ -41,12 +41,12 @@ Validation anchor: the **exact standing wave** $u^*(x,t;c)$ (any $c$). Six varia
 | ONNX parity (max abs) | ~7e-7 |
 | lane | **live** (one shared ONNX; Live sweeps $c$) |
 
-The bigger SIREN net nails the full 4× speed family — including the fast $c=2$ corner where a smaller net stalled.
+The bigger SIREN net nails the full 4× speed family, including the fast $c=2$ corner where a smaller net stalled.
 
 ## Honesty
 
 `real_or_synthetic = synthetic`. The anchor is the closed-form standing-wave solution (exact for every $c$), not a
-measured dataset — the relative-L2 is a genuine solution-accuracy number, not a fit proxy.
+measured dataset, the relative-L2 is a genuine solution-accuracy number, not a fit proxy.
 
 ## Reproduce
 

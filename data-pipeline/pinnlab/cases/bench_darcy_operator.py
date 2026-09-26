@@ -1,14 +1,14 @@
-"""Group A · canonical-benchmark — Darcy-flow OPERATOR learning with a Fourier Neural Operator (FNO).
+"""Group A · canonical-benchmark, Darcy-flow OPERATOR learning with a Fourier Neural Operator (FNO).
 
 The one case that does NOT train a single PINN for a single boundary-value problem. It learns the solution OPERATOR
     G: a(x) |-> u(x)   for  -div(a(x) grad u) = 1,  u|_boundary = 0  on (0,1)^2,
 over a whole FAMILY of permeability fields a(x) (two-value thresholded Gaussian random fields). One trained FNO maps
-any new coefficient field to its pressure field in a single forward pass — no per-instance retraining. Engine: a
+any new coefficient field to its pressure field in a single forward pass, no per-instance retraining. Engine: a
 compact, self-contained 2D FNO (model/fno.py); data: the Li-et-al. Darcy benchmark generated in-build (datasets/darcy).
 
 Pipeline fit: this is a CUSTOM-ENGINE, FIELD-IO case. It trains + exports its OWN ONNX in build() (field-in: the FNO
 maps a coefficient FIELD to a solution FIELD, not coordinates -> a value), so it sets web_drivable=False and ships
-lane=PRECOMPUTE — the browser replays each baked result (the App output selector shows the input field a, the FNO
+lane=PRECOMPUTE, the browser replays each baked result (the App output selector shows the input field a, the FNO
 prediction u_pred, and the FD reference u_true). The workbench variants are a DISCRETE family of held-out test samples
 the FNO never saw (the point of an operator: generalize to new inputs in one pass). The headline metric is the
 held-out TEST-set relative-L2 (the real operator-generalization number); each chip also reports its own sample L2; the
@@ -44,7 +44,7 @@ CASE = CaseSpec(
     outputs=("u_pred", "u_true", "a"),  # primary = FNO prediction; + FD reference + the input coefficient field
     domain={"x": (0.0, 1.0), "y": (0.0, 1.0)},
     grid={"x": N_GRID, "y": N_GRID},
-    field_axes=("x", "y"),              # explicit heatmap axes (== inputs; no parameter axis — variants are discrete samples)
+    field_axes=("x", "y"),              # explicit heatmap axes (== inputs; no parameter axis, variants are discrete samples)
     expected_band="one FNO maps any coefficient field a(x) to its pressure field in one pass; held-out test relative-L2 ~5-12%",
     validation_anchor="operator-test-l2",
     train={"lr": 1e-3, "adam": 0},  # bespoke training loop in build(); no DeepXDE Adam/L-BFGS
@@ -59,23 +59,23 @@ def variants() -> list[Variant]:
     frozen operator mapping a new a(x) to its pressure field in one forward pass (the point of operator learning)."""
     presets = [
         ("s1", "Held-out a #1", "a fuera de muestra #1",
-         "An unseen permeability field — one frozen FNO maps it to its pressure in a single pass.",
-         "Un campo de permeabilidad no visto — un FNO congelado lo mapea a su presión en una sola pasada."),
+         "An unseen permeability field, one frozen FNO maps it to its pressure in a single pass.",
+         "Un campo de permeabilidad no visto, un FNO congelado lo mapea a su presión en una sola pasada."),
         ("s2", "Held-out a #2", "a fuera de muestra #2",
-         "A different channel geometry — same operator, no retraining.",
-         "Una geometría de canales distinta — el mismo operador, sin reentrenar."),
+         "A different channel geometry, same operator, no retraining.",
+         "Una geometría de canales distinta, el mismo operador, sin reentrenar."),
         ("s3", "Held-out a #3", "a fuera de muestra #3",
-         "More tortuous high-permeability paths — the FNO still recovers the pressure field.",
-         "Caminos de alta permeabilidad más tortuosos — el FNO aún recupera el campo de presión."),
+         "More tortuous high-permeability paths, the FNO still recovers the pressure field.",
+         "Caminos de alta permeabilidad más tortuosos, el FNO aún recupera el campo de presión."),
         ("s4", "Held-out a #4", "a fuera de muestra #4",
-         "A blockier conductivity pattern — tests the operator on coarser interfaces.",
-         "Un patrón de conductividad más en bloques — prueba el operador en interfaces más gruesas."),
+         "A blockier conductivity pattern, tests the operator on coarser interfaces.",
+         "Un patrón de conductividad más en bloques, prueba el operador en interfaces más gruesas."),
         ("s5", "Held-out a #5", "a fuera de muestra #5",
-         "Thin connected channels — the hardest pressure gradients.",
-         "Canales delgados conectados — los gradientes de presión más difíciles."),
+         "Thin connected channels, the hardest pressure gradients.",
+         "Canales delgados conectados, los gradientes de presión más difíciles."),
         ("s6", "Held-out a #6", "a fuera de muestra #6",
-         "Another unseen instance — the operator generalizes across the whole family.",
-         "Otra instancia no vista — el operador generaliza sobre toda la familia."),
+         "Another unseen instance, the operator generalizes across the whole family.",
+         "Otra instancia no vista, el operador generaliza sobre toda la familia."),
     ]
     return [Variant(vid, le, ls, {"sample": i}, ne, ns)
             for i, (vid, le, ls, ne, ns) in enumerate(presets)]
@@ -168,7 +168,7 @@ def build(seed: int, quick: bool = False) -> dict:
         opset_version=18, dynamo=True, verbose=False, external_data=False,
     )
     from ..io.formats import strip_onnx_metadata
-    strip_onnx_metadata(onnx_path)  # the dynamo exporter embeds the local build path — strip it (clean public artifact)
+    strip_onnx_metadata(onnx_path)  # the dynamo exporter embeds the local build path, strip it (clean public artifact)
     sess = ort.InferenceSession(str(onnx_path), providers=["CPUExecutionProvider"])
     k = min(8, n_test)
     with torch.no_grad():

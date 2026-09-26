@@ -34,7 +34,7 @@ uncertainty-ratio numbers. `coherentWithDoc = false` on the strength of the adve
 
 ## Contradictions (in-app vs doc / measured result)
 
-### C1 — "advection + diffusion" contradicts the pure-diffusion governing equation (HARD)
+### C1: "advection + diffusion" contradicts the pure-diffusion governing equation (HARD)
 - **inApp** (`results.ts`, `assumptions_en[0]`): `"transport physics known (advection + diffusion)"`
   (ES mirror `assumptions_es[0]`: `"física de transporte conocida (advección + difusión)"`).
 - **docSays**: the governing equation is the **heat / pure-diffusion equation**
@@ -49,7 +49,7 @@ uncertainty-ratio numbers. `coherentWithDoc = false` on the strength of the adve
   - EN: `"diffusion transport physics known (heat equation c_t = D c_xx, D = 0.1)"`
   - ES: `"física de transporte por difusión conocida (ecuación del calor c_t = D c_xx, D = 0.1)"`
 
-### C2 — where uncertainty peaks: Context "intermediate times" vs measured `t = 0`
+### C2: where uncertainty peaks: Context "intermediate times" vs measured `t = 0`
 - **inApp Context** (`SourceUqBpinnContext.tsx`, EN lines 186-188; ES lines 88-90): the
   uncertainty "grows in the data-sparse regions: **typically the interior band at intermediate
   times**, away from any reading."
@@ -66,7 +66,7 @@ uncertainty-ratio numbers. `coherentWithDoc = false` on the strength of the adve
   neither a wall nor a reading pins the field." Keep it faithful: do not assert a time regime the
   trace does not show.
 
-### C3 — calibration number: app 99.97% vs doc 100% (MINOR)
+### C3: calibration number: app 99.97% vs doc 100% (MINOR)
 - **inApp** (`results.ts`, `verdict_en`): "**99.97%** of true values fall inside the 2σ band
   (computed calibration)" (ES: `"el 99.97%"`).
 - **docSays**: "2σ calibration (truth within mean ± 2 std) = **100 %** (well-calibrated, slightly
@@ -80,17 +80,17 @@ uncertainty-ratio numbers. `coherentWithDoc = false` on the strength of the adve
 
 ## Depth gaps (real doc content the app omits)
 
-### G1 — the headline accuracy metric (mean relative-L2 = 1.2%) is nowhere in the app
-- **docSays** (Result table): "mean relative-L2 vs `c*` = **1.2 %**" — this is the doc's *primary
+### G1: the headline accuracy metric (mean relative-L2 = 1.2%) is nowhere in the app
+- **docSays** (Result table): "mean relative-L2 vs `c*` = **1.2 %**": this is the doc's *primary
   score* ("the primary score is the relative L2 of the mean μ against c*", echoed in the Context).
 - The Context states the metric exists but gives no value; `scenarios.ts` and `results.ts` never
   mention accuracy at all (they only discuss calibration/error bars). A reader never learns the
   mean field is actually accurate.
 - **Fix (results.ts `verdict_en`)**: prepend the accuracy fact before the calibration sentence,
   e.g. "The mean field is accurate (1.2% relative-L2 vs the analytic mode) AND the error bars are
-  honest: ..." — grounded verbatim in the doc's 1.2%.
+  honest: ...", grounded verbatim in the doc's 1.2%.
 
-### G2 — mean ensemble std (0.0068) and the ~2.7x data-sparse ratio are omitted
+### G2: mean ensemble std (0.0068) and the ~2.7x data-sparse ratio are omitted
 - **docSays**: "mean / max ensemble std = **0.0068 / 0.0186** (uncertainty **~2.7x higher** in
   data-sparse regions)."
 - `results.ts` reports only the max band (σ = 0.019 ≈ 0.0186 rounded); it never gives the mean std
@@ -98,7 +98,7 @@ uncertainty-ratio numbers. `coherentWithDoc = false` on the strength of the adve
 - **Fix (results.ts `answer_en` or `verdict_en`)**: add "(mean band σ = 0.0068 across the field;
   the widest band is ~2.7x that, in the data-sparse interior)". Faithful to the doc's numbers.
 
-### G3 — Context does not transcribe any measured result numbers
+### G3: Context does not transcribe any measured result numbers
 - The Context is method-rich but numbers-free: the doc's Result block (1.2% L2, 100% calibration,
   0.0068/0.0186 std, live lane 101 KB / 3.8 ms / parity 2.4e-7) never appears in the deep prose.
   For a UQ-benchmark case, at least the two headline outcomes (mean accuracy 1.2% and the
@@ -109,7 +109,7 @@ uncertainty-ratio numbers. `coherentWithDoc = false` on the strength of the adve
   (essentially all truth inside 2σ), with the mean/max ensemble std at 0.0068/0.0186." Do not invent
   beyond these doc figures.
 
-### G4 — the "single honest benchmark, no fabricated regimes" rationale is in the Context but not the short surfaces (minor, acceptable)
+### G4: the "single honest benchmark, no fabricated regimes" rationale is in the Context but not the short surfaces (minor, acceptable)
 - The Context handles the "why one benchmark, not a parametric family" honesty well. `scenarios.ts`
   / `results.ts` don't need it, but the `verdict` could note the field is
   `synthetic-illustrative` (the doc's `real_or_synthetic = synthetic-illustrative`) so the
@@ -119,7 +119,7 @@ uncertainty-ratio numbers. `coherentWithDoc = false` on the strength of the adve
 
 ## What is coherent / good (for balance)
 
-- Governing equation, `D=0.1`, `K=5`, `N=24` sensors, `c=0` walls, analytic `c*` — all match the
+- Governing equation, `D=0.1`, `K=5`, `N=24` sensors, `c=0` walls, analytic `c*`: all match the
   doc across Context and constraints.
 - The `[μ, s]` single-ONNX two-output design matches the doc's "one ONNX, two outputs (`[mean,
   std]`)".
@@ -136,10 +136,10 @@ uncertainty-ratio numbers. `coherentWithDoc = false` on the strength of the adve
 
 ## Concrete edit list (by file)
 
-1. `frontend/src/content/results.ts` — `poll-source-uq-bpinn.assumptions_en[0]` / `assumptions_es[0]`:
+1. `frontend/src/content/results.ts`: `poll-source-uq-bpinn.assumptions_en[0]` / `assumptions_es[0]`:
    replace "advection + diffusion" / "advección + difusión" with pure-diffusion wording (C1).
-2. `frontend/src/content/results.ts` — `verdict_en` / `verdict_es`: prepend the 1.2% mean-accuracy
+2. `frontend/src/content/results.ts`: `verdict_en` / `verdict_es`: prepend the 1.2% mean-accuracy
    fact (G1) and reconcile calibration to the doc's figure (C3); optionally add mean-std/2.7x (G2).
-3. `frontend/src/content/cases/SourceUqBpinnContext.tsx` — "What the benchmark shows" paragraph
+3. `frontend/src/content/cases/SourceUqBpinnContext.tsx`: "What the benchmark shows" paragraph
    (EN ~line 186-188, ES ~line 88-90): fix "intermediate times" to match the measured `t=0` argmax
    (C2), and add one measured-numbers sentence (G3).

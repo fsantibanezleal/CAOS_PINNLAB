@@ -1,11 +1,11 @@
-"""Group C · pollution-environmental (REAL DATA) — subsurface heat conduction inverse from NOAA USCRN soil temperatures.
+"""Group C · pollution-environmental (REAL DATA), subsurface heat conduction inverse from NOAA USCRN soil temperatures.
 
 The ONLY case trained against a REAL measured dataset. NOAA's U.S. Climate Reference Network reports daily-mean soil
 temperature at five depths (5, 10, 20, 50, 100 cm). Subsurface heat conduction is genuinely diffusive:
     T_t = alpha T_zz   on z in [5,100] cm, t over 2019-2021 (station IL_Champaign_9_SW),
 the surface signal propagating downward damped + phase-lagged. We pose the INVERSE: take the 5 cm + 100 cm sensors as
 real time-varying Dirichlet boundaries, recover the effective thermal diffusivity alpha (a trainable scalar), and
-VALIDATE OUT-OF-SAMPLE against the held-out 10/20/50 cm sensors — interior depths never shown to the optimizer.
+VALIDATE OUT-OF-SAMPLE against the held-out 10/20/50 cm sensors, interior depths never shown to the optimizer.
 
 real_or_synthetic = validated-real: boundaries + held-out anchor are real measurements (no manufactured truth). The
 score is the held-out relative-L2 / RMSE in degrees C against the real interior temperatures, plus the recovered alpha
@@ -65,7 +65,7 @@ CASE = CaseSpec(
 
 def variants() -> list[Variant]:
     # Single VALIDATED-REAL variant: alpha is recovered (not a network-input knob) and the real surface forcing has no
-    # closed form, so there is no honest parametric family — the field is the one measured T(z,t) reconstruction.
+    # closed form, so there is no honest parametric family: the field is the one measured T(z,t) reconstruction.
     return [Variant(
         "real", "USCRN (real data)", "USCRN (datos reales)", {},
         "Soil-temperature field reconstructed from real 5/100 cm boundaries; validated out-of-sample vs 10/20/50 cm.",

@@ -1,11 +1,11 @@
-"""Group C · pollution-environmental — Bayesian PINN (deep ensemble) for pollutant diffusion with UNCERTAINTY.
+"""Group C · pollution-environmental, Bayesian PINN (deep ensemble) for pollutant diffusion with UNCERTAINTY.
 
 A dissolved pollutant diffuses in 1D, c_t = D c_xx on x in [0,1], t in [0,1], c=0 at the walls, true field
     c*(x,t) = e^{-D pi^2 t} sin(pi x)   (the fundamental diffusion mode, D=0.1).
 We are given only a HANDFUL of sparse, noisy sensor readings (not the full initial condition). A single PINN would
-report one answer with no error bars; instead we train a DEEP ENSEMBLE of K independently-initialized PINNs — the
+report one answer with no error bars; instead we train a DEEP ENSEMBLE of K independently-initialized PINNs, the
 recognized cheap approximation to Bayesian inference (Lakshminarayanan 2017). The predictive MEAN tracks c*; the
-ensemble STD is the epistemic uncertainty — it stays small near sensors and the c=0 walls, and GROWS where data is
+ensemble STD is the epistemic uncertainty, it stays small near sensors and the c=0 walls, and GROWS where data is
 sparse. The whole ensemble is exported as ONE ONNX graph emitting [mean, std], so the live lane ships a single file.
 
 real_or_synthetic = synthetic-illustrative: a UQ demonstrator on a manufactured field (analytic c*), not a measured
@@ -113,7 +113,7 @@ def build(seed: int, quick: bool = False) -> dict:
         return c_t - D * c_xx
 
     # a pool of candidate sensor sites; each member bootstraps (bags) a subset + its OWN noise realization, so members
-    # disagree most where data is sparse — that disagreement IS the epistemic uncertainty (bagging + random init).
+    # disagree most where data is sparse: that disagreement IS the epistemic uncertainty (bagging + random init).
     pool_rng = np.random.default_rng(seed)
     pool_xt = pool_rng.uniform([0.05, 0.0], [0.95, 1.0], size=(2 * N_OBS, 2))
 

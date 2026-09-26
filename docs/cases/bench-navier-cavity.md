@@ -1,8 +1,8 @@
-# bench-navier-cavity — steady Navier-Stokes lid-driven cavity (u, v, p)
+# bench-navier-cavity: steady Navier-Stokes lid-driven cavity (u, v, p)
 
 The hardest canonical case in the catalogue, and the one that exercises **multi-output PINNs with loss
 weighting**: three coupled scalar outputs, three PDE residuals, a pressure gauge, and a corner-regularized
-boundary — all balanced by per-term weights so no single loss dominates the others.
+boundary, all balanced by per-term weights so no single loss dominates the others.
 
 ## Problem
 
@@ -28,7 +28,7 @@ conditions simultaneously. The difficulty is **scale imbalance**: the momentum/c
 wall Dirichlet terms, and the single-point pressure gauge live on very different magnitudes, and an unweighted
 sum lets the easy terms swamp the hard ones.
 
-The fix is explicit **per-term loss weighting**, `loss_weights = [1, 1, 1, 10, 10, 10, 10, 10]` — the three
+The fix is explicit **per-term loss weighting**, `loss_weights = [1, 1, 1, 10, 10, 10, 10, 10]`, the three
 residuals at weight 1, and all five constraints (lid $u$, lid $v$, wall $u$, wall $v$, pressure gauge) **up-weighted
 10×** so the boundary data and gauge are actually enforced rather than averaged away. Optimization is Adam
 (20 000 steps, lr $10^{-3}$) followed by **L-BFGS** polishing, on 2601 interior + 400 boundary collocation
@@ -51,14 +51,14 @@ $x=0.5$ and $v$ along the horizontal centerline $y=0.5$ versus the digitized Ghi
 
 This is **CPU-limited, and we state it plainly**: ~17 % relative-L2 against Ghia is reduced fidelity, not a
 publication-grade cavity solve. The network captures the primary vortex and the qualitative corner-eddy
-structure, but the centerline match — especially $v$, at 0.22 — is coarse because the CPU lane (DeepXDE, Adam +
+structure, but the centerline match, especially $v$, at 0.22, is coarse because the CPU lane (DeepXDE, Adam +
 L-BFGS) cannot afford the iteration count a sharp Re=100 cavity needs. A GPU lane (PhysicsNeMo) would tighten
 this; on the CPU lane it does not, and the number is reported as-is.
 
 ## Honesty
 
 `real_or_synthetic = synthetic-illustrative`. The Ghia 1982 centerlines are a real, widely-cited benchmark, but
-this case is **not fit to data** and is **not** a converged reference solution — it is a *faithful reduced model*:
+this case is **not fit to data** and is **not** a converged reference solution, it is a *faithful reduced model*:
 the correct governing equations, the correct boundary conditions, a regularized lid and a pressure gauge, solved
 at the fidelity the CPU lane allows. The 0.17 relative-L2 is the honest cost of that lane. Nothing here is
 manufactured to look better than it is; the gap to Ghia is the headline number, not a footnote.

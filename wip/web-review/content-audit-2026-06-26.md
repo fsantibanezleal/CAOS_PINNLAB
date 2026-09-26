@@ -5,13 +5,13 @@ have a deep bilingual Context (124-198 lines each) AND a `docs/cases/<id>.md`. T
 
 ## Gaps, prioritized
 
-1. **SVG figures — CORRECTED.** The ⓘ Architecture modal DOES have hand-authored themed SVGs (external, fetched
+1. **SVG figures: CORRECTED.** The ⓘ Architecture modal DOES have hand-authored themed SVGs (external, fetched
    from `public/svg/tech/`, inlined so CSS tokens resolve): 6 files (`system-overview`, `web-architecture`,
    `offline-pipeline`, `train-onnx-web`, `lane-gate`, `method-matrix`) across 7 tabs. ADR-0058 is **met**. The grep
    missed them because they are external assets, not inline `<svg>`.
-   - **Real gaps:** (a) those SVGs **predate** the 7 view kits + the new cases (double-pendulum) + the App reorg —
+   - **Real gaps:** (a) those SVGs **predate** the 7 view kits + the new cases (double-pendulum) + the App reorg, 
      `method-matrix.svg` and `system-overview.svg` are likely **stale** (no ode-dynamical/vector-flow/UQ/inverse kits,
-     20-not-19 cases); refresh them. (b) No **view-kit architecture** diagram (ADR-0063: `system_type→view_kit`) —
+     20-not-19 cases); refresh them. (b) No **view-kit architecture** diagram (ADR-0063: `system_type→view_kit`), 
      add a modal tab + SVG. (c) The content **pages/Contexts** carry no inline figures, but the modal + the live viz
      cover this, so this is LOW priority (add 1-2 only where a schematic genuinely helps, e.g. the double-pendulum
      leave-time / Lyapunov horizon, or the classical→SOTA→novel ladder on Benchmark).
@@ -26,10 +26,10 @@ have a deep bilingual Context (124-198 lines each) AND a `docs/cases/<id>.md`. T
 4. **Introduction (86 lines)** could gain a "what a PINN is / where it wins vs a classical solver" honest primer +
    a small SVG.
 
-5. Minor: `CATEGORY_INTRO` now exists in BOTH `contract.ts` (App one-liners) and `Experiments.tsx` (paragraphs) —
+5. Minor: `CATEGORY_INTRO` now exists in BOTH `contract.ts` (App one-liners) and `Experiments.tsx` (paragraphs), 
    intentional (different lengths), but keep them consistent.
 
-## Method-family docs (docs/methods) — check vs the SOTA research
+## Method-family docs (docs/methods): check vs the SOTA research
 The new methods (ode-dynamical soft-IC IVP, streamlines/vector-flow presentation, UQ band, inverse overlay) may
 need method-doc updates. Cross-check against the SOTA research report (wf deep-research, pending) before writing.
 

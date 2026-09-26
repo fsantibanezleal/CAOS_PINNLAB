@@ -1,19 +1,19 @@
 # Deploy
 
 PINN-Lab is a **static site**: the offline pipeline bakes artifacts into the repo, and the frontend is a plain
-Vite/React build served by **GitHub Pages via Actions**. No server, no runtime backend (the FastAPI lane is dormant —
+Vite/React build served by **GitHub Pages via Actions**. No server, no runtime backend (the FastAPI lane is dormant, 
 ADR-0057's backend-optional clause).
 
 ## The build
 
 `frontend/` is a Vite + React 19 + TypeScript SPA:
 
-- **`base: "./"`** in `vite.config.ts` — all asset URLs are relative, so the bundle works under a project subpath
+- **`base: "./"`** in `vite.config.ts`: all asset URLs are relative, so the bundle works under a project subpath
   (`/CAOS_PINNLAB/`) and would also work under a custom domain root without rebuilding.
-- **`copy-data.mjs`** — a prebuild step that copies `data/derived/` (manifests + traces) and `models/*.onnx` into the
+- **`copy-data.mjs`**: a prebuild step that copies `data/derived/` (manifests + traces) and `models/*.onnx` into the
   frontend `public/` so they ship as static assets the SPA `fetch`es at runtime. The pipeline output is the single
   source; the web never re-derives it.
-- **Type-check** — `tsc --noEmit` runs as a separate gate (no `noEmit`/project-reference conflict), so a contract
+- **Type-check**: `tsc --noEmit` runs as a separate gate (no `noEmit`/project-reference conflict), so a contract
   drift in `lib/contract.ts` fails the build.
 
 ## Routing

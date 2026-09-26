@@ -1,18 +1,18 @@
-# env-soil-heat-real — subsurface heat conduction from real soil temperatures
+# env-soil-heat-real: subsurface heat conduction from real soil temperatures
 
 **The flagship real-data case.** Every other case validates against a closed-form or reduced-model truth; this one is
 trained on, and validated against, **real measured temperatures**.
 
 ## The data (real, vendored, reproducible)
 
-NOAA's **U.S. Climate Reference Network** (USCRN) reports research-grade daily-mean soil temperature at five depths —
-**5, 10, 20, 50, 100 cm** — at station **IL_Champaign_9_SW** (central Illinois), here over **2019–2021** (three full
+NOAA's **U.S. Climate Reference Network** (USCRN) reports research-grade daily-mean soil temperature at five depths, 
+**5, 10, 20, 50, 100 cm**, at station **IL_Champaign_9_SW** (central Illinois), here over **2019–2021** (three full
 seasonal cycles, 0 % missing in 2021). The fetcher `data-pipeline/pinnlab/datasets/uscrn_soil.py` pulls the open
 archive once and vendors `data/reference/uscrn/soil_temp_il_champaign.json` (schema `pinnlab.dataset.uscrn/v1`), so
 training is offline + reproducible and CI needs no network. This is the ingestion
 [data contract](../architecture/data-contracts.md) exercised on a real dataset.
 
-The measured signal is textbook diffusion: the seasonal wave is **damped and phase-lagged with depth** —
+The measured signal is textbook diffusion: the seasonal wave is **damped and phase-lagged with depth**, 
 
 | depth | min … max (°C) | seasonal amplitude |
 |-------|----------------|--------------------|
@@ -30,7 +30,7 @@ a single trainable scalar** $\alpha=\exp(\log\kappa)\cdot L^2/T_{\text{span}}$ (
 the network). The case is **Adam-only** so the engine's generic L-BFGS recompile never drops the external trainable
 variable.
 
-The **10 / 20 / 50 cm sensors are held out** — never shown to the optimizer — and used only in `evaluate` to score the
+The **10 / 20 / 50 cm sensors are held out**, never shown to the optimizer, and used only in `evaluate` to score the
 recovered model out-of-sample against real interior temperatures (`extra_metrics` interpolates the baked field at each
 held-out depth and compares to the measured series).
 
@@ -45,14 +45,14 @@ held-out depth and compares to the measured series).
 
 A **single** recovered diffusivity reproduces unseen interior soil temperatures to ~1 °C across three depths and three
 years. The error is largest at 10 cm (nearest the noisy near-surface boundary) and smallest at 50 cm (deepest, smoothest)
-— physically exactly what you expect. The recovered α landing in the textbook range for moist mineral soil is the
+, physically exactly what you expect. The recovered α landing in the textbook range for moist mineral soil is the
 independent sanity check that the inverse found physics, not a curve fit.
 
 ## Honesty
 
 `real_or_synthetic = validated-real` (the green "real data" tag in the App). Boundaries and the validation anchor are
 real measurements; nothing is manufactured. The near-surface (5 cm) boundary carries synoptic weather noise that a
-single-α diffusion cannot fully resolve — that residual is visible in the 5 cm boundary loss and is reported, not
+single-α diffusion cannot fully resolve, that residual is visible in the 5 cm boundary loss and is reported, not
 hidden; it does not contaminate the held-out interior score, which is what the case is judged on.
 
 ## Reproduce

@@ -1,7 +1,7 @@
-# ind-helmholtz — high-wavenumber 2D Helmholtz with a Fourier-feature PINN
+# ind-helmholtz: high-wavenumber 2D Helmholtz with a Fourier-feature PINN
 
-The **spectral-bias showcase** of the catalogue. A plain tanh MLP cannot represent a rapidly oscillating field — it
-is biased toward low frequencies — so this case exercises the **random Fourier-feature** input embedding that injects
+The **spectral-bias showcase** of the catalogue. A plain tanh MLP cannot represent a rapidly oscillating field, it
+is biased toward low frequencies, so this case exercises the **random Fourier-feature** input embedding that injects
 the right frequencies into layer 1 and lifts that plateau.
 
 ## Problem
@@ -28,7 +28,7 @@ $4\times128$ tanh FNN.
 
 Key choices, all per the source:
 - **$B$ is frozen and seeded** (`torch.manual_seed(0)`) so the *same* feature map is used for training, parity check,
-  and ONNX export — the map is a pure-tensor `apply_feature_transform` that traces cleanly into the graph.
+  and ONNX export, the map is a pure-tensor `apply_feature_transform` that traces cleanly into the graph.
 - **Soft Dirichlet BC with loss weighting** (`loss_weights=[1, 100]`), not a hard multiplicative constraint: for an
   oscillatory solution a hard constraint fights the oscillation near the boundary, so the robust recipe is a strongly
   weighted soft BC.
@@ -54,8 +54,8 @@ tighten it further; this is not dressed up.
 
 `real_or_synthetic = synthetic`. The truth here is **closed-form (MMS)**: the forcing $f$ is constructed precisely so
 that $u^*=\sin(k_0 x)\sin(k_0 y)$ satisfies the PDE exactly, and the network is scored against that analytic field.
-Nothing is fit to measured data and nothing is claimed to be. This is a method demonstrator — it shows that the
-Fourier-feature embedding makes a high-wavenumber Helmholtz problem learnable at all — not a real-world Helmholtz
+Nothing is fit to measured data and nothing is claimed to be. This is a method demonstrator, it shows that the
+Fourier-feature embedding makes a high-wavenumber Helmholtz problem learnable at all, not a real-world Helmholtz
 scattering dataset.
 
 ## Reproduce

@@ -1,4 +1,4 @@
-/* PINN-Lab theming — data-theme on <html>, CSS custom properties. Dark default (SimLab-style), light variant. */
+/* PINN-Lab theming, data-theme on <html>, CSS custom properties. Dark default (SimLab-style), light variant. */
 :root,
 :root[data-theme="dark"] {
   --bg: #0b1020;
@@ -567,7 +567,7 @@ ol li, ul li { margin: 4px 0; }
 .highlight-card.star .hl-tag { color: #2fae6b; }
 .highlight-card.star:hover { border-color: #2fae6b; }
 
-/* dimension caption on the heatmap — states what the axes ARE (space-time evolution vs steady field) */
+/* dimension caption on the heatmap, states what the axes ARE (space-time evolution vs steady field) */
 .dim-caption { font-size: 12px; line-height: 1.45; color: var(--text); background: color-mix(in srgb, var(--accent) 8%, transparent);
   border-left: 3px solid var(--accent); padding: 8px 11px; border-radius: 7px; margin: 0 0 12px; max-width: 760px; }
 

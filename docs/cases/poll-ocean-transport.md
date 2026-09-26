@@ -1,8 +1,8 @@
-# poll-ocean-transport — 2D advection-diffusion PINN (time-scrubber over an advected pollutant patch)
+# poll-ocean-transport: 2D advection-diffusion PINN (time-scrubber over an advected pollutant patch)
 
 Two spatial dimensions and time under one network, presented as a **time-scrubber**: a pollutant patch drifts with a
-coastal current and spreads by eddy diffusion. **Time is the swept parameter** — `field_axes=(x,y)`, six time
-snapshots — so the web **Live** tab scrubs $t$ and replays the spill drifting and diluting.
+coastal current and spreads by eddy diffusion. **Time is the swept parameter**, `field_axes=(x,y)`, six time
+snapshots, so the web **Live** tab scrubs $t$ and replays the spill drifting and diluting.
 
 ## Problem
 
@@ -11,14 +11,14 @@ diffusivity $D$ on the unit square over one time unit:
 
 $$ c_t + \mathbf{v}\cdot\nabla c = D\,\nabla^2 c, \qquad \mathbf{v}=(0.45,\,0.35),\ D=0.01. $$
 
-For a Gaussian point release this has an **exact solution** (the advected-diffused 2D Green's function — a genuine
+For a Gaussian point release this has an **exact solution** (the advected-diffused 2D Green's function, a genuine
 solution, *not* a manufactured source):
 
 $$ c^*(x,y,t)=\frac{s_0^2}{s_0^2+2Dt}\,\exp\!\Big(-\frac{(x-x_0-v_x t)^2+(y-y_0-v_y t)^2}{2\,(s_0^2+2Dt)}\Big). $$
 
 The patch **center** moves with the current ($\mathbf{x}_0+\mathbf{v}t$), its **variance** grows linearly
 ($s^2=s_0^2+2Dt$), and its **peak** decays as $s_0^2/s^2$ (mass conserved). Péclet $\mathrm{Pe}=|\mathbf{v}|L/D\approx45$
-— advection-dominated. (The earlier gyre-MMS field was a decaying eigenmode that did not visibly move; it was replaced
+, advection-dominated. (The earlier gyre-MMS field was a decaying eigenmode that did not visibly move; it was replaced
 by this genuinely-translating exact solution.)
 
 ## Method
@@ -42,7 +42,7 @@ Validation anchor: the **exact advected-diffused Gaussian** $c^*$. Six time-snap
 ## Honesty
 
 `real_or_synthetic = synthetic-illustrative`. The truth is a closed-form exact solution, not a fit to a real spill or
-a real ocean-current product — a **physically-faithful illustration** of advective-diffusive transport. The uniform
+a real ocean-current product, a **physically-faithful illustration** of advective-diffusive transport. The uniform
 current is a deliberate simplification (no gyre / time-varying flow). What is real is the PINN error: with soft IC/BC,
 the relative-L2 measures the network's actual interior accuracy against the exact solution.
 

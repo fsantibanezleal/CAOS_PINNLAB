@@ -1,8 +1,8 @@
-"""Pure-Python (numpy-only) numeric helpers shared by the offline stages, the live lane and the API — Pyodide-safe.
+"""Pure-Python (numpy-only) numeric helpers shared by the offline stages, the live lane and the API, Pyodide-safe.
 
 The per-case closed-form reference solutions live in each `cases/<case>.py` (`analytic()`); this module holds the
 domain-agnostic helpers: evaluation grids, relative-L2 error vs the reference, and max-abs error. NEVER import
-torch/deepxde here — this is the light core that may run in more than one lane.
+torch/deepxde here, this is the light core that may run in more than one lane.
 """
 from __future__ import annotations
 

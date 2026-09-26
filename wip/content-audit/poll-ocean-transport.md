@@ -27,7 +27,7 @@ contradiction, but it understates the real measured precision by ~5x and hides t
 result the doc treats as the headline. Two smaller depth gaps (training config; ONNX parity) round
 out the list.
 
-Severity: **2 (real gap)** — coherent, no contradictions, but a material understatement of the
+Severity: **2 (real gap)**, coherent, no contradictions, but a material understatement of the
 measured result plus omitted doc detail worth surfacing.
 
 ## Contradictions (in-app claim vs doc)
@@ -35,11 +35,11 @@ measured result plus omitted doc detail worth surfacing.
 None found. Every method name, mechanism, equation, coefficient, and error statement in the app is
 consistent with `docs/cases/poll-ocean-transport.md` and the pipeline. The "under 1%" verdict is
 listed below as a depth gap (an understatement), not a contradiction, because it does not conflict
-with the doc's number — it merely fails to report it.
+with the doc's number, it merely fails to report it.
 
 ## Depth gaps (real doc content the app omits or dilutes)
 
-### GAP 1 (primary) — measured accuracy is diluted to the loose gate, not the real number
+### GAP 1 (primary): measured accuracy is diluted to the loose gate, not the real number
 - **In-app** (`results.ts`, `poll-ocean-transport` verdict_en):
   "Under 1% field error vs the exact drifting-spreading solution: arrival times are trustworthy..."
   (verdict_es: "Menos de 1% de error vs la solución exacta...").
@@ -50,18 +50,18 @@ with the doc's number — it merely fails to report it.
   and grows monotonically with spread (0.06% -> 0.19%), which is itself a teaching point (error
   accumulates as the patch broadens). The app leaves the strongest, most honest number on the table.
 
-### GAP 2 — the concrete PINN training recipe is absent from Context
+### GAP 2: the concrete PINN training recipe is absent from Context
 - **In-app** (`OceanTransportContext.tsx`): describes soft, weighted IC/BC ("impuestas de forma
   blanda y ponderada" / "imposed softly and weighted") but gives no architecture, optimizer, or
   loss weights.
 - **Doc says** (Method): "Net **[3,64,64,64,64,1] tanh (DeepXDE)**, **Adam (18000, lr 1e-3) ->
   L-BFGS**, **loss weights [1,10,50] for [pde,bc,ic]**." (These match the pipeline `CASE.train`.)
 - **Why it matters:** the loss weights `[1,10,50]` are the mechanism behind "reported L2 is the true
-  PINN error" — the BC/IC penalties are soft precisely so the interior is genuinely learned. Naming
+  PINN error", the BC/IC penalties are soft precisely so the interior is genuinely learned. Naming
   the 4x64 tanh net and the Adam->L-BFGS schedule adds real depth for near-zero cost and is already
   a fact on disk.
 
-### GAP 3 — ONNX parity is never surfaced in-app
+### GAP 3: ONNX parity is never surfaced in-app
 - **Doc says** (Result table): "ONNX parity (max abs) **4.8e-7**", lane **live** (one shared ONNX;
   Live = time scrubber).
 - **In-app:** the Context/results mention the browser ONNX runtime ("onnxruntime-web") but never the
@@ -69,7 +69,7 @@ with the doc's number — it merely fails to report it.
   export-fidelity number is the evidence that the in-browser scrubber equals the trained net; it
   belongs somewhere user-visible.
 
-### GAP 4 (minor) — the scenario checkpoint answer has no stated location
+### GAP 4 (minor): the scenario checkpoint answer has no stated location
 - **In-app** (`results.ts` answer_en): "The spill reaches the checkpoint at **t = 0.44** (first
   significant arrival), still rising to **0.077** at the window's end."
 - **Observation:** these numbers are plausible and consistent with the exact solution
@@ -94,7 +94,7 @@ with the doc's number — it merely fails to report it.
 
 ## Concrete proposed enrichments (faithful to the doc, no invented numbers)
 
-### E1 — fix the accuracy headline in `results.ts` (addresses GAP 1)
+### E1: fix the accuracy headline in `results.ts` (addresses GAP 1)
 Replace verdict_en for `poll-ocean-transport`:
 > Current: "Under 1% field error vs the exact drifting-spreading solution: arrival times are
 > trustworthy under the stated current. If the real current shifts, re-ask the network (time is a
@@ -114,7 +114,7 @@ verdict_es (mirror):
 (Numbers quoted directly from doc Result table: "relative-L2 vs exact <= 0.19 % across all 6
 snapshots (t=0 -> 0.06 %; t=1 -> 0.19 %)".)
 
-### E2 — add the training recipe to Context "Formalization" (addresses GAP 2)
+### E2: add the training recipe to Context "Formalization" (addresses GAP 2)
 In `OceanTransportContext.tsx`, extend the Formalization paragraph (both EN and ES) after "...the
 reported L2 is the true PINN error." Append (EN):
 > "Concretely: a 4x64 tanh network with (x,y,t) inputs (DeepXDE), trained by Adam (18000 steps,
@@ -129,14 +129,14 @@ ES:
 (All values from doc Method + pipeline `CASE.train`: net `[3,64,64,64,64,1]`, Adam 18000 lr 1e-3,
 L-BFGS, loss_weights `[1,10,50]`.)
 
-### E3 — surface ONNX parity (addresses GAP 3)
+### E3: surface ONNX parity (addresses GAP 3)
 In the Context viz-reading paragraph, where it already says the scrubber runs "live in your browser
 (onnxruntime-web)", append (EN): "the browser ONNX matches the trained network to 4.8e-7 (max abs),
 so the live scrubber is the same solver, not an approximation." ES mirror with "4.8e-7 (max abs)".
 (From doc Result table "ONNX parity (max abs) 4.8e-7".) Alternatively expose it as a metric chip in
 the results panel.
 
-### E4 — disclose the checkpoint (addresses GAP 4)
+### E4: disclose the checkpoint (addresses GAP 4)
 Either (a) add the checkpoint coordinate to `results.ts` answer text (e.g. "at the coastal intake at
 (xc, yc)") using the exact coordinate the scenario probe uses, or (b) add a one-line checkpoint
 definition to `docs/cases/poll-ocean-transport.md` so t=0.44 / c=0.077 become gradeable against the

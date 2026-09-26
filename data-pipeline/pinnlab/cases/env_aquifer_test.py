@@ -1,4 +1,4 @@
-"""Group C · pollution-environmental (SUBSURFACE) — the PUMPING TEST: recover an aquifer's T and S.
+"""Group C · pollution-environmental (SUBSURFACE), the PUMPING TEST: recover an aquifer's T and S.
 
 The subsurface applied case the catalogue was missing, and an honest "know when a PINN is NOT the tool" case.
 

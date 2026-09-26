@@ -1,4 +1,4 @@
-"""Group A · canonical-benchmark — 1D transient heat/diffusion, time-dependent HARD-CONSTRAINT PINN, PARAMETRIC in
+"""Group A · canonical-benchmark, 1D transient heat/diffusion, time-dependent HARD-CONSTRAINT PINN, PARAMETRIC in
 the thermal diffusivity alpha.
 
 Governing equation:
@@ -7,10 +7,10 @@ Governing equation:
 Manufactured exact solution (validation anchor), valid for ANY alpha:
     u*(x,t;alpha) = exp(-alpha * pi^2 * t) * sin(pi x).
 
-Method — TIME-DEPENDENT PINN with HARD CONSTRAINTS: IC and BC are imposed *exactly* by the output transform
+Method, TIME-DEPENDENT PINN with HARD CONSTRAINTS: IC and BC are imposed *exactly* by the output transform
     u_hat(x,t) = t*x*(1-x)*N(x,t,alpha) + sin(pi x)   (at t=0 -> sin(pi x) = IC; at x=0,1 -> 0 = BC),
 so there is no IC/BC loss term. The diffusivity `alpha` is a network INPUT: ONE trained net covers the whole
-diffusivity family, and the web `Live` tab sweeps alpha continuously — watch the sine profile decay faster (large
+diffusivity family, and the web `Live` tab sweeps alpha continuously, watch the sine profile decay faster (large
 alpha) or slower (small alpha) via the shared ONNX, with no retraining.
 """
 from __future__ import annotations
@@ -62,12 +62,12 @@ def analytic(xta: np.ndarray) -> np.ndarray:
 
 def variants() -> list[Variant]:
     presets = [
-        ("a01", 0.1, "Slow diffusion (α=0.1) — the profile barely decays over the window.", "Difusión lenta (α=0.1) — el perfil apenas decae en la ventana."),
-        ("a02", 0.2, "α=0.2 — gentle decay.", "α=0.2 — decaimiento suave."),
-        ("a04", 0.4, "α=0.4 — moderate decay.", "α=0.4 — decaimiento moderado."),
-        ("a06", 0.6, "α=0.6 — the sine fades to ~30% by t=1.", "α=0.6 — la sinusoide cae a ~30% en t=1."),
-        ("a08", 0.8, "α=0.8 — fast decay.", "α=0.8 — decaimiento rápido."),
-        ("a10", 1.0, "Fast diffusion (α=1.0) — the profile collapses to near zero by t=1.", "Difusión rápida (α=1.0) — el perfil colapsa a casi cero en t=1."),
+        ("a01", 0.1, "Slow diffusion (α=0.1), the profile barely decays over the window.", "Difusión lenta (α=0.1), el perfil apenas decae en la ventana."),
+        ("a02", 0.2, "α=0.2, gentle decay.", "α=0.2, decaimiento suave."),
+        ("a04", 0.4, "α=0.4, moderate decay.", "α=0.4, decaimiento moderado."),
+        ("a06", 0.6, "α=0.6, the sine fades to ~30% by t=1.", "α=0.6, la sinusoide cae a ~30% en t=1."),
+        ("a08", 0.8, "α=0.8, fast decay.", "α=0.8, decaimiento rápido."),
+        ("a10", 1.0, "Fast diffusion (α=1.0), the profile collapses to near zero by t=1.", "Difusión rápida (α=1.0), el perfil colapsa a casi cero en t=1."),
     ]
     return [Variant(vid, f"α={a:g}", f"α={a:g}", {"alpha": a}, en, es) for vid, a, en, es in presets]
 

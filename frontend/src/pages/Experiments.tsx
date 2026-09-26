@@ -63,9 +63,9 @@ export function Experiments() {
             <tr><td className="mono">bench-allencahn</td><td>spectral ref</td><td className="mono" style={{ color: "var(--bad)" }}>95.4% (collapse)</td><td className="mono" style={{ color: "var(--good)" }}>hard+RAR 0.4%</td></tr>
             <tr><td className="mono">ind-heat2d-inverse</td><td>MMS k*</td><td className="mono" style={{ color: "var(--bad)" }}>356% (no data)</td><td className="mono" style={{ color: "var(--good)" }}>data+physics 4.0%</td></tr>
             <tr><td className="mono">poll-soil-barrier</td><td>MMS</td><td className="mono">single-domain ~19%</td><td className="mono">FBPINN ~19%</td></tr>
-            <tr><td className="mono">bench-darcy-operator</td><td>finite-difference</td><td className="mono">—</td><td className="mono" style={{ color: "var(--good)" }}>FNO 2.5% (one pass)</td></tr>
-            <tr><td className="mono">bench-navier-cavity</td><td>Ghia 1982</td><td className="mono">—</td><td className="mono" style={{ color: "var(--good)" }}>centerline RMSE 0.05</td></tr>
-            <tr><td className="mono">env-soil-heat-real</td><td>real sensors</td><td className="mono">—</td><td className="mono" style={{ color: "var(--good)" }}>held-out ~1&deg;C</td></tr>
+            <tr><td className="mono">bench-darcy-operator</td><td>finite-difference</td><td className="mono">–</td><td className="mono" style={{ color: "var(--good)" }}>FNO 2.5% (one pass)</td></tr>
+            <tr><td className="mono">bench-navier-cavity</td><td>Ghia 1982</td><td className="mono">–</td><td className="mono" style={{ color: "var(--good)" }}>centerline RMSE 0.05</td></tr>
+            <tr><td className="mono">env-soil-heat-real</td><td>real sensors</td><td className="mono">–</td><td className="mono" style={{ color: "var(--good)" }}>held-out ~1&deg;C</td></tr>
             <tr><td className="mono">bench-darcy-pino</td><td>finite-difference</td><td className="mono">FNO data-only 14.3%</td><td className="mono" style={{ color: "var(--good)" }}>PINO 7.8% (32 labels)</td></tr>
             <tr><td className="mono">dyn-pendulum-hnn</td><td>RK45</td><td className="mono" style={{ color: "var(--bad)" }}>MLP 7.4% E-drift</td><td className="mono" style={{ color: "var(--good)" }}>HNN 0.07%</td></tr>
             <tr><td className="mono">env-aquifer-test</td><td>Theis analytic</td><td className="mono" style={{ color: "var(--bad)" }}>PINN 367%</td><td className="mono" style={{ color: "var(--good)" }}>Cooper-Jacob 0.7%</td></tr>

@@ -1,7 +1,7 @@
-# mine-heap-leach-rt — heap-leach reactive transport (2-species advection-diffusion-reaction)
+# mine-heap-leach-rt: heap-leach reactive transport (2-species advection-diffusion-reaction)
 
 The mining-mineral-processing entry. It exercises the **coupled multi-output PINN with a nonlinear bimolecular
-reaction term** under downward Darcy advection — the catalogue's stress test for a single network that must solve two
+reaction term** under downward Darcy advection, the catalogue's stress test for a single network that must solve two
 PDEs simultaneously, each carrying a nonlinear coupling, validated against a method of manufactured solutions (MMS)
 anchor. It is presented as a **time-scrubber**: `field_axes=(x,z)`, time is the swept parameter (6 snapshots
 $t\in\{0,0.2,0.4,0.6,0.8,1.0\}$), so the web **Live** tab scrubs $t$ and replays the reacting fronts.
@@ -28,7 +28,7 @@ $c^\*$. Field grid $41\times41$ in $(x,z)$ per snapshot; time is the swept netwo
 **Single shared FNN, two outputs, MMS-anchored.** The architecture is a `[3]→[40]×4→[2]` tanh network: one body
 predicts both $c_A$ and $c_B$, so the nonlinear coupling $k_f c_A c_B$ is differentiated through a single autodiff
 graph rather than two separate models. The PDE residual returns both equations as a list, and the **loss is weighted**
-`[1, 1, 10, 10, 10, 10]` over `[eqA, eqB, bcA, bcB, icA, icB]` — the boundary and initial fits are up-weighted 10×
+`[1, 1, 10, 10, 10, 10]` over `[eqA, eqB, bcA, bcB, icA, icB]`, the boundary and initial fits are up-weighted 10×
 relative to the interior residual so the soft Dirichlet/IC anchors hold while the bimolecular interior is learned.
 
 The **method of manufactured solutions** is what makes this case honest and well-posed: rather than guess a closed-form
@@ -49,17 +49,17 @@ Validation anchor: the analytic MMS field, scored per time-snapshot variant:
 | ONNX parity (max abs) | 1.19e-06 |
 | lane | **live** (one shared ONNX; Live = time scrubber) |
 
-Both species reach relative-L2 below 2e-4 at every snapshot — comfortably inside the case's `< 2e-2 per species`
-target band — so this is a genuinely well-converged result, not a CPU-limited compromise.
+Both species reach relative-L2 below 2e-4 at every snapshot, comfortably inside the case's `< 2e-2 per species`
+target band, so this is a genuinely well-converged result, not a CPU-limited compromise.
 The single-network multi-output design resolves the nonlinear $k_f c_A c_B$ coupling without sacrificing accuracy on
 either channel; $c_A$ is the primary output and $c_B$'s error is reported via `extra_metrics`.
 
 ## Honesty
 
 `real_or_synthetic = synthetic-illustrative`. The MMS field is a closed-form manufactured truth, so the L2 numbers
-above measure solver accuracy against an exact reference — not a fit to data. The physics is **Chilean-Cu/REE-relevant**
+above measure solver accuracy against an exact reference, not a fit to data. The physics is **Chilean-Cu/REE-relevant**
 (parameter ranges drawn from the heap/bioleach literature) but is **not fitted to any column-test or plant dataset**.
-The real process is more involved — a shrinking-core dissolution sink, dual-porosity mass transfer, and a spatially
+The real process is more involved, a shrinking-core dissolution sink, dual-porosity mass transfer, and a spatially
 variable Darcy velocity. The single bimolecular $k_f c_A c_B$ term here is a deliberate, well-posed teaching
 simplification of that chemistry, chosen so the MMS anchor stays exact and the case demonstrates the coupled-PINN
 technique cleanly rather than claiming plant fidelity.

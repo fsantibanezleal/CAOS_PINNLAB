@@ -1,4 +1,4 @@
-"""Group A · canonical-benchmark — ZERO-SHOT SUPER-RESOLUTION: one operator, any grid.
+"""Group A · canonical-benchmark, ZERO-SHOT SUPER-RESOLUTION: one operator, any grid.
 
 The fourth Darcy operator case. It exercises the FNO's SIGNATURE property, the one that separates a neural
 OPERATOR from an ordinary grid-to-grid network (a CNN, a U-Net): DISCRETISATION INVARIANCE. Because every

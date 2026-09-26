@@ -1,6 +1,6 @@
-# poll-soil-barrier — domain-decomposition (FBPINN) PINN across a low-permeability barrier
+# poll-soil-barrier: domain-decomposition (FBPINN) PINN across a low-permeability barrier
 
-The case that answers *"how do you keep a single smooth network from smearing out a kink?"* — it exercises the
+The case that answers *"how do you keep a single smooth network from smearing out a kink?"*, it exercises the
 **domain-decomposition** method family (FBPINN-style partition of unity). A contaminant diffuses through a soil column
 interrupted by a vertical clay/slurry cutoff, and the coefficient jump forces a kink in the field that two cooperating
 sub-nets resolve better than one global tanh.
@@ -8,7 +8,7 @@ sub-nets resolve better than one global tanh.
 ## Problem
 
 A dissolved contaminant diffuses (pure diffusion, $V=0$) through a soil column $x\in[0,1]$, $t\in[0,1]$, containing one
-low-permeability vertical barrier — a slab $[A_B,B_B]=[0.45,0.55]$ whose diffusivity is **10× lower** than the
+low-permeability vertical barrier, a slab $[A_B,B_B]=[0.45,0.55]$ whose diffusivity is **10× lower** than the
 surrounding soil:
 
 $$ c_t = D(x)\,c_{xx} + f, \qquad D(x) = \begin{cases} D_{soil}=1.0 & x \notin [0.45,0.55] \\ D_{barrier}=0.1 & x \in [0.45,0.55] \end{cases} $$
@@ -24,7 +24,7 @@ only the time term. Domain: $x\in[0,1]$, $t\in[0,1]$, grid $101\times51$.
 
 ## Method
 
-**Domain decomposition — FBPINN-style partition of unity** (dossier §4 #14). Instead of one global network fighting
+**Domain decomposition, FBPINN-style partition of unity** (dossier §4 #14). Instead of one global network fighting
 the coefficient jump, a **2-channel net** is blended by overlapping sigmoid windows centred on the barrier midpoint
 $x_c=0.5$:
 
@@ -49,17 +49,17 @@ The strict per-subdomain-normalized FBPINN is documented in [domain-decompositio
 | ONNX parity (max abs) | **8.9e-08** |
 | lane | **live** (73 KB, 1.95 ms) |
 
-The 19 % relative-L2 is **honestly CPU-limited and stated as such** — the coefficient-jump kink is the hard part for a
+The 19 % relative-L2 is **honestly CPU-limited and stated as such**, the coefficient-jump kink is the hard part for a
 2-channel net on a single CPU. A 10× contrast was used precisely because a 100× jump makes the kink too severe for this
 lane; the strict per-subdomain-normalized FBPINN plus a GPU lane tighten it further. The plume is correctly slowed by the
-low-$D$ barrier and the kink appears at each face — the qualitative physics is right even where the pointwise error is not
+low-$D$ barrier and the kink appears at each face, the qualitative physics is right even where the pointwise error is not
 yet small.
 
 ## Honesty
 
 `real_or_synthetic = synthetic-illustrative`. The barrier values ($D_{soil}=1$, $D_{barrier}=0.1$, slab at
 $[0.45,0.55]$) are illustrative engineering numbers, and the validation truth is a manufactured-solution (MMS)
-series-resistance profile — **not** a calibrated field site or a measured dataset. What *is* real here is the method:
+series-resistance profile, **not** a calibrated field site or a measured dataset. What *is* real here is the method:
 the partition-of-unity decomposition, the coefficient-jump kink physics, and the closed-form anchor it is scored against
 are all genuine; nothing about the *technique* is faked. It is a faithful reduced model of barrier transport, not a fit
 to data.

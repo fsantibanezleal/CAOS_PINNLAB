@@ -1,4 +1,4 @@
-"""Group A · canonical-benchmark — STRUCTURE-PRESERVING learning: does the model respect the energy?
+"""Group A · canonical-benchmark, STRUCTURE-PRESERVING learning: does the model respect the energy?
 
 The companion to `dyn-double-pendulum`. That case asks how long a PINN can track a chaotic trajectory. This
 one asks a different and sharper question:

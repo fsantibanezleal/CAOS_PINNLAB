@@ -1,7 +1,7 @@
 name: Deploy Pages
 
 # Build the SPA (frontend/) and publish to GitHub Pages. The committed artifacts under data/derived + models/ are
-# overlaid into the bundle by copy-data.mjs (run via the npm prebuild hook). Static-only — no backend.
+# overlaid into the bundle by copy-data.mjs (run via the npm prebuild hook). Static-only, no backend.
 
 on:
   push:

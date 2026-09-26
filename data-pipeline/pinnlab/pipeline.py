@@ -107,7 +107,7 @@ def main() -> None:
     ap = argparse.ArgumentParser(prog="pinnlab.pipeline")
     ap.add_argument("case", nargs="?", default="all", help="a case id, or 'all'")
     ap.add_argument("--seed", type=int, default=42)
-    ap.add_argument("--quick", action="store_true", help="few iters, no L-BFGS/refine — CI smoke only, NOT for real artifacts")
+    ap.add_argument("--quick", action="store_true", help="few iters, no L-BFGS/refine, CI smoke only, NOT for real artifacts")
     args = ap.parse_args()
     if args.case == "all":
         entries = run_all(args.seed, quick=args.quick)

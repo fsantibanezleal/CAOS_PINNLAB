@@ -51,7 +51,7 @@ a robustness check). The default is `42`. The seed is recorded in the manifest.
 ./scripts/precompute.ps1 <case-id> --quick
 ```
 
-`--quick` runs a few hundred iterations with **no L-BFGS and no RAR** — it exercises the entire
+`--quick` runs a few hundred iterations with **no L-BFGS and no RAR**, it exercises the entire
 train → ONNX → parity → infer → manifest plumbing in ~30 s so you can catch a structural bug *before* committing to a
 full bake. **Never** commit `--quick` artifacts: the relative-L2 will be far from converged. Use it only to validate
 wiring.

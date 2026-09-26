@@ -1,4 +1,4 @@
-"""pinnlab — the offline+live engine for PINN-Lab (CAOS product-repo, ADR-0057).
+"""pinnlab, the offline+live engine for PINN-Lab (CAOS product-repo, ADR-0057).
 
 A catalogue of Physics-Informed Neural Network cases (canonical benchmarks + mining/mineral-processing +
 pollution/environmental + industrial fluids/heat). Each case trains a PINN OFFLINE with the deep-research-chosen

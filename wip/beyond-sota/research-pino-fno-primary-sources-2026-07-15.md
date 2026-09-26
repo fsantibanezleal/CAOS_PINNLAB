@@ -1,4 +1,4 @@
-# PINO and the FNO family — transcribed from the primary sources (2026-07-15)
+# PINO and the FNO family: transcribed from the primary sources (2026-07-15)
 
 Everything here was read from the paper itself (the PDF the owner supplied, and the arXiv pages), not from
 memory. Equation numbers are the paper's own. Quotes are verbatim and marked as quotes. This dossier is the
@@ -6,7 +6,7 @@ source for the PINO implementation and for the docs written alongside it.
 
 ---
 
-## 1. PINO — Physics-Informed Neural Operator
+## 1. PINO: Physics-Informed Neural Operator
 
 **Li, Zheng, Kovachki, Jin, Chen, Liu, Azizzadenesheli, Anandkumar.** *Physics-Informed Neural Operator for
 Learning Partial Differential Equations.* arXiv:2111.03794v1, 9 November 2021. Journal version: ACM/IMS
@@ -57,7 +57,7 @@ $$\mathcal{G}_\theta := \mathcal{Q} \circ (W_L + \mathcal{K}_L) \circ \cdots \ci
 with $\mathcal{P}$ the pointwise lifting to a higher-dimensional channel space, $\mathcal{Q}$ the pointwise
 projection back, $W_l$ pointwise linear maps and $\mathcal{K}_l$ integral kernel operators.
 
-Fourier convolution operator (Definition 2, eq. 9) — the FNO layer:
+Fourier convolution operator (Definition 2, eq. 9), the FNO layer:
 
 $$(\mathcal{K} v_t)(x) = \mathcal{F}^{-1}\big(R \cdot (\mathcal{F} v_t)\big)(x)$$
 
@@ -71,7 +71,7 @@ Losses:
 - operator data loss (eq. 6): $\mathcal{J}_{\text{data}}(\mathcal{G}_\theta) = \mathbb{E}_{a\sim\mu}[\mathcal{L}_{\text{data}}]$
 - operator PDE loss (eq. 7): $\mathcal{J}_{\text{pde}}(\mathcal{G}_\theta) = \mathbb{E}_{a\sim\mu}[\mathcal{L}_{\text{pde}}(a, \mathcal{G}_\theta(a))]$
 
-### 1.3 The two phases (§3) — this is the part to implement
+### 1.3 The two phases (§3): this is the part to implement
 
 **Phase 1, pre-train the solution operator.** Learn $\mathcal{G}_\theta$ using the data loss and/or the PDE
 loss. The key move (Algorithm 1) is that the PDE loss needs **no labels**, so virtual instances can be sampled
@@ -113,7 +113,7 @@ and on instability specifically, §3.2 "Trade-off" (2):
 > optimization unstable. Using hard constraints such as the anchor loss $\mathcal{L}_{op}$ relieves such a
 > problem."
 
-### 1.5 How the PDE residual is computed on a grid output (§3.3) — the crux
+### 1.5 How the PDE residual is computed on a grid output (§3.3): the crux
 
 An operator outputs $u$ **on a grid**, so "just use autograd" is not automatic. The paper gives:
 
@@ -124,7 +124,7 @@ An operator outputs $u$ **on a grid**, so "just use autograd" is not automatic. 
 - **Autograd.** Exact, but *"it is not straightforward to write out the solution function in the neural
   operator which directly outputs the numerical solution $u = \mathcal{G}_\theta(a)$ on a grid, especially for
   FNO which uses FFT. To apply autograd, we design a query function $\hat{u}$ that input $x$ and output
-  $u(x)$"* — eq. (10): $u(x) = \mathcal{Q}(v_L(x)) = \mathcal{Q}\big((W_L v_{L-1})(x) + \mathcal{K}_L v_{L-1}(x)\big)$.
+  $u(x)$"*, eq. (10): $u(x) = \mathcal{Q}(v_L(x)) = \mathcal{Q}\big((W_L v_{L-1})(x) + \mathcal{K}_L v_{L-1}(x)\big)$.
 - The paper also states in its contributions: *"We develop an efficient method to compute the exact gradient
   for neural operators to incorporate the equation constraints."*
 
@@ -137,7 +137,7 @@ periodicity; FC-PINO, Maust et al. arXiv:2211.15960, is the non-periodic fix).
 
 | Claim (verbatim) | Where |
 |---|---|
-| "PINO still outperforms PINN by 20x smaller error and 25x speedup on the chaotic Kolmogorov flow" — *even without any pre-training, using only PDE constraints for the given instance* | §1 contributions |
+| "PINO still outperforms PINN by 20x smaller error and 25x speedup on the chaotic Kolmogorov flow", *even without any pre-training, using only PDE constraints for the given instance* | §1 contributions |
 | "On average it has 7% smaller error on the transient and Kolmogorov flows [vs FNO], while matching the speedup of FNO (400x) compared to the GPU-based pseudo-spectral solver" | §1 contributions |
 | "It can solve the 2d transient flow over an extremely long time period, where PINN and DeepONet fail to converge" | §1 contributions |
 | "the pre-trained PINO model on the Navier Stokes equation can be easily transferred to different Reynolds numbers ranging from 100 to 500 using test-time optimization" | §1 contributions |
@@ -149,7 +149,7 @@ numbers and cites the paper's separately.
 
 ---
 
-## 2. FNO — Fourier Neural Operator
+## 2. FNO: Fourier Neural Operator
 
 **Li, Kovachki, Azizzadenesheli, Liu, Bhattacharya, Stuart, Anandkumar.** *Fourier Neural Operator for
 Parametric Partial Differential Equations.* arXiv:2010.08895, submitted 18 October 2020, final 17 May 2021.

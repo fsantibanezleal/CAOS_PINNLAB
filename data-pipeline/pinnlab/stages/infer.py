@@ -1,4 +1,4 @@
-"""Stage 4 — infer: evaluate the trained PINN over the case's FIELD grid -> a SolutionField (raw, undecimated; the
+"""Stage 4, infer: evaluate the trained PINN over the case's FIELD grid -> a SolutionField (raw, undecimated; the
 trace stage decimates it for the compact web artifact), at a given parameter regime (variant). For a PARAMETRIC case
 the network input includes the parameter axes; `param_grid` fills them with the variant's constant values, so the
 baked field is the 2-D heatmap over the field axes at that regime (the web `Live` tab sweeps the parameter via the

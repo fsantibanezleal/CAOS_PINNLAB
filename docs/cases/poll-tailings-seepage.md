@@ -1,6 +1,6 @@
-# poll-tailings-seepage — unsaturated seepage (Richards/Gardner), parametric sorptive number α
+# poll-tailings-seepage: unsaturated seepage (Richards/Gardner), parametric sorptive number α
 
-A **strongly nonlinear, degenerate-parabolic PDE** — Richards' equation for unsaturated flow — as a **parametric
+A **strongly nonlinear, degenerate-parabolic PDE**, Richards' equation for unsaturated flow, as a **parametric
 family**: the Gardner sorptive number $\alpha$ is a network input, so one trained net + one ONNX covers the whole
 sorptivity family and the web **Live** tab sweeps how deep the deposit dries.
 
@@ -19,7 +19,7 @@ anchor:
 $$ \psi^*(z,t;\alpha)=\frac1\alpha\ln\!\Big(M_0+A\,e^{-\lambda(\alpha)t}\,e^{-\kappa z}\Big),\quad
    \lambda(\alpha)=\frac{K_s}{\theta_s-\theta_r}\,\frac{\kappa(\alpha-\kappa)}{\alpha}. $$
 
-With $M_0+A<1$, $M_0>0$, the argument $m\in(0,1)$ everywhere so $\psi<0$ **strictly** (always unsaturated — the
+With $M_0+A<1$, $M_0>0$, the argument $m\in(0,1)$ everywhere so $\psi<0$ **strictly** (always unsaturated, the
 physical invariant; verified, plus a finite-difference residual $\le10^{-6}$). $\alpha\in[1.0,2.5]$: smaller $\alpha$
 (broader pores) → deeper, more stratified suction. Constants $\theta_s=0.43,\ \theta_r=0.078,\ K_s=0.25,\ \kappa=0.9$.
 (This replaces the earlier $\alpha$-independent manufactured-source MMS, whose field did not change with $\alpha$.)
@@ -42,12 +42,12 @@ Validation anchor: the **exact Kirchhoff family** $\psi^*(z,t;\alpha)$. Six vari
 | ONNX parity (max abs) | 3.6e-7 |
 | lane | **live** (one shared ONNX; Live sweeps $\alpha$) |
 
-Well inside the `< 1e-2` band — the nonlinear residual is resolved cleanly across the whole sorptivity range, $\psi<0$
+Well inside the `< 1e-2` band, the nonlinear residual is resolved cleanly across the whole sorptivity range, $\psi<0$
 strictly throughout.
 
 ## Honesty
 
-`real_or_synthetic = synthetic-illustrative` — the Richards + Gardner physics and the operator are real, but the field
+`real_or_synthetic = synthetic-illustrative`, the Richards + Gardner physics and the operator are real, but the field
 is an exact illustration, **not** fit to a deposit: no open unsaturated-zone $\psi(z,t)$ tailings dataset exists
 (`real-datasets.md`). The van Genuchten–Mualem closure and a real saturated-zone inverse are documented as extensions;
 Gardner is used because the Kirchhoff transform makes the family exactly solvable for every $\alpha$.

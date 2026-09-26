@@ -1,4 +1,4 @@
-"""Stage 6 — export (CONTRACT 2): write the compact replay artifact (the decimated field) + the case manifest. The
+"""Stage 6, export (CONTRACT 2): write the compact replay artifact (the decimated field) + the case manifest. The
 manifest records the lane/gate verdict (ONNX size + ort-web infer time + artifact bytes), the ONNX pointer + parity,
 the CONTRACT-1 flags (inverse cases) and the evaluation metrics."""
 from __future__ import annotations

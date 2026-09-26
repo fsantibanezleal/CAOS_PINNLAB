@@ -1,4 +1,4 @@
-"""Group B · mining-mineral-processing — heap / in-situ leaching reactive transport (forward, MMS).
+"""Group B · mining-mineral-processing, heap / in-situ leaching reactive transport (forward, MMS).
 
 Saturated porous medium, downward Darcy percolation of lixiviant; two aqueous reactants advect-disperse and react
 bimolecularly A+B->C at rate kf*cA*cB:
@@ -10,7 +10,7 @@ with the source f = L[c*] derived analytically below.
 
 real_or_synthetic = synthetic-illustrative: Chilean-Cu/REE-RELEVANT (parameter ranges from the heap-bioleach
 literature) but NOT fitted to any column-test or plant dataset; the real model uses a shrinking-core sink + dual
-porosity + variable v — the single bimolecular kf*cA*cB is a deliberate, well-posed teaching simplification.
+porosity + variable v, the single bimolecular kf*cA*cB is a deliberate, well-posed teaching simplification.
 Method precedent: Reactive-Transport PIML for critical minerals (arXiv:2506.15960).
 """
 from __future__ import annotations
@@ -79,18 +79,18 @@ def analytic(xzt: np.ndarray) -> np.ndarray:
 
 def variants() -> list[Variant]:
     presets = [
-        ("t00", 0.0, "Lixiviant front entering (t=0) — both species at the manufactured initial state, sharpest contrast.",
-                     "Frente de lixiviante entrando (t=0) — ambas especies en el estado inicial manufacturado, máximo contraste."),
-        ("t02", 0.2, "t=0.2 — fronts advecting downward; cA has decayed faster than cB.",
-                     "t=0.2 — frentes advectando hacia abajo; cA decae más rápido que cB."),
-        ("t04", 0.4, "t=0.4 — clear split in the two species' amplitudes (e^{-t} vs e^{-t/2}).",
-                     "t=0.4 — separación clara entre las amplitudes de las especies (e^{-t} vs e^{-t/2})."),
-        ("t06", 0.6, "t=0.6 — cA noticeably weaker; reaction sink most uneven across the bed.",
-                     "t=0.6 — cA notablemente más débil; el sumidero de reacción más desigual en el lecho."),
-        ("t08", 0.8, "t=0.8 — both relaxing toward the +1.5 baseline; cA nearly flat.",
-                     "t=0.8 — ambas relajando hacia la línea base +1.5; cA casi plana."),
-        ("t10", 1.0, "t=1.0 — late percolation; cA almost uniform, cB still modulated.",
-                     "t=1.0 — percolación tardía; cA casi uniforme, cB aún modulada."),
+        ("t00", 0.0, "Lixiviant front entering (t=0), both species at the manufactured initial state, sharpest contrast.",
+                     "Frente de lixiviante entrando (t=0), ambas especies en el estado inicial manufacturado, máximo contraste."),
+        ("t02", 0.2, "t=0.2, fronts advecting downward; cA has decayed faster than cB.",
+                     "t=0.2, frentes advectando hacia abajo; cA decae más rápido que cB."),
+        ("t04", 0.4, "t=0.4, clear split in the two species' amplitudes (e^{-t} vs e^{-t/2}).",
+                     "t=0.4, separación clara entre las amplitudes de las especies (e^{-t} vs e^{-t/2})."),
+        ("t06", 0.6, "t=0.6, cA noticeably weaker; reaction sink most uneven across the bed.",
+                     "t=0.6, cA notablemente más débil; el sumidero de reacción más desigual en el lecho."),
+        ("t08", 0.8, "t=0.8, both relaxing toward the +1.5 baseline; cA nearly flat.",
+                     "t=0.8, ambas relajando hacia la línea base +1.5; cA casi plana."),
+        ("t10", 1.0, "t=1.0, late percolation; cA almost uniform, cB still modulated.",
+                     "t=1.0, percolación tardía; cA casi uniforme, cB aún modulada."),
     ]
     return [Variant(vid, f"t={tv:g}", f"t={tv:g}", {"t": tv}, en, es) for vid, tv, en, es in presets]
 

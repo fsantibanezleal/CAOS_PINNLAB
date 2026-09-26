@@ -2,9 +2,9 @@
 
 Steady Darcy flow on the unit square:  -div(a(x) grad u(x)) = f,  u|_boundary = 0,  with f == 1.
 The coefficient field a(x) is a TWO-VALUE (piecewise-constant) thresholded Gaussian random field (a low-pass-filtered
-white-noise field thresholded at 0 -> {3, 12}), giving sharp material interfaces — exactly the canonical benchmark.
+white-noise field thresholded at 0 -> {3, 12}), giving sharp material interfaces, exactly the canonical benchmark.
 u is obtained from a reference finite-difference solve (5-point scheme, harmonic-mean face conductivities, sparse
-direct solve). Pure NumPy/SciPy, deterministic given the seed; no vendored file — the pairs are regenerated on demand.
+direct solve). Pure NumPy/SciPy, deterministic given the seed; no vendored file, the pairs are regenerated on demand.
 """
 from __future__ import annotations
 

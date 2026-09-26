@@ -2,7 +2,7 @@
 
 In: CSV (observation tables for inverse cases) + the case registry (PDE configs). Out: compact JSON (the committed
 web-replay artifact) + ONNX (the trained PINN, written by stages/export). Heavy intermediate fields go to npz under
-data/raw/ (git-ignored). Never invent a bespoke ad-hoc format — keep everything standard so data is portable.
+data/raw/ (git-ignored). Never invent a bespoke ad-hoc format, keep everything standard so data is portable.
 """
 from __future__ import annotations
 

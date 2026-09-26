@@ -1,4 +1,4 @@
-"""PINO — the Physics-Informed Neural Operator training scheme, on top of the FNO2d backbone.
+"""PINO, the Physics-Informed Neural Operator training scheme, on top of the FNO2d backbone.
 
 Implements Li, Zheng, Kovachki, Jin, Chen, Liu, Azizzadenesheli & Anandkumar, *Physics-Informed Neural
 Operator for Learning Partial Differential Equations*, arXiv:2111.03794 (ACM/IMS J. Data Science 1(3), 2024,

@@ -1,4 +1,4 @@
-"""CONTRACT 2 (artifact) tests: the manifest is a complete, self-consistent record of a baked PINN case — it points
+"""CONTRACT 2 (artifact) tests: the manifest is a complete, self-consistent record of a baked PINN case, it points
 to a real artifact with the recorded byte size, carries the governing equation + method + engine, records the ONNX
 pointer + parity, and the lane verdict agrees with the gate."""
 from pinnlab import pipeline

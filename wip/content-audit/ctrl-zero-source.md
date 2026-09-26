@@ -1,6 +1,6 @@
 # Content audit: ctrl-zero-source (in-app vs authoritative doc)
 
-- Case: `ctrl-zero-source` — "MMS verification family, parametric source amplitude a (contains the degenerate control)"
+- Case: `ctrl-zero-source`: "MMS verification family, parametric source amplitude a (contains the degenerate control)"
 - Authoritative doc: `docs/cases/ctrl-zero-source.md`
 - In-app deep context: `frontend/src/content/cases/ZeroSourceContext.tsx`
 - In-app short content: `frontend/src/content/scenarios.ts`, `frontend/src/content/results.ts`, `frontend/src/content/constraints.ts`
@@ -33,7 +33,7 @@ structured field at a>0). On top of that, every surface OMITS the doc's headline
 - **docSays**: the case is a parametric family, not a null-only problem. "at a=1 a two-mode field
   (a dominant fundamental lobe + a finer second-mode ripple)"; the field is zero ONLY at the a=0
   limit ("**at a=0 this is the archetype's degenerate negative control**"). The Live tab "sweeps a
-  and the field fades to flat zero" — i.e. it is non-zero for a>0. The app's own Context correctly
+  and the field fades to flat zero", i.e. it is non-zero for a>0. The app's own Context correctly
   says "up to a=1, where the two-mode structure appears."
 - Impact: the Results panel tells the user the answer is "exactly zero everywhere" while the Live
   viz on the same case renders structured lobes. Directly false for a>0.
@@ -49,7 +49,7 @@ structured field at a>0). On top of that, every surface OMITS the doc's headline
 - **inApp**: `scenarios.ts` says "RMS 5e-4, computed"; `results.ts` `answer_en` says "typical value
   0.0005, largest anywhere 0.001".
 - **docSays** (Result table, measured seed 42): "a=0 -> ||pred|| = 2.1% (the degenerate control:
-  u*≡0, so the metric is the field norm — essentially flat zero)".
+  u*≡0, so the metric is the field norm, essentially flat zero)".
 - Note: these may be different metrics (absolute RMS field value vs a normalized field-norm
   percentage), so this is a reconciliation flag rather than a certain arithmetic error. Either way
   the app cites a number (5e-4 / 0.001) that appears nowhere in the authoritative Result, and omits
@@ -61,7 +61,7 @@ structured field at a>0). On top of that, every surface OMITS the doc's headline
 - **docSays** / **constraints.ts** (which IS already correct): the assumptions are a hard zero
   Dirichlet boundary (exact by construction), a two-mode manufactured solution u* = a·g with source
   f = -∇²u*, and amplitude a in [0,1] as a network input whose a=0 limit is the degenerate control.
-- Impact: internal incoherence — `constraints.ts` and `ZeroSourceContext.tsx` describe the MMS
+- Impact: internal incoherence: `constraints.ts` and `ZeroSourceContext.tsx` describe the MMS
   family; `results.ts` assumptions and `scenarios.ts` still describe the pre-reframe null case.
 
 ## Depth gaps (real doc content the app omits)
@@ -85,7 +85,7 @@ structured field at a>0). On top of that, every surface OMITS the doc's headline
 
 Reconcile the RMS-5e-4 vs 2.1% discrepancy FIRST against the committed artifact; the text below uses
 the doc's stated figures. If the artifact confirms 5e-4 is the true a=0 field RMS, keep it but also
-add the doc's 2.1% field-norm figure and label each metric — do not silently drop the doc's number.
+add the doc's 2.1% field-norm figure and label each metric, do not silently drop the doc's number.
 
 ### File: `frontend/src/content/results.ts` (entry `ctrl-zero-source`)
 
