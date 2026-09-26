@@ -1,4 +1,4 @@
-# bench-poisson2d — 2D Poisson (Dirichlet), parametric source mode (hard-constraint PINN)
+# bench-poisson2d: 2D Poisson (Dirichlet), parametric source mode (hard-constraint PINN)
 
 The catalogue's cleanest canonical benchmark, as a **parametric family**: the source mode / wavenumber $k$ is a network
 input, so one trained net + one ONNX covers the whole mode family and the web **Live** tab sweeps the spatial structure
@@ -17,7 +17,7 @@ with the forcing $f=-\nabla^2 u^*$ derived in closed form. The **source mode** $
 is a smooth low-frequency field, larger $k$ adds finer oscillatory structure. Field evaluated on a $\sim121\times121$
 grid over $x,y\in[0,1]$.
 
-## Method — hard constraints (distance-function output transform)
+## Method: hard constraints (distance-function output transform)
 
 The Dirichlet condition is enforced **structurally** by multiplying the raw network by a factor that vanishes on every
 wall:
@@ -38,12 +38,12 @@ Validation anchor: the **closed-form MMS** $u^*(x,y;k)$ (any $k$). Six variants 
 | ONNX parity (max abs) | 1.2e-7 |
 | lane | **live** (one shared ONNX; Live sweeps $k$) |
 
-Tight across the whole mode range — the hard-constraint formulation on this smooth family is about as favourable as a
+Tight across the whole mode range, the hard-constraint formulation on this smooth family is about as favourable as a
 PINN gets.
 
 ## Honesty
 
-`real_or_synthetic = synthetic` — the truth is the closed-form manufactured solution (exact for every $k$), not measured
+`real_or_synthetic = synthetic`, the truth is the closed-form manufactured solution (exact for every $k$), not measured
 data. A numerical-correctness benchmark for the hard-constraint method + the export pipeline. For a real-data
 counterpart see [env-soil-heat-real](env-soil-heat-real.md).
 

@@ -25,7 +25,7 @@
   </defs>
 
   <!-- ===== Title ===== -->
-  <text x="20" y="30" class="ttl" style="font-size:15px">Web app — static SPA, live ONNX inference + baked-trace replay (no server)</text>
+  <text x="20" y="30" class="ttl" style="font-size:15px">Web app, static SPA, live ONNX inference + baked-trace replay (no server)</text>
 
   <!-- ============================================================ -->
   <!-- LEFT GROUP: BROWSER / React SPA                              -->
@@ -36,7 +36,7 @@
 
   <!-- Router box -->
   <rect x="34" y="94" width="268" height="62" rx="8" class="bx bx-hi"/>
-  <text x="46" y="114" class="it" style="font-weight:600">Router (HashRouter) — 6 pages</text>
+  <text x="46" y="114" class="it" style="font-weight:600">Router (HashRouter), 6 pages</text>
   <text x="46" y="131" class="cd mono">App · Introduction · Methodology</text>
   <text x="46" y="146" class="cd mono">Implementation · Experiments · Benchmark</text>
 
@@ -55,7 +55,7 @@
   <rect x="34" y="306" width="268" height="70" rx="8" class="bx bx-warn"/>
   <text x="46" y="326" class="it" style="font-weight:600;fill:var(--warn)">Schema mirror</text>
   <text x="46" y="343" class="cd mono">lib/contract.ts</text>
-  <text x="46" y="359" class="mu">mirrors the artifact schema —</text>
+  <text x="46" y="359" class="mu">mirrors the artifact schema, </text>
   <text x="46" y="373" class="mu">drift fails the build (ADR-0057)</text>
 
   <!-- ============================================================ -->
@@ -72,23 +72,23 @@
   <!-- step 2 -->
   <rect x="356" y="136" width="256" height="48" rx="8" class="bx"/>
   <text x="368" y="156" class="it" style="font-weight:600">loadIndex / loadManifest / loadTrace</text>
-  <text x="368" y="176" class="cd mono">lib/data.ts — fetch derived/ JSON</text>
+  <text x="368" y="176" class="cd mono">lib/data.ts, fetch derived/ JSON</text>
 
   <!-- step 3 -->
   <rect x="356" y="200" width="256" height="40" rx="8" class="bx"/>
   <text x="368" y="220" class="it" style="font-weight:600">render heatmap from baked trace</text>
-  <text x="368" y="234" class="mu">replay lane — committed field.json</text>
+  <text x="368" y="234" class="mu">replay lane, committed field.json</text>
 
   <!-- step 4 (LIVE) -->
   <rect x="356" y="256" width="256" height="56" rx="8" class="bx bx-net"/>
   <text x="368" y="276" class="it" style="font-weight:600;fill:var(--accent-2)">LIVE? onnxruntime-web session.run</text>
-  <text x="368" y="294" class="cd mono">lib/onnx.ts — getSession · evalNet</text>
+  <text x="368" y="294" class="cd mono">lib/onnx.ts, getSession · evalNet</text>
   <text x="368" y="307" class="mu">[n, d] coord batch → field outputs</text>
 
   <!-- step 5 -->
   <rect x="356" y="328" width="256" height="48" rx="8" class="bx bx-net"/>
   <text x="368" y="348" class="it" style="font-weight:600">live field at any resolution</text>
-  <text x="368" y="368" class="it">cursor probe — re-evaluable in real time</text>
+  <text x="368" y="368" class="it">cursor probe, re-evaluable in real time</text>
 
   <!-- vertical flow arrows -->
   <path class="flow" d="M484,120 L484,134" marker-end="url(#web-architecture-arrow)"/>
@@ -112,7 +112,7 @@
   <!-- models -->
   <rect x="666" y="178" width="260" height="48" rx="8" class="bx bx-store"/>
   <text x="678" y="198" class="it" style="font-weight:600">models/</text>
-  <text x="678" y="216" class="cd mono">&lt;case&gt;.onnx — exported PINN</text>
+  <text x="678" y="216" class="cd mono">&lt;case&gt;.onnx, exported PINN</text>
 
   <!-- svg -->
   <rect x="666" y="246" width="260" height="48" rx="8" class="bx bx-store"/>
@@ -123,14 +123,14 @@
   <rect x="666" y="314" width="260" height="62" rx="8" class="bx bx-net"/>
   <text x="678" y="334" class="it" style="font-weight:600;fill:var(--accent-2)">ort-web wasm runtime</text>
   <text x="678" y="351" class="cd mono">cdn.jsdelivr.net@1.22.0</text>
-  <text x="678" y="367" class="mu">single-thread — no COOP/COEP</text>
+  <text x="678" y="367" class="mu">single-thread, no COOP/COEP</text>
 
   <!-- ============================================================ -->
   <!-- BOTTOM: GitHub Pages                                         -->
   <!-- ============================================================ -->
   <rect x="20" y="402" width="920" height="48" rx="10" class="bx bx-warn"/>
   <text x="36" y="423" class="it" style="font-weight:600;fill:var(--warn)">GitHub Pages (Actions build)</text>
-  <text x="36" y="440" class="it">static files only — no Node / Python at serve time; all compute runs in the visitor's browser</text>
+  <text x="36" y="440" class="it">static files only, no Node / Python at serve time; all compute runs in the visitor's browser</text>
 
   <!-- ============================================================ -->
   <!-- CROSS-GROUP FLOWS                                            -->

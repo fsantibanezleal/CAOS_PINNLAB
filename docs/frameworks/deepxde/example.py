@@ -1,4 +1,4 @@
-"""Minimal runnable DeepXDE example — the PINN-Lab recipe in ~60 lines.
+"""Minimal runnable DeepXDE example, the PINN-Lab recipe in ~60 lines.
 
 Solves the 1D heat equation u_t = alpha*u_xx on (0,1)x(0,1] with a HARD-CONSTRAINT output transform that bakes the
 IC u(x,0)=sin(pi x) and the Dirichlet BCs u(0,t)=u(1,t)=0 EXACTLY (no IC/BC loss terms), trains Adam -> L-BFGS,

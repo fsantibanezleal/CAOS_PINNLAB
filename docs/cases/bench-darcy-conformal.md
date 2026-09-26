@@ -1,4 +1,4 @@
-# bench-darcy-conformal — Conformal prediction: a distribution-free error bar for the operator
+# bench-darcy-conformal: Conformal prediction: a distribution-free error bar for the operator
 
 **Method:** `operator-conformal-uq` · **Engine:** `fno-torch` · **Category:** canonical-benchmark ·
 **Label:** synthetic · **Lane:** precompute

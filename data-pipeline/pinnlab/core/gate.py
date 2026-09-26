@@ -1,7 +1,7 @@
 """The measured live-vs-precompute GATE (ADR-0054, extended for PINN-Lab per the agreed dossier).
 
 The template's gate decided live-vs-precompute from a Pyodide-wheel check. PINN-Lab's live lane is NOT Pyodide
-running DeepXDE (far too heavy) — it is **onnxruntime-web inference of the exported, trained PINN**. So the gate
+running DeepXDE (far too heavy), it is **onnxruntime-web inference of the exported, trained PINN**. So the gate
 here measures what actually governs an in-browser run:
 
   a case is LIVE  iff  onnx_bytes  <= ONNX_BYTES_GATE
@@ -26,7 +26,7 @@ def classify_lane(*, onnx_bytes: int, infer_ms: float, trace_bytes: int, web_dri
         # a field-IO operator (e.g. FNO a(x)->u(x)) is not driveable from the SPA's coordinate queries, so it
         # replays a baked representative result regardless of how small/fast its ONNX is.
         live = False
-        reasons.append("field-IO operator — not browser-coordinate-drivable")
+        reasons.append("field-IO operator, not browser-coordinate-drivable")
     if onnx_bytes > ONNX_BYTES_GATE:
         live = False
         reasons.append(f"onnx_bytes {onnx_bytes} > {ONNX_BYTES_GATE}")

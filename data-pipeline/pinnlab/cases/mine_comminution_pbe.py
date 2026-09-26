@@ -1,9 +1,9 @@
-"""Group B · mining-mineral-processing — comminution population balance (size-transport reduced model), PARAMETRIC
+"""Group B · mining-mineral-processing, comminution population balance (size-transport reduced model), PARAMETRIC
 in the grind rate g.
 
 Grinding (SAG/ball milling) evolves the particle-size distribution n(s,t): fragmentation continuously shifts mass
 toward smaller sizes. The full population-balance equation (PBE) is an integro-differential equation with selection +
-breakage kernels; here we ship the REDUCED size-transport surrogate — a drift-diffusion in size space whose drift IS
+breakage kernels; here we ship the REDUCED size-transport surrogate, a drift-diffusion in size space whose drift IS
 the net downward shift (the Fokker-Planck reduction of the breakage operator) and whose diffusion D is the
 fragmentation spread:
     n_t + (-g) n_s = D n_ss   on s in [0,1] (normalized size, 1=coarse), t in [0,1],
@@ -12,7 +12,7 @@ anchor (the advected-diffused Gaussian / 1D Green's function, valid for ANY g):
     n* = sqrt(s0sq/(s0sq+2Dt)) * exp( -(s - (s0 - g t))^2 / (2 (s0sq + 2 D t)) ).
 A narrow coarse feed (centered at s0) drifts down in size with g and spreads by dispersion D, its peak decaying as
 mass is conserved. real_or_synthetic = synthetic-illustrative: a clean reduced model, NOT a fitted mill PSD (no open
-SAG/ball-mill PSD dataset with a grind-rate axis — real-datasets.md); the full breakage-kernel PBE is documented as
+SAG/ball-mill PSD dataset with a grind-rate axis, real-datasets.md); the full breakage-kernel PBE is documented as
 the complete model.
 """
 from __future__ import annotations
@@ -62,12 +62,12 @@ def analytic(stg: np.ndarray) -> np.ndarray:
 
 def variants() -> list[Variant]:
     presets = [
-        ("g00", 0.00, "No grinding (g=0) — the feed only spreads in place; no downward shift.", "Sin molienda (g=0) — la alimentación solo se ensancha; sin desplazamiento."),
-        ("g12", 0.12, "g=0.12 — gentle grinding, a slow shift toward finer sizes.", "g=0.12 — molienda suave, desplazamiento lento hacia finos."),
-        ("g24", 0.24, "g=0.24 — moderate grinding.", "g=0.24 — molienda moderada."),
-        ("g36", 0.36, "g=0.36 — the bulk is clearly shifting down in size.", "g=0.36 — el grueso baja claramente en tamaño."),
-        ("g48", 0.48, "g=0.48 — hard grinding, most mass now in the fines.", "g=0.48 — molienda intensa, casi toda la masa en finos."),
-        ("g60", 0.60, "Hard grind (g=0.6) — the distribution is driven far toward the finest sizes.", "Molienda intensa (g=0.6) — la distribución llega muy abajo, a los tamaños más finos."),
+        ("g00", 0.00, "No grinding (g=0), the feed only spreads in place; no downward shift.", "Sin molienda (g=0), la alimentación solo se ensancha; sin desplazamiento."),
+        ("g12", 0.12, "g=0.12, gentle grinding, a slow shift toward finer sizes.", "g=0.12, molienda suave, desplazamiento lento hacia finos."),
+        ("g24", 0.24, "g=0.24, moderate grinding.", "g=0.24, molienda moderada."),
+        ("g36", 0.36, "g=0.36, the bulk is clearly shifting down in size.", "g=0.36, el grueso baja claramente en tamaño."),
+        ("g48", 0.48, "g=0.48, hard grinding, most mass now in the fines.", "g=0.48, molienda intensa, casi toda la masa en finos."),
+        ("g60", 0.60, "Hard grind (g=0.6), the distribution is driven far toward the finest sizes.", "Molienda intensa (g=0.6), la distribución llega muy abajo, a los tamaños más finos."),
     ]
     return [Variant(vid, f"g={gv:g}", f"g={gv:g}", {"g": gv}, en, es) for vid, gv, en, es in presets]
 

@@ -1,9 +1,9 @@
 {
   "name": "pinnlab-web",
   "private": true,
-  "version": "0.31.1",
+  "version": "0.31.2",
   "type": "module",
-  "description": "PINN-Lab SPA — interactive PINN catalogue with onnxruntime-web live inference + replay of committed field artifacts.",
+  "description": "PINN-Lab SPA, interactive PINN catalogue with onnxruntime-web live inference + replay of committed field artifacts.",
   "scripts": {
     "predev": "node copy-data.mjs",
     "dev": "vite",

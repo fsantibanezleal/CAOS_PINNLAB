@@ -1,4 +1,4 @@
-"""Group A · canonical-benchmark — the DOUBLE PENDULUM: a chaotic dynamical system, PINN as a t -> state map.
+"""Group A · canonical-benchmark, the DOUBLE PENDULUM: a chaotic dynamical system, PINN as a t -> state map.
 
 This is the flagship of the `ode-dynamical` category. Unlike every field case, there is NO spatial domain: the
 network maps **time t -> the two angles (theta1, theta2)** of a planar double pendulum, and the "solution" is an
@@ -11,10 +11,10 @@ two ODEs at collocation times, with the initial condition (theta_i(0)=theta_i0, 
 hard-constraint output transform   theta_hat_i(t) = theta_i0 + t^2 * N_i(t)   (t=0 -> theta_i0; every d/dt term
 carries a factor t -> theta_i'(0)=0).
 
-Honesty — chaos has a hard wall. A double pendulum is chaotic: two nearby initial conditions diverge exponentially
+Honesty, chaos has a hard wall. A double pendulum is chaotic: two nearby initial conditions diverge exponentially
 (the butterfly effect), so NO fixed network can track the true trajectory past a finite horizon. The validation
 anchor is a high-accuracy RK45 integrator (rtol=atol=1e-10); we bake it alongside the PINN and report the
-**leave-time** (where the PINN first leaves RK45 by > LEAVE_TOL rad) as the honest headline metric — NOT a long-term
+**leave-time** (where the PINN first leaves RK45 by > LEAVE_TOL rad) as the honest headline metric, NOT a long-term
 match. A second RK45 run with a 1e-3 perturbed angle is baked too, so the App can show two nearby starts peeling
 apart. This is the point of the case: you watch a PINN do well early and then lose a chaotic trajectory.
 """
@@ -33,7 +33,7 @@ TH1_0 = np.deg2rad(120.0)
 TH2_0 = np.deg2rad(120.0)
 OM1_0, OM2_0 = 0.0, 0.0
 T_MAX = 3.0          # seconds; the PINN (soft-IC) tracks the first ~1.5-2 s accurately then a CHAOTIC trajectory
-                     # peels away — the honest "tracks then loses it" story, with the twin-IC butterfly diverging
+                     # peels away: the honest "tracks then loses it" story, with the twin-IC butterfly diverging
                      # visibly over this longer window
 N_EVAL = 601         # trajectory samples baked (Δt ≈ 5 ms -> smooth animation; 1-D trace keeps up to 601)
 LEAVE_TOL = 0.30     # rad; "leave-time" = first t where the combined angle error exceeds this
@@ -158,7 +158,7 @@ def build(seed: int) -> dict:
     )
     net = dde.nn.FNN(t["layers"], t["activation"], "Glorot normal")
     model = dde.Model(data, net)
-    # losses: [res1, res2, ic_th1, ic_th2, w1(0), w2(0)] — weight the ICs well above the residual so the IVP is pinned
+    # losses: [res1, res2, ic_th1, ic_th2, w1(0), w2(0)]: weight the ICs well above the residual so the IVP is pinned
     model.compile("adam", lr=t["lr"], loss_weights=[1, 1, 100, 100, 100, 100])
     # web_drivable=False -> precompute/replay lane: the Field tab is a baked animated trajectory, not a coord heatmap
     return {"model": model, "input_dim": 1, "web_drivable": False}
@@ -188,13 +188,13 @@ def extra_metrics(sf) -> dict:
     over = np.where(err > LEAVE_TOL)[0]
     leave_time = float(t[over[0]]) if len(over) else float(t[-1])
 
-    # relative-L2 over the whole window (will be large for chaos — reported honestly)
+    # relative-L2 over the whole window (will be large for chaos: reported honestly)
     num = np.sqrt(np.sum((th1_p - th1_r) ** 2 + (th2_p - th2_r) ** 2))
     den = np.sqrt(np.sum(th1_r ** 2 + th2_r ** 2)) or 1.0
     l2_rel = float(num / den)
 
     # twin-IC divergence rate (a crude largest-Lyapunov estimate): fit log-separation over the CLEAN exponential-
-    # growth window only — after the separation saturates near O(pi) the slope flattens and would bias the estimate.
+    # growth window only: after the separation saturates near O(pi) the slope flattens and would bias the estimate.
     sep = np.sqrt(wrap(th1_r - th1_tw) ** 2 + wrap(th2_r - th2_tw) ** 2)
     sep = np.maximum(sep, 1e-12)
     grow = np.where((sep > 2 * TWIN_PERTURB) & (sep < 0.5))[0]

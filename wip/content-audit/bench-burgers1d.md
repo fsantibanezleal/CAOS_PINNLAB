@@ -1,4 +1,4 @@
-# Content audit — bench-burgers1d (in-app vs authoritative doc)
+# Content audit: bench-burgers1d (in-app vs authoritative doc)
 
 Date: 2026-07-15
 Doc (ground truth): `docs/cases/bench-burgers1d.md`
@@ -32,7 +32,7 @@ not fabrication. Severity 2 (real gap), not a hollow-content or flat-contradicti
 
 ## Contradictions / coherence issues
 
-### C1 — results.ts verdict cherry-picks the best-case field error (understatement)
+### C1: results.ts verdict cherry-picks the best-case field error (understatement)
 - inApp (`results.ts` → `bench-burgers1d.verdict_en`): "Arrival read within 2 time steps of the exact
   0.80; **field error 0.1%**. Reliable warning-time estimates for the whole viscosity family from one
   network."
@@ -45,15 +45,15 @@ not fabrication. Severity 2 (real gap), not a hollow-content or flat-contradicti
 
 ## Depth gaps (real doc content the app omits)
 
-### G1 — The doc's key honesty insight is missing everywhere
+### G1: The doc's key honesty insight is missing everywhere
 The doc states: "The hard-constraint baseline encodes the front, so the net only learns the small
-interior translation — the *sharpest* viscosity is the *most* accurate." This is a genuinely
+interior translation, the *sharpest* viscosity is the *most* accurate." This is a genuinely
 non-obvious result (sharper fronts are normally HARDER, but here the closed-form front is baked into
 `g(x;ν)`, so the residual task shrinks as ν shrinks). The Context's method section says "The network
 only learns the interior translation" but never draws the accuracy conclusion; `results.ts` does not
 mention it. This insight is the whole payoff of the hard-constraint design and should be surfaced.
 
-### G2 — No measured accuracy numbers anywhere except the single 0.1%
+### G2: No measured accuracy numbers anywhere except the single 0.1%
 The doc's `Result` section reports: relative-L2 range 0.08%–1.2% across six baked ν
 (0.02, 0.03, 0.04, 0.05, 0.06, 0.08), ONNX parity max abs **6.5e-7**, seed 42, `< 2e-2` band. The
 Context enumerates the six variants qualitatively (widths ~0.08 to ~0.32) but quotes zero measured
@@ -61,14 +61,14 @@ error and no ONNX parity. `results.ts` carries only the cherry-picked 0.1%. The 
 the ONNX parity (evidence the exported model matches the trained net) are real doc content the app
 drops.
 
-### G3 — "< 2e-2 band" framing dropped
+### G3: "< 2e-2 band" framing dropped
 The doc frames all six variants as landing inside a `< 2e-2` acceptance band ("Honest CPU-trained
 accuracy, all variants inside the `< 2e-2` band"). This band is the pass/fail context for the numbers
 and is absent from the app.
 
 ## Concrete proposed enrichments (grounded in doc quotes; no invented numbers)
 
-### E1 — `frontend/src/content/results.ts`, `bench-burgers1d.verdict_en/_es`
+### E1: `frontend/src/content/results.ts`, `bench-burgers1d.verdict_en/_es`
 Replace the single "field error 0.1%" with the honest range + the insight. EN:
 
 > "Arrival read within 2 time steps of the exact 0.80. Field error rises with viscosity, from 0.08% at
@@ -87,7 +87,7 @@ ES (mirror):
 Doc anchor: "≤ 1.2 % across all 6 variants (sharpest ν=0.02 → 0.08%; ν=0.08 → 1.2%)" and "the sharpest
 viscosity is the most accurate ... all variants inside the `< 2e-2` band."
 
-### E2 — `frontend/src/content/cases/Burgers1dContext.tsx`, "The method: hard constraints + RAR" section (EN + ES)
+### E2: `frontend/src/content/cases/Burgers1dContext.tsx`, "The method: hard constraints + RAR" section (EN + ES)
 Append one sentence connecting the transform to the accuracy result and citing ONNX parity:
 
 > EN: "Because the base fit `g(x;ν)` already carries the exact front, the network only has to learn the
@@ -100,9 +100,9 @@ Append one sentence connecting the transform to the accuracy result and citing O
 > 6.5e-7 en máximo absoluto, por eso el tab Live reproduce el campo con exactitud."
 
 Doc anchor: "The hard-constraint baseline encodes the front, so the net only learns the small interior
-translation — the sharpest viscosity is the most accurate"; "ONNX parity (max abs) 6.5e-7."
+translation, the sharpest viscosity is the most accurate"; "ONNX parity (max abs) 6.5e-7."
 
-### E3 (optional, low priority) — Context "What each variant shows" paragraph
+### E3 (optional, low priority): Context "What each variant shows" paragraph
 The six ν values are already named; optionally attach their measured L2 (0.08% at ν=0.02 ... 1.2% at
 ν=0.08) so the qualitative sweep is anchored to numbers. Doc anchor: same Result table. Only add if the
 team wants measured numbers in-Context; otherwise E1 + E2 already close the gap.

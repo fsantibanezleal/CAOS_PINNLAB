@@ -3,6 +3,13 @@
 All notable changes to **PINN-Lab**. Format: `X.XX.XXX` (display), see `pinnlab.__version__`. Keep `0.x` while on
 synthetic/benchmark data. Tag every release.
 
+## [0.31.002] (2026-09-26) No em-dash and no emoji in the content (ADR-0067)
+
+- 1,353 lines swept across the docs, the wip notes, the pipeline, the site and the tests; the data records
+  under `data/derived/` keep their text and the content guard skips them. The maturity dots beside case ids
+  in three method pages read "(in progress)" and "(shipped)" instead. The archetype's content guard runs
+  in CI.
+
 ## [0.31.001] (2026-07-15) Experiments method-ladder + docs keep pace with the 26-case catalogue
 
 - **Experiments page:** added the three new cases that fit the standard/naive/fix ladder: `bench-darcy-pino`
@@ -673,96 +680,96 @@ Correction of 0.18.001/0.18.002, which had DELETED the play button when adding t
 ## [0.18.002] (2026-07-09) initial-vs-selected overlay on the field probe + cache-busting
 
 - **Initial-vs-selected overlay:** in the space cross-section panel, the profile at the selected time (solid) is now
-  overlaid with the **initial state t=0 (dashed)** — the initial-vs-selected comparison — combined with the value
+  overlaid with the **initial state t=0 (dashed)**, the initial-vs-selected comparison, combined with the value
   read-out + the two panels + the dimension labels, on every field case (`FieldView`).
 - **Cache-busting:** every artifact fetch (index / manifest / trace / onnx) is stamped `?v=APP_VERSION`, so a new
   deploy never serves stale cached data (the data files are not content-hashed). Hard-refresh once to pick up the
   new JS shell; after that, data stays in sync with the build.
 
-## [0.18.001] — 2026-07-09 — consistent probe + labelled dimensions (the space-time heatmap is the EVOLUTION)
+## [0.18.001]: 2026-07-09, consistent probe + labelled dimensions (the space-time heatmap is the EVOLUTION)
 
 Owner feedback: the play-button (animated) field cases had lost the value-at-cursor + the two cross-section graphs
 that the plain heatmap cases (darcy, poisson) keep, and it was unclear whether a heatmap showed the evolution or a
 static final state. Fixed by REPLACING the animation with the heatmap+probe on those cases and labelling dimensions:
 
-- **Reverted the 4 animated field cases** (allencahn, burgers1d, wave1d, ocean-transport) to HeatmapKit — so every
+- **Reverted the 4 animated field cases** (allencahn, burgers1d, wave1d, ocean-transport) to HeatmapKit: so every
   field case again shows the crosshair + value-at-cursor read-out + the two line-cut profiles (u along each axis).
-  No play button; consistent with darcy/poisson. (The double pendulum stays a trajectory — it has no field.)
+  No play button; consistent with darcy/poisson. (The double pendulum stays a trajectory, it has no field.)
 - **Axis-dimension labels on the heatmap** (FieldView): the horizontal + vertical axis names are drawn, and a time
-  axis is marked "t — time →".
+  axis is marked "t, time →".
 - **A dimension caption** states exactly what you are seeing: for a time-dependent PDE, "SPACE–TIME field u(x,t):
   the whole evolution in one image … reading up the time axis shows how it evolves. It is NOT a static final
   state."; for a steady field, "no time dimension"; for a param-time case, "spatial snapshot at t=… (use the regime
   chips to step through time)."
 
-## [0.18.000] — 2026-07-09 — the HYBRID data+physics rung (the practical winner), cited + honestly scoped
+## [0.18.000]: 2026-07-09, the HYBRID data+physics rung (the practical winner), cited + honestly scoped
 
-Answering "why aren't we featuring the data-driven PINN?" — from a verified deep-research pass on hybrid CFD PINNs
+Answering "why aren't we featuring the data-driven PINN?", from a verified deep-research pass on hybrid CFD PINNs
 (`wip/web-review/hybrid-pinn-research-2026-07-09.md`). The Methodology ladder now foregrounds the data-hybrid rung:
 
 - **Honest-scope panel** updated with the verified facts: the current generation of PINNs has NOT beaten the finite
   element method [Grossmann 2024]; pure-physics PINNs hit ~100% error as the regime hardens [Krishnapriyan 2021] and
-  stall on complex CFD geometry — and the practical fix is the HYBRID data+physics PINN. Cites Grossmann 2024,
+  stall on complex CFD geometry, and the practical fix is the HYBRID data+physics PINN. Cites Grossmann 2024,
   Krishnapriyan 2021, Hidden Fluid Mechanics (Raissi 2020).
 - **"Inverse & UQ" reframed to "Hybrid data + physics … (where PINNs win)"** with the SCAFFOLD mechanism (the
-  data term fixes an optimization pathology — PDE-residual gradients dominate, NTK K_rr ≫ K_uu — anchoring the net to
+  data term fixes an optimization pathology, PDE-residual gradients dominate, NTK K_rr ≫ K_uu, anchoring the net to
   the realizable solution among the infinitely many satisfying the PDE), the seminal HFM example, and the honest
   scope (data ASSIMILATION / reconstruction, not prediction from nothing; the "beats classical CFD" claim is NOT
   supported). heat2d-inverse / soil-heat-real / uq-bpinn named as exactly this rung.
-- **New operator rung** — physics-informed DeepONet [Wang 2021], with the OOD-distribution-bound limit. 4 new refs.
+- **New operator rung**: physics-informed DeepONet [Wang 2021], with the OOD-distribution-bound limit. 4 new refs.
 
 Next: a dedicated hybrid-CFD flow-reconstruction case (sparse sensors + NS residual) with a pure-physics baseline
 that visibly stalls (the S-bend contrast), ONNX-exported.
 
-## [0.17.000] — 2026-07-09 — Highlights strip: the REAL-data + data-hybrid cases stop being lost
+## [0.17.000]: 2026-07-09, Highlights strip: the REAL-data + data-hybrid cases stop being lost
 
 The one case trained on REAL measured data (`env-soil-heat-real`) was buried as one card among 20. The App now
 opens with a **Highlights strip** above the domain groups, surfacing the standouts that pure-forward-physics cases
-drown out — **REAL data first, starred + green** (`soil-heat-real`, NOAA soil temperatures), then the hybrid
+drown out, **REAL data first, starred + green** (`soil-heat-real`, NOAA soil temperatures), then the hybrid
 data+physics (`heat2d-inverse`), data+uncertainty (`source-uq-bpinn`), and chaotic-dynamics (`double-pendulum`)
 cases. Clicking a highlight jumps to it in its domain. This elevates exactly where PINNs genuinely win
 (data-hybrid / real-data), not just the synthetic forward benchmarks.
 
-## [0.16.000] — 2026-07-09 — Methodology as a classical → SOTA → beyond-SOTA ladder (cited)
+## [0.16.000]: 2026-07-09, Methodology as a classical → SOTA → beyond-SOTA ladder (cited)
 
 Driven by a verified deep-research pass (117 agents, 21 adversarially-verified claims;
 `wip/web-review/sota-research-2026-06-26.md`). The Methodology page becomes an explicit ladder, honestly framed:
 
-- **Honest-scope panel** — for a single well-posed FORWARD solve a tuned classical FEM/FVM/spectral solver is
-  usually faster/more accurate (community consensus, NOT overclaimed — the exact "PINNs win at X" framing was
+- **Honest-scope panel**: for a single well-posed FORWARD solve a tuned classical FEM/FVM/spectral solver is
+  usually faster/more accurate (community consensus, NOT overclaimed, the exact "PINNs win at X" framing was
   refuted against its cited source, so it is stated as the community view). The two VERIFIED hard limits: standard
   PINNs fail on chaotic/turbulent regimes (only causal training cracked Lorenz/KS/NS, over a finite pre-Lyapunov
   window) and struggle on large/multi-scale domains. Cites Krishnapriyan 2021 + Wang 2024.
 - **Per-family "→ SOTA frontier + candidate-novel proposal + honest limit"** notes with DOIs: RAD/RAR-D, causal
   weighting (+ PINN-Lab's Lyapunov-horizon leave-time as the candidate discipline), Residual-Based Attention (RBA),
   PirateNets + PIKANs, XPINN/FBPINN, SPINN.
-- **New method entry: Dynamical systems & chaos (the Lyapunov horizon)** — the double pendulum's ode-residual +
+- **New method entry: Dynamical systems & chaos (the Lyapunov horizon)**: the double pendulum's ode-residual +
   soft-IC + RK45 anchor + leave-time. 15 references, all with DOIs. Persisted research reports committed.
 
-## [0.15.000] — 2026-06-26 — App reorganized: domain groups + functionality cards (not 20 flat tabs)
+## [0.15.000]: 2026-06-26, App reorganized: domain groups + functionality cards (not 20 flat tabs)
 
 The App section is restructured from a single flat 20-tab strip into a legible three-level navigation:
 
-- **Level 1 — scenario domains.** A group nav by physics `category` (Canonical benchmarks 8 · Mining 4 · Pollution 5
+- **Level 1: scenario domains.** A group nav by physics `category` (Canonical benchmarks 8 · Mining 4 · Pollution 5
   · Industrial 2 · Control 1), each with a count + a one-line "what this domain is" intro.
-- **Level 2 — functionality cards.** Within a domain, a grid of case cards; each shows the case + its
+- **Level 2: functionality cards.** Within a domain, a grid of case cards; each shows the case + its
   **functionality badges**: the view-kit (Time evolution / Trajectory / Vector flow / Inverse overlay / …), the
   data-honesty label (synthetic / synthetic-illustrative / **REAL data**), and the SOTA method. The groupings of
   functionalities are now legible at a glance.
-- **Level 3 — the workbench** (Field / Live / Charts / Context) — unchanged; lands on the first case (ADR-0016).
+- **Level 3: the workbench** (Field / Live / Charts / Context), unchanged; lands on the first case (ADR-0016).
 
 `index.json` is enriched with per-case `system_type` / `view_kit` / `method` / `real_or_synthetic`
 (`build_index` + `contract.ts`) so the cards render badges without loading every manifest.
 
-## [0.14.000] — 2026-06-26 — InverseOverlayKit: the recovered field + its sparse evidence
+## [0.14.000]: 2026-06-26, InverseOverlayKit: the recovered field + its sparse evidence
 
 - **InverseOverlayKit** (`ind-heat2d-inverse`, inverse-assim): the recovered conductivity field `k(x,y)` with the
-  **100 sparse noisy T sensors overlaid as dots** — the evidence the PDE prior interpolates between. Toggle recovered
+  **100 sparse noisy T sensors overlaid as dots**, the evidence the PDE prior interpolates between. Toggle recovered
   `k` / true `k*` / `|k−k*|` / `T`; hover read-out; k-L2 = 4.0% (worst near the boundary where `|∇T|` is small).
 - The case now bakes the sensor positions + measured T into `trace.inverse` and the true `k*` as a field (the case
-  already trained fine — a low-risk re-bake, not new physics). Static (no animation).
+  already trained fine, a low-risk re-bake, not new physics). Static (no animation).
 
-## [0.13.000] — 2026-06-26 — vector-flow + UQ kits (no retraining; static, no bomb)
+## [0.13.000]: 2026-06-26, vector-flow + UQ kits (no retraining; static, no bomb)
 
 Two more `system_type → view_kit` mappings, both from already-baked artifacts (no retraining), both static (no
 animation, no autoplay):
@@ -771,33 +778,33 @@ animation, no autoplay):
   background (speed / pressure / vorticity) + hover read-out of (u, v, |U|, p). Reveals the recirculating lid-driven
   cavity vortex that a per-scalar heatmap hid.
 - **UQBandKit** (`poll-source-uq-bpinn`, uq-bayesian): mean `c(x)` with a filled **±1σ / ±2σ band** at a paused time
-  slider + the σ(x) magnitude curve + the calibration coverage (@2σ = 99.97%, K=5 ensemble). Band at true scale —
+  slider + the σ(x) magnitude curve + the calibration coverage (@2σ = 99.97%, K=5 ensemble). Band at true scale, 
   honest about a well-calibrated (thin) uncertainty; the σ curve shows where it concentrates.
 
-## [0.12.000] — 2026-06-26 — the dynamical-systems category: an animated chaotic double pendulum + leaner field UX
+## [0.12.000]: 2026-06-26, the dynamical-systems category: an animated chaotic double pendulum + leaner field UX
 
-The 20th case is the **double pendulum** — the `ode-dynamical` flagship and the first case with no spatial field:
+The 20th case is the **double pendulum**, the `ode-dynamical` flagship and the first case with no spatial field:
 the PINN maps `t → (θ₁, θ₂)` and the App animates the swinging linkage. Plus a UX cut: animation is kept only where
 the motion teaches something.
 
-### Added — `dyn-double-pendulum` + `TrajectoryAnimationKit`
+### Added: `dyn-double-pendulum` + `TrajectoryAnimationKit`
 - New ODE/trajectory path in the pipeline (a trajectory is a 1-D-in-`t` multi-output trace; the 1-D trace keeps up
   to 601 samples; `web_drivable=False` → precompute lane). Soft-IC IVP (a `t²` hard-IC was rejected: it kills the
   gradient near `t=0`). Engine: DeepXDE, tanh, Adam→L-BFGS; ONNX parity ~1.6e-6.
 - **RK45 anchor** (`rtol=atol=1e-10`) + a twin-IC trajectory baked alongside the PINN. Honest headline:
-  **leave-time = 1.99 s** (the PINN tracks to ~0.02 rad then diverges; L2 = 9.3% over 3 s) — chaos past the Lyapunov
+  **leave-time = 1.99 s** (the PINN tracks to ~0.02 rad then diverges; L2 = 9.3% over 3 s), chaos past the Lyapunov
   horizon, shown not hidden (the PINN arm turns red after the leave-time; the butterfly panel diverges).
 - `TrajectoryAnimationKit`: animated linkage (PINN ghost over RK45) + θ₁–θ₂ phase portrait + butterfly |Δθ| (semilog)
   + angles-vs-`t` with the leave-time marked. Deep bilingual Context + per-case doc.
 
-### Changed — animation only where it aports
+### Changed: animation only where it aports
 - Per the owner's call: **4 cases stay animated** (allencahn front, burgers1d shock, wave1d oscillation,
   ocean-transport plume); the other **9 revert to the static heatmap** (the x–t carpet already shows their
-  evolution — the scrub added little). Kept kits lead with a clear "Press ▶ to…" caption.
+  evolution, the scrub added little). Kept kits lead with a clear "Press ▶ to…" caption.
 
-## [0.11.001] — 2026-06-26 — animation is PAUSED by default (no autoplay; kill the compute bomb)
+## [0.11.001]: 2026-06-26, animation is PAUSED by default (no autoplay; kill the compute bomb)
 
-Hotfix. The animated kits autoplayed on load with an infinite loop — a `requestAnimationFrame` replay that pinned
+Hotfix. The animated kits autoplayed on load with an infinite loop, a `requestAnimationFrame` replay that pinned
 a CPU core continuously and never stopped, even unattended. Now:
 
 - **No autoplay.** Every animated kit (TimeEvolution / SpatioTemporal / Trajectory) starts **paused** on the first
@@ -807,16 +814,16 @@ a CPU core continuously and never stopped, even unattended. Now:
 - **Hidden-tab safety.** Animation stops the instant the browser tab is hidden (`visibilitychange` → pause), so
   there is no background CPU when the page is not in view.
 
-## [0.11.000] — 2026-06-26 — per-category view kits: the catalogue stops looking identical (animation)
+## [0.11.000]: 2026-06-26, per-category view kits: the catalogue stops looking identical (animation)
 
 Cases no longer all render as one static heatmap. ADR-0063 introduces an orthogonal **`system_type` →
 `view_kit`** axis: the Field tab picks a render kit by *kind of system*, and the time-evolving cases now
 **animate**. Driven by a 5-agent deep-research pass (`wip/app-redesign/`). Phase 0 + Phase 1 of a 5-phase plan.
 
-### Added — the view-kit architecture (ADR-0063)
+### Added: the view-kit architecture (ADR-0063)
 - **`system_type` + `view_kit`** on `CaseSpec` / the manifest / `contract.ts`; `FieldView` refactored into
   **`HeatmapKit`** (the default, pixel-identical), one of several kits selected via `kits/registry.ts`. Unknown/
-  absent `view_kit` falls back to `HeatmapKit` — zero regression for un-migrated cases.
+  absent `view_kit` falls back to `HeatmapKit`, zero regression for un-migrated cases.
 - **`TimeEvolutionKit`** (11 cases): plays `u(space)` forward over the baked time axis with a dashed initial-frame
   ghost and a y-scale locked across the run; the `[space,t]` carpet is a click-to-seek bar. **No retraining.**
 - **`SpatioTemporalKit`** (2 cases: ocean-transport, heap-leach): animates the 2-D field over its time-snapshot
@@ -827,19 +834,19 @@ Cases no longer all render as one static heatmap. ADR-0063 introduces an orthogo
   vector/inverse cases unchanged (their kits arrive in Phases 2–4: dynamical-systems/double-pendulum, vector-flow,
   UQ, mode-shape, inverse).
 
-### Changed — honesty remediation (audited against the engine)
-- Anchors described as **analytic/numerical**, never "FEM" — no case uses a finite-element anchor (kept the honest
+### Changed: honesty remediation (audited against the engine)
+- Anchors described as **analytic/numerical**, never "FEM": no case uses a finite-element anchor (kept the honest
   "not a replacement for FEM/FVM"). **neuraloperator** is the documented *reference*, not a dependency (the Darcy
   case ships a self-contained FNO). Case **count = 19** everywhere (was ~20 / 18).
 
-## [0.10.000] — 2026-06-22 — the SimLab-style per-case workbench, all 19 cases, deployed
+## [0.10.000]: 2026-06-22, the SimLab-style per-case workbench, all 19 cases, deployed
 
 The defining release: every case is now a **workbench**, the whole catalogue is migrated, and the app is live at
 **https://pinnlab.fasl-work.com**.
 
-### Added — per-case workbench (manifest/v2) across all 19 cases
+### Added: per-case workbench (manifest/v2) across all 19 cases
 - **A workbench per case** mirroring CAOS_SIMLAB (ADR-0016 §9): a **variant bar** (parameter regimes as chips + lane
-  badge + bilingual note) + **four sub-tabs — Field / Live / Charts / Context**. The **Field** view is an interactive
+  badge + bilingual note) + **four sub-tabs, Field / Live / Charts / Context**. The **Field** view is an interactive
   viridis heatmap with a value read-out at the cursor + colorbar + two line-cut profiles; **Live** re-evaluates the
   exported ONNX in-browser (onnxruntime-web) as you move the parameter slider; **Charts** is a clickable per-variant
   relative-L2 comparison; **Context** is a deep bilingual (EN/ES) write-up (the problem → components → formalization in
@@ -852,15 +859,15 @@ The defining release: every case is now a **workbench**, the whole catalogue is 
   degenerate `a=0` control), tailings-seepage (Gardner sorptive `α`, exact **Kirchhoff** family), thickener-settling
   (descent rate `R`, Bürger-Concha), comminution-pbe (grind rate `g`). **Time-scrubbers** (param = `t`):
   ocean-transport (advected-diffused Gaussian), heap-leach-rt (2-species reactive transport).
-- **Single honest benchmarks** (no fabricated regimes — ADR-0016 §9.A): allencahn (stiff, stationary front),
+- **Single honest benchmarks** (no fabricated regimes: ADR-0016 §9.A): allencahn (stiff, stationary front),
   flotation-kinetics (full-family `C(k,t)` map), soil-barrier (FBPINN kink), helmholtz (high-wavenumber Fourier
   features), navier-cavity (Ghia Re=100), heat2d-inverse (recover `k(x,y)` from sparse sensors), source-uq-bpinn
-  (deep-ensemble UQ), **env-soil-heat-real (REAL NOAA USCRN data** — recovered `α=0.30 mm²/s`, held-out RMSE 1.03 °C).
+  (deep-ensemble UQ), **env-soil-heat-real (REAL NOAA USCRN data**, recovered `α=0.30 mm²/s`, held-out RMSE 1.03 °C).
   darcy-operator ships a **discrete** family of 6 held-out FNO test samples (operator generalization 5.5 %).
 - **Honest measured bands** per case (relative-L2 ≤0.4 % for the clean analytic families; ~10 % for the spectral-bias
-  Helmholtz / ~17 % for the CPU Navier-cavity — labeled honestly, GPU lanes noted). ONNX parity `< 1e-4` everywhere.
+  Helmholtz / ~17 % for the CPU Navier-cavity, labeled honestly, GPU lanes noted). ONNX parity `< 1e-4` everywhere.
 
-### Added — deep content + docs
+### Added: deep content + docs
 - Content pages rewritten to depth: Introduction (PINN loss in KaTeX), Implementation (5 sub-tabs of the build/web/
   design flows), Methodology (9 SOTA method families + DOIs), Experiments (per-category narrative). **Zero internal
   repo paths in the rendered UI.**
@@ -868,16 +875,16 @@ The defining release: every case is now a **workbench**, the whole catalogue is 
   interpreting-results) + `frameworks/` & `methods/` landings + a runnable `docs/frameworks/deepxde/example.py`.
 - Root `README.md` rewritten for PINN-Lab (was the generic template boilerplate).
 
-### Fixed — green CI + clean public artifacts
+### Fixed: green CI + clean public artifacts
 - Updated `tests/*` + `scripts/check_artifacts.py` to the **manifest/v2** schema (per-variant `trace`/`metrics`;
   parametric poisson `input_dim=3`).
-- `strip_onnx_metadata()` (io/formats) wired into the ONNX export — the dynamo exporter embedded the local build path
+- `strip_onnx_metadata()` (io/formats) wired into the ONNX export: the dynamo exporter embedded the local build path
   in graph metadata; stripped from all 19 `.onnx` (inference/parity unaffected) so no local-machine path ships.
 - ruff clean (E702/F401/E731). CI (guards + test) is green.
 
-## [0.07.000] — 2026-06-21
+## [0.07.000]: 2026-06-21
 
-### Added — `bench-darcy-operator` (case #19, the operator-learning method family)
+### Added: `bench-darcy-operator` (case #19, the operator-learning method family)
 - A compact, self-contained **2D Fourier Neural Operator** (`model/fno.py`) learns the Darcy solution operator
   $\mathcal{G}: a(x)\mapsto u(x)$ for $-\nabla\!\cdot(a\nabla u)=1$, $u|_{\partial\Omega}=0$, over a family of two-value
   thresholded-GRF coefficient fields (the Li-et-al. benchmark). Dataset generated in-build via a seeded SciPy
@@ -885,61 +892,61 @@ The defining release: every case is now a **workbench**, the whole catalogue is 
   the operator exports cleanly to ONNX (parity 1.7e-6).
 - Measured (seed 42): **held-out test relative-L2 = 5.6 %** (genuine operator generalization over 64 unseen $a$),
   sample relative-L2 2.4 %. **lane = precompute** (a field-IO operator is not browser-coordinate-drivable; the App
-  replays a representative baked result — 3 switchable fields: input $a$, FNO $u_{\text{pred}}$, FD $u_{\text{true}}$).
+  replays a representative baked result, 3 switchable fields: input $a$, FNO $u_{\text{pred}}$, FD $u_{\text{true}}$).
   `synthetic` (analytic-coefficient benchmark, FD numerical anchor). This closes the last unexercised SOTA family.
-- **Engine: generic FIELD-IO hooks** (ADR-0057-compatible, like the prebuilt path) — a custom-engine case may train +
+- **Engine: generic FIELD-IO hooks** (ADR-0057-compatible, like the prebuilt path): a custom-engine case may train +
   export its OWN field-shaped ONNX in `build()` (train.py passes it through), and the lane gate gains a `web_drivable`
   term so a field-IO operator is honestly classified precompute regardless of ONNX size/speed.
 - `scipy` pinned in `data-pipeline/requirements.txt`; `docs/cases/bench-darcy-operator.md`.
 
-### Fixed (0.06.001) — web shell now complies with ADR-0016 + ADR-0011
-- **English is the default language** for the app (ADR-0011) — removed the navigator-language auto-detect.
+### Fixed (0.06.001): web shell now complies with ADR-0016 + ADR-0011
+- **English is the default language** for the app (ADR-0011): removed the navigator-language auto-detect.
 - Header carries the mandatory external icon-links (ADR-0016): **GitHub + personal site + portfolio**
   (`lib/links.ts`, lucide-react icons, separator before the Info/language/theme actions); added the **footer**
   (attribution + a CAOS research investigation + the 3 links + license + version). Mirrors the CAOS_SEISMIC shell.
 
-## [0.06.000] — 2026-06-21
+## [0.06.000]: 2026-06-21
 
-### Added — ⓘ "How it was built" architecture panel (implements ADR-0058)
-- A header **ⓘ button** opens a tabbed modal that proves the app is real, at COMPLETE depth — **6 hand-authored
+### Added: ⓘ "How it was built" architecture panel (implements ADR-0058)
+- A header **ⓘ button** opens a tabbed modal that proves the app is real, at COMPLETE depth: **6 hand-authored
   theme-aware SVG diagrams** (every colour a CSS variable; fetched + inlined so they repaint with light/dark) paired
   with **bilingual EN/ES** explanations:
-  - **Overview** — system map + the design/build lifecycle (what runs offline / precompute / web).
-  - **Web app** — the static SPA + the App-page live-inference flow.
-  - **Offline pipeline** — the 6 deterministic stages + the 2 data contracts.
-  - **Train → ONNX → web** — the bridge + the parity guarantee.
-  - **Live vs precompute** — the measured lane gate.
-  - **Methods & honesty** — the 18 cases × SOTA methods + the honesty taxonomy.
+  - **Overview**: system map + the design/build lifecycle (what runs offline / precompute / web).
+  - **Web app**: the static SPA + the App-page live-inference flow.
+  - **Offline pipeline**: the 6 deterministic stages + the 2 data contracts.
+  - **Train → ONNX → web**: the bridge + the parity guarantee.
+  - **Live vs precompute**: the measured lane gate.
+  - **Methods & honesty**: the 18 cases × SOTA methods + the honesty taxonomy.
 - `ArchitectureModal.tsx` + `architecture-tabs.ts` + `arch.*` i18n + `public/svg/tech/*.svg`. Verified dark+light with
   `tools/visual-verify/render-svg.mjs` (per-SVG) and the in-app modal harness (all 6 tabs, both themes, zero JS errors).
-- This is the binding **ADR-0058** standard (Veta/Circuita pattern) applied to this non-shell app — a product is not
+- This is the binding **ADR-0058** standard (Veta/Circuita pattern) applied to this non-shell app: a product is not
   "done" without it.
 
-## [0.05.000] — 2026-06-21
+## [0.05.000]: 2026-06-21
 
-Uncertainty quantification — the last unexercised SOTA method family — plus the generic engine path that enables it.
+Uncertainty quantification, the last unexercised SOTA method family, plus the generic engine path that enables it.
 
-### Added — `poll-source-uq-bpinn` (case #18, Bayesian PINN / deep ensemble)
+### Added: `poll-source-uq-bpinn` (case #18, Bayesian PINN / deep ensemble)
 - Trains **K=5 independently-initialized PINNs with per-member bagging** (deep ensembles ≈ approximate Bayesian
   inference) for 1D pollutant diffusion from **24 sparse noisy sensors**. The predictive **mean** tracks the analytic
-  field (relative-L2 **1.2 %**) and the ensemble **std** is the epistemic uncertainty — small near sensors/walls,
+  field (relative-L2 **1.2 %**) and the ensemble **std** is the epistemic uncertainty, small near sensors/walls,
   ~2.7× larger in data-sparse regions. **2σ calibration = 100 %** (well-calibrated, not overconfident).
 - Exported as **one self-contained ONNX emitting `[mean, std]`** → lane **live** (101 KB, 3.8 ms, parity 2.4e-7).
 - Honesty `synthetic-illustrative` (UQ demonstrator on a manufactured field).
 
-### Added — engine: prebuilt-engine path
+### Added: engine: prebuilt-engine path
 - `train.py` now supports **custom-engine cases** (`build()` returns `{"model", "input_dim", "prebuilt": True}`): the
   case trains its own net (a deep ensemble here; FNO operator nets later), so the generic Adam→L-BFGS→refine loop is
   skipped while ONNX export + parity + the lane gate still apply. `build(seed)` may optionally accept `quick=` (passed
   only to builds that declare it), so custom-engine cases get a cheap CI path.
 - `docs/cases/poll-source-uq-bpinn.md`.
 
-## [0.04.000] — 2026-06-21
+## [0.04.000]: 2026-06-21
 
 The first REAL-data case. Everything prior validates against closed-form / reduced-model truth; this milestone adds a
-case trained on, and validated against, real measured observations — plus the engine plumbing for it.
+case trained on, and validated against, real measured observations, plus the engine plumbing for it.
 
-### Added — `env-soil-heat-real` (case #17, the flagship real-data inverse)
+### Added: `env-soil-heat-real` (case #17, the flagship real-data inverse)
 - Recovers **soil thermal diffusivity** from **NOAA USCRN** daily soil temperatures (station IL_Champaign_9_SW,
   2019–2021, depths 5/10/20/50/100 cm). The 1D heat equation $T_t=\alpha T_{zz}$ with the **5 cm + 100 cm sensors as
   real time-varying Dirichlet boundaries** and the diffusivity a **trainable scalar** (`dde.Variable`,
@@ -949,8 +956,8 @@ case trained on, and validated against, real measured observations — plus the 
   held-out **RMSE = 1.05 °C** (10 cm 1.26 · 20 cm 1.06 · 50 cm 0.75), **relative-L2 = 6.9 %**, lane **live** (40 KB,
   0.7 ms, parity 1.4e-6). Honesty flag **`validated-real`** (new green "real data" tag, EN/ES).
 
-### Added — engine + ingestion
-- `datasets/uscrn_soil.py` — documented fetcher that vendors the real USCRN data offline
+### Added: engine + ingestion
+- `datasets/uscrn_soil.py`: documented fetcher that vendors the real USCRN data offline
   (`data/reference/uscrn/soil_temp_il_champaign.json`, schema `pinnlab.dataset.uscrn/v1`), so training is reproducible
   and CI needs no network.
 - **Data-fit validation mode** in `evaluate`: a case with `validation_anchor="real-data-holdout"` and no analytic
@@ -963,15 +970,15 @@ case trained on, and validated against, real measured observations — plus the 
 - The USGS groundwater path was explored and dropped: the nested-piezometer head profile is decoupled by aquifer
   layering (not a homogeneous-diffusion fit). OpenAQ air-source inversion remains a documented future real-data case.
 
-## [0.03.000] — 2026-06-21
+## [0.03.000]: 2026-06-21
 
 The full case catalogue (16 cases), the interactive web app, the architecture wiki, and the live GitHub Pages
 deployment. Every metric below is the committed manifest's measured value (relative-L2 vs the validation anchor);
 lanes are derived from measurements (ONNX size · ort-web inference time · trace bytes), never hand-set.
 
-### Added — engine generalizations (what made the catalogue possible)
+### Added: engine generalizations (what made the catalogue possible)
 - **Validation anchors**: analytic, vendored numerical reference (`reference_on_grid`), and benchmark (Ghia
-  centerline) — all leakage-safe in `evaluate`. Custom `eval_grid()`, `extra_metrics()`, and multi-output reshape
+  centerline), all leakage-safe in `evaluate`. Custom `eval_grid()`, `extra_metrics()`, and multi-output reshape
   hooks so vector fields (u,v,p) and non-default grids flow through unchanged.
 - **SOTA training surface**: hard constraints (output transforms), Fourier-feature input transforms, SIREN,
   RAR residual-adaptive refinement hook (`refine`), per-term `loss_weights`, **MMS** (method of manufactured
@@ -979,7 +986,7 @@ lanes are derived from measurements (ONNX size · ort-web inference time · trac
   **FBPINN** 2-channel domain decomposition, and **inverse** cases (a 2nd network output for the unknown field +
   `PointSetBC` observations through the ingestion contract).
 
-### Added — cases (8 canonical + 8 mining/pollution/industrial/control differentiators)
+### Added: cases (8 canonical + 8 mining/pollution/industrial/control differentiators)
 - **Canonical benchmark (6)**: `bench-poisson2d` (hard-constraint, **L2 5e-6**), `bench-heat1d` (**9.1e-5**),
   `bench-wave1d` (**4.9e-5**), `bench-burgers1d` (RAR + Burgers.npz, **9.7e-3**), `bench-allencahn`
   (RAR + Allen_Cahn.npz, **1.2e-3**), `bench-navier-cavity` (3-output, Ghia anchor, **L2 1.7e-1**, honest
@@ -997,20 +1004,20 @@ lanes are derived from measurements (ONNX size · ort-web inference time · trac
 - All 16 cases classify **lane=live** (ONNX 20–40 KB, ort-web infer < 1 ms, parity ~1e-7); honesty flags
   (`synthetic` vs `synthetic-illustrative`) set per case; CPU-limited cases labeled, not hidden.
 
-### Added — web app (Vite + React 19 + TS)
+### Added: web app (Vite + React 19 + TS)
 - Six pages (App · Introduction · Methodology · Implementation · Experiments · Benchmark), HashRouter, zustand,
   i18next (EN/ES), KaTeX equations, canvas viridis heatmap, **onnxruntime-web live inference** with baked-trace
   replay. `lib/contract.ts` mirrors the artifact schema so contract drift fails the build.
 
-### Added — docs wiki + deploy
+### Added: docs wiki + deploy
 - `docs/architecture/` (overview · the-gate · data-contracts · staged-pipeline · train→ONNX→web · deploy ·
   determinism), `docs/frameworks/` (DeepXDE, PhysicsNeMo, neuraloperator, jax-pi, NeuralPDE.jl, PINA),
   `docs/methods/` (adaptive sampling · causal-curriculum · loss-weighting · architectures · domain-decomposition ·
   variational-scalable · optimization · operator-learning · inverse-UQ).
-- **Live on GitHub Pages** (Actions): https://fsantibanezleal.github.io/CAOS_PINNLAB/ — `base: "./"`, `copy-data`
+- **Live on GitHub Pages** (Actions): https://fsantibanezleal.github.io/CAOS_PINNLAB/: `base: "./"`, `copy-data`
   prebuild, `github-pages` environment branch-policy cleared. CI smoke (`--quick`) + lane re-derivation guard.
 
-## [0.02.000] — 2026-06-20
+## [0.02.000]: 2026-06-20
 
 ### Changed
 - **Specialized the engine to Physics-Informed Neural Networks**, replacing the template's example SIR body. Primary
@@ -1019,23 +1026,23 @@ lanes are derived from measurements (ONNX size · ort-web inference time · trac
   fields. The lane gate now decides live-vs-precompute from **ONNX size + ort-web inference time + artifact bytes**.
 
 ### Added
-- `cases/bench-poisson2d` — 2D Poisson (Dirichlet) via a **hard-constraint PINN**, analytic validation anchor.
+- `cases/bench-poisson2d`: 2D Poisson (Dirichlet) via a **hard-constraint PINN**, analytic validation anchor.
   Verified end-to-end: **lane=live, relative-L2 = 5e-6 vs analytic, ONNX parity = 2.4e-7, onnx = 48 KB self-contained.**
 - Core: `io/schema` (ObservationRow, SolutionField), `io/contract` (observation ingestion + outlier policy),
   `core/trace` (`pinnlab.field/v1`), `core/manifest` (`pinnlab.manifest/v1`), `core/gate` (ONNX/ort-web lane),
-  `model/analytic` (numpy reference helpers — Pyodide-safe).
+  `model/analytic` (numpy reference helpers, Pyodide-safe).
 - Stages: preprocess / feature_extraction / **train (DeepXDE → ONNX + parity check)** / infer / evaluate
   (relative-L2 vs analytic) / export. CLI `python -m pinnlab.pipeline`.
 - Precompute-lane requirements pinned + mapped to docs (numpy, deepxde, torch, onnx, onnxruntime, onnxscript);
   documented GPU lane (`requirements-gpu.txt`).
-- Tests rewritten to PINN (contract, smoke, manifest, gate) — **10 passing**.
+- Tests rewritten to PINN (contract, smoke, manifest, gate): **10 passing**.
 
 ### Removed
 - Stray `models/surrogate.json` (an SIR-example artifact the template copy carried in).
 
-## [0.01.000] — 2026-06-20
+## [0.01.000]: 2026-06-20
 
 ### Added
-- Initial instantiation from the CAOS product-repo template (ADR-0057): the frozen base — `data-pipeline` package,
+- Initial instantiation from the CAOS product-repo template (ADR-0057): the frozen base: `data-pipeline` package,
   the two data contracts, the named staged pipeline, the seeded RNG, the manifest/trace, the measured lane gate, the
-  cases-by-category registry, tests, and CI — before the PINN engine replaced the example body in 0.02.000.
+  cases-by-category registry, tests, and CI, before the PINN engine replaced the example body in 0.02.000.

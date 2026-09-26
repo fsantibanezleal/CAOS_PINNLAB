@@ -40,7 +40,7 @@ Severity: **3** (a quantitative contradiction, not merely a gap).
 
 ## Contradictions (inApp vs docSays)
 
-### C1 (severity 3, CONFIRMED) — the diffusion contrast is stated as 100x, not 10x
+### C1 (severity 3, CONFIRMED): the diffusion contrast is stated as 100x, not 10x
 - **inApp** (`constraints.ts`, `poll-soil-barrier`, the `param` chip):
   - EN: `"D(x) jumps 100x inside the barrier (the kink)"`
   - ES: `"D(x) salta 100x dentro de la barrera (el quiebre)"`
@@ -54,7 +54,7 @@ Severity: **3** (a quantitative contradiction, not merely a gap).
 - Note the wording is doubly wrong: the coefficient does not "jump up" 100x, it **drops** ~10x inside the
   barrier (that low D is the dominant resistance). The chip should read as a 10x DROP.
 
-### C2 (severity 1, minor) — the upstream source is called "constant" but it is a rising source
+### C2 (severity 1, minor): the upstream source is called "constant" but it is a rising source
 - **inApp**:
   - `results.ts` assumptions: `"constant source upstream"` / `"fuente constante aguas arriba"`.
   - `scenarios.ts` is looser but compatible ("the source history").
@@ -77,18 +77,18 @@ physically consistent with the analytic (`1-e^{-t}` reaching half of its t=1 val
 
 The Context is rich, so these are enrichment opportunities, not signs of a hollow panel.
 
-- **G1 — beta value.** Doc gives the partition sharpness explicitly: `(beta = 40)`. The Context writes
+- **G1: beta value.** Doc gives the partition sharpness explicitly: `(beta = 40)`. The Context writes
   `w_left = sigma(beta (x_c - x))` but never states beta = 40 (code: `BETA = 40.0`).
-- **G2 — the third anchor column (the center seam).** Doc Method: "Three extra anchor columns are seeded at
+- **G2: the third anchor column (the center seam).** Doc Method: "Three extra anchor columns are seeded at
   `x = A_B, B_B, x_c` to pin the faces." Code seeds columns at AB, BB, **and X_C = 0.5** (lines 117-121). The
   Context only says "anchor points are seeded on the two barrier faces", omitting the center-seam anchor
   where the two sub-nets hand off, exactly the seam the partition-of-unity blend needs pinned.
-- **G3 — the exact measured metrics.** The Context mentions `~2e-1` relative L2 but never gives the concrete
+- **G3: the exact measured metrics.** The Context mentions `~2e-1` relative L2 but never gives the concrete
   scored numbers the doc Result table carries: relative-L2 **0.192 (19.2%)**, max abs error **0.134**, ONNX
   parity **8.9e-08**, lane **live**. A rich Context should name at least the 19.2% and 0.134.
-- **G4 — the training recipe.** Doc Method: "Trained Adam (18k) -> L-BFGS in DeepXDE." Code: `[2]+[64]*4+[2]`,
+- **G4: the training recipe.** Doc Method: "Trained Adam (18k) -> L-BFGS in DeepXDE." Code: `[2]+[64]*4+[2]`,
   `adam: 18000, lbfgs: True`. The Context omits the optimizer schedule and net size entirely.
-- **G5 — the honest path-forward note.** Doc Result/Honesty: "the strict per-subdomain-normalized FBPINN plus
+- **G5: the honest path-forward note.** Doc Result/Honesty: "the strict per-subdomain-normalized FBPINN plus
   a GPU lane tighten it further" with a pointer to `docs/methods/domain-decomposition.md`. The Context conveys
   the CPU-limited framing but omits that this is a deliberately simplified 2-channel blend and that the strict
   per-subdomain-normalized FBPINN + GPU is what closes the gap.
@@ -97,7 +97,7 @@ The Context is rich, so these are enrichment opportunities, not signs of a hollo
 
 ## Concrete proposed enrichments (grounded in doc quotes)
 
-### Fix F1 (BLOCKING) — correct the 100x chip in `frontend/src/content/constraints.ts`
+### Fix F1 (BLOCKING): correct the 100x chip in `frontend/src/content/constraints.ts`
 Under `"poll-soil-barrier"`, the `param` entry. Replace:
 ```
 { kind: "param", en: "D(x) jumps 100x inside the barrier (the kink)", es: "D(x) salta 100x dentro de la barrera (el quiebre)" },
@@ -107,7 +107,7 @@ with (10x, phrased as a drop, matching doc `D_soil=1.0`, `D_barrier=0.1`):
 { kind: "param", en: "D(x) drops 10x inside the barrier (the kink)", es: "D(x) baja 10x dentro de la barrera (el quiebre)" },
 ```
 
-### Fix F2 (minor) — call the source "rising", not "constant", in `frontend/src/content/results.ts`
+### Fix F2 (minor): call the source "rising", not "constant", in `frontend/src/content/results.ts`
 Under `"poll-soil-barrier"`, `assumptions_en` / `assumptions_es`. Replace `"constant source upstream"` /
 `"fuente constante aguas arriba"` with a phrasing that matches the doc's `c(0,t) = 1 - e^{-t}`:
 ```
@@ -115,12 +115,12 @@ en: "rising upstream source c(0,t)=1-e^{-t}", es: "fuente ascendente aguas arrib
 ```
 (Optional: mirror the same wording in `scenarios.ts` `measured_*`, which currently says "the source history".)
 
-### Fix F3 — add beta = 40 in `frontend/src/content/cases/SoilBarrierContext.tsx`
+### Fix F3: add beta = 40 in `frontend/src/content/cases/SoilBarrierContext.tsx`
 In the FBPINN paragraph, after the partition-of-unity equation, state the value. Grounded in doc `(beta = 40)`.
 Suggested EN addition after "that switch across the barrier centre": "with window sharpness `beta = 40`". ES:
 "con nitidez de ventana `beta = 40`".
 
-### Fix F4 — correct the anchor sentence in `SoilBarrierContext.tsx` (add the center seam)
+### Fix F4: correct the anchor sentence in `SoilBarrierContext.tsx` (add the center seam)
 Doc: "Three extra anchor columns are seeded at `x = A_B, B_B, x_c`." Replace (EN) "anchor points are seeded on
 the two barrier faces so the kink is resolved well" with:
 ```
@@ -128,7 +128,7 @@ three anchor columns are seeded, on the two barrier faces x=0.45, 0.55 and on th
 ```
 Mirror in ES ("se siembran tres columnas de anclaje sobre las dos caras x=0.45, 0.55 y sobre la costura x_c=0.5 donde las sub-redes se relevan").
 
-### Fix F5 — add a short measured-result + honesty line to `SoilBarrierContext.tsx`
+### Fix F5: add a short measured-result + honesty line to `SoilBarrierContext.tsx`
 The Context ends on viz-reading; add one sentence with the scored numbers and the honest path forward, grounded
 in the doc Result table and Honesty section. Suggested EN (append near the "why single variant" paragraph or
 the viz paragraph):

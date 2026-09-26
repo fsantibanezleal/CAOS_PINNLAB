@@ -1,4 +1,4 @@
-# NeuralPDE.jl — symbolic PDE authoring + Bayesian PINN UQ (Julia / SciML)
+# NeuralPDE.jl: symbolic PDE authoring + Bayesian PINN UQ (Julia / SciML)
 
 > **Status in PINN-Lab:** *documented framework page only.* There is **no Julia toolchain in the
 > precompute lane** and **no ONNX → web path** from NeuralPDE.jl. This page exists as a
@@ -13,8 +13,8 @@
 
 [NeuralPDE.jl](https://github.com/SciML/NeuralPDE.jl) is the physics-informed neural network (PINN)
 solver of the Julia [SciML](https://sciml.ai) ecosystem. Its distinguishing feature is **symbolic
-authoring**: you write the PDE the way it appears on paper — declaring independent variables, an
-unknown field, and differential operators — and the library *automatically derives the PINN loss
+authoring**: you write the PDE the way it appears on paper, declaring independent variables, an
+unknown field, and differential operators, and the library *automatically derives the PINN loss
 function* from that symbolic description. There is no hand-coded residual; `Dxx(u(x,y)) + Dyy(u(x,y))
 ~ -sin(pi*x)*sin(pi*y)` *is* the program. This is fundamentally different from the Python frameworks
 (DeepXDE, PhysicsNeMo, PINA), where you write the residual as an explicit function of autodiff calls.
@@ -43,7 +43,7 @@ $$
 
 The derivatives inside $\mathcal{N}$ and $\mathcal{B}$ are taken by automatic differentiation of
 $u_\theta$ with respect to its inputs $\mathbf{x}$. NeuralPDE's contribution is that **you never
-write the term inside the residual norm by hand** — it is generated from the symbolic `eq` and `bcs`.
+write the term inside the residual norm by hand**, it is generated from the symbolic `eq` and `bcs`.
 The collocation points $\{\mathbf{x}_i\}$ are drawn by the *training strategy* you pass to
 `PhysicsInformedNN` (grid, quasi-random, quadrature, or adaptive). This is the Raissi–Perdikaris–
 Karniadakis PINN formulation (J. Comput. Phys. 2019,
@@ -54,12 +54,12 @@ construction and is itself published in the DifferentialEquations.jl / SciML lin
 
 ### Why it earns a page
 
-1. **Best-in-class symbolic ergonomics.** For *authoring* a PDE — especially coupled systems and
-   higher-order operators — the symbolic form is the cleanest of any PINN library. It is the natural
+1. **Best-in-class symbolic ergonomics.** For *authoring* a PDE: especially coupled systems and
+   higher-order operators, the symbolic form is the cleanest of any PINN library. It is the natural
    place to *teach* "this is the equation, this is the loss it becomes."
 2. **First-class Bayesian PINN UQ.** NeuralPDE ships a `BayesianPINN` discretizer that turns the
    PDE+data into a likelihood and samples the posterior over network weights with Hamiltonian Monte
-   Carlo ([AdvancedHMC.jl](https://github.com/TuringLang/AdvancedHMC.jl)) — i.e. the B-PINN of Yang,
+   Carlo ([AdvancedHMC.jl](https://github.com/TuringLang/AdvancedHMC.jl)), i.e. the B-PINN of Yang,
    Meng & Karniadakis (J. Comput. Phys. 2021,
    [arXiv:2003.06097](https://arxiv.org/abs/2003.06097)) as a maintained library feature, not a
    research script. It returns calibrated credible intervals, which vanilla deterministic PINNs do
@@ -76,7 +76,7 @@ onnxruntime-web* (see [`docs/architecture/the-gate`](../../architecture/the-gate
 has **no native ONNX exporter**. A trained model is a Lux parameter `NamedTuple` you serialise with
 [JLD2.jl](https://github.com/JuliaIO/JLD2.jl) (Julia-only) or, via
 [Reactant.jl](https://github.com/EnzymeAD/Reactant.jl), compile to **StableHLO** for the XLA/JAX
-world — neither of which is the ONNX graph that `onnxruntime-web` consumes. Bridging it would mean
+world, neither of which is the ONNX graph that `onnxruntime-web` consumes. Bridging it would mean
 adding a Julia toolchain to the build *and* hand-porting the MLP weights into an ONNX graph. That is
 out of scope; see [ONNX-export notes](#onnx-export-notes). So NeuralPDE is included as a **symbolic-
 authoring and UQ showcase**, decoupled from the shipping pipeline.
@@ -94,7 +94,7 @@ pkg> add Optimization OptimizationOptimisers OptimizationOptimJL
 pkg> add LineSearches
 ```
 
-or, scripted (non-interactive), in a project-local environment — the Julia equivalent of a `.venv`,
+or, scripted (non-interactive), in a project-local environment, the Julia equivalent of a `.venv`,
 so nothing touches a global install:
 
 ```julia
@@ -118,15 +118,15 @@ Pkg.add(["AdvancedHMC", "MonteCarloMeasurements", "Distributions"])
 | Latest version | **v6.0.0** (2026-05-08) |
 | License | **MIT** |
 | Neural-network library | **Lux.jl** (Flux.jl supported as legacy) |
-| GPU | yes — via `LuxCUDA` / the SciML GPU stack and `Reactant` |
+| GPU | yes, via `LuxCUDA` / the SciML GPU stack and `Reactant` |
 | Julia | ≥ 1.10 LTS recommended |
 
 > The first `using NeuralPDE` after install triggers Julia's precompilation; on a clean machine this
 > is several minutes (the time-to-first-solve cost of the Julia stack). Pin `Project.toml` /
 > `Manifest.toml` for reproducibility, exactly as we pin Python `requirements-*.txt`.
 
-Sources: package + install — [github.com/SciML/NeuralPDE.jl](https://github.com/SciML/NeuralPDE.jl);
-API — [docs.sciml.ai/NeuralPDE](https://docs.sciml.ai/NeuralPDE/stable/).
+Sources: package + install, [github.com/SciML/NeuralPDE.jl](https://github.com/SciML/NeuralPDE.jl);
+API, [docs.sciml.ai/NeuralPDE](https://docs.sciml.ai/NeuralPDE/stable/).
 
 ---
 
@@ -146,20 +146,20 @@ The workflow is a fixed five-step pipeline. Each step maps to one SciML object.
 
 The discretizer. Key arguments:
 
-- **`chain`** — a `Lux.Chain` (or a `Vector{Chain}` for coupled systems, one net per dependent
+- **`chain`**: a `Lux.Chain` (or a `Vector{Chain}` for coupled systems, one net per dependent
   variable). Input dimension = number of independent variables; output dimension = 1 per field.
-- **`strategy`** — the collocation **training strategy** that decides how residual points are sampled.
+- **`strategy`**: the collocation **training strategy** that decides how residual points are sampled.
   The main choices:
-  - `QuadratureTraining(; batch, abstol, reltol)` — integrates the loss with an adaptive quadrature
+  - `QuadratureTraining(; batch, abstol, reltol)`: integrates the loss with an adaptive quadrature
     rule (high accuracy on low-dimensional domains; the recommended default for smooth problems).
-  - `GridTraining(dx)` — fixed tensor grid of points (simple, deterministic).
-  - `StochasticTraining(points)` / `QuasiRandomTraining(points; sampling_alg)` — (quasi-)random
+  - `GridTraining(dx)`: fixed tensor grid of points (simple, deterministic).
+  - `StochasticTraining(points)` / `QuasiRandomTraining(points; sampling_alg)`: (quasi-)random
     resampling each iteration (scales better in higher dimensions).
   - adaptive strategies (e.g. residual-/importance-weighted variants) for sharp-gradient solutions.
-- **`adaptive_loss`** — optional automatic loss-term weighting (NTK-/gradient-based), the SciML
+- **`adaptive_loss`**: optional automatic loss-term weighting (NTK-/gradient-based), the SciML
   analogue of the loss-weighting schemes in [`docs/methods/ntk-weighting`](../../methods/ntk-weighting.md)
   and [`docs/methods/gradnorm-weighting`](../../methods/gradnorm-weighting.md).
-- **`param_estim = true`** — switches on **inverse mode**: unknown PDE coefficients declared as
+- **`param_estim = true`**: switches on **inverse mode**: unknown PDE coefficients declared as
   `@parameters` and listed in `PDESystem(...; defaults=…)` become trainable alongside the network
   (the Julia counterpart of DeepXDE's `dde.Variable`).
 
@@ -167,7 +167,7 @@ The discretizer. Key arguments:
 
 Lowers the symbolic `PDESystem` to a concrete `OptimizationProblem` whose decision variables are the
 flattened network parameters. (`symbolic_discretize` returns the *un-compiled* symbolic loss
-functions instead — useful for inspecting exactly which residual NeuralPDE built from your equation.)
+functions instead, useful for inspecting exactly which residual NeuralPDE built from your equation.)
 
 ### `solve(prob, optimizer; maxiters, callback)`
 
@@ -208,7 +208,7 @@ using ModelingToolkit: Interval
 Dxx = Differential(x)^2
 Dyy = Differential(y)^2
 
-# 2. the PDE + boundary conditions (symbolic — this IS the residual definition)
+# 2. the PDE + boundary conditions (symbolic: this IS the residual definition)
 eq  = Dxx(u(x, y)) + Dyy(u(x, y)) ~ -sin(pi * x) * sin(pi * y)
 bcs = [u(0, y) ~ 0.0, u(1, y) ~ 0.0,
        u(x, 0) ~ 0.0, u(x, 1) ~ 0.0]
@@ -266,12 +266,12 @@ sol = ahmc_bayesian_pinn_pde(
     Kernel = HMC(0.1, 30),
     saveats = [1 / 100.0])
 
-# sol.ensemblesol      :: Particles (MonteCarloMeasurements) — solution distribution
-# sol.estimated_nn_params, sol.estimated_de_params — posterior over weights / PDE params
+# sol.ensemblesol      :: Particles (MonteCarloMeasurements): solution distribution
+# sol.estimated_nn_params, sol.estimated_de_params: posterior over weights / PDE params
 ```
 
 The posterior over weights induces a posterior over the field; the spread of `sol.ensemblesol`
-(`Particles` from MonteCarloMeasurements.jl) gives pointwise credible intervals — the honest
+(`Particles` from MonteCarloMeasurements.jl) gives pointwise credible intervals, the honest
 uncertainty that deterministic PINNs lack. For inverse problems, supply distributions in `param=` and
 read `sol.estimated_de_params`.
 
@@ -286,16 +286,16 @@ What you *can* persist after training:
 
 | Target | Mechanism | Reaches `onnxruntime-web`? |
 |---|---|---|
-| Julia reuse | **JLD2.jl** — serialise the Lux parameter `NamedTuple` (`res.u`) + model | No (Julia-only `.jld2`) |
+| Julia reuse | **JLD2.jl**, serialise the Lux parameter `NamedTuple` (`res.u`) + model | No (Julia-only `.jld2`) |
 | XLA / JAX | **Reactant.jl** → **StableHLO** MLIR; runs on XLA, convertible toward the JAX/TF world | Not directly; StableHLO ≠ ONNX |
-| ONNX | *none built in* | — |
+| ONNX | *none built in* | – |
 
 A trained NeuralPDE model is a small dense MLP (`Dense → σ → … → Dense`), so in principle one could
 **hand-port the weight matrices** into an equivalent ONNX graph (the inference math is just
 `σ(Wx+b)` stacked). But that is bespoke glue, untraced and error-prone for any hard-BC ansatz or
 feature transform, and it would still require a Julia install in CI to produce the weights. The
 project's verified train→web bridge instead lives entirely in PyTorch:
-`torch.onnx.export(model.net, …)` from DeepXDE — see
+`torch.onnx.export(model.net, …)` from DeepXDE, see
 [`docs/architecture/train-export-onnx`](../../architecture/train-export-onnx.md) and the parity gate in
 [`docs/architecture/the-gate`](../../architecture/the-gate.md). **Do not** wire NeuralPDE output into
 `models/<case>.onnx`.
@@ -313,7 +313,7 @@ project's verified train→web bridge instead lives entirely in PyTorch:
 
 Concretely, NeuralPDE.jl appears in PINN-Lab as:
 
-- **A `docs/frameworks/neuralpde-jl/` page** (this file) — the cleanest illustration of "the equation
+- **A `docs/frameworks/neuralpde-jl/` page** (this file): the cleanest illustration of "the equation
   *is* the loss," used on the **Methodology** page to contrast symbolic authoring (NeuralPDE) against
   explicit-residual authoring (DeepXDE / PhysicsNeMo).
 - **The Bayesian-PINN reference** behind the UQ narrative for `poll-source-uq-bpinn` (the honest-
@@ -330,21 +330,21 @@ authored in Python and exported through the PyTorch → ONNX bridge.
 ## References
 
 - L. Lu, X. Meng, Z. Mao, G. E. Karniadakis. *DeepXDE: A deep learning library for solving differential
-  equations.* SIAM Review 63(1), 2021. [doi:10.1137/19M1274067](https://doi.org/10.1137/19M1274067) —
+  equations.* SIAM Review 63(1), 2021. [doi:10.1137/19M1274067](https://doi.org/10.1137/19M1274067), 
   framing of the PINN loss this page summarises.
 - M. Raissi, P. Perdikaris, G. E. Karniadakis. *Physics-informed neural networks…* J. Comput. Phys.
-  378, 2019. [doi:10.1016/j.jcp.2019.05.045](https://doi.org/10.1016/j.jcp.2019.05.045) — the PINN
+  378, 2019. [doi:10.1016/j.jcp.2019.05.045](https://doi.org/10.1016/j.jcp.2019.05.045), the PINN
   formulation NeuralPDE automates.
 - C. Rackauckas, Q. Nie. *DifferentialEquations.jl…* J. Open Research Software 5(1), 2017.
-  [doi:10.5334/jors.151](https://doi.org/10.5334/jors.151) — the SciML differential-equation
+  [doi:10.5334/jors.151](https://doi.org/10.5334/jors.151), the SciML differential-equation
   substrate.
 - L. Yang, X. Meng, G. E. Karniadakis. *B-PINNs: Bayesian physics-informed neural networks for forward
   and inverse PDE problems with noisy data.* J. Comput. Phys. 425, 2021.
-  [arXiv:2003.06097](https://arxiv.org/abs/2003.06097) — the Bayesian PINN realised by `BayesianPINN`.
+  [arXiv:2003.06097](https://arxiv.org/abs/2003.06097), the Bayesian PINN realised by `BayesianPINN`.
 - A. F. Psaros, X. Meng, Z. Zou, L. Guo, G. E. Karniadakis. *Uncertainty quantification in scientific
-  machine learning.* J. Comput. Phys. 477, 2023. [arXiv:2201.07766](https://arxiv.org/abs/2201.07766) —
+  machine learning.* J. Comput. Phys. 477, 2023. [arXiv:2201.07766](https://arxiv.org/abs/2201.07766), 
   context for the UQ methods, incl. HMC vs. ensembles.
-- **NeuralPDE.jl** — repository: [github.com/SciML/NeuralPDE.jl](https://github.com/SciML/NeuralPDE.jl);
+- **NeuralPDE.jl**: repository: [github.com/SciML/NeuralPDE.jl](https://github.com/SciML/NeuralPDE.jl);
   docs: [docs.sciml.ai/NeuralPDE](https://docs.sciml.ai/NeuralPDE/stable/); PINN manual:
   [docs.sciml.ai/NeuralPDE/.../manual/pinns](https://docs.sciml.ai/NeuralPDE/stable/manual/pinns/);
   BayesianPINN manual: [docs.sciml.ai/NeuralPDE/dev/manual/bpinns](https://docs.sciml.ai/NeuralPDE/dev/manual/bpinns/).

@@ -1,9 +1,9 @@
-# jaxpi — the technique donor (JAX / Equinox / Optax)
+# jaxpi: the technique donor (JAX / Equinox / Optax)
 
 > **Role in PINN-Lab:** *technique source of truth, not a shipping engine.* jaxpi is where the
 > modern "Expert's Guide" PINN training recipe lives in its canonical, paper-faithful form. We
 > **read it, port the techniques** into our DeepXDE/PyTorch precompute lane, and never put it on the
-> train→ONNX→web path (JAX→ONNX export is fragile, and — see below — its license forbids commercial
+> train→ONNX→web path (JAX→ONNX export is fragile, and, see below, its license forbids commercial
 > redistribution). Every PINN-Lab case tagged with `modified-MLP`, `PirateNet`, `NTK weighting`,
 > `causal weighting`, `random weight factorization`, or `SOAP` traces its method back to this page.
 
@@ -12,11 +12,11 @@
 ## 1. What & why
 
 [`jaxpi`](https://github.com/PredictiveIntelligenceLab/jaxpi) is the open-source PINN library from the
-**Predictive Intelligence Lab** (Paris Perdikaris' group, UPenn) — the same group that authored most of
+**Predictive Intelligence Lab** (Paris Perdikaris' group, UPenn), the same group that authored most of
 the loss-weighting and architecture papers that constitute the current PINN state of the art. It is
 built directly on the JAX scientific stack:
 
-- **JAX** — `jit`, `grad`, `vmap`, forward/reverse-mode AD, and (critically for PINNs) *higher-order*
+- **JAX**: `jit`, `grad`, `vmap`, forward/reverse-mode AD, and (critically for PINNs) *higher-order*
   derivatives of the network with respect to its inputs, plus `pmap` for multi-GPU data parallelism.
 - **Flax-style modules** for the network definitions (the repo's `archs.py`), and **Optax** for the
   optimizer chain.
@@ -29,13 +29,13 @@ built directly on the JAX scientific stack:
 jaxpi is the code that actually does it, validated on the paper's own benchmarks. It is the companion
 code for, among others:
 
-- **An Expert's Guide to Training Physics-Informed Neural Networks** — Wang, Sankaran, Wang & Perdikaris,
+- **An Expert's Guide to Training Physics-Informed Neural Networks**: Wang, Sankaran, Wang & Perdikaris,
   2023 ([arXiv:2308.08468](https://arxiv.org/abs/2308.08468)). The paper that bundles Fourier features +
   modified-MLP + NTK/grad-norm weighting + causal training + random weight factorization into one recipe.
-- **PirateNets: Physics-informed Deep Learning with Residual Adaptive Networks** — Wang, Li, Wang &
+- **PirateNets: Physics-informed Deep Learning with Residual Adaptive Networks**: Wang, Li, Wang &
   Perdikaris, JMLR 2024 ([arXiv:2402.00326](https://arxiv.org/abs/2402.00326)). Released on the `pirate`
   branch in May 2024.
-- **Gradient Alignment in Physics-informed Neural Networks: A Second-Order Optimization Perspective** —
+- **Gradient Alignment in Physics-informed Neural Networks: A Second-Order Optimization Perspective**, 
   introduces **SOAP** (Shampoo-with-Adam-in-the-eigenbasis) for PINNs, achieving the first PINN solution
   of turbulent flow at Re ≈ 10⁴ ([arXiv:2502.00604](https://arxiv.org/abs/2502.00604), code on the same repo).
 - The causal-training and NTK/grad-pathology papers
@@ -54,8 +54,8 @@ update rule right, then re-implement the technique in our shipping lane.
    the University of Pennsylvania. … permission to use, copy, and modify the software … for **non-profit
    research purposes only**."* It also states: *"Recipient and Institution shall not distribute Software
    or Modifications to any third parties without the prior written approval of Penn"* and routes any
-   commercial use through *"The Penn Center for Innovation."* For PINN-Lab — a public product that could
-   be monetised — this means **jaxpi (and PirateNet code) cannot be vendored or shipped**; the ideas and
+   commercial use through *"The Penn Center for Innovation."* For PINN-Lab, a public product that could
+   be monetised, this means **jaxpi (and PirateNet code) cannot be vendored or shipped**; the ideas and
    equations are fine to re-implement, the code is not ours to redistribute. (The *technique* PirateNets,
    as a published method, is reproducible from the paper; what is restricted is *this codebase*.)
 2. **JAX → ONNX is fragile.** Our web lane is `onnxruntime-web`. There is no first-class JAX→ONNX
@@ -73,7 +73,7 @@ repo and ported, method-by-method, into DeepXDE. See §6.
 
 ## 2. Install (verified)
 
-Verified against the repository README (mid-2026). jaxpi is **not on PyPI** — install from source.
+Verified against the repository README (mid-2026). jaxpi is **not on PyPI**, install from source.
 
 ```bash
 # 0. Use an isolated environment (CAOS rule: never global). A separate venv is recommended
@@ -115,7 +115,7 @@ git clone -b pirate https://github.com/PredictiveIntelligenceLab/jaxpi.git jaxpi
 > If you have no NVIDIA GPU: JAX will fall back to CPU, but the examples are tuned for GPU batch sizes
 > (`batch_size_per_device: 4096`) and `pmap`; expect to drop batch size and step counts heavily. For
 > PINN-Lab we do **not** depend on jaxpi at runtime, so this is only a concern when *studying* an example
-> locally — and even then, reading the config + `models.py` is usually enough to port the technique.
+> locally, and even then, reading the config + `models.py` is usually enough to port the technique.
 
 ---
 
@@ -181,13 +181,13 @@ Mapping each config knob to the dossier §4 method (this is the table to copy wh
 
 | Config field | Technique (dossier §4) | Canonical reference |
 |---|---|---|
-| `arch.arch_name = "ModifiedMlp"` | **Modified-MLP** (U/V gating streams) | Wang, Teng & Perdikaris, SISC 2021 — [arXiv:2001.04536](https://arxiv.org/abs/2001.04536) |
+| `arch.arch_name = "ModifiedMlp"` | **Modified-MLP** (U/V gating streams) | Wang, Teng & Perdikaris, SISC 2021, [arXiv:2001.04536](https://arxiv.org/abs/2001.04536) |
 | `arch.arch_name = "PirateNet"` | **PirateNets** (adaptive residual blocks + LS last-layer init) | [arXiv:2402.00326](https://arxiv.org/abs/2402.00326) |
-| `arch.fourier_emb` | **Random Fourier features** (spectral-bias remedy) | Wang, Wang & Perdikaris, CMAME 2021 — [arXiv:2012.10047](https://arxiv.org/abs/2012.10047); Tancik et al. [arXiv:2006.10739](https://arxiv.org/abs/2006.10739) |
-| `arch.reparam = {"type":"weight_fact",…}` | **Random weight factorization** (`w = exp(s)·v`) | Wang, Perdikaris et al. — [arXiv:2210.01274](https://arxiv.org/abs/2210.01274) |
-| `weighting.scheme = "ntk"` | **NTK loss weighting** | Wang, Yu & Perdikaris, JCP 2022 — [arXiv:2007.14527](https://arxiv.org/abs/2007.14527) |
-| `weighting.scheme = "grad_norm"` | **Gradient-pathology / grad-norm weighting** | Wang, Teng & Perdikaris, SISC 2021 — [arXiv:2001.04536](https://arxiv.org/abs/2001.04536) |
-| `weighting.use_causal = True` | **Causal training** (respect temporal causality) | Wang, Sankaran & Perdikaris, CMAME 2024 — [arXiv:2203.07404](https://arxiv.org/abs/2203.07404) |
+| `arch.fourier_emb` | **Random Fourier features** (spectral-bias remedy) | Wang, Wang & Perdikaris, CMAME 2021, [arXiv:2012.10047](https://arxiv.org/abs/2012.10047); Tancik et al. [arXiv:2006.10739](https://arxiv.org/abs/2006.10739) |
+| `arch.reparam = {"type":"weight_fact",…}` | **Random weight factorization** (`w = exp(s)·v`) | Wang, Perdikaris et al., [arXiv:2210.01274](https://arxiv.org/abs/2210.01274) |
+| `weighting.scheme = "ntk"` | **NTK loss weighting** | Wang, Yu & Perdikaris, JCP 2022, [arXiv:2007.14527](https://arxiv.org/abs/2007.14527) |
+| `weighting.scheme = "grad_norm"` | **Gradient-pathology / grad-norm weighting** | Wang, Teng & Perdikaris, SISC 2021, [arXiv:2001.04536](https://arxiv.org/abs/2001.04536) |
+| `weighting.use_causal = True` | **Causal training** (respect temporal causality) | Wang, Sankaran & Perdikaris, CMAME 2024, [arXiv:2203.07404](https://arxiv.org/abs/2203.07404) |
 | `optim.optimizer = "SOAP"` (alignment branch) | **SOAP / gradient alignment** (2nd-order) | [arXiv:2502.00604](https://arxiv.org/abs/2502.00604) |
 
 ### CLI surface
@@ -201,7 +201,7 @@ python3 main.py --config.training.batch_size_per_device=2048    # override any n
 CUDA_VISIBLE_DEVICES=0,1 python3 main.py       # multi-GPU data-parallel training
 ```
 
-Any `config.<a>.<b>` field can be overridden on the command line — this is how the `default` vs `sota`
+Any `config.<a>.<b>` field can be overridden on the command line, this is how the `default` vs `sota`
 ablations are run.
 
 ---
@@ -225,7 +225,7 @@ cd examples/burgers
 python3 main.py --config=configs/sota.py \
     --config.training.max_steps=20000          # shorten for a quick look
 
-# 4. evaluate (single-GPU) — reads the checkpoint, reports relative-L2 vs the reference solution
+# 4. evaluate (single-GPU): reads the checkpoint, reports relative-L2 vs the reference solution
 python3 main.py --config=configs/sota.py --config.mode=eval
 ```
 
@@ -233,10 +233,10 @@ What you are looking at, mapped to our purposes: `models.py` defines the Burgers
 $u_t + u\,u_x - \nu\,u_{xx} = 0$ and the loss terms; `configs/sota.py` turns on the modified-MLP +
 Fourier features + weight factorization + NTK (or grad-norm) weighting + causal training; `train.py`
 runs the weighted-residual loop with periodic weight updates. **This is exactly the recipe we want to
-reproduce in DeepXDE for `bench-burgers1d` — read these three files, copy the constants, do not vendor
+reproduce in DeepXDE for `bench-burgers1d`, read these three files, copy the constants, do not vendor
 the code.**
 
-A *conceptual* sketch of what the modified-MLP forward pass (the technique we port) computes — re-derived
+A *conceptual* sketch of what the modified-MLP forward pass (the technique we port) computes, re-derived
 from [arXiv:2001.04536](https://arxiv.org/abs/2001.04536), not copied from jaxpi:
 
 $$
@@ -270,7 +270,7 @@ trainability of the high-order derivatives the PDE residual needs.
   non-standard op silently drops or mis-converts. You cannot trust the artifact without a per-op parity
   check, which defeats the point.
 - **License.** Even if conversion worked, the [Penn license](https://github.com/PredictiveIntelligenceLab/jaxpi/blob/main/LICENSE)
-  forbids redistributing the software or modifications to third parties — and shipping a converted
+  forbids redistributing the software or modifications to third parties, and shipping a converted
   artifact derived from jaxpi code is a redistribution question we simply avoid by **re-implementing the
   technique** in DeepXDE/PyTorch and exporting *our own* net.
 
@@ -295,7 +295,7 @@ dossier §7).
 
 ## 6. Role in PINN-Lab (which cases / lane)
 
-**Lane:** *none of the three runtime lanes.* jaxpi is a **documentation + research lane** artifact — it
+**Lane:** *none of the three runtime lanes.* jaxpi is a **documentation + research lane** artifact, it
 informs the precompute lane's algorithms but is never imported by `pinnlab/` and never appears in any
 `requirements*.txt`. The shipping engine for these cases is **DeepXDE (PyTorch backend)**.
 
@@ -319,7 +319,7 @@ informs the precompute lane's algorithms but is never imported by `pinnlab/` and
    not the file.
 3. **Do not attempt JAX→ONNX for a shipping case.** The web lane is DeepXDE→PyTorch→ONNX only.
 4. **When in doubt about a constant** (NTK update period, causal `tol`, Fourier `embed_scale`, weight-fact
-   `mean`/`stddev`), the config values in §3 are the authoritative numbers to match — they are the same
+   `mean`/`stddev`), the config values in §3 are the authoritative numbers to match, they are the same
    values the papers were validated with.
 
 ---
@@ -328,7 +328,7 @@ informs the precompute lane's algorithms but is never imported by `pinnlab/` and
 
 The dossier promised this page would carry the *which-technique-to-stack-and-why* checklist. This is the
 recipe distilled from [arXiv:2308.08468](https://arxiv.org/abs/2308.08468), in the order to apply it
-(stop early if the problem is easy — not every case needs every item):
+(stop early if the problem is easy, not every case needs every item):
 
 1. **Non-dimensionalize the PDE.** Rescale space, time, and the field so coefficients are O(1). This alone
    fixes most ill-conditioning; do it before reaching for any trick.
@@ -338,10 +338,10 @@ recipe distilled from [arXiv:2308.08468](https://arxiv.org/abs/2308.08468), in t
      over-fits noise, too small under-resolves) or **SIREN**.
 3. **Use a strong backbone.** Default to **modified-MLP**; for deep nets (>6 effective layers) use
    **PirateNets** (adaptive residual gate α init 0 + physics-informed least-squares last-layer init).
-4. **Add random weight factorization** (`w = exp(s)·v`, `mean=0.5, stddev=0.1`) — a cheap, almost-free
+4. **Add random weight factorization** (`w = exp(s)·v`, `mean=0.5, stddev=0.1`): a cheap, almost-free
    conditioning win that stacks with everything above.
 5. **Enforce exact constraints where you can.** Periodic BCs via the periodicity input transform; other
-   Dirichlet BCs via a hard-constraint output ansatz — removes a loss term and its weight.
+   Dirichlet BCs via a hard-constraint output ansatz, removes a loss term and its weight.
 6. **Balance the loss terms automatically.** Choose **NTK weighting** (principled, more expensive) or
    **grad-norm weighting** (cheaper, noisier); update the weights every ~1000 steps, not every step.
 7. **For any time-dependent PDE, turn on causal training** (`use_causal=True`, tune `causal_tol`/ε): later
@@ -349,8 +349,8 @@ recipe distilled from [arXiv:2308.08468](https://arxiv.org/abs/2308.08468), in t
    combine with curriculum / time-marching if a single window still fails.
 8. **Optimize in two phases.** Adam (with the decay schedule) for global exploration → high-accuracy
    refinement. The 2025 SOTA upgrade is **SOAP** (Shampoo-eigenbasis Adam) for implicit gradient
-   alignment — use it on the hard, multi-task-conflict cases (turbulence, lid-driven cavity).
-9. **Add residual-adaptive sampling (RAR/RAD) if the solution has sharp gradients/shocks** — orthogonal to
+   alignment, use it on the hard, multi-task-conflict cases (turbulence, lid-driven cavity).
+9. **Add residual-adaptive sampling (RAR/RAD) if the solution has sharp gradients/shocks**: orthogonal to
    all of the above; cheap, high-leverage.
 10. **Always validate against a reference** (analytic or FEM/FVM) and report relative-L2 honestly. A PINN
     that "looks right" but has 30% error is a failure; the benchmark table is the product.
@@ -385,5 +385,5 @@ get the order and the constants right; build and export with DeepXDE.
   <https://github.com/PredictiveIntelligenceLab/jaxpi/blob/main/LICENSE>
 
 *Built on the JAX scientific stack (JAX + Flax-style modules + Optax + `ml_collections`). In PINN-Lab,
-jaxpi is a technique donor only — its methods are ported to DeepXDE/PyTorch for the ONNX→onnxruntime-web
+jaxpi is a technique donor only, its methods are ported to DeepXDE/PyTorch for the ONNX→onnxruntime-web
 lane; jaxpi itself is never a dependency.*

@@ -1,11 +1,11 @@
 """A compact, self-contained 2D Fourier Neural Operator (Li et al., 2021) for the operator-learning case.
 
 The spectral convolution is implemented in REAL arithmetic (split real/imag, real learnable weights for each part)
-so the whole network exports cleanly to ONNX (opset 18, dynamo) — `torch.complex` + `irfft2` round-trips, and the
+so the whole network exports cleanly to ONNX (opset 18, dynamo), `torch.complex` + `irfft2` round-trips, and the
 complex-weight multiply is a pair of real `einsum`s. The lift/projection are 1x1 convolutions (NOT Linear-on-permuted)
 so the ONNX has no shape-baked reshape and accepts any batch. neuraloperator is the reference library; this minimal,
 controlled implementation is the genuine method (Fourier layers = spectral conv + 1x1 skip), kept dependency-free and
-ONNX-exportable. NEVER import this in the live/Pyodide lane — it is a heavy offline engine.
+ONNX-exportable. NEVER import this in the live/Pyodide lane, it is a heavy offline engine.
 """
 from __future__ import annotations
 

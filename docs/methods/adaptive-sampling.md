@@ -1,6 +1,6 @@
 # Adaptive sampling (RAR / RAR-G / RAR-D / RAD)
 
-> Method group **A — Adaptive sampling** in the PINN-Lab SOTA catalogue.
+> Method group **A, Adaptive sampling** in the PINN-Lab SOTA catalogue.
 > Residual-based adaptive refinement and distribution: *put collocation points where the PDE residual is large.*
 
 ## What it is
@@ -8,7 +8,7 @@
 A physics-informed neural network (PINN) minimises the PDE residual on a finite set
 of **collocation points** sampled inside the domain. The quality of the solution is bounded
 by *where* those points sit: a uniform (or Latin-hypercube / Sobol / Halton) sample wastes
-capacity on smooth regions and starves sharp features — shocks, interfaces, boundary layers —
+capacity on smooth regions and starves sharp features, shocks, interfaces, boundary layers, 
 exactly where the residual is worst and the solution most interesting. **Adaptive sampling**
 closes that gap by moving or adding collocation points toward high-residual regions *during*
 training, using the network's own residual field as the error indicator.
@@ -24,7 +24,7 @@ across 6000+ runs and introduced the **RAD** and **RAR-D** distribution-based me
 
 ### The four members of the family
 
-All four share one error indicator — the absolute PDE residual at a point. Let the PINN
+All four share one error indicator, the absolute PDE residual at a point. Let the PINN
 solution be $\hat{u}_\theta$ and the differential operator $\mathcal{F}$, so the residual on
 the interior is
 
@@ -39,7 +39,7 @@ into a new point set.
 
 ---
 
-### 1. RAR-G — Residual-based Adaptive Refinement, Greedy
+### 1. RAR-G: Residual-based Adaptive Refinement, Greedy
 
 The original RAR. At each refinement step, evaluate the residual on a large pool of fresh
 candidate points $\mathcal{S}$, then **greedily add the $m$ points of highest residual** to the
@@ -58,15 +58,15 @@ a stationary sharp feature (a fixed shock) but can over-concentrate and leave th
 domain under-sampled as the set grows.
 
 - **Canonical reference:** Lu, Meng, Mao & Karniadakis, *DeepXDE: A Deep Learning Library for
-  Solving Differential Equations*, SIAM Review 63(1), 2021 — [DOI:10.1137/19M1274067](https://doi.org/10.1137/19M1274067),
+  Solving Differential Equations*, SIAM Review 63(1), 2021, [DOI:10.1137/19M1274067](https://doi.org/10.1137/19M1274067),
   [arXiv:1907.04502](https://arxiv.org/abs/1907.04502).
-- **Framework:** **DeepXDE** — first-class via `data.add_anchors(...)` in a manual loop (see API below).
+- **Framework:** **DeepXDE**: first-class via `data.add_anchors(...)` in a manual loop (see API below).
 - **PINN-Lab case:** `bench-burgers1d` (shock formation) and `mine-thickener-settling`
   (sharp settling front) per the coverage map.
 
 ---
 
-### 2. RAR-D — Residual-based Adaptive Refinement with Distribution
+### 2. RAR-D: Residual-based Adaptive Refinement with Distribution
 
 Introduced by Wu et al. (2023). Instead of greedily picking the top-$m$ residual points,
 RAR-D **adds** a batch of new points *sampled from* a probability density proportional to a
@@ -82,7 +82,7 @@ p_\theta(\mathbf{x}) \;\propto\; \frac{\varepsilon^{k}(\mathbf{x})}{\mathbb{E}\!
 $$
 
 - **Canonical reference:** Wu, Zhu, Tan, Kartha & Lu, *A comprehensive study of non-adaptive and
-  residual-based adaptive sampling for physics-informed neural networks*, CMAME 403:115671, 2023 —
+  residual-based adaptive sampling for physics-informed neural networks*, CMAME 403:115671, 2023, 
   [DOI:10.1016/j.cma.2022.115671](https://doi.org/10.1016/j.cma.2022.115671),
   [arXiv:2207.10289](https://arxiv.org/abs/2207.10289).
 - **Framework:** **DeepXDE** (`add_anchors` with residual-weighted sampling; the reference
@@ -91,7 +91,7 @@ $$
 
 ---
 
-### 3. RAD — Residual-based Adaptive Distribution
+### 3. RAD: Residual-based Adaptive Distribution
 
 The headline method of Wu et al. (2023), and the strongest general default of the family. RAD
 **resamples the entire collocation set** at each step (it does *not* accumulate) by drawing
@@ -117,7 +117,7 @@ it tracks features that *move* during training (e.g. a forming shock, a propagat
 better than the accumulating refinement variants, and in the paper it gives the best accuracy /
 point-budget trade-off overall.
 
-- **Canonical reference:** Wu, Zhu, Tan, Kartha & Lu, CMAME 403:115671, 2023 —
+- **Canonical reference:** Wu, Zhu, Tan, Kartha & Lu, CMAME 403:115671, 2023, 
   [DOI:10.1016/j.cma.2022.115671](https://doi.org/10.1016/j.cma.2022.115671),
   [arXiv:2207.10289](https://arxiv.org/abs/2207.10289).
 - **Framework:** **DeepXDE** (full resample from the residual density; reference code with the paper).
@@ -157,12 +157,12 @@ which all three are measured in the paper.)
 - **Tight point budgets.** When each collocation point is expensive (high-order derivatives,
   large nets), spending points where they reduce error most is strictly better than spreading
   them uniformly.
-- **As a free add-on.** It composes with everything else in PINN-Lab — loss weighting (NTK,
+- **As a free add-on.** It composes with everything else in PINN-Lab: loss weighting (NTK,
   grad-norm), causal training, hard constraints, Fourier features. Reach for it first on any
   case whose Benchmark page shows error localised at a feature.
 
 **When *not* to bother:** smooth, low-frequency solutions (e.g. `bench-poisson2d` with a smooth
-source) gain little — the residual is roughly uniform, so $p_\theta(\mathbf{x})$ is roughly
+source) gain little, the residual is roughly uniform, so $p_\theta(\mathbf{x})$ is roughly
 uniform and adaptive sampling reduces to the baseline. Use it where the residual field is
 *peaked*, not where it is flat.
 
@@ -176,17 +176,17 @@ uniform and adaptive sampling reduces to the baseline. Use it where the residual
   though still cheap relative to training.
 - **Hyperparameter sensitivity.** $k$ and $c$ are problem-dependent. $k=c=1$ is the robust
   default, but a poor choice (e.g. large $k$, $c=0$) can over-concentrate, starve the rest of the
-  domain, and destabilise training — the same failure mode as naive greedy RAR-G.
+  domain, and destabilise training, the same failure mode as naive greedy RAR-G.
 - **It fixes sampling, not optimisation.** Adaptive sampling cannot rescue a problem whose
   *loss landscape* is ill-conditioned (stiff Allen–Cahn, advection-dominated transport). Those
   need causal/curriculum training (group B) and better architectures (group D) on top; the
   paper itself stacks RAD with those, it does not replace them. The residual indicator is also a
-  proxy — a low residual does **not** guarantee a low solution error, so an honest Benchmark
+  proxy, a low residual does **not** guarantee a low solution error, so an honest Benchmark
   page must still compare against an analytic / numerical reference, not just report the residual.
 - **Resampling vs. refinement trade-off.** RAD's full resample tracks moving features but
   discards converged points each step (relying on the $c$ floor to retain them); RAR-G/RAR-D
   accumulate and never forget but can over-grow and over-concentrate. There is no universally
-  best member — the paper's verdict is "RAD is the best general default", not "RAD always wins".
+  best member, the paper's verdict is "RAD is the best general default", not "RAD always wins".
 - **Greedy ≠ exploration.** Pure RAR-G is deterministic and can repeatedly target the same
   maximum, missing secondary features. The distribution methods exist precisely to fix this.
 
@@ -205,19 +205,19 @@ the collocation set; RAD/RAR-D wrap that with the residual-weighted draw from $p
 |---|---|---|
 | `bench-burgers1d` | viscous shock at $x=0$ | RAR-G / RAR-D (the canonical RAR demo) |
 | `bench-allencahn` | thin moving diffuse interface | RAD (full resample tracks the front) |
-| `mine-thickener-settling` 🟠 | sharp Kynch settling front | RAR (front localisation) |
+| `mine-thickener-settling` (in progress) | sharp Kynch settling front | RAR (front localisation) |
 
 **Pipeline stage.** It lives in the **`feature_extraction` → `train`** stages of
 `pinnlab/stages/`: collocation sampling is part of feature extraction, and the refinement loop
-runs inside training. The resulting fitted PINN is exported to ONNX exactly as any other case —
+runs inside training. The resulting fitted PINN is exported to ONNX exactly as any other case, 
 adaptive sampling changes *only* the training point set, never the exported network, so the
 train→ONNX→onnxruntime-web contract is unaffected.
 
 **Documentation honesty.** Because the residual is a proxy for error, the per-case Benchmark
 page must report relative-$L^2$ against the analytic/numerical reference
-(`burgers_shock.mat` / `AC.mat`, Raissi's MIT-licensed Chebfun spectral solutions — a
+(`burgers_shock.mat` / `AC.mat`, Raissi's MIT-licensed Chebfun spectral solutions, a
 **numerical reference, not real data**), and show the point-budget vs. error curve that adaptive
-sampling improves — not the residual alone.
+sampling improves, not the residual alone.
 
 ### Minimal DeepXDE RAR loop (verified API)
 
@@ -265,13 +265,13 @@ implementations of RAD and RAR-D are published with [Wu et al. 2023](https://git
    residual-based adaptive sampling for physics-informed neural networks.* Computer Methods in
    Applied Mechanics and Engineering (CMAME) **403**, 115671, 2023.
    [DOI:10.1016/j.cma.2022.115671](https://doi.org/10.1016/j.cma.2022.115671) ·
-   [arXiv:2207.10289](https://arxiv.org/abs/2207.10289). — *RAD, RAR-D; the $p(\mathbf{x})$ density;
+   [arXiv:2207.10289](https://arxiv.org/abs/2207.10289)., *RAD, RAR-D; the $p(\mathbf{x})$ density;
    $k=c=1$ default; the 10-method / 6000-run benchmark.*
 2. **L. Lu, X. Meng, Z. Mao, G. E. Karniadakis.** *DeepXDE: A Deep Learning Library for Solving
    Differential Equations.* SIAM Review **63**(1):208–228, 2021.
    [DOI:10.1137/19M1274067](https://doi.org/10.1137/19M1274067) ·
-   [arXiv:1907.04502](https://arxiv.org/abs/1907.04502). — *original RAR (RAR-G) and the
+   [arXiv:1907.04502](https://arxiv.org/abs/1907.04502)., *original RAR (RAR-G) and the
    `add_anchors` API.*
-3. **DeepXDE documentation** — Burgers equation with residual-based adaptive refinement:
+3. **DeepXDE documentation**: Burgers equation with residual-based adaptive refinement:
    [deepxde.readthedocs.io/.../burgers.rar.html](https://deepxde.readthedocs.io/en/latest/demos/pinn_forward/burgers.rar.html).
-   — *the verified `model.predict(operator=pde)` + `data.add_anchors` loop.*
+  , *the verified `model.predict(operator=pde)` + `data.add_anchors` loop.*

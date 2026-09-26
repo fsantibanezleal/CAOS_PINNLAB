@@ -1,4 +1,4 @@
-# env-aquifer-test — Pumping test: recover a confined aquifer's T and S
+# env-aquifer-test: Pumping test: recover a confined aquifer's T and S
 
 **Method:** `inverse-aquifer-test` (Cooper-Jacob) · **Engine:** `analytic-cooper-jacob` ·
 **Category:** pollution-environmental · **Label:** synthetic-illustrative · **Lane:** precompute

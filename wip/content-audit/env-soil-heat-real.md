@@ -1,4 +1,4 @@
-# Content audit — env-soil-heat-real (in-app vs authoritative doc)
+# Content audit: env-soil-heat-real (in-app vs authoritative doc)
 
 Audited: 2026-07-15
 Authoritative doc: `docs/cases/env-soil-heat-real.md`
@@ -10,7 +10,7 @@ In-app files:
 
 ## Verdict
 
-**Coherent and genuinely deep, with real (not hollow) content — but it omits several distinctive
+**Coherent and genuinely deep, with real (not hollow) content, but it omits several distinctive
 measured facts from the flagship's own doc, and carries two minor numeric nits.** Severity 2 (real
 gaps, no hollow content, no substantive contradiction).
 
@@ -34,7 +34,7 @@ their omission is the main finding.
 
 ## Contradictions / coherence nits (inApp vs docSays)
 
-1. **Per-depth held-out RMSE — app aligns with only one of the doc's two conflicting lines.**
+1. **Per-depth held-out RMSE: app aligns with only one of the doc's two conflicting lines.**
    - inApp (`results.ts` `verdict_en`/`verdict_es`, and `SoilHeatRealContext` states "~1 degC"):
      `reconstructed to ~1.0 degC (1.24/1.05/0.75)`.
    - docSays: the **Result table** (the headline "measured, seed 42" block) lists
@@ -104,7 +104,7 @@ selling point of the flagship. Minor (arguably belongs more in the doc than the 
 
 ## Concrete proposed enrichments (grounded in doc quotes)
 
-E1 (addresses G1) — add the measured amplitudes to the Context "What the benchmark shows" paragraph.
+E1 (addresses G1), add the measured amplitudes to the Context "What the benchmark shows" paragraph.
 File: `frontend/src/content/cases/SoilHeatRealContext.tsx` (both EN and ES branches).
 Append after the damped/phase-lagged sentence, EN:
 > "The measured signal is textbook: the 5 cm sensor swings across roughly 30 degC over the year
@@ -113,21 +113,21 @@ Append after the damped/phase-lagged sentence, EN:
 > alpha has to explain."
 ES mirror with the same numbers.
 
-E2 (addresses G2) — state the relative-L2 alongside the RMSE.
+E2 (addresses G2), state the relative-L2 alongside the RMSE.
 File: `frontend/src/content/results.ts`, `env-soil-heat-real.verdict_en`/`verdict_es`.
 Change the metric clause to include the doc's headline number, e.g. append:
 > "...reconstructed to ~1.0 degC (1.24/1.05/0.75), a 6.9% relative-L2 against the real interior
 > temperatures."
 Grounded in doc: `held-out relative-L2 vs REAL temps = 6.9%`.
 
-E3 (addresses G3) — add the error-pattern reasoning to the results verdict.
+E3 (addresses G3), add the error-pattern reasoning to the results verdict.
 File: `frontend/src/content/results.ts`, `env-soil-heat-real.verdict_en`/`verdict_es`.
 Append one sentence, EN:
 > "The error is largest at 10 cm (nearest the noisy near-surface boundary) and smallest at 50 cm
 > (deepest and smoothest): physically exactly what you expect, which is itself a check on the fit."
 Verbatim-grounded in the doc's Result prose.
 
-E4 (addresses G4) — add the near-surface-noise honesty caveat to the Context scope block.
+E4 (addresses G4), add the near-surface-noise honesty caveat to the Context scope block.
 File: `frontend/src/content/cases/SoilHeatRealContext.tsx`, "Scope & assumptions" paragraph (EN + ES).
 Add, EN:
 > "One honest residual is reported, not hidden: the 5 cm boundary carries synoptic weather noise that
@@ -135,19 +135,19 @@ Add, EN:
 > not contaminate the held-out interior score, which is what the case is judged on."
 Grounded verbatim in the doc's Honesty section.
 
-E5 (addresses G5) — sharpen the band-check framing in the Context "What the benchmark shows"
+E5 (addresses G5), sharpen the band-check framing in the Context "What the benchmark shows"
 paragraph. File: `SoilHeatRealContext.tsx` (EN + ES). Add:
 > "That the recovered alpha lands inside the textbook range for moist mineral soil is the independent
 > sanity check that the inverse found physics, not a curve fit."
 Grounded verbatim in the doc.
 
-E6 (addresses G6, optional) — add one clause on provenance to the Context "Components & variables" or
+E6 (addresses G6, optional), add one clause on provenance to the Context "Components & variables" or
 "The problem" paragraph. File: `SoilHeatRealContext.tsx`. E.g.:
 > "The data is vendored once from NOAA's open archive and used offline (schema
 > pinnlab.dataset.uscrn/v1; 0% missing in 2021), so training is reproducible and CI needs no network."
 Grounded in the doc's "The data (real, vendored, reproducible)" section.
 
-R1 (addresses the two nits) — reconcile numbers across all four surfaces and the doc:
+R1 (addresses the two nits), reconcile numbers across all four surfaces and the doc:
 - Decide the true baked per-depth RMSE (1.24/1.05 vs 1.26/1.06) and make the doc's Result table and
   Validation section identical, then set `results.ts` to match.
 - Decide 0.30 vs 0.304 for alpha; use one value consistently in `results.ts`, `constraints.ts`, the

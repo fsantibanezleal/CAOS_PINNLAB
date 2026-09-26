@@ -1,4 +1,4 @@
-# bench-darcy-superres — Zero-shot super-resolution: one operator, any grid
+# bench-darcy-superres: Zero-shot super-resolution: one operator, any grid
 
 **Method:** `operator-superres` · **Engine:** `fno-torch` · **Category:** canonical-benchmark ·
 **Label:** synthetic · **Lane:** precompute
@@ -17,7 +17,7 @@ to an input sampled at any resolution: the FFT and its inverse adapt to the grid
 CNN, whose filters are local in pixels, cannot even be evaluated off its training grid without changing
 architecture.
 
-Reference: Li et al., *Fourier Neural Operator for Parametric PDEs*, arXiv:2010.08895 (ICLR 2021) — "the first
+Reference: Li et al., *Fourier Neural Operator for Parametric PDEs*, arXiv:2010.08895 (ICLR 2021), "the first
 ML-based method to successfully model turbulent flows with zero-shot super-resolution."
 
 ## Results (measured, trained only at 32x32)

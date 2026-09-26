@@ -1,5 +1,5 @@
 """The measured lane GATE (ADR-0054, PINN-Lab variant): a case is LIVE iff its ONNX is small, its ort-web-proxy
-inference is fast, and its replay artifact is small — otherwise PRECOMPUTE. Pure logic; no training required."""
+inference is fast, and its replay artifact is small, otherwise PRECOMPUTE. Pure logic; no training required."""
 from pinnlab.core.gate import INFER_MS_GATE, ONNX_BYTES_GATE, TRACE_BYTES_GATE, classify_lane
 
 

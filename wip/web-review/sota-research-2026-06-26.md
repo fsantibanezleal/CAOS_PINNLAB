@@ -1,4 +1,4 @@
-# SOTA + beyond-SOTA research (deep-research workflow, verified) — 2026-06-26
+# SOTA + beyond-SOTA research (deep-research workflow, verified): 2026-06-26
 
 Source: deep-research harness (117 agents, 21 adversarially-verified claims). Transcribe into Methodology/Benchmark/Experiments; keep the HONEST LIMITs.
 

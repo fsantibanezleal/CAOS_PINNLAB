@@ -1,9 +1,9 @@
-"""Group C · pollution-environmental (mining ∩ pollution) — tailings-dam unsaturated seepage (Richards equation),
+"""Group C · pollution-environmental (mining ∩ pollution), tailings-dam unsaturated seepage (Richards equation),
 PARAMETRIC in the Gardner sorptive number alpha.
 
 1D vertical unsaturated seepage through a tailings deposit (z up, psi = pressure head < 0 unsaturated, t = time):
     C(psi) psi_t = d/dz[ K(psi) (psi_z + 1) ]  =>  C psi_t - K psi_zz - K'(psi)(psi_z^2 + psi_z) = 0   (source-free).
-Constitutive closure — GARDNER exponential model:
+Constitutive closure, GARDNER exponential model:
     K(psi) = Ks exp(alpha psi),   K'(psi) = alpha K,   theta(psi)=theta_r+(theta_s-theta_r)exp(alpha psi),
     C(psi) = dtheta/dpsi = (theta_s-theta_r) alpha exp(alpha psi).
 
@@ -12,7 +12,7 @@ advection-diffusion in m, which admits a clean separable exact solution whose ps
 (unlike a manufactured source, which would absorb all alpha-dependence and make the Live slider cosmetic):
     psi*(z,t;alpha) = (1/alpha) ln( M0 + A exp(-lam(alpha) t) exp(-kappa z) ),
     lam(alpha) = (Ks/(theta_s-theta_r)) * kappa * (alpha-kappa)/alpha   (dispersion relation -> exact, source-free).
-With M0+A<1 and M0>0 the argument m stays in (0,1) so psi<0 strictly (always unsaturated — the physical invariant).
+With M0+A<1 and M0>0 the argument m stays in (0,1) so psi<0 strictly (always unsaturated, the physical invariant).
 alpha is a NETWORK INPUT: one trained net covers the whole sorptive-number family; the web `Live` tab sweeps alpha
 (suction depth roughly doubles across the range). real_or_synthetic = synthetic-illustrative: the Gardner closure is
 standard, the field is an exact illustration, NOT calibrated to a real deposit (no open unsaturated psi(z,t) dataset).
@@ -74,12 +74,12 @@ def analytic(zta: np.ndarray) -> np.ndarray:
 
 def variants() -> list[Variant]:
     presets = [
-        ("a100", 1.0, "Broad pore-size (α=1.0) — deepest, most stratified suction.", "Poros amplios (α=1.0) — succión más profunda y estratificada."),
-        ("a130", 1.3, "α=1.3 — strong suction gradient.", "α=1.3 — fuerte gradiente de succión."),
-        ("a160", 1.6, "α=1.6 — moderate Gardner sorptivity.", "α=1.6 — sortividad Gardner moderada."),
-        ("a190", 1.9, "α=1.9 — shallower profile, faster drying.", "α=1.9 — perfil menos profundo, secado más rápido."),
-        ("a220", 2.2, "α=2.2 — weak suction, near-saturated top.", "α=2.2 — succión débil, tope casi saturado."),
-        ("a250", 2.5, "Fine pore-size (α=2.5) — shallowest suction.", "Poros finos (α=2.5) — succión más somera."),
+        ("a100", 1.0, "Broad pore-size (α=1.0), deepest, most stratified suction.", "Poros amplios (α=1.0), succión más profunda y estratificada."),
+        ("a130", 1.3, "α=1.3, strong suction gradient.", "α=1.3, fuerte gradiente de succión."),
+        ("a160", 1.6, "α=1.6, moderate Gardner sorptivity.", "α=1.6, sortividad Gardner moderada."),
+        ("a190", 1.9, "α=1.9, shallower profile, faster drying.", "α=1.9, perfil menos profundo, secado más rápido."),
+        ("a220", 2.2, "α=2.2, weak suction, near-saturated top.", "α=2.2, succión débil, tope casi saturado."),
+        ("a250", 2.5, "Fine pore-size (α=2.5), shallowest suction.", "Poros finos (α=2.5), succión más somera."),
     ]
     return [Variant(vid, f"α={a:g}", f"α={a:g}", {"alpha": a}, en, es) for vid, a, en, es in presets]
 

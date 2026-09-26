@@ -1,6 +1,6 @@
 """LIVE-lane note (PINN-Lab): the interactive live lane is **onnxruntime-web evaluating the exported `.onnx` in the
-BROWSER** (see frontend/src/engine/) — NOT Pyodide running DeepXDE. This module provides only a Pyodide-safe ANALYTIC
-fallback: for cases with a closed-form reference it renders the exact field without any engine — used as a teaching
+BROWSER** (see frontend/src/engine/), NOT Pyodide running DeepXDE. This module provides only a Pyodide-safe ANALYTIC
+fallback: for cases with a closed-form reference it renders the exact field without any engine, used as a teaching
 overlay ("show the exact solution") and an offline sanity check. It imports ONLY the numpy core (no torch/deepxde)."""
 from __future__ import annotations
 

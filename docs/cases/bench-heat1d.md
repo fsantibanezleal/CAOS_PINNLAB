@@ -1,4 +1,4 @@
-# bench-heat1d — 1D transient heat/diffusion, parametric diffusivity (time-dependent hard constraints)
+# bench-heat1d: 1D transient heat/diffusion, parametric diffusivity (time-dependent hard constraints)
 
 The catalogue's cleanest **time-dependent** PINN, as a **parametric family**: the thermal diffusivity $\alpha$ is a
 network input, so one trained net + one ONNX covers the whole diffusivity family and the web **Live** tab sweeps how
@@ -10,14 +10,14 @@ The 1D heat (diffusion) equation with an initial sine profile and homogeneous Di
 
 $$ \partial_t u = \alpha\,\partial_{xx} u \ \text{on}\ (0,1)\times(0,1],\qquad u(x,0)=\sin(\pi x),\ u(0,t)=u(1,t)=0. $$
 
-For the fundamental mode this has a closed-form solution, valid for **any** $\alpha$ — the validation anchor:
+For the fundamental mode this has a closed-form solution, valid for **any** $\alpha$, the validation anchor:
 
 $$ u^*(x,t;\alpha) = e^{-\alpha\pi^2 t}\,\sin(\pi x). $$
 
 The **diffusivity** $\alpha\in[0.1,1.0]$ is the swept knob: small $\alpha$ barely decays over the window, large $\alpha$
 collapses the sine to near zero by $t=1$. Domain $x\in[0,1]$, $t\in[0,1]$ ($161\times101$ field grid).
 
-## Method — time-dependent **hard constraints**
+## Method: time-dependent **hard constraints**
 
 The IC and both BCs are imposed exactly by an output transform on the raw network $\mathcal{N}(x,t,\alpha)$:
 
@@ -38,13 +38,13 @@ Validation anchor: the **closed-form** $u^*(x,t;\alpha)$ (any $\alpha$). Six var
 | ONNX parity (max abs) | ~5e-7 |
 | lane | **live** (one shared ONNX; Live sweeps $\alpha$) |
 
-Excellent accuracy across the whole diffusivity range — hard constraints remove the IC/BC loss-balancing problem,
+Excellent accuracy across the whole diffusivity range, hard constraints remove the IC/BC loss-balancing problem,
 leaving a single well-conditioned residual.
 
 ## Honesty
 
 `real_or_synthetic = synthetic`. The truth is the closed-form separable solution (exact for every $\alpha$), not a
-measured dataset — a textbook benchmark chosen to validate the method. The network only ever sees the PDE residual; the
+measured dataset, a textbook benchmark chosen to validate the method. The network only ever sees the PDE residual; the
 IC/BC are construction-enforced.
 
 ## Reproduce

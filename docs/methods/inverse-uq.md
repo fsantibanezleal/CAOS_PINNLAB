@@ -1,6 +1,6 @@
 # Inverse problems & uncertainty quantification
 
-> **Method group `inverse-uq`** — recovering unknown coefficients, fields and sources from
+> **Method group `inverse-uq`**, recovering unknown coefficients, fields and sources from
 > sparse/noisy data, and attaching honest error bars to the answer.
 > First exercised in: `poll-air-source-inv` (real OpenAQ data), `poll-groundwater-rt`,
 > `ind-heat2d-inverse`, `poll-source-uq-bpinn`.
@@ -9,7 +9,7 @@
 
 ## What this group is, and why PINNs shine here
 
-A *forward* PDE problem is "I know the equation, coefficients, sources and boundary conditions —
+A *forward* PDE problem is "I know the equation, coefficients, sources and boundary conditions, 
 give me the field." An *inverse* problem is the opposite and far more useful in practice: "I have a
 handful of noisy sensor readings; tell me the coefficient / source / boundary I cannot measure
 directly." Examples in PINN-Lab: where is the pollutant being emitted (`poll-air-source-inv`), what
@@ -19,7 +19,7 @@ unknown thermal conductivity field of a part (`ind-heat2d-inverse`).
 Inverse problems are **ill-posed**: many parameter fields explain the same sparse data, and small
 data perturbations cause large parameter swings. The classical remedy is to add a regulariser. A
 PINN's regulariser *is the physics*. By forcing the network to satisfy the governing PDE at every
-collocation point in the domain — not just where sensors sit — the PDE residual fills in the
+collocation point in the domain, not just where sensors sit, the PDE residual fills in the
 enormous gaps between measurements with physically admissible behaviour. This is exactly where PINNs
 beat classical numerics, which they do **not** beat on raw forward-solve speed (a good FEM/FVM solver
 is usually faster and more accurate for a single well-posed forward problem; the ocean-transport case
@@ -27,11 +27,11 @@ in this repo records ~1168 s PINN training vs ~0.26 s for an FDM forward solve).
 sparse-data assimilation the calculus flips: the same mesh-free, differentiable, PDE-constrained
 machinery that is *overhead* on a forward solve becomes the *whole point*. The seminal demonstration
 is Hidden Fluid Mechanics (Raissi, Yazdani & Karniadakis, *Science* 2020), which recovered full
-velocity and pressure fields from nothing but snapshots of a passive dye concentration — quantities
+velocity and pressure fields from nothing but snapshots of a passive dye concentration, quantities
 never directly observed, reconstructed because the Navier–Stokes residual tied them to what *was*
 observed.
 
-But a point estimate of a hidden coefficient is dangerous without an error bar — an under-determined
+But a point estimate of a hidden coefficient is dangerous without an error bar, an under-determined
 inverse problem that reports a single confident number is lying by omission. Hence the second half of
 this group: **uncertainty quantification (UQ)**. Vanilla (deterministic) PINNs are known to be badly
 *overconfident* / under-covering on inverse problems (Psaros et al. 2023). The four methods below
@@ -109,8 +109,8 @@ data. The PDE residual and the noisy observations together define a likelihood; 
 regularises. Prediction becomes a *posterior predictive distribution*, so every output carries a
 credible interval. B-PINN is the most principled UQ option here and the only one that propagates both
 *aleatoric* (data-noise) and *epistemic* (model/weight) uncertainty in one consistent framework. Two
-posterior estimators are offered in the original paper: **Hamiltonian Monte Carlo (HMC)** — more
-reliable, the recommended default, but expensive — and **variational inference (VI)** — cheaper but
+posterior estimators are offered in the original paper: **Hamiltonian Monte Carlo (HMC)**, more
+reliable, the recommended default, but expensive, and **variational inference (VI)**, cheaper but
 can underestimate variance.
 
 **Key equation.** By Bayes' rule, the posterior over weights and parameters given data $\mathcal{D}$
@@ -138,11 +138,11 @@ Networks for Forward and Inverse PDE Problems with Noisy Data*, J. Comput. Phys.
 109913, arXiv:[2003.06097](https://arxiv.org/abs/2003.06097),
 DOI [10.1016/j.jcp.2020.109913](https://doi.org/10.1016/j.jcp.2020.109913).
 
-**Framework / API.** **NeuralUQ** (Crunch-UQ4MI — the companion library to the UQ review, implements
+**Framework / API.** **NeuralUQ** (Crunch-UQ4MI, the companion library to the UQ review, implements
 B-PINN/HMC/VI; SIAM/ASA J. UQ, DOI [10.1137/22M1518189](https://doi.org/10.1137/22M1518189)) is the
 reference UQ engine; **NeuralPDE.jl** also ships a native BPINN solver (no ONNX→web path, so docs-only
 here). For the PINN-Lab pipeline, the HMC sampling runs offline; only the *posterior predictive mean
-field* (and optionally a baked variance field) is exported to the web lane — sampling itself never
+field* (and optionally a baked variance field) is exported to the web lane, sampling itself never
 runs client-side.
 
 **PINN-Lab case.** `poll-source-uq-bpinn` (Bayesian source identification with credible intervals;
@@ -157,7 +157,7 @@ different random initialisations (and optionally different collocation samples),
 of their predictions as the uncertainty. No sampler, no Bayesian machinery; each member is an ordinary
 deterministic inverse PINN. It captures epistemic uncertainty arising from optimisation
 non-uniqueness and is trivially parallel. **Honest limitation:** ensembles of PINNs can be *jointly
-overconfident* — the members are pulled toward the same PDE-satisfying solutions and so agree even
+overconfident*, the members are pulled toward the same PDE-satisfying solutions and so agree even
 where the data does not constrain the answer, under-covering the true uncertainty (documented in the
 Psaros et al. review). Repulsive-ensemble and evidential variants partly address this by explicitly
 diversifying members.
@@ -179,7 +179,7 @@ Uncertainty Estimation using Deep Ensembles*, NeurIPS 2017, arXiv:[1612.01474](h
 (the ensembles-as-UQ foundation); analysed in the PINN setting by Psaros et al. (see below). Repulsive
 ensembles for PINNs: arXiv:[2505.17308](https://arxiv.org/abs/2505.17308).
 
-**Framework / API.** Any engine — implemented as an outer loop over **DeepXDE** trainings with
+**Framework / API.** Any engine, implemented as an outer loop over **DeepXDE** trainings with
 distinct seeds; **NeuralUQ** also wraps ensembles as a first-class UQ method. Cheap to add to any
 inverse case already running on DeepXDE.
 
@@ -192,7 +192,7 @@ also the cheap UQ cross-check on `poll-air-source-inv`.
 
 **What it is.** A **gradient-free** Bayesian inference scheme for B-PINNs. Maintain an ensemble of
 parameter vectors (network weights + physical parameters) and iteratively nudge them toward the data
-using Kalman-style update steps driven only by the ensemble's empirical covariances — no
+using Kalman-style update steps driven only by the ensemble's empirical covariances, no
 back-propagation through the sampler. Its cost is *linear* in the number of unknown parameters, so it
 scales to large/overparameterised networks far better than HMC (whose per-sample cost and mixing
 degrade badly in high dimensions), while still delivering an approximate posterior (hence error bars),
@@ -209,7 +209,7 @@ u_{n+1}^{(j)} = u_n^{(j)} + C^{up}_n\big(C^{pp}_n+\Gamma\big)^{-1}\Big(y - \math
 $$
 
 where $C^{pp}_n$ is the empirical covariance of the predicted outputs $\{\mathcal{G}(u_n^{(j)})\}$ and
-$C^{up}_n$ the empirical cross-covariance between parameters and predictions across the ensemble — both
+$C^{up}_n$ the empirical cross-covariance between parameters and predictions across the ensemble, both
 estimated from the members, so no derivative of $\mathcal{G}$ is ever required.
 
 **Canonical reference.** Pensoneault & Zhu, *Efficient Bayesian Physics Informed Neural Networks for
@@ -230,7 +230,7 @@ against HMC on the same source-identification problem).
 
 ## Honest limitations of the whole group
 
-- **Inverse PINNs are still ill-posed.** The PDE prior reduces — does not remove — non-uniqueness. If
+- **Inverse PINNs are still ill-posed.** The PDE prior reduces: does not remove, non-uniqueness. If
   the data carry no information about a coefficient (e.g. a source far from every sensor), no method
   here invents it; UQ should then report a *wide* band, and a deterministic PINN that reports a narrow
   one is wrong.
@@ -239,7 +239,7 @@ against HMC on the same source-identification problem).
   needs careful step-size/mass-matrix tuning; VI and EKI trade rigour for speed and can collapse
   variance on non-Gaussian posteriors.
 - **Cost.** HMC scales poorly with parameter dimension (the motivation for EKI); ensembles multiply
-  training cost by $M$. None of this runs client-side — all inference is offline and only the baked
+  training cost by $M$. None of this runs client-side, all inference is offline and only the baked
   mean/variance fields ship to `onnxruntime-web`.
 - **Real data is scarce.** Per the coverage map, only `poll-air-source-inv` (OpenAQ, CC BY 4.0) and
   the groundwater/seepage head pair (USGS NWIS, US public domain) are wired to *real* public data;

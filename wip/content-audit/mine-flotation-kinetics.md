@@ -29,7 +29,7 @@ and the network architecture / optimizer recipe is absent too. The app tells the
 asked to do and never how well it actually did it. Separately, the `results.ts` verdict under-sells the
 precision by citing a loose "within 2%" when the doc's measured error is an order of magnitude tighter.
 
-Severity: **2 (real gap)** — no contradiction, not filler, but the deep context omits the doc's measured
+Severity: **2 (real gap)**, no contradiction, not filler, but the deep context omits the doc's measured
 outcome, which is load-bearing content.
 
 ---
@@ -61,7 +61,7 @@ a depth gap, not a contradiction.
 
 ## Depth gaps (real doc content the app omits)
 
-### G1 (primary) — Context states no measured result at all
+### G1 (primary): Context states no measured result at all
 `FlotationContext.tsx` ends its "Formalization" at the analytic anchor and never reports the trained net's
 accuracy. The doc's whole Result section is missing from the deep context:
 - relative-L2 vs analytic `C*=e^{-kt}` = **7.6e-4 (0.076 %)**
@@ -72,20 +72,20 @@ accuracy. The doc's whole Result section is missing from the deep context:
 A reader of the deep context cannot tell how faithfully the PINN reproduces the anchor. This is the single
 biggest gap.
 
-### G2 — Context omits the network architecture and optimizer recipe
+### G2: Context omits the network architecture and optimizer recipe
 The doc's Method gives: FNN `[2] -> [32]×3 -> [1]`, `tanh`, Glorot-normal init; **10 000 Adam @ lr=1e-3**
 over **2000 domain + 200 initial** collocation points, then an **L-BFGS** polish; scored on **4000 test
 points** via l2 relative error. The Context describes the residual and ansatz but names none of the
 architecture/optimizer. Peer cases in this app surface the `Adam -> L-BFGS` recipe and the ansatz in their
 context/constraints; this one does not.
 
-### G3 — Live/ONNX justification is qualitative only
+### G3: Live/ONNX justification is qualitative only
 The Context says the parametric net "re-evaluates the full map in your browser (onnxruntime-web)" but never
 gives the doc's numbers that justify the live lane: a single **19.4 KB** ONNX reproducing the trained net
 to **7.15e-7** and inferring in **0.77 ms**. Those are exactly why "the App can sweep k interactively and
 read C(k,t) and R(k,t) live" (doc Result).
 
-### G4 — `results.ts` verdict under-cites the achieved precision
+### G4: `results.ts` verdict under-cites the achieved precision
 See soft note above: verdict cites "within 2%" while the doc's measured net error is **0.076 %** relative-L2
 (max abs 2.22e-3). The design-read-off tolerance and the net error are two different things; the verdict can
 keep the read-off statement but should also cite the net's real accuracy from the doc.
@@ -94,12 +94,12 @@ keep the read-off statement but should also cite the net's real accuracy from th
 
 ## Concrete proposed enrichments (faithful to the doc; no invented numbers)
 
-### E1 — Add a "Result (measured)" paragraph to `FlotationContext.tsx` (both EN and ES)
+### E1: Add a "Result (measured)" paragraph to `FlotationContext.tsx` (both EN and ES)
 Insert after the Formalization paragraph (after the `C_θ = 1 + t·N_θ(k,t)` sentence), before "Scope".
 
 EN (grounded in doc l.34-47):
 > **Result (measured, seed 42).** The trained parametric net matches the analytic anchor `C*=e^{-kt}` to a
-> relative-L2 of **0.076 %** (7.6e-4), max absolute error **2.22e-3** — clearing this case's own band
+> relative-L2 of **0.076 %** (7.6e-4), max absolute error **2.22e-3**, clearing this case's own band
 > (< 5e-3) by an order of magnitude. This is a smooth, low-dimensional field with an exact analytic anchor,
 > so the CPU lane resolves it essentially to optimizer precision and no accuracy caveat is needed. A single
 > **19.4 KB** ONNX reproduces the net to **7.15e-7** and infers in **0.77 ms**, so the App sweeps `k`
@@ -113,7 +113,7 @@ ES (mirror):
 > exactitud. Un único ONNX de **19,4 KB** reproduce la red a **7,15e-7** e infiere en **0,77 ms**, así que la
 > App barre `k` de forma interactiva y lee `C(k,t)` y `R=1-C` en vivo.
 
-### E2 — Add the architecture + optimizer to `FlotationContext.tsx` (both langs)
+### E2: Add the architecture + optimizer to `FlotationContext.tsx` (both langs)
 Append one sentence to the Formalization paragraph (grounded in doc l.21, l.29-30):
 
 EN:
@@ -127,7 +127,7 @@ ES:
 > de dominio + 200 iniciales, luego un pulido L-BFGS, y evaluada contra la forma cerrada en 4000 puntos de
 > prueba.
 
-### E3 — Tighten the `results.ts` verdict to cite the real net error (both langs)
+### E3: Tighten the `results.ts` verdict to cite the real net error (both langs)
 File: `frontend/src/content/results.ts`, key `mine-flotation-kinetics`.
 Current EN: `"The read-off values match the exact kinetics closed form within 2% ... the design chart is numerically sound."`
 Proposed EN (keep the design read-off claim, add the doc's measured metric, doc l.38-44):
@@ -142,7 +142,7 @@ Proposed ES (mirror):
 > orden de magnitud: la carta de diseño es numéricamente sólida. La cinética de primer orden es la primera
 > aproximación estándar: los circuitos reales agregan distribuciones de k por tamaño."
 
-### E4 (optional) — add the ONNX size/parity to `constraints.ts` anchor line
+### E4 (optional): add the ONNX size/parity to `constraints.ts` anchor line
 File: `frontend/src/content/constraints.ts`, key `mine-flotation-kinetics`. The `anchor` chip could read
 `exact C* = e^(-kt) (net matches to 7.6e-4 rel-L2)` to carry the measured fit alongside the anchor, keeping
 the chip honest about the achieved accuracy rather than only the target.

@@ -1,4 +1,4 @@
-# NVIDIA PhysicsNeMo (+ Sym) — the GPU / 3D secondary engine
+# NVIDIA PhysicsNeMo (+ Sym): the GPU / 3D secondary engine
 
 > **Lane: GPU (NVIDIA-only).** This framework requires a CUDA-capable NVIDIA GPU for any
 > non-trivial training and for the ONNX-deploy path. On a machine without an NVIDIA GPU it is
@@ -8,7 +8,7 @@
 
 PhysicsNeMo is PINN-Lab's **secondary precompute engine**, used specifically where DeepXDE's
 declarative/CPU recipe runs out of road: large or geometry-heavy 3D domains, and cases that benefit
-from a first-class, supported ONNX-export path. It is **not** the default — DeepXDE owns most cases
+from a first-class, supported ONNX-export path. It is **not** the default, DeepXDE owns most cases
 (see [`docs/frameworks/deepxde/`](../deepxde/README.md)). Read this page when a case is tagged
 `engine: physicsnemo` in the cases registry.
 
@@ -17,11 +17,11 @@ from a first-class, supported ONNX-export path. It is **not** the default — De
 ## What & why
 
 **What it is.** NVIDIA PhysicsNeMo (the framework formerly called **Modulus**) is an open-source,
-PyTorch-based Physics-ML toolkit. It bundles several model families under one roof — physics-informed
+PyTorch-based Physics-ML toolkit. It bundles several model families under one roof, physics-informed
 neural networks (PINNs), Fourier/physics-informed neural operators (FNO / PINO / DeepONet), graph
-neural networks, and diffusion models — together with the symbolic PDE layer **PhysicsNeMo-Sym**
+neural networks, and diffusion models, together with the symbolic PDE layer **PhysicsNeMo-Sym**
 (formerly **Modulus-Sym**), an industrial training loop, and a deployment module with
-**first-class ONNX export**. Licensing is **Apache-2.0** (permissive — unlike DeepXDE's LGPL-2.1),
+**first-class ONNX export**. Licensing is **Apache-2.0** (permissive, unlike DeepXDE's LGPL-2.1),
 and the current release at the time of writing is **`nvidia-physicsnemo` 2.1.1 (2026-06-08)**,
 Python `>=3.11,<3.14`. ([PyPI](https://pypi.org/project/nvidia-physicsnemo/),
 [GitHub](https://github.com/NVIDIA/physicsnemo))
@@ -59,17 +59,17 @@ is exactly the symbolic residual $\mathcal{N}[\cdot]$ evaluated on interior poin
 - **One toolbox for PINN *and* operator *and* GNN.** When a mining case needs a parametric surrogate
   (FNO/PINO) and a strong-form PINN in the same study, you stay in one library and one export path.
 - **First-class ONNX deploy.** `physicsnemo.deploy.onnx` exports any `torch.nn.Module` /
-  `physicsnemo.Module` to a portable ONNX artifact — the bridge to PINN-Lab's `onnxruntime-web`
+  `physicsnemo.Module` to a portable ONNX artifact, the bridge to PINN-Lab's `onnxruntime-web`
   live lane. DeepXDE has no built-in exporter (you call `torch.onnx.export` on `model.net` yourself).
 - **Industrial training loop.** Hydra-driven config, multi-GPU/multi-node, mixed precision, TensorBoard,
-  checkpointing — the engineering scaffolding for the heavy cases.
+  checkpointing, the engineering scaffolding for the heavy cases.
 
 **Honest scope (what it is *not*).** PhysicsNeMo does **not** make a PINN beat a good FEM/FVM solver on
 a single well-posed forward solve; the PINN-Lab thesis on that (Krishnapriyan 2021 et al.) is unchanged.
-It is a heavier, narrower dependency than DeepXDE — **NVIDIA-GPU-only**, a non-trivial CUDA install
+It is a heavier, narrower dependency than DeepXDE, **NVIDIA-GPU-only**, a non-trivial CUDA install
 matrix, and it carries name-churn from the Modulus→PhysicsNeMo rename (old code imports `modulus` /
 `modulus.sym`; new code imports `physicsnemo` / `physicsnemo.sym`). Use it where its strengths
-(3D/SDF, supported ONNX) actually pay for that weight — not as a default.
+(3D/SDF, supported ONNX) actually pay for that weight, not as a default.
 
 ---
 
@@ -81,7 +81,7 @@ CUDA extra. Verified against the official
 and [PyPI](https://pypi.org/project/nvidia-physicsnemo/) (June 2026).
 
 ```bash
-# 0) isolated env (CAOS convention — never global)
+# 0) isolated env (CAOS convention: never global)
 python -m venv .venv-pipeline-gpu        # Python 3.11–3.13
 source .venv-pipeline-gpu/bin/activate   # (Windows: .venv-pipeline-gpu\Scripts\activate)
 
@@ -96,7 +96,7 @@ Key facts (verified):
   PyTorch installs from PyPI with its default build. **Use `cu12`** for PINN-Lab: the
   `onnxruntime-gpu` runtime that `physicsnemo.deploy.onnx` checks against lags CUDA-13 support, so the
   ONNX round-trip is the safe lane on cu12.
-- **`[sym]` extra** pulls in PhysicsNeMo-Sym — the symbolic SymPy PDE authoring, `instantiate_arch`,
+- **`[sym]` extra** pulls in PhysicsNeMo-Sym: the symbolic SymPy PDE authoring, `instantiate_arch`,
   the constraint/`Solver`/`Domain` API, and the `PhysicsInformer` residual utility. Without it you get
   the model zoo and training utilities but **not** the symbolic PINN layer this page is about.
 - **`[nn-extras]`** adds optimised NN kernels (the recommended baseline NN extra).
@@ -126,7 +126,7 @@ pip install onnx onnxruntime onnxruntime-gpu
 
 Two ways to drive PhysicsNeMo-Sym. Pick per case.
 
-### Path A — the declarative `Solver` (Hydra-configured)
+### Path A: the declarative `Solver` (Hydra-configured)
 
 The classic Modulus-Sym workflow: author the PDE symbolically, instantiate an architecture from config,
 build `make_nodes()`, attach pointwise constraints to a `Domain`, and let `Solver` run the training
@@ -150,26 +150,26 @@ from sympy import Symbol, Function
 
 Authoring blocks:
 
-- **Equation** — subclass `PDE`, declare SymPy symbols/functions, set `self.equations` to a dict of
+- **Equation**: subclass `PDE`, declare SymPy symbols/functions, set `self.equations` to a dict of
   named residuals (each `== 0` at the solution).
-- **Architecture** — `instantiate_arch(input_keys=[Key("x"), Key("t")], output_keys=[Key("u")], cfg=cfg.arch.fully_connected)`
+- **Architecture**: `instantiate_arch(input_keys=[Key("x"), Key("t")], output_keys=[Key("u")], cfg=cfg.arch.fully_connected)`
   builds a `FullyConnectedArch` (configurable: `nr_layers`, `layer_size`, activation, weight-norm,
-  adaptive activations, Fourier/periodic encodings) from the Hydra config — so you tune width/depth from
+  adaptive activations, Fourier/periodic encodings) from the Hydra config, so you tune width/depth from
   YAML/CLI without touching code.
-- **Nodes** — `nodes = eq.make_nodes() + [net.make_node(name="u_network")]` wires residuals and the
+- **Nodes**: `nodes = eq.make_nodes() + [net.make_node(name="u_network")]` wires residuals and the
   network into one autodiff graph. For **inverse** problems, make the unknown coefficient a `Symbol`,
   give it its own small net, and `detach_names=[...]` the known quantities out of the residual's
   gradient path.
-- **Constraints** — `PointwiseInteriorConstraint` (PDE residual = 0 on the interior),
+- **Constraints**: `PointwiseInteriorConstraint` (PDE residual = 0 on the interior),
   `PointwiseBoundaryConstraint` (BC/IC on the boundary), each with `lambda_weighting`; data terms via
   `PointwiseConstraint.from_numpy(...)`. Add them to a `Domain` with `domain.add_constraint(...)`.
-- **Run** — `Solver(cfg, domain).solve()`.
+- **Run**: `Solver(cfg, domain).solve()`.
 
-### Path B — `PhysicsInformer` in a plain PyTorch loop (v2 idiom)
+### Path B: `PhysicsInformer` in a plain PyTorch loop (v2 idiom)
 
 The modern PhysicsNeMo path drops the framework-owned loop. You write an ordinary PyTorch training loop
 and use `physicsnemo.sym.eq.phy_informer.PhysicsInformer` to compute the PDE residual on your model
-outputs and add it to the loss. Any `physicsnemo.Module` or plain `torch.nn.Module` plugs straight in —
+outputs and add it to the loss. Any `physicsnemo.Module` or plain `torch.nn.Module` plugs straight in, 
 no wrapper class, no dict-format conversion. Spatial gradients are computed by autodiff (ideal for
 fully-differentiable point-cloud networks). Prefer this path when you want full control of the optimiser
 schedule (e.g. Adam→L-BFGS, SOAP) or to interleave custom sampling/curriculum logic.
@@ -268,18 +268,18 @@ This is why PhysicsNeMo is the **reference ONNX-export path** for PINN-Lab. The 
 Gotchas (all verified, and load-bearing for PINN-Lab's parity gate):
 
 - **opset is 15.** `export_to_onnx_stream` exports at `opset_version=15`. If a case needs a newer opset
-  op, export the bare `net` with `torch.onnx.export(..., opset_version=17)` directly — both produce a
+  op, export the bare `net` with `torch.onnx.export(..., opset_version=17)` directly, both produce a
   plain ONNX graph `onnxruntime-web` can load.
 - **The model is moved to CPU for export and restored** to its original device afterwards. Exporting
-  **while CUDA graphs are active will break** — export *after* training, with the net in `eval()`.
+  **while CUDA graphs are active will break**, export *after* training, with the net in `eval()`.
 - **CUDA-12 lane only.** `onnxruntime-gpu` lags CUDA-13; keep the env on `cu12` so the export →
   ORT round-trip is supported.
 - **Mandatory parity check.** After export, assert the ONNX output matches the trained net on the same
   points (PINN-Lab CI guard: ONNX-vs-`model.predict` parity). Any feature/output transform or hard-BC
-  ansatz is only captured if it is a pure tensor op traced into the graph — Python-side post-processing
+  ansatz is only captured if it is a pure tensor op traced into the graph, Python-side post-processing
   is **not** exported and must be re-implemented in the web lane or folded into the net.
 - **Export the bare net, not the training object.** Pass the `torch.nn.Module` / `physicsnemo.Module`,
-  not a `Solver`/`Domain` wrapper — the live lane needs coordinates-in → field-out, nothing else.
+  not a `Solver`/`Domain` wrapper, the live lane needs coordinates-in → field-out, nothing else.
 
 The exported `wave.onnx` is exactly what `onnxruntime-web` loads in the App page: feed an `[N, d]`
 Float32 coordinate tensor, get `[N, out]` field predictions, render. See
@@ -320,7 +320,7 @@ case is trained in PhysicsNeMo.
 
 ## References
 
-- **Framework / docs.** NVIDIA PhysicsNeMo — [GitHub](https://github.com/NVIDIA/physicsnemo) ·
+- **Framework / docs.** NVIDIA PhysicsNeMo: [GitHub](https://github.com/NVIDIA/physicsnemo) ·
   [PyPI `nvidia-physicsnemo` 2.1.1](https://pypi.org/project/nvidia-physicsnemo/) ·
   [Installation](https://docs.nvidia.com/physicsnemo/latest/getting-started/installation.html) ·
   [PhysicsNeMo-Sym API](https://docs.nvidia.com/physicsnemo/latest/physicsnemo/api/physicsnemo.sym.html) ·
@@ -340,6 +340,6 @@ case is trained in PhysicsNeMo.
   Operator*, ICLR 2021, [arXiv:2010.08895](https://arxiv.org/abs/2010.08895); Z. Li et al.,
   *Physics-Informed Neural Operator (PINO)*, [arXiv:2111.03794](https://arxiv.org/abs/2111.03794).
 
-> Cross-links: engine selection — [`docs/frameworks/deepxde/`](../deepxde/README.md) ·
-> operator lane — [`docs/frameworks/neuraloperator/`](../neuraloperator/README.md) ·
-> the gate / live-vs-precompute decision — [`docs/architecture/the-gate.md`](../../architecture/the-gate.md).
+> Cross-links: engine selection, [`docs/frameworks/deepxde/`](../deepxde/README.md) ·
+> operator lane, [`docs/frameworks/neuraloperator/`](../neuraloperator/README.md) ·
+> the gate / live-vs-precompute decision, [`docs/architecture/the-gate.md`](../../architecture/the-gate.md).

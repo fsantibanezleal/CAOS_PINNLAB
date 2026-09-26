@@ -1,6 +1,6 @@
 # Architectures (spectral-bias remedies & hard constraints)
 
-> **Group:** `architectures` — the network-design layer of the PINN-Lab method catalogue.
+> **Group:** `architectures`, the network-design layer of the PINN-Lab method catalogue.
 > **Methods covered:** random / multi-scale Fourier features · modified-MLP · PirateNets · SIREN · hard-constraint output transforms.
 > **PINN-Lab cases that exercise this group:** `bench-wave1d` (Fourier features + SIREN), `ind-helmholtz` (high-frequency Fourier features / SIREN), `bench-navier-cavity` (modified-MLP), `bench-allencahn` (PirateNets), `bench-poisson2d` / `bench-heat1d` / `bench-wave1d` (hard-constraint output transforms).
 
@@ -14,7 +14,7 @@ A plain tanh multilayer perceptron (MLP) is a *poor* default for solving partial
 
 2. **Derivative-trainability degradation with depth.** PINN losses depend on *derivatives* of the network (the PDE residual is built from $\partial_t u$, $\nabla^2 u$, …). With standard initialisation, those derivatives are badly scaled at init, deeper nets train *worse* not better, and the residual loss minimisation becomes unstable (Wang, Teng & Perdikaris 2021; Wang et al. 2024).
 
-The `architectures` group collects the network-design fixes for both pathologies — input encodings (Fourier features), activation choices (SIREN), backbone topology (modified-MLP, PirateNets) — plus a separate, complementary tool: **hard-constraint output transforms**, which remove boundary/initial-condition loss terms entirely by building the constraint into the network's functional form. These are orthogonal to the *training* methods (loss weighting, causal training, adaptive sampling) documented in the other method groups, and they stack with them.
+The `architectures` group collects the network-design fixes for both pathologies, input encodings (Fourier features), activation choices (SIREN), backbone topology (modified-MLP, PirateNets), plus a separate, complementary tool: **hard-constraint output transforms**, which remove boundary/initial-condition loss terms entirely by building the constraint into the network's functional form. These are orthogonal to the *training* methods (loss weighting, causal training, adaptive sampling) documented in the other method groups, and they stack with them.
 
 ---
 
@@ -22,7 +22,7 @@ The `architectures` group collects the network-design fixes for both pathologies
 
 ### What it is
 
-Prepend a fixed (non-trainable) Fourier feature embedding to the network input so the MLP sees a high-dimensional bank of sinusoids instead of raw coordinates. This converts the network's effective NTK from a rapidly-decaying isotropic kernel into a *stationary* kernel with a **tunable bandwidth**, letting the MLP represent high frequencies that it otherwise could not learn (Tancik et al. 2020). Wang, Wang & Perdikaris (2021) brought this into the PINN setting and added the **multi-scale** variant: run several Fourier banks at different frequency scales $\sigma$ in parallel and concatenate, so a single network resolves a solution containing several length-scales at once. For space–time problems the spatial and temporal axes get *separate* scale sets ($\sigma_x$, $\sigma_t$) — the spatio-temporal multi-scale variant.
+Prepend a fixed (non-trainable) Fourier feature embedding to the network input so the MLP sees a high-dimensional bank of sinusoids instead of raw coordinates. This converts the network's effective NTK from a rapidly-decaying isotropic kernel into a *stationary* kernel with a **tunable bandwidth**, letting the MLP represent high frequencies that it otherwise could not learn (Tancik et al. 2020). Wang, Wang & Perdikaris (2021) brought this into the PINN setting and added the **multi-scale** variant: run several Fourier banks at different frequency scales $\sigma$ in parallel and concatenate, so a single network resolves a solution containing several length-scales at once. For space–time problems the spatial and temporal axes get *separate* scale sets ($\sigma_x$, $\sigma_t$), the spatio-temporal multi-scale variant.
 
 ### Key equation
 
@@ -43,7 +43,7 @@ Use Fourier features whenever the solution has **high-frequency or multi-scale s
 ### Honest limitations
 
 - $\sigma$ is brittle and problem-specific; a wrong scale is *worse* than no embedding.
-- It targets spatial/temporal frequency, not the depth/derivative-trainability problem — combine with a good backbone for hard cases.
+- It targets spatial/temporal frequency, not the depth/derivative-trainability problem: combine with a good backbone for hard cases.
 - The mapping $\mathbf{B}$ is fixed, so it cannot adapt if the true frequency content is unknown a priori; the multi-scale trick mitigates but does not eliminate this.
 
 ### References
@@ -64,7 +64,7 @@ net = dde.nn.MsFFN([2] + [100] * 3 + [1], "tanh", "Glorot uniform", sigmas=[1, 1
 
 ### PINN-Lab case that exercises it
 
-`bench-wave1d` (1D wave equation $u_{tt}=c^2u_{xx}$, hyperbolic / oscillatory — the canonical Fourier-feature showcase) and `ind-helmholtz` (frequency-domain Helmholtz $\nabla^2 u + \kappa^2 u = f$, high-wavenumber). `poll-ocean-transport` also uses Fourier features per the dossier case table. The ONNX-export note matters here: the fixed `B` matrix and the $\cos/\sin$ map are pure tensor ops, so they trace cleanly into the exported graph for the `onnxruntime-web` live lane.
+`bench-wave1d` (1D wave equation $u_{tt}=c^2u_{xx}$, hyperbolic / oscillatory, the canonical Fourier-feature showcase) and `ind-helmholtz` (frequency-domain Helmholtz $\nabla^2 u + \kappa^2 u = f$, high-wavenumber). `poll-ocean-transport` also uses Fourier features per the dossier case table. The ONNX-export note matters here: the fixed `B` matrix and the $\cos/\sin$ map are pure tensor ops, so they trace cleanly into the exported graph for the `onnxruntime-web` live lane.
 
 ---
 
@@ -72,7 +72,7 @@ net = dde.nn.MsFFN([2] + [100] * 3 + [1], "tanh", "Glorot uniform", sigmas=[1, 1
 
 ### What it is
 
-A backbone topology, not an input encoding. Two extra encoder streams $\mathbf{U}$ and $\mathbf{V}$ are computed once from the input, then used to *gate* every hidden layer via a pointwise interpolation. This adds residual-like, multiplicative pathways through the network that markedly improve the trainability of the network's derivatives — which is exactly what a PINN loss stresses. It is the de-facto strong PINN backbone in the "Expert's Guide" stack and routinely the difference between convergence and stall on stiff/coupled systems.
+A backbone topology, not an input encoding. Two extra encoder streams $\mathbf{U}$ and $\mathbf{V}$ are computed once from the input, then used to *gate* every hidden layer via a pointwise interpolation. This adds residual-like, multiplicative pathways through the network that markedly improve the trainability of the network's derivatives, which is exactly what a PINN loss stresses. It is the de-facto strong PINN backbone in the "Expert's Guide" stack and routinely the difference between convergence and stall on stiff/coupled systems.
 
 ### Key equation
 
@@ -88,7 +88,7 @@ with $\mathbf{H}^{(1)}=\phi(\mathbf{W}^{(1)}\mathbf{x}+\mathbf{b}^{(1)})$, $\odo
 
 ### Why / when to use it
 
-Use it as the default backbone for any non-trivial PINN — especially stiff, coupled, or convection-dominated systems (steady Navier–Stokes, reaction–diffusion). It composes with Fourier features (encode first, then gate) and with NTK/grad-norm loss weighting.
+Use it as the default backbone for any non-trivial PINN, especially stiff, coupled, or convection-dominated systems (steady Navier–Stokes, reaction–diffusion). It composes with Fourier features (encode first, then gate) and with NTK/grad-norm loss weighting.
 
 ### Honest limitations
 
@@ -106,7 +106,7 @@ Use it as the default backbone for any non-trivial PINN — especially stiff, co
 
 ### PINN-Lab case that exercises it
 
-`bench-navier-cavity` (lid-driven cavity, steady Navier–Stokes $(\mathbf{u}\cdot\nabla)\mathbf{u} = -\nabla p/\rho + \nu\nabla^2\mathbf{u},\ \nabla\cdot\mathbf{u}=0$) — the hard NS benchmark, where the modified-MLP backbone is combined with NTK + grad-norm loss weighting per the coverage map.
+`bench-navier-cavity` (lid-driven cavity, steady Navier–Stokes $(\mathbf{u}\cdot\nabla)\mathbf{u} = -\nabla p/\rho + \nu\nabla^2\mathbf{u},\ \nabla\cdot\mathbf{u}=0$), the hard NS benchmark, where the modified-MLP backbone is combined with NTK + grad-norm loss weighting per the coverage map.
 
 ---
 
@@ -114,7 +114,7 @@ Use it as the default backbone for any non-trivial PINN — especially stiff, co
 
 ### What it is
 
-A deep-PINN architecture that fixes the counter-intuitive "deeper PINNs train worse" problem. Each residual block is multiplied by a **trainable gate** $\alpha$ initialised to **zero**, so at the start of training the network is *effectively shallow* (identity skips dominate) and **progressively deepens** as the $\alpha$'s grow — sidestepping the bad derivative-init of deep MLPs. PirateNets also support a **physics-informed initialisation** of the final linear layer by least-squares fitting available data / boundary information, giving a good starting iterate. The result is stable training of genuinely deep PINNs and state-of-the-art accuracy on stiff benchmarks (Allen–Cahn, Korteweg–de Vries, Gray–Scott, lid-driven cavity).
+A deep-PINN architecture that fixes the counter-intuitive "deeper PINNs train worse" problem. Each residual block is multiplied by a **trainable gate** $\alpha$ initialised to **zero**, so at the start of training the network is *effectively shallow* (identity skips dominate) and **progressively deepens** as the $\alpha$'s grow, sidestepping the bad derivative-init of deep MLPs. PirateNets also support a **physics-informed initialisation** of the final linear layer by least-squares fitting available data / boundary information, giving a good starting iterate. The result is stable training of genuinely deep PINNs and state-of-the-art accuracy on stiff benchmarks (Allen–Cahn, Korteweg–de Vries, Gray–Scott, lid-driven cavity).
 
 ### Key equation
 
@@ -126,7 +126,7 @@ where $\mathbf{f}^{(l)}$ is the (modified-MLP-style, gated) nonlinear block. At 
 
 ### Why / when to use it
 
-Reach for PirateNets when you genuinely need a **deep** network — stiff, sharp-interface, or high-complexity solutions where shallow nets plateau and naïve deep nets diverge. On easy/smooth problems a shallow modified-MLP is simpler and enough.
+Reach for PirateNets when you genuinely need a **deep** network, stiff, sharp-interface, or high-complexity solutions where shallow nets plateau and naïve deep nets diverge. On easy/smooth problems a shallow modified-MLP is simpler and enough.
 
 ### Honest limitations
 
@@ -144,7 +144,7 @@ Reach for PirateNets when you genuinely need a **deep** network — stiff, sharp
 
 ### PINN-Lab case that exercises it
 
-`bench-allencahn` (stiff Allen–Cahn $u_t = \varepsilon^2 u_{xx} + u - u^3$) — paired with causal / time-marching training; the canonical PirateNets stiffness showcase.
+`bench-allencahn` (stiff Allen–Cahn $u_t = \varepsilon^2 u_{xx} + u - u^3$), paired with causal / time-marching training; the canonical PirateNets stiffness showcase.
 
 ---
 
@@ -152,7 +152,7 @@ Reach for PirateNets when you genuinely need a **deep** network — stiff, sharp
 
 ### What it is
 
-Replace every activation in the MLP with a **sine**, and use a frequency-scaled initialisation so the forward pass and all its derivatives stay well-conditioned. The defining property for PINNs: the derivative of a SIREN is itself a SIREN (since $\frac{d}{dx}\sin = \cos$ is a phase-shifted sine), so a SIREN represents **high-order derivatives faithfully** — exactly what a PDE residual needs. It is a competing spectral-bias remedy to Fourier features: instead of a fixed sinusoidal *input* map, the sinusoid lives in *every* layer and its frequencies are learned. Originally for implicit neural representations (images, SDFs, audio), it solves Poisson, Helmholtz, wave and Eikonal boundary-value problems directly.
+Replace every activation in the MLP with a **sine**, and use a frequency-scaled initialisation so the forward pass and all its derivatives stay well-conditioned. The defining property for PINNs: the derivative of a SIREN is itself a SIREN (since $\frac{d}{dx}\sin = \cos$ is a phase-shifted sine), so a SIREN represents **high-order derivatives faithfully**, exactly what a PDE residual needs. It is a competing spectral-bias remedy to Fourier features: instead of a fixed sinusoidal *input* map, the sinusoid lives in *every* layer and its frequencies are learned. Originally for implicit neural representations (images, SDFs, audio), it solves Poisson, Helmholtz, wave and Eikonal boundary-value problems directly.
 
 ### Key equation
 
@@ -172,7 +172,7 @@ Use SIREN for problems dominated by **high-order derivatives and oscillatory fie
 
 ### Honest limitations
 
-- Sensitive to $\omega_0$ and to the init scheme — get the init wrong and it does not train at all.
+- Sensitive to $\omega_0$ and to the init scheme: get the init wrong and it does not train at all.
 - The learned-frequency flexibility can overfit noisy data more readily than a fixed Fourier bank.
 - Less standard than tanh in PINN frameworks; in DeepXDE it is supplied as a custom activation/layer rather than a turnkey net.
 
@@ -186,7 +186,7 @@ Official reference: `vsitzmann/siren` (PyTorch, reusable `SineLayer`). In PINN-L
 
 ### PINN-Lab case that exercises it
 
-`bench-wave1d` (1D wave — SIREN vs. Fourier-feature comparison on the same hyperbolic problem) and `ind-helmholtz` (high-frequency Helmholtz). These are the two cases where the spectral-bias remedies are compared head-to-head.
+`bench-wave1d` (1D wave, SIREN vs. Fourier-feature comparison on the same hyperbolic problem) and `ind-helmholtz` (high-frequency Helmholtz). These are the two cases where the spectral-bias remedies are compared head-to-head.
 
 ---
 
@@ -194,7 +194,7 @@ Official reference: `vsitzmann/siren` (PyTorch, reusable `SineLayer`). In PINN-L
 
 ### What it is
 
-Instead of *penalising* boundary/initial-condition violations with an extra loss term (a "soft" constraint, which needs weighting and is only satisfied approximately), build the constraint **into the network's output** so it holds *exactly for any weights*. The trial solution is composed of a function $g$ that meets the boundary data and a smooth **approximate distance function** $\phi$ that vanishes on the boundary, multiplying the raw network $N_\theta$. Because the BC term disappears from the loss, so does its weight — removing an entire class of loss-balancing problems and guaranteeing the constraint is met to machine precision. Sukumar & Srivastava (2022) supply the general machinery for constructing $\phi$ on arbitrary geometry using R-functions (constructive solid geometry) and generalised barycentric coordinates; Lu et al. (hPINN) apply the same idea in DeepXDE.
+Instead of *penalising* boundary/initial-condition violations with an extra loss term (a "soft" constraint, which needs weighting and is only satisfied approximately), build the constraint **into the network's output** so it holds *exactly for any weights*. The trial solution is composed of a function $g$ that meets the boundary data and a smooth **approximate distance function** $\phi$ that vanishes on the boundary, multiplying the raw network $N_\theta$. Because the BC term disappears from the loss, so does its weight, removing an entire class of loss-balancing problems and guaranteeing the constraint is met to machine precision. Sukumar & Srivastava (2022) supply the general machinery for constructing $\phi$ on arbitrary geometry using R-functions (constructive solid geometry) and generalised barycentric coordinates; Lu et al. (hPINN) apply the same idea in DeepXDE.
 
 ### Key equation
 
@@ -206,14 +206,14 @@ Then $\hat{u}_\theta|_{\partial\Omega}=g$ holds **identically**, regardless of $
 
 ### Why / when to use it
 
-Use hard constraints whenever the geometry/BCs are simple enough to write an exact $g$ and a vanishing $\phi$ — typically Dirichlet (and initial) conditions on intervals, boxes, and simple analytic shapes. It removes a loss term, removes its weight, and improves accuracy near the boundary. It is one of the highest-value, lowest-cost tricks for canonical benchmarks.
+Use hard constraints whenever the geometry/BCs are simple enough to write an exact $g$ and a vanishing $\phi$, typically Dirichlet (and initial) conditions on intervals, boxes, and simple analytic shapes. It removes a loss term, removes its weight, and improves accuracy near the boundary. It is one of the highest-value, lowest-cost tricks for canonical benchmarks.
 
 ### Honest limitations
 
 - **Curved / complex geometry is hard**: constructing a smooth, non-degenerate $\phi$ on a general domain is the whole subject of the Sukumar–Srivastava paper and is non-trivial.
-- **Neumann/Robin conditions are trickier** than Dirichlet — the gradient BC is not as cleanly factorable into the ansatz.
+- **Neumann/Robin conditions are trickier** than Dirichlet: the gradient BC is not as cleanly factorable into the ansatz.
 - A poorly conditioned $\phi$ (vanishing too fast, or with kinks) can hurt optimisation near the boundary.
-- **ONNX caveat (load-bearing for PINN-Lab):** the transform $g+\phi N$ is applied in Python on top of the net, so it is only present in the exported artifact if it is implemented as pure tensor ops traced into the graph. DeepXDE's `apply_output_transform` runs inside the forward pass, so exporting `model.net` captures it — but this **must be verified** with the ONNX-vs-`model.predict` parity check (dossier §3.2), otherwise the live/replay field silently violates the BC.
+- **ONNX caveat (load-bearing for PINN-Lab):** the transform $g+\phi N$ is applied in Python on top of the net, so it is only present in the exported artifact if it is implemented as pure tensor ops traced into the graph. DeepXDE's `apply_output_transform` runs inside the forward pass, so exporting `model.net` captures it: but this **must be verified** with the ONNX-vs-`model.predict` parity check (dossier §3.2), otherwise the live/replay field silently violates the BC.
 
 ### References
 
@@ -231,7 +231,7 @@ net.apply_output_transform(lambda x, y: x * (1 - x) * y)
 
 ### PINN-Lab case that exercises it
 
-`bench-poisson2d` (the anchor: 2D Poisson $\nabla^2 u = f$, $u|_{\partial\Omega}=g$ with the distance-function ansatz — already ✅ in the coverage map), and used again in `bench-heat1d` and `bench-wave1d` to impose initial/boundary conditions exactly. The mining/pollution cases `mine-thickener-settling` and `poll-tailings-seepage` (Richards equation) also use hard constraints per the coverage map.
+`bench-poisson2d` (the anchor: 2D Poisson $\nabla^2 u = f$, $u|_{\partial\Omega}=g$ with the distance-function ansatz, already ✅ in the coverage map), and used again in `bench-heat1d` and `bench-wave1d` to impose initial/boundary conditions exactly. The mining/pollution cases `mine-thickener-settling` and `poll-tailings-seepage` (Richards equation) also use hard constraints per the coverage map.
 
 ---
 
@@ -245,9 +245,9 @@ net.apply_output_transform(lambda x, y: x * (1 - x) * y)
 | SIREN | $\sin$ activations + $\omega_0$-scaled init; derivatives stay SIRENs | [2006.09661](https://arxiv.org/abs/2006.09661) | DeepXDE custom activation; `vsitzmann/siren` | `bench-wave1d`, `ind-helmholtz` |
 | Hard-constraint output transform | $\hat u = g + \phi\,N$, BC exact for any $\theta$ | [2104.08426](https://arxiv.org/abs/2104.08426), [10.1137/21M1397908](https://doi.org/10.1137/21M1397908) | DeepXDE `apply_output_transform`; PhysicsNeMo | `bench-poisson2d` (anchor) |
 
-**Why these belong together.** Fourier features, SIREN, modified-MLP and PirateNets are four answers to the same two diseases — *spectral bias* (Fourier features, SIREN) and *derivative-trainability / depth degradation* (modified-MLP, PirateNets) — and they **stack**: the strongest PINN-Lab backbone for a hard case is a Fourier-feature front-end → modified-MLP or PirateNet body → SIREN or tanh activations, trained with the loss-weighting and causal methods from the other groups. Hard-constraint output transforms are the odd one out: they don't change capacity or conditioning, they remove a *loss term*, and they compose with every backbone above.
+**Why these belong together.** Fourier features, SIREN, modified-MLP and PirateNets are four answers to the same two diseases, *spectral bias* (Fourier features, SIREN) and *derivative-trainability / depth degradation* (modified-MLP, PirateNets), and they **stack**: the strongest PINN-Lab backbone for a hard case is a Fourier-feature front-end → modified-MLP or PirateNet body → SIREN or tanh activations, trained with the loss-weighting and causal methods from the other groups. Hard-constraint output transforms are the odd one out: they don't change capacity or conditioning, they remove a *loss term*, and they compose with every backbone above.
 
-**ONNX / live-lane note.** All five are export-safe for the `onnxruntime-web` live lane provided they are pure tensor ops: the Fourier $\mathbf{B}$ matrix and $\cos/\sin$, the modified-MLP gating, the PirateNet gates, the SIREN $\sin$, and the `apply_output_transform` ansatz all trace into the ONNX graph. The **mandatory** gate is the ONNX-vs-`model.predict` parity check (dossier §3.2) — most critical for the hard-constraint transform, where a missed transform silently breaks the boundary condition in the browser.
+**ONNX / live-lane note.** All five are export-safe for the `onnxruntime-web` live lane provided they are pure tensor ops: the Fourier $\mathbf{B}$ matrix and $\cos/\sin$, the modified-MLP gating, the PirateNet gates, the SIREN $\sin$, and the `apply_output_transform` ansatz all trace into the ONNX graph. The **mandatory** gate is the ONNX-vs-`model.predict` parity check (dossier §3.2), most critical for the hard-constraint transform, where a missed transform silently breaks the boundary condition in the browser.
 
 ---
 

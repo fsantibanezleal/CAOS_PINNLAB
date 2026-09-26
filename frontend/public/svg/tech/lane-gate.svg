@@ -25,7 +25,7 @@
   </defs>
 
   <!-- ===== Title ===== -->
-  <text class="ttl" x="24" y="32" style="font-size:15px">Lane gate — LIVE vs PRECOMPUTE, decided from MEASUREMENTS</text>
+  <text class="ttl" x="24" y="32" style="font-size:15px">Lane gate, LIVE vs PRECOMPUTE, decided from MEASUREMENTS</text>
   <text class="cd mono" x="24" y="50">core/gate.py · classify_lane(onnx_bytes, infer_ms, trace_bytes)</text>
 
   <!-- ===== LEFT: measured inputs group ===== -->

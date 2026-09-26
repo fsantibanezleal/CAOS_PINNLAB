@@ -1,4 +1,4 @@
-"""Group D · industrial-fluids-heat — HIDDEN VELOCITY FROM DYE: the Hidden-Fluid-Mechanics mechanism (Raissi,
+"""Group D · industrial-fluids-heat, HIDDEN VELOCITY FROM DYE: the Hidden-Fluid-Mechanics mechanism (Raissi,
 Yazdani & Karniadakis, Science 2020, DOI 10.1126/science.aaw4741) at CPU-lane scale. The flagship of the
 estimation reframe (issue #48): you can only SEE the dye; the PINN estimates the CURRENT underneath.
 
@@ -94,12 +94,12 @@ def analytic(xyt: np.ndarray) -> np.ndarray:
 
 def variants() -> list[Variant]:
     presets = [
-        ("t02", 0.2, "t=0.2 — the blob barely moved; the current is only starting to reveal itself.", "t=0.2 — el parche apenas se movió; la corriente apenas empieza a revelarse."),
-        ("t04", 0.4, "t=0.4 — the dye arcs with the vortex; the swept region grows.", "t=0.4 — el tinte se arquea con el vórtice; la región barrida crece."),
-        ("t05", 0.5, "t=0.5 — mid-window; the reference regime.", "t=0.5 — mitad de la ventana; el régimen de referencia."),
-        ("t06", 0.6, "t=0.6 — over half the ring swept; the recovery is at its best there.", "t=0.6 — más de media vuelta barrida; la recuperación es mejor allí."),
-        ("t08", 0.8, "t=0.8 — broad and fading dye; late-time information is weaker.", "t=0.8 — tinte ancho y tenue; la información tardía es más débil."),
-        ("t10", 1.0, "t=1.0 — the window ends; dead zones never saw dye and stay unidentifiable.", "t=1.0 — termina la ventana; las zonas muertas nunca vieron tinte y siguen sin identificarse."),
+        ("t02", 0.2, "t=0.2, the blob barely moved; the current is only starting to reveal itself.", "t=0.2, el parche apenas se movió; la corriente apenas empieza a revelarse."),
+        ("t04", 0.4, "t=0.4, the dye arcs with the vortex; the swept region grows.", "t=0.4, el tinte se arquea con el vórtice; la región barrida crece."),
+        ("t05", 0.5, "t=0.5, mid-window; the reference regime.", "t=0.5, mitad de la ventana; el régimen de referencia."),
+        ("t06", 0.6, "t=0.6, over half the ring swept; the recovery is at its best there.", "t=0.6, más de media vuelta barrida; la recuperación es mejor allí."),
+        ("t08", 0.8, "t=0.8, broad and fading dye; late-time information is weaker.", "t=0.8, tinte ancho y tenue; la información tardía es más débil."),
+        ("t10", 1.0, "t=1.0, the window ends; dead zones never saw dye and stay unidentifiable.", "t=1.0, termina la ventana; las zonas muertas nunca vieron tinte y siguen sin identificarse."),
     ]
     return [Variant(vid, f"t={tv:g}", f"t={tv:g}", {"t": tv}, en, es) for vid, tv, en, es in presets]
 

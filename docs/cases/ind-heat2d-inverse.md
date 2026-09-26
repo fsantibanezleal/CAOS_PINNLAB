@@ -1,8 +1,8 @@
-# ind-heat2d-inverse — 2D inverse heat conduction, recovering the conductivity field from sparse sensors
+# ind-heat2d-inverse: 2D inverse heat conduction, recovering the conductivity field from sparse sensors
 
 The case that exercises the **field-inverse** method: not a forward solve, and not a scalar-parameter inverse, but the
 recovery of an entire spatially-varying coefficient $k(x,y)$ from ~100 sparse noisy temperature readings. This is the
-canonical sparse-data field-inverse problem where PINNs beat classical FEM/FVM — the PDE prior fills the gaps where
+canonical sparse-data field-inverse problem where PINNs beat classical FEM/FVM, the PDE prior fills the gaps where
 there are no sensors.
 
 ## Problem
@@ -13,7 +13,7 @@ with the source $q$ given and the temperature pinned to zero on the boundary:
 $$ \nabla\!\cdot\big(k(x,y)\,\nabla T\big) = q \quad\text{on}\ (0,1)^2, \qquad T|_{\partial\Omega}=0. $$
 
 We are given the source $q$ and ~100 sparse, noisy interior samples $T(x_i,y_i)$, and asked to infer the **whole**
-conductivity field $k(x,y)$ — an ill-posed, under-determined problem away from the sensors. The manufactured ground
+conductivity field $k(x,y)$, an ill-posed, under-determined problem away from the sensors. The manufactured ground
 truth (MMS) is
 
 $$ T^* = \sin\pi x\,\sin\pi y, \qquad k^* = 1 + \tfrac12\sin\pi x\,\sin\pi y, \qquad q = \nabla\!\cdot(k^*\nabla T^*), $$
@@ -26,7 +26,7 @@ interior locations with $\sigma=0.01$ Gaussian noise on $T$.
 This is an **inverse field PINN**, and the design choices are what make the ill-posed recovery tractable:
 
 - **Two-output PFNN.** A parallel fully-connected network `PFNN([2,[40,40],[40,40],[40,40],2])` emits both fields,
-  `[k, T]`. The unknown conductivity is the **first network output** — a *field*, not a `dde.Variable` scalar — so the
+  `[k, T]`. The unknown conductivity is the **first network output**, a *field*, not a `dde.Variable` scalar, so the
   optimizer recovers a value of $k$ at every point, with the PDE residual interpolating between sensors.
 - **Product-rule residual.** The divergence is expanded explicitly,
   $k(T_{xx}+T_{yy}) + k_x T_x + k_y T_y - q$, using DeepXDE jacobians/hessians, so the spatial gradients of the
@@ -53,7 +53,7 @@ The primary score is the relative-L2 of the recovered $k$ vs $k^*$; the $T$ erro
 
 Validation anchor is **analytic** (the manufactured $k^*$). The 4.0 % field recovery is genuinely good for a sparse
 field-inverse: the temperature field is reconstructed to under 1 %, and the conductivity to a few percent. The error
-is honestly concentrated where it must be — the max-abs error of 0.44 sits where $|\nabla T|$ is small (near the
+is honestly concentrated where it must be, the max-abs error of 0.44 sits where $|\nabla T|$ is small (near the
 boundary and at the field's peak), because there $k$ barely influences the residual and is therefore weakly
 identifiable from temperature data alone. That is the physics of the problem, not a tuning failure.
 
@@ -62,7 +62,7 @@ identifiable from temperature data alone. That is the physics of the problem, no
 `real_or_synthetic = synthetic`. The truth here is a **manufactured solution (MMS)**: the triple $(T^*, k^*, q)$ is
 closed-form, with $q$ derived symbolically so that $k^*$ is the exact conductivity producing $T^*$. No open 2D
 thermal-field inverse dataset exists (see `real-datasets.md §6`), so there is nothing real to fit; the value of the
-case is the *method* — demonstrating that a PINN recovers a full coefficient field from ~100 noisy point samples — and
+case is the *method*, demonstrating that a PINN recovers a full coefficient field from ~100 noisy point samples, and
 the score is an exact comparison against a known answer, not a curve fit to data. The sensor noise ($\sigma=0.01$) is
 synthetic but realistic, so the recovery is not trivially exact.
 

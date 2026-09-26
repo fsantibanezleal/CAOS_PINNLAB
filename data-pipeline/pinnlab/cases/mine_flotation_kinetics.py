@@ -1,15 +1,15 @@
-"""Group B · mining-mineral-processing — froth-flotation kinetics (parametric first-order PINN).
+"""Group B · mining-mineral-processing, froth-flotation kinetics (parametric first-order PINN).
 
 Batch froth flotation follows first-order kinetics: the floatable mineral concentration C decays as
     dC/dt = -k C,   C(t=0) = 1,   recovery R(t) = 1 - C(t) = 1 - exp(-k t),
 where k is the flotation rate constant (1/min). Instead of one fixed k, this case learns the WHOLE FAMILY of
-solutions over a range of rate constants by taking k as a second network input — a parametric PINN. The output is the
+solutions over a range of rate constants by taking k as a second network input, a parametric PINN. The output is the
 2D field C(k, t): one trained network gives the concentration (and recovery) for any rate constant in [0.5, 5]
 without retraining, exactly the lumped first-order model used to compare flotation circuits.
 
 real_or_synthetic = synthetic-illustrative: the lumped first-order kinetics is the standard flotation model, but the
 field is a clean analytic illustration, NOT fitted to a plant/lab assay (the Kaggle iron-ore flotation set is a 0-D
-process time-series without a rate-constant axis — real-datasets.md). Validation anchor: the exact C* = exp(-k t).
+process time-series without a rate-constant axis, real-datasets.md). Validation anchor: the exact C* = exp(-k t).
 """
 from __future__ import annotations
 
@@ -49,7 +49,7 @@ def analytic(kt: np.ndarray) -> np.ndarray:
 
 
 def variants() -> list[Variant]:
-    # The rate constant k is a FIELD AXIS, so one heatmap shows the whole family at once — a single, honest variant.
+    # The rate constant k is a FIELD AXIS, so one heatmap shows the whole family at once: a single, honest variant.
     return [Variant(
         "family", "Full k-family", "Familia completa de k", {},
         "The whole rate-constant family C(k,t) in one map: recovery R=1−C fills in faster for larger k.",

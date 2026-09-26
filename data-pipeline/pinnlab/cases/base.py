@@ -1,14 +1,14 @@
-"""The CaseSpec — light, Pyodide-safe metadata for one PINN case (no torch/deepxde import).
+"""The CaseSpec, light, Pyodide-safe metadata for one PINN case (no torch/deepxde import).
 
 Each `cases/<case>.py` exposes:
-  - `CASE`            : a CaseSpec (this dataclass) — pure metadata, importable anywhere (registry, live, web export).
+  - `CASE`            : a CaseSpec (this dataclass): pure metadata, importable anywhere (registry, live, web export).
   - `analytic(X)`     : the closed-form reference solution on [N, d] points (or returns None if no closed form).
   - `build(seed)`     : constructs + compiles the heavy DeepXDE/PhysicsNeMo model (lazy-imports the engine).
   - `variants()`      : (optional) the family of parameter regimes (≥ several), SimLab-style. If omitted, the case
                         ships a single "default" variant. For a PARAMETRIC case the tunable parameter is a network
                         INPUT (in `inputs` but not in `field_axes`); a variant fixes that parameter, the baked field
                         is the 2-D heatmap over `field_axes`, and the web `Live` tab sweeps the parameter via the ONE
-                        shared ONNX (live re-evaluation) — superior to pre-simulating each regime.
+                        shared ONNX (live re-evaluation), superior to pre-simulating each regime.
 
 `build()` is the ONLY part that pulls the heavy SOTA engine; keeping it behind a function means importing a case
 module (for its metadata) never drags torch into the live lane.
@@ -107,7 +107,7 @@ class CaseSpec:
 
     @property
     def axes(self) -> tuple[str, ...]:
-        """The field (heatmap) axes — `field_axes` if set, else all `inputs` (non-parametric default)."""
+        """The field (heatmap) axes, `field_axes` if set, else all `inputs` (non-parametric default)."""
         return self.field_axes or self.inputs
 
     @property

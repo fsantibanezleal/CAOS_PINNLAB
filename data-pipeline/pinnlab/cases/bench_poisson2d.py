@@ -1,4 +1,4 @@
-"""Group A · canonical-benchmark — 2D Poisson with homogeneous Dirichlet BC, solved by a HARD-CONSTRAINT PINN,
+"""Group A · canonical-benchmark, 2D Poisson with homogeneous Dirichlet BC, solved by a HARD-CONSTRAINT PINN,
 PARAMETRIC in the source mode k (the reference case for the variant + Live-slider pattern).
 
 Governing equation:
@@ -7,7 +7,7 @@ The forcing is the manufactured source of the closed-form, boundary-vanishing so
     u*(x,y;k) = g(x;k) g(y;k),   g(t;k) = t(1-t) sin(k pi t),   f = -Delta u*  (closed form).
 Because g(0)=g(1)=0, u* satisfies the homogeneous Dirichlet BC for every k, so k can be a CONTINUOUS network input.
 
-Method exercised — HARD CONSTRAINTS (distance-function output transform): the boundary condition is satisfied
+Method exercised, HARD CONSTRAINTS (distance-function output transform): the boundary condition is satisfied
 *exactly* for any weights via  u_hat = x(1-x) y(1-y) N(x,y,k),  so there is NO boundary-loss term. ONE trained net
 covers the whole mode family k in [1,3]; the App offers preset mode chips and the `Live` tab sweeps k continuously,
 re-evaluating the field in the browser via the shared ONNX. Relative-L2 vs the closed form is the validation anchor.
@@ -66,12 +66,12 @@ def analytic(xyk: np.ndarray) -> np.ndarray:
 
 def variants() -> list[Variant]:
     presets = [
-        ("k1", 1.0, "Fundamental mode (k=1) — a single boundary-vanishing bump.", "Modo fundamental (k=1) — un único lóbulo que se anula en el borde."),
-        ("k15", 1.5, "k=1.5 — the lobes begin to subdivide.", "k=1.5 — los lóbulos empiezan a subdividirse."),
-        ("k2", 2.0, "k=2 — a 2×2 lobe pattern.", "k=2 — patrón de 2×2 lóbulos."),
-        ("k225", 2.25, "k=2.25 — off-integer mode (still boundary-vanishing).", "k=2.25 — modo no entero (sigue anulándose en el borde)."),
-        ("k25", 2.5, "k=2.5 — finer oscillation, harder for a smooth net.", "k=2.5 — oscilación más fina, más difícil para una red suave."),
-        ("k3", 3.0, "k=3 — a 3×3 lobe pattern; the spectral-bias stress test.", "k=3 — patrón de 3×3 lóbulos; el test de sesgo espectral."),
+        ("k1", 1.0, "Fundamental mode (k=1), a single boundary-vanishing bump.", "Modo fundamental (k=1), un único lóbulo que se anula en el borde."),
+        ("k15", 1.5, "k=1.5, the lobes begin to subdivide.", "k=1.5, los lóbulos empiezan a subdividirse."),
+        ("k2", 2.0, "k=2, a 2×2 lobe pattern.", "k=2, patrón de 2×2 lóbulos."),
+        ("k225", 2.25, "k=2.25, off-integer mode (still boundary-vanishing).", "k=2.25, modo no entero (sigue anulándose en el borde)."),
+        ("k25", 2.5, "k=2.5, finer oscillation, harder for a smooth net.", "k=2.5, oscilación más fina, más difícil para una red suave."),
+        ("k3", 3.0, "k=3, a 3×3 lobe pattern; the spectral-bias stress test.", "k=3, patrón de 3×3 lóbulos; el test de sesgo espectral."),
     ]
     return [Variant(vid, f"Mode k={k:g}", f"Modo k={k:g}", {"k": k}, en, es) for vid, k, en, es in presets]
 
